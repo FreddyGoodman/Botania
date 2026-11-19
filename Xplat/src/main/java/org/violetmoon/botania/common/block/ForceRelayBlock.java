@@ -8,13 +8,11 @@
  */
 package org.violetmoon.botania.common.block;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.datafix.DataFixTypes;
@@ -28,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.PistonType;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -48,41 +47,40 @@ public class ForceRelayBlock extends Block {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!level.isClientSide()) {
-			var data = WorldData.get(level);
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		BlockState newState = level.getBlockState(pos);
+		var data = WorldData.get(level);
 
-			Direction movementContextDirection = ForcePushHelper.getMovementContextDirection();
-			if (movedByPiston && (movementContextDirection != null || newState.is(Blocks.MOVING_PISTON))) {
-				var pistonDirection = movementContextDirection != null
-						? movementContextDirection
-						: newState.getValue(MovingPistonBlock.FACING);
-				// if being moved as part of a retracting sticky piston's block structure, reverse movement direction
-				var moveDirection = ForcePushHelper.isExtendingMovementContext() ? pistonDirection : pistonDirection.getOpposite();
+		Direction movementContextDirection = ForcePushHelper.getMovementContextDirection();
+		if (movedByPiston && (movementContextDirection != null || newState.is(Blocks.MOVING_PISTON))) {
+			var pistonDirection = movementContextDirection != null
+					? movementContextDirection
+					: newState.getValue(MovingPistonBlock.FACING);
+			// if being moved as part of a retracting sticky piston's block structure, reverse movement direction
+			var moveDirection = ForcePushHelper.isExtendingMovementContext() ? pistonDirection : pistonDirection.getOpposite();
 
-				var destPos = data.mapping.get(pos);
-				if (destPos != null) {
-					BlockPos newSrcPos = pos.relative(moveDirection);
+			var destPos = data.mapping.get(pos);
+			if (destPos != null) {
+				BlockPos newSrcPos = pos.relative(moveDirection);
 
-					{
-						// Move source side of our binding along
-						data.mapping.remove(pos);
-						data.mapping.put(newSrcPos, destPos);
-						data.setDirty();
-					}
-
-					if (!newState.is(Blocks.MOVING_PISTON) || newState.getValue(MovingPistonBlock.TYPE) == PistonType.DEFAULT) {
-						// Move the actual bound blocks
-						if (ForceLens.moveBlocks(level, destPos.relative(moveDirection.getOpposite()), moveDirection, pos)) {
-							// Move dest side of our binding
-							data.mapping.put(newSrcPos, data.mapping.get(newSrcPos).relative(moveDirection));
-						}
-					}
-				}
-			} else {
-				if (data.mapping.remove(pos) != null) {
+				{
+					// Move source side of our binding along
+					data.mapping.remove(pos);
+					data.mapping.put(newSrcPos, destPos);
 					data.setDirty();
 				}
+
+				if (!newState.is(Blocks.MOVING_PISTON) || newState.getValue(MovingPistonBlock.TYPE) == PistonType.DEFAULT) {
+					// Move the actual bound blocks
+					if (ForceLens.moveBlocks(level, destPos.relative(moveDirection.getOpposite()), moveDirection, pos)) {
+						// Move dest side of our binding
+						data.mapping.put(newSrcPos, data.mapping.get(newSrcPos).relative(moveDirection));
+					}
+				}
+			}
+		} else {
+			if (data.mapping.remove(pos) != null) {
+				data.setDirty();
 			}
 		}
 	}
@@ -130,47 +128,40 @@ public class ForceRelayBlock extends Block {
 			return;
 		}
 		WorldData data = WorldData.get(level);
-		data.mapping.put(sourcePos, targetPos.immutable());
+		data.mapping.put(sourcePos.immutable(), targetPos.immutable());
 		data.setDirty();
 	}
 
 	public static class WorldData extends SavedData {
 
-		private static final String ID = "PistonRelayPairs";
-		public static final Factory<WorldData> FACTORY = new Factory<>(WorldData::new, WorldData::new, DataFixTypes.LEVEL);
+		private static final Codec<WorldData> CODEC = Binding.CODEC.listOf().fieldOf("bindings")
+				.xmap(WorldData::new, WorldData::getBindings).codec();
+		private static final SavedDataType<WorldData> TYPE = new SavedDataType<>(
+				BotaniaAPI.botaniaRL("piston_relay_pairs"), WorldData::new, CODEC, DataFixTypes.LEVEL);
+
 		public final Map<BlockPos, BlockPos> mapping = new HashMap<>();
 
-		public WorldData() {
-			// initialize with empty data
-		}
+		public WorldData() {}
 
-		public WorldData(CompoundTag cmp, HolderLookup.Provider registries) {
-			ListTag list = cmp.getList("list", Tag.TAG_INT_ARRAY);
-			for (int i = 0; i < list.size(); i += 2) {
-				Tag from = list.get(i);
-				Tag to = list.get(i + 1);
-				BlockPos fromPos = BlockPos.CODEC.decode(NbtOps.INSTANCE, from).result().orElseThrow().getFirst();
-				BlockPos toPos = BlockPos.CODEC.decode(NbtOps.INSTANCE, to).result().orElseThrow().getFirst();
-
-				mapping.put(fromPos, toPos);
+		private WorldData(List<Binding> bindings) {
+			for (Binding binding : bindings) {
+				mapping.put(binding.source(), binding.target());
 			}
 		}
 
-		@Override
-		public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-			ListTag list = new ListTag();
-			for (Map.Entry<BlockPos, BlockPos> e : mapping.entrySet()) {
-				Tag from = BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, e.getKey()).result().orElseThrow();
-				Tag to = BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue()).result().orElseThrow();
-				list.add(from);
-				list.add(to);
-			}
-			tag.put("list", list);
-			return tag;
+		private List<Binding> getBindings() {
+			return mapping.entrySet().stream().map(entry -> new Binding(entry.getKey(), entry.getValue())).toList();
 		}
 
 		public static WorldData get(Level world) {
-			return ((ServerLevel) world).getDataStorage().computeIfAbsent(FACTORY, ID);
+			return ((ServerLevel) world).getDataStorage().computeIfAbsent(TYPE);
+		}
+
+		private record Binding(BlockPos source, BlockPos target) {
+			private static final Codec<Binding> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+					BlockPos.CODEC.fieldOf("source").forGetter(Binding::source),
+					BlockPos.CODEC.fieldOf("target").forGetter(Binding::target)
+			).apply(instance, Binding::new));
 		}
 	}
 }

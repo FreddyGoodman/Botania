@@ -11,24 +11,29 @@ package org.violetmoon.botania.common.world;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import net.minecraft.util.Util;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
+import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.xplat.BotaniaConfig;
 
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
 public class SkyblockSavedData extends SavedData {
-	private static final String NAME = "gog_skyblock_islands";
-	public static final Factory<SkyblockSavedData> FACTORY =
-			new Factory<>(SkyblockSavedData::new, SkyblockSavedData::new, DataFixTypes.LEVEL);
+	private static final Codec<SkyblockSavedData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Island.CODEC.listOf().fieldOf("islands").forGetter(SkyblockSavedData::getIslands),
+			Spiral.CODEC.fieldOf("spiral").forGetter(data -> data.spiral)
+	).apply(instance, SkyblockSavedData::new));
+	private static final SavedDataType<SkyblockSavedData> TYPE = new SavedDataType<>(
+			BotaniaAPI.botaniaRL("gog_skyblock_islands"), SkyblockSavedData::new, CODEC, DataFixTypes.LEVEL);
 
 	/** The offset is chosen to put islands under default settings in the center of a chunk region. */
 	private static final int OFFSET = 1;
@@ -37,26 +42,19 @@ public class SkyblockSavedData extends SavedData {
 	private final Spiral spiral;
 
 	public SkyblockSavedData() {
-		this.skyblocks = HashBiMap.create();
-		this.spiral = new Spiral();
+		this(List.of(), new Spiral());
 	}
 
-	public SkyblockSavedData(CompoundTag nbt, HolderLookup.Provider registries) {
-		HashBiMap<IslandPos, UUID> map = HashBiMap.create();
-		for (Tag inbt : nbt.getList("Islands", Tag.TAG_COMPOUND)) {
-			CompoundTag tag = (CompoundTag) inbt;
-			map.put(IslandPos.fromTag(tag), tag.getUUID("Player"));
+	private SkyblockSavedData(List<Island> islands, Spiral spiral) {
+		this.skyblocks = HashBiMap.create();
+		for (Island island : islands) {
+			skyblocks.put(island.pos(), island.owner());
 		}
-		this.skyblocks = map;
-		if (nbt.contains("SpiralState", Tag.TAG_INT_ARRAY)) {
-			this.spiral = Spiral.fromArray(nbt.getIntArray("SpiralState"));
-		} else {
-			this.spiral = new Spiral();
-		}
+		this.spiral = spiral;
 	}
 
 	public static SkyblockSavedData get(ServerLevel world) {
-		return world.getDataStorage().computeIfAbsent(FACTORY, NAME);
+		return world.getDataStorage().computeIfAbsent(TYPE);
 	}
 
 	public IslandPos getSpawn() {
@@ -82,21 +80,26 @@ public class SkyblockSavedData extends SavedData {
 		return islandPos;
 	}
 
-	@Override
-	public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
-		ListTag list = new ListTag();
-		for (Map.Entry<IslandPos, UUID> entry : skyblocks.entrySet()) {
-			CompoundTag entryTag = entry.getKey().toTag();
-			entryTag.putUUID("Player", entry.getValue());
-			list.add(entryTag);
-		}
-		nbt.putIntArray("SpiralState", spiral.toIntArray());
-		nbt.put("Islands", list);
-		return nbt;
+	private List<Island> getIslands() {
+		return skyblocks.entrySet().stream().map(entry -> new Island(entry.getKey(), entry.getValue())).toList();
+	}
+
+	private record Island(IslandPos pos, UUID owner) {
+		private static final Codec<Island> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				IslandPos.CODEC.fieldOf("position").forGetter(Island::pos),
+				UUIDUtil.CODEC.fieldOf("owner").forGetter(Island::owner)
+		).apply(instance, Island::new));
 	}
 
 	// Adapted from https://stackoverflow.com/questions/398299/looping-in-a-spiral
 	private static class Spiral {
+		private static final Codec<Spiral> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.INT.fieldOf("x").forGetter(spiral -> spiral.x),
+				Codec.INT.fieldOf("y").forGetter(spiral -> spiral.y),
+				Codec.INT.fieldOf("dx").forGetter(spiral -> spiral.dx),
+				Codec.INT.fieldOf("dy").forGetter(spiral -> spiral.dy)
+		).apply(instance, Spiral::new));
+
 		private int x = 0;
 		private int y = 0;
 		private int dx = 0;
@@ -120,14 +123,6 @@ public class SkyblockSavedData extends SavedData {
 			x += dx;
 			y += dy;
 			return new int[] { x, y };
-		}
-
-		int[] toIntArray() {
-			return new int[] { x, y, dx, dy };
-		}
-
-		static Spiral fromArray(int[] ints) {
-			return new Spiral(ints[0], ints[1], ints[2], ints[3]);
 		}
 	}
 }
