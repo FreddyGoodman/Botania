@@ -16,6 +16,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -30,6 +31,7 @@ import org.violetmoon.botania.client.fx.WispParticleData;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 import org.violetmoon.botania.common.crafting.BlockStateRecipe;
 import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
+import org.violetmoon.botania.mixin.RecipeManagerAccessor;
 
 import java.util.Arrays;
 
@@ -65,7 +67,7 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (level.isClientSide()) {
+		if (!(level instanceof ServerLevel serverLevel)) {
 			BlockPos.MutableBlockPos coords = new BlockPos.MutableBlockPos();
 			RandomSource rng = level.getRandom();
 			for (int i = 0; i < POSITIONS.length; i++) {
@@ -90,9 +92,9 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 
 		BlockPos coords = getEffectivePos().offset(POSITIONS[positionAt]);
 		if (!level.isEmptyBlock(coords)) {
-			level.getProfiler().push("findRecipe");
-			PureDaisyRecipe recipe = findRecipe(coords);
-			level.getProfiler().pop();
+			Profiler.get().push("findRecipe");
+			PureDaisyRecipe recipe = findRecipe(serverLevel, coords);
+			Profiler.get().pop();
 
 			if (recipe != null) {
 				if (ticksRemaining[positionAt] == -1) {
@@ -112,7 +114,7 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 					} else {
 						stateToPlace = recipeOutputState;
 					}
-					BlockStateRecipe.replaceBlock(coords, recipe, stateToPlace, (ServerLevel) level,
+					BlockStateRecipe.replaceBlock(coords, recipe, stateToPlace, serverLevel,
 							() -> level.blockEvent(getBlockPos(), getBlockState().getBlock(), RECIPE_COMPLETE_EVENT, positionAt));
 				}
 
@@ -135,13 +137,13 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	}
 
 	@Nullable
-	private PureDaisyRecipe findRecipe(BlockPos coords) {
+	private PureDaisyRecipe findRecipe(ServerLevel level, BlockPos coords) {
 		BlockState state = getLevel().getBlockState(coords);
 
-		for (RecipeHolder<PureDaisyRecipe> recipe : level.getRecipeManager().getAllRecipesFor(
-				BotaniaRecipeTypes.PURE_DAISY_TYPE)) {
-			if (recipe.value() instanceof PureDaisyRecipe daisyRecipe && daisyRecipe.matches(getLevel(), coords, state)) {
-				return daisyRecipe;
+		var recipes = ((RecipeManagerAccessor) level.recipeAccess()).botania_getRecipes();
+		for (RecipeHolder<PureDaisyRecipe> recipe : recipes.byType(BotaniaRecipeTypes.PURE_DAISY_TYPE)) {
+			if (recipe.value().matches(level, coords, state)) {
+				return recipe.value();
 			}
 		}
 

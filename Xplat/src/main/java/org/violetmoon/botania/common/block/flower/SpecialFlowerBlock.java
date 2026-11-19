@@ -44,7 +44,7 @@ public class SpecialFlowerBlock extends FlowerBlock implements EntityBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		Vec3 shift = state.getOffset(level, pos);
+		Vec3 shift = state.getOffset(pos);
 		return SHAPE.move(shift.x, shift.y, shift.z);
 	}
 

@@ -10,13 +10,16 @@ package org.violetmoon.botania.common.block.block_entity;
 
 import com.mojang.blaze3d.platform.Window;
 
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +43,6 @@ import org.violetmoon.botania.api.state.BotaniaStateProperties;
 import org.violetmoon.botania.api.state.enums.CraftyCratePattern;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
-import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
@@ -57,7 +59,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 	// not meant to be persisted, as it's always immediately ejected
 	private ItemStack craftResult = ItemStack.EMPTY;
 
-	private final Queue<Identifier> lastRecipes = new ArrayDeque<>();
+	private final Queue<ResourceKey<Recipe<?>>> lastRecipes = new ArrayDeque<>();
 	private boolean dirty;
 	private boolean matchFailed;
 	private int lastRecipeEpoch = recipeEpoch;
@@ -128,7 +130,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 	}
 
 	private boolean craft(boolean fullCheck, @Nullable Player player) {
-		level.getProfiler().push("craft");
+		Profiler.get().push("craft");
 		if (fullCheck && !isFull()) {
 			return false;
 		}
@@ -198,20 +200,25 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 			matchFailed = true;
 		}
 
-		level.getProfiler().pop();
+		Profiler.get().pop();
 		// Return only if present and not air.
 		return matchingRecipe.isPresent() && !craftResult.isEmpty();
 	}
 
 	private Optional<RecipeHolder<CraftingRecipe>> getMatchingRecipe(CraftingContainer craft) {
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return Optional.empty();
+		}
 		CraftingInput input = CraftingInput.of(craft.getWidth(), craft.getHeight(), craft.getItems());
-		for (Identifier currentRecipe : lastRecipes) {
-			var holder = BotaniaRecipeTypes.getRecipe(level, currentRecipe, RecipeType.CRAFTING);
-			if (holder.isPresent() && holder.get().value().matches(input, level)) {
-				return holder;
+		var manager = serverLevel.recipeAccess();
+		for (ResourceKey<Recipe<?>> currentRecipe : lastRecipes) {
+			var holder = manager.byKey(currentRecipe);
+			if (holder.isPresent() && holder.get().value() instanceof CraftingRecipe cached
+					&& cached.getType() == RecipeType.CRAFTING && cached.matches(input, serverLevel)) {
+				return Optional.of(new RecipeHolder<>(currentRecipe, cached));
 			}
 		}
-		Optional<RecipeHolder<CraftingRecipe>> recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
+		Optional<RecipeHolder<CraftingRecipe>> recipe = manager.getRecipeFor(RecipeType.CRAFTING, input, serverLevel);
 		if (recipe.isPresent()) {
 			if (lastRecipes.size() >= 8) {
 				lastRecipes.remove();

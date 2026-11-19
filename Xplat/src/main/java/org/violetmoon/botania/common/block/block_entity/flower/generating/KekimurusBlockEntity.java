@@ -62,7 +62,7 @@ public class KekimurusBlockEntity extends GeneratingFlowerBlockEntity {
 			getLevel().gameEvent(null, GameEvent.EAT, effectivePos);
 			//Usage of vanilla sound event: Subtitle is "Eating", generic sounds are meant to be reused.
 			getLevel().playSound(null, effectivePos, SoundEvents.GENERIC_EAT, SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
-			Vec3 offset = getLevel().getBlockState(effectivePos).getOffset(getLevel(), effectivePos).add(0.5, 0.75, 0.5);
+			Vec3 offset = getLevel().getBlockState(effectivePos).getOffset(effectivePos).add(0.5, 0.75, 0.5);
 			((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(state.getBlock())),
 					effectivePos.getX() + offset.x, effectivePos.getY() + offset.y, effectivePos.getZ() + offset.z,
 					5, 0.1, 0.1, 0.1, 0.03);

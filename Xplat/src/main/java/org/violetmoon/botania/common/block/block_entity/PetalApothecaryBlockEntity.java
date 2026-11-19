@@ -11,6 +11,7 @@ package org.violetmoon.botania.common.block.block_entity;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
@@ -71,7 +72,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 
 	public boolean collideEntityItem(ItemEntity item) {
 		ItemStack stack = item.getItem();
-		if (level.isClientSide() || stack.isEmpty() || !item.isAlive()) {
+		if (!(level instanceof ServerLevel serverLevel) || stack.isEmpty() || !item.isAlive()) {
 			return false;
 		}
 
@@ -105,7 +106,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			return true;
 		}
 
-		Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = level.getRecipeManager()
+		Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = serverLevel.recipeAccess()
 				.getRecipeFor(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, getRecipeInput(), level);
 		if (maybeRecipe.isPresent()) {
 			var recipe = maybeRecipe.get();

@@ -59,7 +59,7 @@ public class MunchdewBlockEntity extends GeneratingFlowerBlockEntity {
 		if (level.isClientSide()) {
 			if (getBlockState().getValue(BotaniaStateProperties.ON_COOLDOWN)) {
 				if (Math.random() < 0.5) {
-					Vec3 offset = level.getBlockState(getBlockPos()).getOffset(level, getBlockPos());
+					Vec3 offset = level.getBlockState(getBlockPos()).getOffset(getBlockPos());
 					double x = getBlockPos().getX() + offset.x + 0.2 + Math.random() * 0.6;
 					double y = getBlockPos().getY() + offset.y + 0.6 + Math.random() * 0.3;
 					double z = getBlockPos().getZ() + offset.z + 0.2 + Math.random() * 0.6;
@@ -147,7 +147,7 @@ public class MunchdewBlockEntity extends GeneratingFlowerBlockEntity {
 		level.removeBlock(breakCoords, false);
 		if (BotaniaConfig.common().blockBreakParticles()) {
 			level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, breakCoords, Block.getId(state));
-			Vec3 offset = level.getBlockState(effectivePos).getOffset(level, effectivePos).add(0.5, 0.75, 0.5);
+			Vec3 offset = level.getBlockState(effectivePos).getOffset(effectivePos).add(0.5, 0.75, 0.5);
 			((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(state.getBlock())),
 					effectivePos.getX() + offset.x, effectivePos.getY() + offset.y, effectivePos.getZ() + offset.z,
 					5, 0.1, 0.1, 0.1, 0.03);

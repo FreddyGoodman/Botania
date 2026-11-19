@@ -13,6 +13,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
@@ -44,7 +45,7 @@ public class SpectralRailBlock extends BaseRailBlock {
 	}
 
 	private void updateFloating(AbstractMinecart cart) {
-		cart.level().getProfiler().push("cartFloating");
+		Profiler.get().push("cartFloating");
 		int floatTicks = SpectralFloatTicks.HOLDER.getOrDefault(cart, 0);
 		Preconditions.checkState(floatTicks > 0);
 
@@ -68,7 +69,7 @@ public class SpectralRailBlock extends BaseRailBlock {
 			cart.level().levelEvent(LevelEvent.PARTICLES_SHOOT_SMOKE, entPos, 0);
 		}
 
-		cart.level().getProfiler().pop();
+		Profiler.get().pop();
 	}
 
 	@SoftImplement("IBaseRailBlockExtension")

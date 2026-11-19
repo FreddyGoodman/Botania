@@ -27,6 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -101,7 +102,7 @@ public final class HUDHandler {
 		if (mc.options.hideGui || localPlayer == null) {
 			return;
 		}
-		ProfilerFiller profiler = mc.getProfiler();
+		ProfilerFiller profiler = Profiler.get();
 		ItemStack main = localPlayer.getMainHandItem();
 		ItemStack offhand = localPlayer.getOffhandItem();
 
@@ -258,7 +259,7 @@ public final class HUDHandler {
 		if (mc.options.hideGui || localPlayer == null) {
 			return;
 		}
-		ProfilerFiller profiler = mc.getProfiler();
+		ProfilerFiller profiler = Profiler.get();
 
 		profiler.push("botania-hud-late");
 
@@ -311,7 +312,7 @@ public final class HUDHandler {
 
 	private static void renderPoolRecipeHUD(GuiGraphics gui, ManaPoolBlockEntity tile, ItemStack stack, boolean alternateRecipeHudPosition) {
 		Minecraft mc = Minecraft.getInstance();
-		ProfilerFiller profiler = mc.getProfiler();
+		ProfilerFiller profiler = Profiler.get();
 
 		profiler.push("poolRecipe");
 		RecipeHolder<ManaInfusionRecipe> recipe = tile.getMatchingRecipe(stack, tile.getLevel().getBlockState(tile.getBlockPos().below()));

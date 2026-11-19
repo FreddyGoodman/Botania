@@ -161,7 +161,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 		RandomSource rng = level.getRandom();
 		if (rng.nextDouble() > particleChance) {
 			BlockPos pos = getBlockPos();
-			Vec3 offset = level.getBlockState(pos).getOffset(level, pos);
+			Vec3 offset = level.getBlockState(pos).getOffset(pos);
 			double x = pos.getX() + offset.x;
 			double y = pos.getY() + offset.y;
 			double z = pos.getZ() + offset.z;
