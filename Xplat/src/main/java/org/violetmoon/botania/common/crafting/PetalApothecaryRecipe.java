@@ -39,7 +39,7 @@ public class PetalApothecaryRecipe implements org.violetmoon.botania.api.recipe.
 	public PetalApothecaryRecipe(ItemStack output, Ingredient reagent, Ingredient... ingredients) {
 		this.output = output;
 		this.reagent = reagent;
-		this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredients);
+		this.ingredients = NonNullList.of(null, ingredients);
 		this.requireSpecialMatching = Arrays.stream(ingredients).anyMatch(XplatAbstractions.instance()::requiresCustomTesting);
 	}
 
@@ -93,9 +93,9 @@ public class PetalApothecaryRecipe implements org.violetmoon.botania.api.recipe.
 
 	public static final class Serializer {
 		public static final MapCodec<PetalApothecaryRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ItemStack.STRICT_CODEC.fieldOf("output").forGetter(PetalApothecaryRecipe::getOutput),
-				Ingredient.CODEC_NONEMPTY.fieldOf("reagent").forGetter(PetalApothecaryRecipe::getReagent),
-				Ingredient.CODEC_NONEMPTY.listOf(1, 16).fieldOf("ingredients").forGetter(PetalApothecaryRecipe::getIngredients)
+				RecipeUtils.OUTPUT_CODEC.fieldOf("output").forGetter(PetalApothecaryRecipe::getOutput),
+				Ingredient.CODEC.fieldOf("reagent").forGetter(PetalApothecaryRecipe::getReagent),
+				Ingredient.CODEC.listOf(1, 16).fieldOf("ingredients").forGetter(PetalApothecaryRecipe::getIngredients)
 		).apply(instance, PetalApothecaryRecipe::of));
 		public static final StreamCodec<RegistryFriendlyByteBuf, PetalApothecaryRecipe> STREAM_CODEC = StreamCodec.composite(
 				ItemStack.STREAM_CODEC, PetalApothecaryRecipe::getOutput,

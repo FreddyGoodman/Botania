@@ -40,7 +40,7 @@ public class LexiconElvenTradeRecipe implements ElvenTradeRecipe {
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY, LEXICON_INGREDIENT.get());
+		return NonNullList.of(null, LEXICON_INGREDIENT.get());
 	}
 
 	@Override

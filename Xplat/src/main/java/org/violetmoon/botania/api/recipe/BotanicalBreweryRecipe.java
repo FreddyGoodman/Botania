@@ -10,7 +10,6 @@ package org.violetmoon.botania.api.recipe;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -18,11 +17,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 import org.violetmoon.botania.api.brew.Brew;
 
-import java.util.Objects;
-
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public interface BotanicalBreweryRecipe extends Recipe<ProcessingRecipeInput> {
+public interface BotanicalBreweryRecipe extends BotaniaRecipe<ProcessingRecipeInput> {
 	Identifier TYPE_ID = botaniaRL("brew");
 
 	Brew getBrew();
@@ -32,8 +29,8 @@ public interface BotanicalBreweryRecipe extends Recipe<ProcessingRecipeInput> {
 	ItemStack getOutput(ItemStack container);
 
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(TYPE_ID));
+	default RecipeType<? extends Recipe<ProcessingRecipeInput>> getType() {
+		return BotaniaRecipe.registeredType(TYPE_ID);
 	}
 
 	@Override
@@ -48,7 +45,7 @@ public interface BotanicalBreweryRecipe extends Recipe<ProcessingRecipeInput> {
 
 	@Override
 	default NonNullList<ItemStack> getRemainingItems(ProcessingRecipeInput input) {
-		return Recipe.super.getRemainingItems(input.isEmpty() ? input : input.getSubset(1, input.size()));
+		return BotaniaRecipe.super.getRemainingItems(input.isEmpty() ? input : input.getSubset(1, input.size()));
 	}
 
 	@Override

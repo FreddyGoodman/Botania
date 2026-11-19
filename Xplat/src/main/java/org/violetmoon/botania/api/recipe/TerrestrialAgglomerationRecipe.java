@@ -17,19 +17,17 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 import org.violetmoon.botania.common.lib.LibBlockNames;
 
-import java.util.Objects;
-
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public interface TerrestrialAgglomerationRecipe extends Recipe<ProcessingRecipeInput> {
+public interface TerrestrialAgglomerationRecipe extends BotaniaRecipe<ProcessingRecipeInput> {
 	Identifier TERRA_PLATE_ID = botaniaRL(LibBlockNames.TERRESTRIAL_AGGLOMERATION_PLATE);
 	Identifier TYPE_ID = TERRA_PLATE_ID;
 
 	int getMana();
 
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(TYPE_ID));
+	default RecipeType<? extends Recipe<ProcessingRecipeInput>> getType() {
+		return BotaniaRecipe.registeredType(TYPE_ID);
 	}
 
 	@Override

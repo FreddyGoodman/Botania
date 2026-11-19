@@ -8,11 +8,9 @@
  */
 package org.violetmoon.botania.api.recipe;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-
-import java.util.Objects;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -20,7 +18,7 @@ public interface PetalApothecaryRecipe extends RecipeWithReagent<ProcessingRecip
 	Identifier TYPE_ID = botaniaRL("petal_apothecary");
 
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(TYPE_ID));
+	default RecipeType<? extends Recipe<ProcessingRecipeInput>> getType() {
+		return BotaniaRecipe.registeredType(TYPE_ID);
 	}
 }

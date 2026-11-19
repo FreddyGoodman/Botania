@@ -14,7 +14,6 @@ import it.unimi.dsi.fastutil.ints.IntBidirectionalIterator;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -23,12 +22,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
+public interface ElvenTradeRecipe extends BotaniaRecipe<ProcessingRecipeInput> {
 	Identifier TYPE_ID = botaniaRL("elven_trade");
 	Identifier TYPE_ID_LEXICON = botaniaRL("elven_trade_lexicon");
 
@@ -49,8 +47,8 @@ public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
 	Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input);
 
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(TYPE_ID));
+	default RecipeType<? extends Recipe<ProcessingRecipeInput>> getType() {
+		return BotaniaRecipe.registeredType(TYPE_ID);
 	}
 
 	// Ignored IRecipe boilerplate

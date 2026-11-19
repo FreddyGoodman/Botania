@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.recipe.StateIngredient;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.block.mana.ManaPoolBlock;
+import org.violetmoon.botania.common.crafting.recipe.RecipeUtils;
 
 public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.ManaInfusionRecipe {
 	public static final RecipeSerializer<ManaInfusionRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
@@ -70,11 +71,11 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY, input);
+		return NonNullList.of(null, input);
 	}
 
 	@Override
-	public String getGroup() {
+	public String group() {
 		return group;
 	}
 
@@ -93,12 +94,12 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 
 	public static final class Serializer {
 		public static final MapCodec<ManaInfusionRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ItemStack.STRICT_CODEC.fieldOf("output").forGetter(ManaInfusionRecipe::getOutput),
-				Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(ManaInfusionRecipe::getInput),
+				RecipeUtils.OUTPUT_CODEC.fieldOf("output").forGetter(ManaInfusionRecipe::getOutput),
+				Ingredient.CODEC.fieldOf("input").forGetter(ManaInfusionRecipe::getInput),
 				// Leaving wiggle room for a certain modpack having creative-pool-only recipes
 				ExtraCodecs.intRange(1, ManaPoolBlock.MAX_MANA + 1).fieldOf("mana")
 						.forGetter(ManaInfusionRecipe::getManaToConsume),
-				Codec.STRING.optionalFieldOf("group", "").forGetter(ManaInfusionRecipe::getGroup),
+				Codec.STRING.optionalFieldOf("group", "").forGetter(ManaInfusionRecipe::group),
 				StateIngredients.TYPED_CODEC.optionalFieldOf("catalyst", StateIngredients.NONE)
 						.forGetter(ManaInfusionRecipe::getRecipeCatalyst)
 		).apply(instance, ManaInfusionRecipe::new));
@@ -106,7 +107,7 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 				ItemStack.STREAM_CODEC, ManaInfusionRecipe::getOutput,
 				Ingredient.CONTENTS_STREAM_CODEC, ManaInfusionRecipe::getInput,
 				ByteBufCodecs.VAR_INT, ManaInfusionRecipe::getManaToConsume,
-				ByteBufCodecs.STRING_UTF8, ManaInfusionRecipe::getGroup,
+				ByteBufCodecs.STRING_UTF8, ManaInfusionRecipe::group,
 				StateIngredients.TYPED_STREAM_CODEC, ManaInfusionRecipe::getRecipeCatalyst,
 				ManaInfusionRecipe::new
 		);

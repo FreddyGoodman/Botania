@@ -10,9 +10,8 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 import com.google.common.base.Suppliers;
 
-import it.unimi.dsi.fastutil.ints.IntList;
+import com.mojang.serialization.Codec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.Container;
@@ -20,36 +19,35 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.brew.BrewContainer;
+import org.violetmoon.botania.api.recipe.BotaniaRecipe;
 import org.violetmoon.botania.api.recipe.ProcessingRecipeInput;
 import org.violetmoon.botania.api.recipe.RecipeWithCatalysts;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public final class RecipeUtils {
+	public static final Codec<ItemStack> OUTPUT_CODEC = ItemStack.CODEC.validate(ItemStack::validateStrict);
+
 	/**
 	 * Check if every ingredient in {@code recipe} is satisfied by an item in {@code input}.
 	 *
-	 * @param recipe          The recipe to match. This may be a dummy from {@link #wrapCatalysts(RecipeWithCatalysts)}
-	 *                        or {@link #wrapAllIngredients(RecipeWithCatalysts)}.
+	 * @param recipe          The recipe to match.
 	 * @param input           The input items to match against.
 	 * @param specialMatching Whether some of the ingredients define a dynamic item set and thus cannot be matched using
 	 *                        the default method.
 	 */
-	public static boolean matches(Recipe<? extends ProcessingRecipeInput> recipe, ProcessingRecipeInput input,
+	public static boolean matches(BotaniaRecipe<? extends ProcessingRecipeInput> recipe, ProcessingRecipeInput input,
 			boolean specialMatching) {
 		NonNullList<Ingredient> ingredients = recipe.getIngredients();
 		if (input.size() != ingredients.size()) {
@@ -61,7 +59,7 @@ public final class RecipeUtils {
 		if (specialMatching) {
 			return XplatAbstractions.instance().matchesWithCustomTestIngredients(input.getItems(), ingredients);
 		}
-		return input.getStackedContents().canCraft(recipe, null);
+		return input.getStackedContents().canCraft(ingredients, null);
 	}
 
 	/**
@@ -76,8 +74,11 @@ public final class RecipeUtils {
 			ItemStack special = specialHandler.apply(item);
 			if (special != null) {
 				ret.set(i, special);
-			} else if (item.getItem().hasCraftingRemainingItem()) {
-				ret.set(i, new ItemStack(Objects.requireNonNull(item.getItem().getCraftingRemainingItem())));
+			} else {
+				ItemStackTemplate remainder = item.getItem().getCraftingRemainder();
+				if (remainder != null) {
+					ret.set(i, remainder.create());
+				}
 			}
 		}
 
@@ -137,32 +138,17 @@ public final class RecipeUtils {
 		return new StacksProcessingRecipeInput(stacks);
 	}
 
-	/**
-	 * Wrap the catalysts as the ingredients of a dummy recipe, so they can be fed into a
-	 * {@link net.minecraft.world.entity.player.StackedContents#canCraft(Recipe, IntList)} call.
-	 * The dummy recipe cannot be used for anything else and will throw an exception when trying to do so anyway.
-	 */
-	public static <T extends RecipeInput> Recipe<T> wrapCatalysts(RecipeWithCatalysts<T> recipeWithCatalysts) {
-		return new DummyRecipe<>(recipeWithCatalysts.getCatalysts());
-	}
-
-	/**
-	 * Wrap the ingredients and catalysts as a dummy recipe with a combined ingredients list, so they can be fed into a
-	 * {@link net.minecraft.world.entity.player.StackedContents#canCraft(Recipe, IntList)} call.
-	 * The dummy recipe cannot be used for anything else and will throw an exception when trying to do so anyway.
-	 */
-	public static <T extends RecipeInput> Recipe<T> wrapAllIngredients(RecipeWithCatalysts<T> recipeWithCatalysts) {
-		if (recipeWithCatalysts.getCatalysts().isEmpty()) {
-			return recipeWithCatalysts;
+	public static List<Ingredient> getIngredientsAndCatalysts(RecipeWithCatalysts<?> recipe) {
+		if (recipe.getCatalysts().isEmpty()) {
+			return recipe.getIngredients();
 		}
-		if (recipeWithCatalysts.getIngredients().isEmpty()) {
-			return wrapCatalysts(recipeWithCatalysts);
+		if (recipe.getIngredients().isEmpty()) {
+			return recipe.getCatalysts();
 		}
-		NonNullList<Ingredient> allIngredients = NonNullList.createWithCapacity(
-				recipeWithCatalysts.getIngredients().size() + recipeWithCatalysts.getCatalysts().size());
-		allIngredients.addAll(recipeWithCatalysts.getIngredients());
-		allIngredients.addAll(recipeWithCatalysts.getCatalysts());
-		return new DummyRecipe<>(allIngredients);
+		List<Ingredient> combined = new ArrayList<>(recipe.getIngredients().size() + recipe.getCatalysts().size());
+		combined.addAll(recipe.getIngredients());
+		combined.addAll(recipe.getCatalysts());
+		return combined;
 	}
 
 	@SuppressWarnings("SuspiciousToArrayCall")
@@ -177,42 +163,4 @@ public final class RecipeUtils {
 	}
 
 	private RecipeUtils() {}
-
-	private record DummyRecipe<T extends RecipeInput>(NonNullList<Ingredient> ingredients) implements Recipe<T> {
-
-		@Override
-		public NonNullList<Ingredient> getIngredients() {
-			return ingredients;
-		}
-
-		@Override
-		public boolean matches(T input, Level level) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public ItemStack assemble(T input) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean canCraftInDimensions(int width, int height) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public ItemStack getResultItem(HolderLookup.Provider registries) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public RecipeSerializer<?> getSerializer() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public RecipeType<?> getType() {
-			throw new UnsupportedOperationException();
-		}
-	}
 }

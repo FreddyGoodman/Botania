@@ -39,11 +39,11 @@ public class MarimorphosisRecipe extends OrechidRecipe {
 	@SuppressWarnings("unchecked")
 	@Override
 	public RecipeType<? extends org.violetmoon.botania.api.recipe.OrechidRecipe> getType() {
-		return (RecipeType<? extends org.violetmoon.botania.api.recipe.OrechidRecipe>) BuiltInRegistries.RECIPE_TYPE.get(MARIMORPHOSIS_TYPE_ID);
+		return (RecipeType<? extends org.violetmoon.botania.api.recipe.OrechidRecipe>) BuiltInRegistries.RECIPE_TYPE.getValue(MARIMORPHOSIS_TYPE_ID);
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends OrechidRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

@@ -63,7 +63,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 
 	@Nullable
 	private List<ItemStack> lastRecipe = null;
-	private Ingredient lastReagent = Ingredient.EMPTY;
+	private Optional<Ingredient> lastReagent = Optional.empty();
 	private int recipeKeepTicks = 0;
 
 	public PetalApothecaryBlockEntity(BlockPos pos, BlockState state) {
@@ -145,7 +145,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 				return false;
 			}
 
-			if (lastReagent.test(item.getItem())) {
+			if (lastReagent.isPresent() && lastReagent.get().test(item.getItem())) {
 				return false;
 			}
 
@@ -183,14 +183,14 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			recipe.add(stack.copy());
 		}
 		lastRecipe = recipe;
-		lastReagent = reagent;
+		lastReagent = Optional.of(reagent);
 		recipeKeepTicks = 400;
 		level.blockEvent(getBlockPos(), getBlockState().getBlock(), SET_KEEP_TICKS_EVENT, 400);
 	}
 
 	public void clearLastRecipe() {
 		lastRecipe = null;
-		lastReagent = Ingredient.EMPTY;
+		lastReagent = Optional.empty();
 	}
 
 	public InteractionResult trySetLastRecipe(Player player) {

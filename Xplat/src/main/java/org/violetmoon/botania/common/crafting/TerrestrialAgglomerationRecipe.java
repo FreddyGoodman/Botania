@@ -38,7 +38,7 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 
 	public TerrestrialAgglomerationRecipe(int mana, ItemStack output, Ingredient... ingredients) {
 		this.mana = mana;
-		this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredients);
+		this.ingredients = NonNullList.of(null, ingredients);
 		this.output = output;
 		this.requireSpecialMatching = Arrays.stream(ingredients).anyMatch(XplatAbstractions.instance()::requiresCustomTesting);
 	}
@@ -83,10 +83,10 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 
 	public static final class Serializer {
 		public static final MapCodec<TerrestrialAgglomerationRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ExtraCodecs.nonEmptyList(Ingredient.CODEC_NONEMPTY.listOf()).fieldOf("ingredients")
+				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).fieldOf("ingredients")
 						.forGetter(TerrestrialAgglomerationRecipe::getIngredients),
 				ExtraCodecs.POSITIVE_INT.fieldOf("mana").forGetter(TerrestrialAgglomerationRecipe::getMana),
-				ItemStack.STRICT_CODEC.fieldOf("result").forGetter(TerrestrialAgglomerationRecipe::getOutput)
+				RecipeUtils.OUTPUT_CODEC.fieldOf("result").forGetter(TerrestrialAgglomerationRecipe::getOutput)
 		).apply(instance, TerrestrialAgglomerationRecipe::of));
 		public static final StreamCodec<RegistryFriendlyByteBuf, TerrestrialAgglomerationRecipe> STREAM_CODEC = StreamCodec.composite(
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), TerrestrialAgglomerationRecipe::getIngredients,

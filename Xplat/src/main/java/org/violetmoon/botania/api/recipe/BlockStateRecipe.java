@@ -12,7 +12,6 @@ package org.violetmoon.botania.api.recipe;
 import net.minecraft.commands.CacheableFunction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 
@@ -22,7 +21,7 @@ import java.util.Optional;
  * A special category of recipes that don't operate on items, but on blocks in the world, and thus define input and
  * output in the form of block states.
  */
-public interface BlockStateRecipe extends Recipe<RecipeInput> {
+public interface BlockStateRecipe extends BotaniaRecipe<RecipeInput> {
 	/**
 	 * Valid inputs for the recipe
 	 */

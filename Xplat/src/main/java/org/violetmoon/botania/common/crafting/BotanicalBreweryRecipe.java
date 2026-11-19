@@ -39,7 +39,7 @@ public class BotanicalBreweryRecipe implements org.violetmoon.botania.api.recipe
 
 	public BotanicalBreweryRecipe(Brew brew, Ingredient... inputs) {
 		this.brew = brew;
-		this.inputs = NonNullList.of(Ingredient.EMPTY, inputs);
+		this.inputs = NonNullList.of(null, inputs);
 		this.group = BotaniaAPI.instance().getBrewRegistry().getKey(brew).toString();
 	}
 
@@ -53,7 +53,7 @@ public class BotanicalBreweryRecipe implements org.violetmoon.botania.api.recipe
 				|| !RecipeUtils.getBrewContainerIngredient().test(input.getItem(0))) {
 			return false;
 		}
-		return input.getSubset(1, input.size()).getStackedContents().canCraft(this, null);
+		return input.getSubset(1, input.size()).getStackedContents().canCraft(inputs, null);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class BotanicalBreweryRecipe implements org.violetmoon.botania.api.recipe
 	}
 
 	@Override
-	public String getGroup() {
+	public String group() {
 		return group;
 	}
 
@@ -72,7 +72,7 @@ public class BotanicalBreweryRecipe implements org.violetmoon.botania.api.recipe
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<BotanicalBreweryRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
@@ -110,7 +110,7 @@ public class BotanicalBreweryRecipe implements org.violetmoon.botania.api.recipe
 	public static final class Serializer {
 		public static final MapCodec<BotanicalBreweryRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				BotaniaAPI.instance().getBrewRegistry().byNameCodec().fieldOf("brew").forGetter(BotanicalBreweryRecipe::getBrew),
-				ExtraCodecs.nonEmptyList(Ingredient.CODEC_NONEMPTY.listOf()).fieldOf("ingredients").forGetter(BotanicalBreweryRecipe::getIngredients)
+				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).fieldOf("ingredients").forGetter(BotanicalBreweryRecipe::getIngredients)
 		).apply(instance, BotanicalBreweryRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, BotanicalBreweryRecipe> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.registry(BotaniaRegistries.BREWS), BotanicalBreweryRecipe::getBrew,
