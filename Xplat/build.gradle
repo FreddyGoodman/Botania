@@ -19,7 +19,7 @@ dependencies {
     compileOnly(libs.patchouli.xplat)
     compileOnly(libs.ears)
     compileOnly(libs.jei.common.api)
-    compileOnly(libs.rei.neoforge) // (the -common variant would be in Intermediary mapping)
+    compileOnly(libs.rei.neoforge)
 
     compileOnly(libs.jetbrains.annotations)
 }

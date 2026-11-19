@@ -18,16 +18,16 @@ patchouli-xplat = "26.1-94"
 patchouli-fabric = "26.1-94"
 patchouli-neoforge = "26.1-94"
 
-jei = "19.27.0.340"
-rei = "16.0.799"
+jei = "29.54.0.116"
+rei = "26.1.819"
 
 curios = "15.0.0+26.1.2"
 trinkets = "4.0.1+26.1"
 teamreborn-energy = "4.1.0"
 
 ears = "1.4.7"
-sodium-fabric = "mc1.21.1-0.6.13-fabric"
-sodium-neoforge = "mc1.21.1-0.6.13-neoforge"
+sodium-fabric = "mc26.1.2-0.9.2-fabric"
+sodium-neoforge = "mc26.1.2-0.9.2-neoforge"
 embeddium = "1.0.15+mc1.21.1"
 
 fiber = "0.23.0-2"
@@ -53,11 +53,11 @@ patchouli-neoforge = { module = "vazkii.patchouli:patchouli-neoforge", version.r
 
 # JEI
 # TODO: requiring a version number in the artifact ID is suboptimal
-jei-common-api = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
-jei-fabric-full = { module = "mezz.jei:jei-1.21.1-fabric", version.ref = "jei" }
-jei-fabric-api = { module = "mezz.jei:jei-1.21.1-fabric-api", version.ref = "jei" }
-jei-neoforge-full = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
-jei-neoforge-api = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
+jei-common-api = { module = "mezz.jei:jei-26.1.2-common-api", version.ref = "jei" }
+jei-fabric-full = { module = "mezz.jei:jei-26.1.2-fabric", version.ref = "jei" }
+jei-fabric-api = { module = "mezz.jei:jei-26.1.2-fabric-api", version.ref = "jei" }
+jei-neoforge-full = { module = "mezz.jei:jei-26.1.2-neoforge", version.ref = "jei" }
+jei-neoforge-api = { module = "mezz.jei:jei-26.1.2-neoforge-api", version.ref = "jei" }
 
 # REI
 # (no Xplat/Common definition for REI, since it's Intermediary and thus useless to our Xplat module)
