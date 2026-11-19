@@ -66,7 +66,7 @@ public class EquestrianVirusItem extends Item {
 						? EntityType.ZOMBIE_HORSE.create(player.level())
 						: EntityType.SKELETON_HORSE.create(player.level());
 				newHorse.tameWithName(player);
-				newHorse.absMoveTo(horse.getX(), horse.getY(), horse.getZ(), horse.getYRot(), horse.getXRot());
+				newHorse.absSnapTo(horse.getX(), horse.getY(), horse.getZ(), horse.getYRot(), horse.getXRot());
 
 				// Put the saddle back
 				if (!saddle.isEmpty()) {

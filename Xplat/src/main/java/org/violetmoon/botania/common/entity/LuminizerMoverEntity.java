@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -131,7 +132,7 @@ public class LuminizerMoverEntity extends Entity {
 	}
 
 	@Override
-	public boolean hurt(DamageSource source, float damage) {
+	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		return false;
 	}
 

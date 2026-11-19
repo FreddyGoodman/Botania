@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +22,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(Mob.class)
 public interface MobAccessor {
+	@Invoker("readAdditionalSaveData")
+	void botania_readAdditionalSaveData(ValueInput input);
+
 	@Nullable
 	@Invoker("getAmbientSound")
 	SoundEvent botania_getAmbientSound();

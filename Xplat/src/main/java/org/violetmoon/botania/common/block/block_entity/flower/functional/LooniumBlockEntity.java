@@ -54,6 +54,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Team;
 
 import org.jetbrains.annotations.Nullable;
+import org.violetmoon.botania.mixin.MobAccessor;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.block_entity.FunctionalFlowerBlockEntity;
 import org.violetmoon.botania.api.block_entity.RadiusDescriptor;
@@ -245,13 +246,14 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		}
 
 		if (pickedMobType.nbt != null) {
-			mob.readAdditionalSaveData(TagValueInput.create(ProblemReporter.DISCARDING, mob.registryAccess(), pickedMobType.nbt));
+			((MobAccessor) mob).botania_readAdditionalSaveData(
+					TagValueInput.create(ProblemReporter.DISCARDING, mob.registryAccess(), pickedMobType.nbt));
 		}
 		if (pickedMobType.spawnAsBaby != null) {
 			mob.setBaby(pickedMobType.spawnAsBaby);
 		}
 
-		mob.absMoveTo(x, y, z, random.nextFloat() * 360F, 0);
+		mob.absSnapTo(x, y, z, random.nextFloat() * 360F, 0);
 		mob.setDeltaMovement(Vec3.ZERO);
 
 		applyAttributesAndEffects(pickedMobType, pickedConfig, mob);

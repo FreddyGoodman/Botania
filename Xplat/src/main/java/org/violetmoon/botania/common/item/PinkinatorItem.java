@@ -47,7 +47,7 @@ public class PinkinatorItem extends Item {
 				if (!world.isClientSide()) {
 					wither.discard();
 					PinkWitherEntity pink = BotaniaEntities.PINK_WITHER.create(world);
-					pink.moveTo(wither.getX(), wither.getY(), wither.getZ(), wither.getYRot(), wither.getXRot());
+					pink.snapTo(wither.getX(), wither.getY(), wither.getZ(), wither.getYRot(), wither.getXRot());
 					pink.setNoAi(wither.isNoAi());
 					if (wither.hasCustomName()) {
 						pink.setCustomName(wither.getCustomName());

@@ -75,6 +75,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Team;
 
 import org.jetbrains.annotations.Nullable;
+import org.violetmoon.botania.mixin.MobAccessor;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.block.Bound;
 import org.violetmoon.botania.api.configdata.GaiaFightConfiguration;
@@ -540,28 +541,37 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	@Override
-	public void kill() {
+	public void kill(ServerLevel level) {
 		this.setHealth(0.0F);
 	}
 
 	@Override
-	public boolean hurt(DamageSource source, float amount) {
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
 		Entity e = source.getEntity();
-		if (e instanceof Player player && isTruePlayer(e) && getInvulTime() == 0) {
+		if (e instanceof Player player && canTakeHitFrom(player)) {
 
 			if (!playersWhoAttacked.contains(player.getUUID())) {
 				playersWhoAttacked.add(player.getUUID());
 			}
 
-			return super.hurt(source, Math.min(DAMAGE_CAP, amount));
+			return super.hurtServer(level, source, Math.min(DAMAGE_CAP, amount));
 		}
 
 		return false;
 	}
 
 	@Override
-	protected void actuallyHurt(DamageSource source, float amount) {
-		super.actuallyHurt(source, Math.min(DAMAGE_CAP, amount));
+	public boolean hurtClient(DamageSource source) {
+		return source.getEntity() instanceof Player player && canTakeHitFrom(player) && super.hurtClient(source);
+	}
+
+	private boolean canTakeHitFrom(Player player) {
+		return isTruePlayer(player) && getInvulTime() == 0;
+	}
+
+	@Override
+	protected void actuallyHurt(ServerLevel level, DamageSource source, float amount) {
+		super.actuallyHurt(level, source, Math.min(DAMAGE_CAP, amount));
 
 		Entity attacker = source.getDirectEntity();
 		if (attacker != null) {
@@ -882,13 +892,14 @@ public class GaiaGuardianEntity extends Mob {
 						}
 
 						if (pickedMobType.nbt != null) {
-							mob.readAdditionalSaveData(TagValueInput.create(ProblemReporter.DISCARDING, mob.registryAccess(), pickedMobType.nbt));
+							((MobAccessor) mob).botania_readAdditionalSaveData(
+									TagValueInput.create(ProblemReporter.DISCARDING, mob.registryAccess(), pickedMobType.nbt));
 						}
 						if (pickedMobType.spawnAsBaby != null) {
 							mob.setBaby(pickedMobType.spawnAsBaby);
 						}
 
-						mob.absMoveTo(getX() + 0.5 + Math.random() * range - range / 2,
+						mob.absSnapTo(getX() + 0.5 + Math.random() * range - range / 2,
 								getY() - 1,
 								getZ() + 0.5 + Math.random() * range - range / 2,
 								random.nextFloat() * 360, 0);

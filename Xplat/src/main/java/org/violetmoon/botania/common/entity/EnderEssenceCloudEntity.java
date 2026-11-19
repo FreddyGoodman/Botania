@@ -61,7 +61,7 @@ public class EnderEssenceCloudEntity extends Entity {
 				: BotaniaEntities.DILUTED_ENDER_ESSENCE_CLOUD;
 		EnderEssenceCloudEntity cloud = type.create(entity.level());
 		if (cloud != null) {
-			cloud.moveTo(entity.position(), entity.getYRot(), 0);
+			cloud.snapTo(entity.position(), entity.getYRot(), 0);
 			cloud.setFromEnderman(true);
 			entity.level().addFreshEntity(cloud);
 		}

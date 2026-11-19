@@ -110,7 +110,7 @@ public class SpectatorScanTest {
 
 		// set up player
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
-		player.moveTo(helper.absoluteVec(new Vec3(24, 24, 24)));
+		player.snapTo(helper.absoluteVec(new Vec3(24, 24, 24)));
 		additionalSetup.accept(helper, player);
 		var spectatorStack = new ItemStack(BotaniaItems.THE_SPECTATOR);
 
