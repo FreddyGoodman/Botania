@@ -12,9 +12,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -22,8 +20,8 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.item.BlackHoleTalismanItem;
 import org.violetmoon.botania.common.item.BotaniaItems;
 
-public class BlackHoleTalismanExtractRecipe extends CustomRecipe {
-	public static final RecipeSerializer<BlackHoleTalismanExtractRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(BlackHoleTalismanExtractRecipe::new);
+public class BlackHoleTalismanExtractRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<BlackHoleTalismanExtractRecipe> SERIALIZER = serializer(BlackHoleTalismanExtractRecipe::new);
 
 	public BlackHoleTalismanExtractRecipe(CraftingBookCategory craftingBookCategory) {
 		super(craftingBookCategory);

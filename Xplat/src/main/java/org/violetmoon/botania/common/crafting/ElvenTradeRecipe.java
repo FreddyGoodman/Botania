@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ElvenTradeRecipe implements org.violetmoon.botania.api.recipe.ElvenTradeRecipe {
-	public static final RecipeSerializer<ElvenTradeRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<ElvenTradeRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final ImmutableList<ItemStack> outputs;
 	private final NonNullList<Ingredient> ingredients;
 
@@ -120,7 +120,7 @@ public class ElvenTradeRecipe implements org.violetmoon.botania.api.recipe.Elven
 		return Optional.empty();
 	}
 
-	public static class Serializer implements RecipeSerializer<ElvenTradeRecipe> {
+	public static final class Serializer {
 		private static final Codec<ItemStack> ITEM_STACK_COMPACT_CODEC = Codec.of(
 				new Encoder<>() {
 					@Override
@@ -143,14 +143,5 @@ public class ElvenTradeRecipe implements org.violetmoon.botania.api.recipe.Elven
 				ElvenTradeRecipe::new
 		);
 
-		@Override
-		public MapCodec<ElvenTradeRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ElvenTradeRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

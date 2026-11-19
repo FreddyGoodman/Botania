@@ -26,8 +26,8 @@ import net.minecraft.world.level.Level;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.equipment.bauble.FlugelTiaraItem;
 
-public class TiaraWingsRecipe extends CustomRecipe {
-	public static final RecipeSerializer<TiaraWingsRecipe> SERIALIZER = new Serializer();
+public class TiaraWingsRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<TiaraWingsRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 
 	private final Ingredient material;
 	private final int variant;
@@ -111,11 +111,11 @@ public class TiaraWingsRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<TiaraWingsRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
-	private static class Serializer implements RecipeSerializer<TiaraWingsRecipe> {
+	private static final class Serializer {
 		private static final MapCodec<TiaraWingsRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.EQUIPMENT).forGetter(TiaraWingsRecipe::category),
 				Ingredient.CODEC.fieldOf("material").forGetter(TiaraWingsRecipe::material),
@@ -128,14 +128,5 @@ public class TiaraWingsRecipe extends CustomRecipe {
 				TiaraWingsRecipe::new
 		);
 
-		@Override
-		public MapCodec<TiaraWingsRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, TiaraWingsRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

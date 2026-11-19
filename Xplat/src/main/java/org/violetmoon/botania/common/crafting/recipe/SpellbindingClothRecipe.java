@@ -13,16 +13,14 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.common.item.BotaniaItems;
 
-public class SpellbindingClothRecipe extends CustomRecipe {
-	public static final RecipeSerializer<SpellbindingClothRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(SpellbindingClothRecipe::new);
+public class SpellbindingClothRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<SpellbindingClothRecipe> SERIALIZER = serializer(SpellbindingClothRecipe::new);
 
 	public SpellbindingClothRecipe(CraftingBookCategory craftingBookCategory) {
 		super(craftingBookCategory);

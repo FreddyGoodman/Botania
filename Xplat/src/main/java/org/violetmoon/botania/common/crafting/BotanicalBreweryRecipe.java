@@ -32,7 +32,7 @@ import org.violetmoon.botania.common.crafting.recipe.RecipeUtils;
 import java.util.List;
 
 public class BotanicalBreweryRecipe implements org.violetmoon.botania.api.recipe.BotanicalBreweryRecipe {
-	public static final RecipeSerializer<BotanicalBreweryRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<BotanicalBreweryRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final Brew brew;
 	private final NonNullList<Ingredient> inputs;
 	private final String group;
@@ -107,7 +107,7 @@ public class BotanicalBreweryRecipe implements org.violetmoon.botania.api.recipe
 				&& inputs.equals(brewRecipe.inputs);
 	}
 
-	public static class Serializer implements RecipeSerializer<BotanicalBreweryRecipe> {
+	public static final class Serializer {
 		public static final MapCodec<BotanicalBreweryRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				BotaniaAPI.instance().getBrewRegistry().byNameCodec().fieldOf("brew").forGetter(BotanicalBreweryRecipe::getBrew),
 				ExtraCodecs.nonEmptyList(Ingredient.CODEC_NONEMPTY.listOf()).fieldOf("ingredients").forGetter(BotanicalBreweryRecipe::getIngredients)
@@ -118,14 +118,5 @@ public class BotanicalBreweryRecipe implements org.violetmoon.botania.api.recipe
 				BotanicalBreweryRecipe::new
 		);
 
-		@Override
-		public MapCodec<BotanicalBreweryRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, BotanicalBreweryRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

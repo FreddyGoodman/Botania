@@ -11,16 +11,14 @@ package org.violetmoon.botania.common.crafting.recipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.api.item.PhantomInkable;
 import org.violetmoon.botania.common.item.BotaniaItems;
 
-public class PhantomInkRecipe extends CustomRecipe {
-	public static final RecipeSerializer<PhantomInkRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(PhantomInkRecipe::new);
+public class PhantomInkRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<PhantomInkRecipe> SERIALIZER = serializer(PhantomInkRecipe::new);
 
 	public PhantomInkRecipe(CraftingBookCategory craftingBookCategory) {
 		super(craftingBookCategory);

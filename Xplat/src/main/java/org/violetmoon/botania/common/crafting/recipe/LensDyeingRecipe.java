@@ -16,10 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.api.mana.BasicLensItem;
@@ -30,8 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class LensDyeingRecipe extends CustomRecipe {
-	public static final RecipeSerializer<LensDyeingRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(LensDyeingRecipe::new);
+public class LensDyeingRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<LensDyeingRecipe> SERIALIZER = serializer(LensDyeingRecipe::new);
 
 	private final Supplier<List<Ingredient>> dyes = Suppliers.memoize(() -> Arrays.asList(
 			Ingredient.of(Items.WHITE_DYE), Ingredient.of(Items.ORANGE_DYE),

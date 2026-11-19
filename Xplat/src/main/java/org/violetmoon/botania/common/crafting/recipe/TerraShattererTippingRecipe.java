@@ -11,16 +11,14 @@ package org.violetmoon.botania.common.crafting.recipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.equipment.tool.terrasteel.TerraShattererItem;
 
-public class TerraShattererTippingRecipe extends CustomRecipe {
-	public static final RecipeSerializer<TerraShattererTippingRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(TerraShattererTippingRecipe::new);
+public class TerraShattererTippingRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<TerraShattererTippingRecipe> SERIALIZER = serializer(TerraShattererTippingRecipe::new);
 
 	public TerraShattererTippingRecipe(CraftingBookCategory craftingBookCategory) {
 		super(craftingBookCategory);

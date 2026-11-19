@@ -12,9 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.api.item.AncientWillContainer;
@@ -23,8 +21,8 @@ import org.violetmoon.botania.common.item.AncientWillItem;
 
 import java.util.Objects;
 
-public class AncientWillRecipe extends CustomRecipe {
-	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(AncientWillRecipe::new);
+public class AncientWillRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = serializer(AncientWillRecipe::new);
 
 	public AncientWillRecipe(CraftingBookCategory craftingBookCategory) {
 		super(craftingBookCategory);

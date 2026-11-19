@@ -11,16 +11,14 @@ package org.violetmoon.botania.common.crafting.recipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.api.mana.CompositableLensItem;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
-public class CompositeLensRecipe extends CustomRecipe {
-	public static final RecipeSerializer<CompositeLensRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(CompositeLensRecipe::new);
+public class CompositeLensRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<CompositeLensRecipe> SERIALIZER = serializer(CompositeLensRecipe::new);
 
 	public CompositeLensRecipe(CraftingBookCategory craftingBookCategory) {
 		super(craftingBookCategory);

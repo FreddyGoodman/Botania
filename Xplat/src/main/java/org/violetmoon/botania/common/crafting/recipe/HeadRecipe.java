@@ -49,7 +49,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HeadRecipe extends RunicAltarRecipe {
-	public static final RecipeSerializer<HeadRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<HeadRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private static final Pattern PROFILE_PATTERN = Pattern.compile(
 			"(?<base64>[A-Za-z0-9+/]{100,}={0,2})" +
 					"|(?<url>(?=\\S{50,})https?://(?!bugs|education|feedback)\\w+\\.(?:minecraft\\.net|mojang\\.com)/\\S+)" +
@@ -195,21 +195,12 @@ public class HeadRecipe extends RunicAltarRecipe {
 		return null;
 	}
 
-	public static class Serializer implements RecipeSerializer<HeadRecipe> {
+	public static final class Serializer {
 		public static final MapCodec<HeadRecipe> CODEC = RunicAltarRecipe.Serializer.CODEC
 				.xmap(HeadRecipe::new, Function.identity());
 		public static final StreamCodec<RegistryFriendlyByteBuf, HeadRecipe> STREAM_CODEC = RunicAltarRecipe.Serializer.STREAM_CODEC
 				.map(HeadRecipe::new, Function.identity());
 
-		@Override
-		public MapCodec<HeadRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, HeadRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 
 }

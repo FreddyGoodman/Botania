@@ -36,7 +36,7 @@ import java.util.Optional;
 import io.netty.buffer.ByteBuf;
 
 public class OrechidRecipe extends BlockStateRecipe implements org.violetmoon.botania.api.recipe.OrechidRecipe {
-	public static final RecipeSerializer<OrechidRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<OrechidRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final int cooldown;
 	private final int manaCost;
 	private final int weight;
@@ -113,7 +113,7 @@ public class OrechidRecipe extends BlockStateRecipe implements org.violetmoon.bo
 		return SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<OrechidRecipe> {
+	public static final class Serializer {
 		private static final MapCodec<OrechidRecipe> RAW_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				StateIngredients.TYPED_CODEC.fieldOf("input").forGetter(OrechidRecipe::getInput),
 				StateIngredients.TYPED_CODEC.fieldOf("output").forGetter(OrechidRecipe::getOutput),
@@ -169,14 +169,5 @@ public class OrechidRecipe extends BlockStateRecipe implements org.violetmoon.bo
 			}
 		};
 
-		@Override
-		public MapCodec<OrechidRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, OrechidRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

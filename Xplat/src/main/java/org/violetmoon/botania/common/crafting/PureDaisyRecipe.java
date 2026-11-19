@@ -30,7 +30,7 @@ import java.util.Optional;
 public class PureDaisyRecipe extends BlockStateRecipe implements org.violetmoon.botania.api.recipe.PureDaisyRecipe {
 
 	public static final int DEFAULT_TIME = 150;
-	public static final RecipeSerializer<PureDaisyRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<PureDaisyRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 
 	private final int time;
 	private final boolean copyInputProperties;
@@ -68,7 +68,7 @@ public class PureDaisyRecipe extends BlockStateRecipe implements org.violetmoon.
 		return SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<PureDaisyRecipe> {
+	public static final class Serializer {
 		public static final MapCodec<PureDaisyRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				StateIngredients.TYPED_CODEC.fieldOf("input").forGetter(PureDaisyRecipe::getInput),
 				StateIngredients.TYPED_CODEC.fieldOf("output").forGetter(PureDaisyRecipe::getOutput),
@@ -85,14 +85,5 @@ public class PureDaisyRecipe extends BlockStateRecipe implements org.violetmoon.
 				(input, output, time, copyInputProperties) -> new PureDaisyRecipe(input, output, time, copyInputProperties, null, null)
 		);
 
-		@Override
-		public MapCodec<PureDaisyRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, PureDaisyRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

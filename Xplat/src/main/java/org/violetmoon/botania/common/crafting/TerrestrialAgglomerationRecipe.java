@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.api.recipe.TerrestrialAgglomerationRecipe {
-	public static final RecipeSerializer<TerrestrialAgglomerationRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<TerrestrialAgglomerationRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final int mana;
 	private final NonNullList<Ingredient> ingredients;
 	private final ItemStack output;
@@ -81,7 +81,7 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 		return SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<TerrestrialAgglomerationRecipe> {
+	public static final class Serializer {
 		public static final MapCodec<TerrestrialAgglomerationRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				ExtraCodecs.nonEmptyList(Ingredient.CODEC_NONEMPTY.listOf()).fieldOf("ingredients")
 						.forGetter(TerrestrialAgglomerationRecipe::getIngredients),
@@ -95,14 +95,5 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 				TerrestrialAgglomerationRecipe::of
 		);
 
-		@Override
-		public MapCodec<TerrestrialAgglomerationRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, TerrestrialAgglomerationRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

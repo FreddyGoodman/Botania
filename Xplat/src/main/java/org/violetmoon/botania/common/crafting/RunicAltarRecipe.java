@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.RunicAltarRecipe {
-	public static final RecipeSerializer<RunicAltarRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<RunicAltarRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final ItemStack output;
 	private final Ingredient reagent;
 	private final NonNullList<Ingredient> ingredients;
@@ -197,7 +197,7 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 		return reagent;
 	}
 
-	public static class Serializer implements RecipeSerializer<RunicAltarRecipe> {
+	public static final class Serializer {
 		private static final MapCodec<RunicAltarRecipe> RAW_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").forGetter(RunicAltarRecipe::getIngredients),
 				Ingredient.CODEC_NONEMPTY.listOf().fieldOf("catalysts").forGetter(RunicAltarRecipe::getCatalysts),
@@ -223,14 +223,5 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 				RunicAltarRecipe::of
 		);
 
-		@Override
-		public MapCodec<RunicAltarRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, RunicAltarRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

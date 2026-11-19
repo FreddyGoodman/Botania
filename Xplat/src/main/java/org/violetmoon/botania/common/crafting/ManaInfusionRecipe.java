@@ -28,7 +28,7 @@ import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.block.mana.ManaPoolBlock;
 
 public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.ManaInfusionRecipe {
-	public static final RecipeSerializer<ManaInfusionRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<ManaInfusionRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final ItemStack output;
 	private final Ingredient input;
 	private final int mana;
@@ -91,7 +91,7 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 		return output;
 	}
 
-	public static class Serializer implements RecipeSerializer<ManaInfusionRecipe> {
+	public static final class Serializer {
 		public static final MapCodec<ManaInfusionRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				ItemStack.STRICT_CODEC.fieldOf("output").forGetter(ManaInfusionRecipe::getOutput),
 				Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(ManaInfusionRecipe::getInput),
@@ -111,14 +111,5 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 				ManaInfusionRecipe::new
 		);
 
-		@Override
-		public MapCodec<ManaInfusionRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ManaInfusionRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

@@ -12,17 +12,15 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.api.item.CosmeticAttachable;
 import org.violetmoon.botania.api.item.CosmeticBauble;
 import org.violetmoon.botania.common.item.equipment.bauble.BaubleItem;
 
-public class CosmeticRemoveRecipe extends CustomRecipe {
-	public static final RecipeSerializer<CosmeticRemoveRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(CosmeticRemoveRecipe::new);
+public class CosmeticRemoveRecipe extends BotaniaSpecialRecipe {
+	public static final RecipeSerializer<CosmeticRemoveRecipe> SERIALIZER = serializer(CosmeticRemoveRecipe::new);
 
 	public CosmeticRemoveRecipe(CraftingBookCategory craftingBookCategory) {
 		super(craftingBookCategory);

@@ -13,7 +13,6 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +32,8 @@ import java.util.function.Supplier;
 
 public class LexiconElvenTradeRecipe implements ElvenTradeRecipe {
 	public static final LexiconElvenTradeRecipe INSTANCE = new LexiconElvenTradeRecipe();
-	public static final RecipeSerializer<LexiconElvenTradeRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<LexiconElvenTradeRecipe> SERIALIZER = new RecipeSerializer<>(
+			MapCodec.unit(() -> INSTANCE), StreamCodec.unit(INSTANCE));
 	public static final Supplier<Ingredient> LEXICON_INGREDIENT = Suppliers.memoize(() -> Ingredient.of(BotaniaItems.LEXICA_BOTANIA));
 
 	private LexiconElvenTradeRecipe() {}
@@ -81,15 +81,4 @@ public class LexiconElvenTradeRecipe implements ElvenTradeRecipe {
 		return SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<LexiconElvenTradeRecipe> {
-		@Override
-		public MapCodec<LexiconElvenTradeRecipe> codec() {
-			return MapCodec.unit(() -> LexiconElvenTradeRecipe.INSTANCE);
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, LexiconElvenTradeRecipe> streamCodec() {
-			return StreamCodec.unit(LexiconElvenTradeRecipe.INSTANCE);
-		}
-	}
 }
