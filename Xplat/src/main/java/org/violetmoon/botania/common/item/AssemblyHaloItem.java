@@ -23,32 +23,31 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.*;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.CraftingMenu;
-import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
@@ -61,6 +60,7 @@ import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.common.annotations.SoftImplement;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.component.StoredIds;
+import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.helper.PlayerHelper;
 import org.violetmoon.botania.common.helper.VecHelper;
@@ -68,7 +68,6 @@ import org.violetmoon.botania.network.clientbound.HaloCraftEffectPacket;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 
@@ -100,7 +99,7 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 				if (recipe == null) {
 					RecipeHolder<? extends Recipe<CraftingInput>> lastRecipe = getLastRecipe(world, stack);
 					if (lastRecipe != null) {
-						saveRecipe(stack, lastRecipe.id(), segment);
+						saveRecipe(stack, lastRecipe.id().identifier(), segment);
 					}
 				} else {
 					tryCraft(player, stack, segment, true);
@@ -138,65 +137,79 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 		}
 	}
 
-	private static boolean hasRoomFor(Inventory inv, ItemStack stack) {
-		Inventory dummy = new Inventory(inv.player);
-		for (int i = 0; i < inv.items.size(); i++) {
-			dummy.items.set(i, inv.items.get(i).copy());
-		}
-		// warning: must be careful to not cause side effects / dupes with dummy here
-		return dummy.add(stack.copy());
-	}
-
 	private static boolean canCraftHeuristic(Player player, Recipe<CraftingInput> recipe) {
-		StackedContents stackedContents = new StackedContents();
-		player.getInventory().fillStackedContents(stackedContents);
-		return stackedContents.canCraft(recipe, null);
+		StackedItemContents contents = new StackedItemContents();
+		player.getInventory().fillStackedContents(contents);
+		return contents.canCraft(recipe, null);
 	}
 
 	void tryCraft(Player player, ItemStack halo, int slot, boolean particles) {
-		RecipeHolder<CraftingRecipe> recipe = getSavedRecipe(player.level(), halo, slot);
-		if (recipe == null) {
+		if (!(player.level() instanceof ServerLevel level)) {
+			return;
+		}
+		RecipeHolder<CraftingRecipe> recipe = getSavedRecipe(level, halo, slot);
+		if (recipe == null || !canCraftHeuristic(player, recipe.value())) {
 			return;
 		}
 
-		CraftingMenu dummy = new CraftingMenu(-999, player.getInventory());
-		CraftingContainer craftInv = (CraftingContainer) dummy.getSlot(1).container;
-		RecipePlacer<CraftingInput, CraftingRecipe> placer = new RecipePlacer<>(dummy);
+		// Stage ingredient extraction and output insertion before updating the player inventory.
+		Inventory inventory = player.getInventory();
+		Inventory staged = new Inventory(player, new EntityEquipment());
+		staged.setSelectedSlot(inventory.getSelectedSlot());
+		for (int i = 0; i < inventory.getNonEquipmentItems().size(); i++) {
+			staged.setItem(i, inventory.getItem(i).copy());
+		}
+		staged.setItem(Inventory.SLOT_OFFHAND, inventory.getItem(Inventory.SLOT_OFFHAND).copy());
 
-		// Try placing the recipe into the dummy workbench, extracting items from player's inventory to do so
-		if (!placer.place((ServerPlayer) player, recipe)) {
+		CraftingInput input = placeRecipe(level, staged, recipe);
+		if (!recipe.value().matches(input, level)) {
+			return;
+		}
+		ItemStack output = recipe.value().assemble(input);
+		if (output.isEmpty() || !staged.add(output) || !output.isEmpty()) {
 			return;
 		}
 
-		// Double check that the recipe matches
-		CraftingInput craftInput = CraftingInput.of(craftInv.getWidth(), craftInv.getHeight(), craftInv.getItems());
-		if (!recipe.value().matches(craftInput, player.level())) {
-			// If the placer worked but the recipe still didn't, this might be a dynamic recipe with special conditions.
-			// Return items to the inventory and bail.
-			placer.clearGrid();
-			return;
+		for (int i = 0; i < inventory.getNonEquipmentItems().size(); i++) {
+			ItemStack stagedStack = staged.getItem(i);
+			if (!ItemStack.matches(inventory.getItem(i), stagedStack)) {
+				inventory.setItem(i, stagedStack);
+			}
 		}
-
-		ItemStack result = recipe.value().assemble(craftInput);
-
-		// Check if we have room for the result
-		if (!hasRoomFor(player.getInventory(), result)) {
-			placer.clearGrid();
-			return;
+		ItemStack offhand = staged.getItem(Inventory.SLOT_OFFHAND);
+		if (!ItemStack.matches(inventory.getItem(Inventory.SLOT_OFFHAND), offhand)) {
+			inventory.setItem(Inventory.SLOT_OFFHAND, offhand);
 		}
-
-		// Now we are good to go. Give the result
-		player.getInventory().add(result);
-
-		// Give or toss all byproducts
-		NonNullList<ItemStack> remainingItems = recipe.value().getRemainingItems(craftInput);
-		remainingItems.forEach(s -> player.getInventory().placeItemBackInInventory(s));
-
-		// The items we consumed will stay in the dummy workbench and get deleted
+		inventory.setChanged();
+		recipe.value().getRemainingItems(input).forEach(inventory::placeItemBackInInventory);
 
 		if (particles) {
 			XplatAbstractions.INSTANCE.sendToTracking(player, new HaloCraftEffectPacket(player.getId()));
 		}
+	}
+
+	private static CraftingInput placeRecipe(ServerLevel level, Inventory inventory, RecipeHolder<CraftingRecipe> recipe) {
+		CraftingMenu menu = new CraftingMenu(-999, inventory);
+		var inputSlots = menu.getInputGridSlots();
+		CraftingContainer grid = (CraftingContainer) inputSlots.getFirst().container;
+		var access = new ServerPlaceRecipe.CraftingMenuAccess<CraftingRecipe>() {
+			@Override
+			public void fillCraftSlotsStackedContents(StackedItemContents contents) {
+				grid.fillStackedContents(contents);
+			}
+
+			@Override
+			public void clearCraftingContent() {
+				grid.clearContent();
+			}
+
+			@Override
+			public boolean recipeMatches(RecipeHolder<CraftingRecipe> candidate) {
+				return candidate.value().matches(grid.asCraftInput(), level);
+			}
+		};
+		ServerPlaceRecipe.placeRecipe(access, grid.getWidth(), grid.getHeight(), inputSlots, inputSlots, inventory, recipe, false, false);
+		return grid.asCraftInput();
 	}
 
 	@SoftImplement("IItemExtension")
@@ -282,7 +295,7 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 		} else {
 			RecipeHolder<? extends Recipe<CraftingInput>> recipeHolder = getSavedRecipe(world, stack, segment);
 			if (recipeHolder != null) {
-				return recipeHolder.value().getResultItem(world.registryAccess());
+				return getRecipePreview(world, recipeHolder.value());
 			} else {
 				return ItemStack.EMPTY;
 			}
@@ -298,11 +311,11 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 		}
 
 		CraftingInput input = CraftingInput.of(cc.getWidth(), cc.getHeight(), cc.getItems());
-		player.level().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, player.level()).ifPresent(recipe -> {
+		BotaniaRecipeTypes.findRecipe(player.level(), RecipeType.CRAFTING, input).ifPresent(recipe -> {
 			for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
 				ItemStack stack = player.getInventory().getItem(i);
 				if (!stack.isEmpty() && stack.getItem() instanceof AssemblyHaloItem) {
-					rememberLastRecipe(recipe.id(), stack);
+					rememberLastRecipe(recipe.id().identifier(), stack);
 				}
 			}
 		});
@@ -318,12 +331,17 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 		return id != null ? getRecipeHolder(world, id) : null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static @Nullable RecipeHolder<CraftingRecipe> getRecipeHolder(Level world, Identifier id) {
-		Optional<RecipeHolder<?>> recipeHolder = world.getRecipeManager().byKey(id);
-		return recipeHolder.isPresent() && recipeHolder.get().value().getType() == RecipeType.CRAFTING
-				? (RecipeHolder<CraftingRecipe>) recipeHolder.get()
-				: null;
+		return BotaniaRecipeTypes.getRecipe(world, id, RecipeType.CRAFTING).orElse(null);
+	}
+
+	private static ItemStack getRecipePreview(Level world, Recipe<CraftingInput> recipe) {
+		var context = SlotDisplayContext.fromLevel(world);
+		return recipe.display().stream()
+				.map(display -> display.result().resolveForFirstStack(context))
+				.filter(item -> !item.isEmpty())
+				.findFirst()
+				.orElse(ItemStack.EMPTY);
 	}
 
 	private static boolean wasEquipped(ItemStack stack) {
@@ -470,7 +488,7 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 					label = Component.translatable("botaniamisc.unsetRecipe");
 					recipe = getLastRecipe(player.level(), stack);
 				} else {
-					label = recipe.value().getResultItem(player.level().registryAccess()).getHoverName();
+					label = getRecipePreview(player.level(), recipe.value()).getHoverName();
 					setRecipe = true;
 				}
 
@@ -480,7 +498,7 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 
 		private static void renderRecipe(GuiGraphicsExtractor gui, Window window, Font font, Component label, @Nullable Recipe<CraftingInput> recipe, Player player, boolean isSavedRecipe) {
 			ItemStack recipeResult;
-			if (recipe != null && !(recipeResult = recipe.getResultItem(player.level().registryAccess())).isEmpty()) {
+			if (recipe != null && !(recipeResult = getRecipePreview(player.level(), recipe)).isEmpty()) {
 				int x = window.getGuiScaledWidth() / 2 - 45;
 				int y = window.getGuiScaledHeight() / 2 - 90;
 
@@ -491,16 +509,22 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 				gui.fill(x - 2, y - 2, x + 56, y + 56, 0x22000000);
 
 				int wrap = recipe instanceof ShapedRecipe shaped ? shaped.getWidth() : 3;
-				for (int i = 0; i < recipe.getIngredients().size(); i++) {
-					Ingredient ingr = recipe.getIngredients().get(i);
-					if (ingr != Ingredient.EMPTY) {
-						ItemStack stack = ingr.getItems()[ClientTickHandler.getPlayerTicksInGame() / 20 % ingr.getItems().length];
-						int xpos = x + i % wrap * 18;
-						int ypos = y + i / wrap * 18;
-						gui.fill(xpos, ypos, xpos + 16, ypos + 16, 0x22000000);
-
-						gui.item(stack, xpos, ypos);
+				var placement = recipe.placementInfo();
+				var slots = placement.slotsToIngredientIndex();
+				for (int i = 0; i < slots.size(); i++) {
+					int ingredientIndex = slots.getInt(i);
+					if (ingredientIndex == PlacementInfo.EMPTY_SLOT) {
+						continue;
 					}
+					var candidates = placement.ingredients().get(ingredientIndex).items().toList();
+					if (candidates.isEmpty()) {
+						continue;
+					}
+					ItemStack stack = new ItemStack(candidates.get(ClientTickHandler.getPlayerTicksInGame() / 20 % candidates.size()));
+					int xpos = x + i % wrap * 18;
+					int ypos = y + i / wrap * 18;
+					gui.fill(xpos, ypos, xpos + 16, ypos + 16, 0x22000000);
+					gui.item(stack, xpos, ypos);
 				}
 
 				gui.item(recipeResult, x + 72, y + 18);
@@ -516,41 +540,6 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 			}
 
 			gui.centeredText(font, label, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFF);
-		}
-	}
-
-	public static class RecipePlacer<I extends CraftingInput, R extends Recipe<I>> extends ServerPlaceRecipe<I, R> {
-		public RecipePlacer(RecipeBookMenu<I, R> container) {
-			super(container);
-		}
-
-		// [VanillaCopy] Based on super.recipeClicked
-		public boolean place(ServerPlayer player, @Nullable RecipeHolder<R> recipe) {
-			if (recipe != null) {
-				this.inventory = player.getInventory();
-				this.stackedContents.clear();
-				player.getInventory().fillStackedContents(this.stackedContents);
-				this.menu.fillCraftSlotsStackedContents(this.stackedContents);
-
-				boolean ret;
-				if (this.stackedContents.canCraft(recipe.value(), null)) {
-					this.handleRecipeClicked(recipe, false);
-					ret = true;
-				} else {
-					this.clearGrid();
-					ret = false;
-				}
-
-				player.getInventory().setChanged();
-				return ret;
-			}
-			return false;
-		}
-
-		// Make public
-		@Override
-		public void clearGrid() {
-			super.clearGrid();
 		}
 	}
 }
