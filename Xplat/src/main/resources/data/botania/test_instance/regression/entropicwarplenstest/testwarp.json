@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/entropicwarplenstest/testwarp",
+  "max_ticks": 100,
+  "structure": "botania:item/lens/entropic_warp_lens"
+}

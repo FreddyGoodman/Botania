@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/translationkeystest/everystructurehasatranslationkey",
+  "max_ticks": 100,
+  "structure": "minecraft:empty"
+}

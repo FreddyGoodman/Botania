@@ -10,8 +10,8 @@
 package org.violetmoon.botania.test.item.lens;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.ButtonBlock;
@@ -22,7 +22,6 @@ import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.test.TestingUtil;
 
 public class BoreWarpLensTest {
-	private static final String TEMPLATE = "botania:item/lens/bore_warp_relay_interaction";
 
 	private static final BlockPos SPREADER_POS = new BlockPos(2, 2, 1);
 	private static final BlockPos SPREADER_TARGET_POS = new BlockPos(5, 2, 1);
@@ -33,7 +32,6 @@ public class BoreWarpLensTest {
 	private static final BlockPos UNWARPED_HOPPER_POS = new BlockPos(3, 1, 4);
 	private static final BlockPos WARPED_HOPPER_POS = new BlockPos(1, 1, 1);
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testWarpBoreLens(GameTestHelper helper) {
 		setUpLensesAndBindings(helper, BotaniaItems.WARP_LENS, BotaniaItems.BORE_LENS);
 
@@ -41,15 +39,14 @@ public class BoreWarpLensTest {
 				.thenExecuteAfter(1, () -> helper.pressButton(BUTTON_POS))
 				.thenWaitUntil(() -> helper.assertBlockProperty(BUTTON_POS, ButtonBlock.POWERED, false))
 				.thenExecute(() -> {
-					helper.assertBlock(RELAY_POS, block -> block == BotaniaBlocks.FORCE_RELAY, "Force relay was broken");
-					helper.assertBlockState(TARGET_BLOCK_POS, BlockState::isAir, () -> "Target block was not broken");
+					helper.assertBlock(RELAY_POS, block -> block == BotaniaBlocks.FORCE_RELAY, _ -> Component.literal("Force relay was broken"));
+					helper.assertBlockState(TARGET_BLOCK_POS, BlockState::isAir, _ -> Component.literal("Target block was not broken"));
 					helper.assertContainerContains(UNWARPED_HOPPER_POS, Items.POLISHED_ANDESITE);
 					helper.assertContainerEmpty(WARPED_HOPPER_POS);
 				})
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testBoreWarpLens(GameTestHelper helper) {
 		setUpLensesAndBindings(helper, BotaniaItems.BORE_LENS, BotaniaItems.WARP_LENS);
 
@@ -57,8 +54,8 @@ public class BoreWarpLensTest {
 				.thenExecuteAfter(1, () -> helper.pressButton(BUTTON_POS))
 				.thenWaitUntil(() -> helper.assertBlockProperty(BUTTON_POS, ButtonBlock.POWERED, false))
 				.thenExecute(() -> {
-					helper.assertBlock(RELAY_POS, block -> block == BotaniaBlocks.FORCE_RELAY, "Force relay was broken");
-					helper.assertBlockState(TARGET_BLOCK_POS, BlockState::isAir, () -> "Target block was not broken");
+					helper.assertBlock(RELAY_POS, block -> block == BotaniaBlocks.FORCE_RELAY, _ -> Component.literal("Force relay was broken"));
+					helper.assertBlockState(TARGET_BLOCK_POS, BlockState::isAir, _ -> Component.literal("Target block was not broken"));
 					helper.assertContainerEmpty(UNWARPED_HOPPER_POS);
 					helper.assertContainerContains(WARPED_HOPPER_POS, Items.POLISHED_ANDESITE);
 				})

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/paintslingerlenstest/testpainting",
+  "max_ticks": 100,
+  "structure": "botania:item/lens/paintslinger_lens",
+  "required": false
+}

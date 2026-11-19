@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/flowerpouchtest/testnoshinyflowers",
+  "max_ticks": 100,
+  "structure": "minecraft:empty"
+}

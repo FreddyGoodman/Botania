@@ -9,22 +9,19 @@
 package org.violetmoon.botania.test.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaRetainerBlockEntity;
 
 public class InterceptorTest {
 
-	private static final String TEMPLATE = "botania:block/interceptor";
 
 	private static final BlockPos APPLE_BUTTON_JEANS = new BlockPos(6, 6, 4);
 	private static final BlockPos BOOTS_WITH_THE_FUR = new BlockPos(4, 6, 4);
 	private static final BlockPos WILDCARD_RETAINER = new BlockPos(6, 5, 7);
 	private static final BlockPos BOOTS_RETAINER = new BlockPos(4, 5, 7);
 
-	@GameTest(template = TEMPLATE, setupTicks = 1)
 	public void testAppleRequest(GameTestHelper helper) {
 		helper.pressButton(APPLE_BUTTON_JEANS);
 		helper.startSequence().thenExecuteAfter(1, () -> {
@@ -33,7 +30,6 @@ public class InterceptorTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, setupTicks = 1)
 	public void testBootsRequest(GameTestHelper helper) {
 		helper.pressButton(BOOTS_WITH_THE_FUR);
 		helper.startSequence().thenExecuteAfter(1, () -> {
@@ -47,10 +43,10 @@ public class InterceptorTest {
 	}
 
 	private static void assertHasPendingRequest(GameTestHelper helper, BlockPos retainerPos, boolean invert) {
-		CorporeaRetainerBlockEntity retainer = helper.getBlockEntity(retainerPos);
+		CorporeaRetainerBlockEntity retainer = helper.getBlockEntity(retainerPos, CorporeaRetainerBlockEntity.class);
 		if (!retainer.hasPendingRequest() ^ invert) {
-			throw new GameTestAssertPosException("Expected corporea retainer to " + (invert ? "not " : "") + "have a pending request",
-					helper.absolutePos(retainerPos), retainerPos, helper.getTick());
+			throw helper.assertionException(retainerPos, Component.literal(
+					"Expected corporea retainer to " + (invert ? "not " : "") + "have a pending request"));
 		}
 	}
 

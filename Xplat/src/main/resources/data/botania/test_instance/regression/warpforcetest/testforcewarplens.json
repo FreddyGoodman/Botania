@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/warpforcetest/testforcewarplens",
+  "max_ticks": 50,
+  "structure": "botania:item/lens/force_warp_relay_interaction"
+}

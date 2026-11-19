@@ -9,11 +9,10 @@
 
 package org.violetmoon.botania.test;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -25,12 +24,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.saveddata.maps.MapId;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
@@ -60,13 +58,12 @@ public class TranslationKeysTest {
 	private static final Set<Class<?>> ADDITIONAL_ITEM_TAG_SOURCES = Set.of(
 			BotaniaTags.Items.class, ConventionalBotaniaTags.Items.class);
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyBlockHasValidDescriptionId(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		BuiltInRegistries.BLOCK.keySet().stream()
 				.filter(id -> BotaniaAPI.MODID.equals(id.getNamespace()))
 				.forEach(id -> {
-					Block block = BuiltInRegistries.BLOCK.get(id);
+					Block block = BuiltInRegistries.BLOCK.getValue(id);
 					validateComponent(id, "name of block", block.getName(), missing);
 					String descriptionId = block.getDescriptionId();
 					if (!Language.getInstance().has(descriptionId)) {
@@ -81,38 +78,23 @@ public class TranslationKeysTest {
 		}
 	}
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyItemHasValidDescriptionId(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		BuiltInRegistries.ITEM.keySet().stream()
 				.filter(id -> BotaniaAPI.MODID.equals(id.getNamespace()))
 				.forEach(id -> {
-					Item item = BuiltInRegistries.ITEM.get(id);
+					Item item = BuiltInRegistries.ITEM.getValue(id);
 
-					validateComponent(id, "description for item", item.getDescription(), missing);
+					validateComponent(id, "description for item", Component.translatable(item.getDescriptionId()), missing);
 					validateComponent(id, "name for item", item.getName(item.getDefaultInstance()), missing);
 					try {
 						List<Component> tooltipLines = new ArrayList<>();
 						item.appendHoverText(
 								item.getDefaultInstance(),
 								// TODO: pretend we are pressing all the modifiers (this is platform-specific)
-								new Item.TooltipContext() {
-									@Override
-									public HolderLookup.Provider registries() {
-										return helper.getLevel().registryAccess();
-									}
-
-									@Override
-									public float tickRate() {
-										return 0;
-									}
-
-									@Override
-									public @Nullable MapItemSavedData mapData(MapId mapId) {
-										return null;
-									}
-								},
-								tooltipLines,
+								Item.TooltipContext.of(helper.getLevel()),
+								item.getDefaultInstance().getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT),
+								tooltipLines::add,
 								TooltipFlag.ADVANCED
 						);
 						for (Component tooltipLine : tooltipLines) {
@@ -142,11 +124,10 @@ public class TranslationKeysTest {
 		}
 	}
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyBlockTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Block>> additionalTags = findAdditionalTagKeys(ADDITIONAL_BLOCK_TAG_SOURCES);
-		BuiltInRegistries.BLOCK.getTagNames()
+		BuiltInRegistries.BLOCK.listTagIds()
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_BLOCK_TAGS.contains(tag))
 				.forEach(tag -> {
@@ -166,11 +147,10 @@ public class TranslationKeysTest {
 		}
 	}
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyEntityTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<EntityType<?>>> additionalTags = findAdditionalTagKeys(ADDITIONAL_ENTITY_TAG_SOURCES);
-		BuiltInRegistries.ENTITY_TYPE.getTagNames()
+		BuiltInRegistries.ENTITY_TYPE.listTagIds()
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_ENTITY_TAGS.contains(tag))
 				.forEach(tag -> {
@@ -190,11 +170,10 @@ public class TranslationKeysTest {
 		}
 	}
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyFluidTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Fluid>> additionalTags = findAdditionalTagKeys(ADDITIONAL_FLUID_TAG_SOURCES);
-		BuiltInRegistries.FLUID.getTagNames()
+		BuiltInRegistries.FLUID.listTagIds()
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_FLUID_TAGS.contains(tag))
 				.forEach(tag -> {
@@ -214,11 +193,10 @@ public class TranslationKeysTest {
 		}
 	}
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyItemTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Item>> additionalTags = findAdditionalTagKeys(ADDITIONAL_ITEM_TAG_SOURCES);
-		BuiltInRegistries.ITEM.getTagNames()
+		BuiltInRegistries.ITEM.listTagIds()
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_ITEM_TAGS.contains(tag))
 				.forEach(tag -> {
@@ -238,12 +216,11 @@ public class TranslationKeysTest {
 		}
 	}
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyBiomeTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Item>> additionalTags = findAdditionalTagKeys(ADDITIONAL_BIOME_TAG_SOURCES);
-		Registry<Biome> biomeRegistry = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
-		biomeRegistry.getTagNames()
+		Registry<Biome> biomeRegistry = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+		biomeRegistry.listTagIds()
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_BIOME_TAGS.contains(tag))
 				.forEach(tag -> {
@@ -263,10 +240,9 @@ public class TranslationKeysTest {
 		}
 	}
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyStructureHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
-		Registry<Structure> structureRegistry = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
+		Registry<Structure> structureRegistry = helper.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE);
 		structureRegistry.stream()
 				.forEach(structure -> {
 					Identifier structureId = structureRegistry.getKey(structure);

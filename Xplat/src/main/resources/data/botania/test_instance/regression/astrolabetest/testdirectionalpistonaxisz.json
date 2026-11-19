@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/astrolabetest/testdirectionalpistonaxisz",
+  "max_ticks": 100,
+  "structure": "botania:item/worldshapers_astrolabe_directional"
+}

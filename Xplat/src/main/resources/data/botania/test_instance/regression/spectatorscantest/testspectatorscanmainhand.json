@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "botania:regression/spectator1",
+  "function": "botania:regression/spectatorscantest/testspectatorscanmainhand",
+  "max_ticks": 100,
+  "structure": "botania:item/spectator_scan"
+}

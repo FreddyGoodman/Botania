@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/dandelifeontest/testdandelifeontransferring",
+  "max_ticks": 250,
+  "structure": "botania:block/dandelifeon_transfer"
+}

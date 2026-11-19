@@ -11,7 +11,6 @@ package org.violetmoon.botania.test.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
@@ -51,21 +50,18 @@ public class SpectatorScanTest {
 	private static final String LOOT_TABLE_CHEST = "minecraft:chests/simple_dungeon";
 	private static final String LOOT_TABLE_CART = "minecraft:chests/abandoned_mineshaft";
 
-	@GameTest(template = "botania:item/spectator_scan", batch = "spectator1")
 	public void testSpectatorScanMainHand(GameTestHelper helper) {
 		performTest(helper, (h, player) -> {
 			player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_INGOT));
 		});
 	}
 
-	@GameTest(template = "botania:item/spectator_scan", batch = "spectator2")
 	public void testSpectatorScanOffHand(GameTestHelper helper) {
 		performTest(helper, (h, player) -> {
 			player.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.IRON_INGOT));
 		});
 	}
 
-	@GameTest(template = "botania:item/spectator_scan", batch = "spectator3")
 	public void testSpectatorScanBothHands(GameTestHelper helper) {
 		performTest(helper, (h, player) -> {
 			player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_INGOT));
@@ -79,7 +75,11 @@ public class SpectatorScanTest {
 		// set up test entities
 		var itemEntity = helper.spawnItem(Items.IRON_INGOT, POSITION_ITEM);
 		var villager = helper.spawn(EntityType.VILLAGER, POSITION_VILLAGER);
-		villager.setVillagerData(new VillagerData(VillagerType.PLAINS, VillagerProfession.TOOLSMITH, 2));
+		var registries = helper.getLevel().registryAccess();
+		villager.setVillagerData(new VillagerData(
+				registries.lookupOrThrow(Registries.VILLAGER_TYPE).getOrThrow(VillagerType.PLAINS),
+				registries.lookupOrThrow(Registries.VILLAGER_PROFESSION).getOrThrow(VillagerProfession.TOOLSMITH),
+				2));
 
 		// set inventory content
 		var regularChestCart = helper.spawn(EntityType.CHEST_MINECART, POSITION_CART_NORMAL);
@@ -118,23 +118,23 @@ public class SpectatorScanTest {
 		((SpectatorItem) BotaniaItems.THE_SPECTATOR).scanForItems(spectatorStack, player);
 
 		// ensure loot content has not been rolled
-		TestingUtil.assertThat(lootChestCart.getLootTable() != null, () -> "Chest loot was rolled");
-		TestingUtil.assertThat(lootChest.getLootTable() != null, () -> "Chest loot was rolled");
+		TestingUtil.assertThat(helper, lootChestCart.getLootTable() != null, () -> "Chest loot was rolled");
+		TestingUtil.assertThat(helper, lootChest.getLootTable() != null, () -> "Chest loot was rolled");
 
 		// check that exactly the relevant positions have been found
 		List<BlockPos> blocks = spectatorStack.getOrDefault(BotaniaDataComponents.SPECTATOR_HIGHLIGHT_BLOCKS, Collections.emptyList());
-		TestingUtil.assertEquals(blocks.size(), 1, () -> "Expected 1 block hit, was " + blocks.size());
+		TestingUtil.assertEquals(helper, blocks.size(), 1, () -> "Expected 1 block hit, was " + blocks.size());
 		BlockPos chestPos = blocks.getFirst();
-		TestingUtil.assertEquals(helper.absolutePos(POSITION_CHEST_NORMAL), chestPos,
+		TestingUtil.assertEquals(helper, helper.absolutePos(POSITION_CHEST_NORMAL), chestPos,
 				() -> "Chest position " + helper.absolutePos(POSITION_CHEST_NORMAL) + " not in result, but found " + chestPos);
 
 		List<Integer> entities = spectatorStack.getOrDefault(BotaniaDataComponents.SPECTATOR_HIGHLIGHT_ENTITIES, Collections.emptyList());
-		TestingUtil.assertEquals(entities.size(), 5, () -> "Expected 5 entity hits, but got " + entities.size());
-		TestingUtil.assertThat(entities.contains(villager.getId()), () -> "Villager not in result");
-		TestingUtil.assertThat(entities.contains(itemEntity.getId()), () -> "Item entity not in result");
-		TestingUtil.assertThat(entities.contains(regularChestCart.getId()), () -> "Minecart not in result");
-		TestingUtil.assertThat(entities.contains(donkey.getId()), () -> "Donkey not in result");
-		TestingUtil.assertThat(entities.contains(allay.getId()), () -> "Allay not in result");
+		TestingUtil.assertEquals(helper, entities.size(), 5, () -> "Expected 5 entity hits, but got " + entities.size());
+		TestingUtil.assertThat(helper, entities.contains(villager.getId()), () -> "Villager not in result");
+		TestingUtil.assertThat(helper, entities.contains(itemEntity.getId()), () -> "Item entity not in result");
+		TestingUtil.assertThat(helper, entities.contains(regularChestCart.getId()), () -> "Minecart not in result");
+		TestingUtil.assertThat(helper, entities.contains(donkey.getId()), () -> "Donkey not in result");
+		TestingUtil.assertThat(helper, entities.contains(allay.getId()), () -> "Allay not in result");
 
 		helper.killAllEntities();
 		helper.succeed();

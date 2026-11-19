@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/opencratetest/testblocked",
+  "max_ticks": 100,
+  "structure": "botania:block/opencrate_blocked"
+}

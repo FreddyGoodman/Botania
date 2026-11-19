@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/entropinnyumunethicaltntdetectiontest/testforcerelayduper",
+  "max_ticks": 100,
+  "structure": "botania:block/entropinnyum_unethical_slime_duper_force_relay"
+}

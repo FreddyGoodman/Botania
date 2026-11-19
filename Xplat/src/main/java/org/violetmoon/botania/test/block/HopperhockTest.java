@@ -10,8 +10,6 @@ package org.violetmoon.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ItemFrame;
@@ -27,7 +25,6 @@ import org.violetmoon.botania.test.TestingUtil;
 
 public class HopperhockTest {
 
-	private static final String TEMPLATE = "botania:block/hopperhock_furnace";
 	private static final BlockPos FLOWER_POS = new BlockPos(2, 3, 2);
 	// Above the light gray glass which is at 2, 2, 1
 	private static final BlockPos SPAWN_ITEM_POS = new BlockPos(2, 3, 1);
@@ -35,7 +32,6 @@ public class HopperhockTest {
 	private static final float SPAWN_ITEM_Y = SPAWN_ITEM_POS.getY();
 	private static final float SPAWN_ITEM_Z = SPAWN_ITEM_POS.getZ();
 
-	@GameTest(template = TEMPLATE)
 	public void testFurnaceInsertTop(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -47,7 +43,6 @@ public class HopperhockTest {
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testFurnaceInsertSide(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.south();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -59,7 +54,6 @@ public class HopperhockTest {
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testFurnaceInsertBottom(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.above();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -73,7 +67,6 @@ public class HopperhockTest {
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testFurnaceInventoryFull(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -86,7 +79,6 @@ public class HopperhockTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testFurnaceAddToStack(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -100,7 +92,6 @@ public class HopperhockTest {
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testFurnaceWrongItemForSlot(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.above();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -112,7 +103,6 @@ public class HopperhockTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testFurnaceFilterMatch(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -125,7 +115,6 @@ public class HopperhockTest {
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testFurnaceFilterNoMatch(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -138,7 +127,6 @@ public class HopperhockTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testComposterInsertTop(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.below();
 		helper.setBlock(composterPos, Blocks.COMPOSTER);
@@ -150,25 +138,21 @@ public class HopperhockTest {
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testComposterInsertSide(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.south();
 		spawnItemAndExpectNoPickUp(helper, composterPos, Items.PUMPKIN_PIE);
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testComposterInsertBottom(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.above();
 		spawnItemAndExpectNoPickUp(helper, composterPos, Items.PUMPKIN_PIE);
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testComposterInsertWrongItem(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.below();
 		spawnItemAndExpectNoPickUp(helper, composterPos, Items.OAK_LOG);
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testComposterFull(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.below();
 		helper.setBlock(composterPos, Blocks.COMPOSTER.defaultBlockState().setValue(ComposterBlock.LEVEL, 7));
@@ -216,11 +200,6 @@ public class HopperhockTest {
 	}
 
 	private static AbstractFurnaceBlockEntity getFurnaceBlockEntity(GameTestHelper helper, BlockPos furnacePos) {
-		if (helper.getBlockEntity(furnacePos) instanceof AbstractFurnaceBlockEntity furnace) {
-			return furnace;
-		} else {
-			throw new GameTestAssertPosException(
-					"Expected furnace here", helper.absolutePos(furnacePos), furnacePos, helper.getTick());
-		}
+		return helper.getBlockEntity(furnacePos, AbstractFurnaceBlockEntity.class);
 	}
 }

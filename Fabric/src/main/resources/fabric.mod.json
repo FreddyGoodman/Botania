@@ -35,34 +35,6 @@
     "client": [
       "org.violetmoon.botania.fabric.client.FabricClientInitializer"
     ],
-    "fabric-gametest": [
-      "org.violetmoon.botania.test.block.ApothecaryRecipeTest",
-      "org.violetmoon.botania.test.block.BindingTest",
-      "org.violetmoon.botania.test.block.DandelifeonTest",
-      "org.violetmoon.botania.test.block.DrumBlockTest",
-      "org.violetmoon.botania.test.block.EntropinnyumUnethicalTntDetectionTest",
-      "org.violetmoon.botania.test.block.ForceRelayTest",
-      "org.violetmoon.botania.test.block.HopperhockTest",
-      "org.violetmoon.botania.test.block.IdleFlowerTickingTest",
-      "org.violetmoon.botania.test.block.InterceptorTest",
-      "org.violetmoon.botania.test.block.ManaSpreaderTest",
-      "org.violetmoon.botania.test.block.OpenCrateTest",
-      "org.violetmoon.botania.test.block.RannuncarpusTest",
-      "org.violetmoon.botania.test.block.TargetBlockTest",
-      "org.violetmoon.botania.test.item.AstrolabeTest",
-      "org.violetmoon.botania.test.item.CacophoniumTest",
-      "org.violetmoon.botania.test.item.FlowerPouchTest",
-      "org.violetmoon.botania.test.item.GrassSeedDispensingTest",
-      "org.violetmoon.botania.test.item.LifeAggregatorTest",
-      "org.violetmoon.botania.test.item.RarityConsistencyTest",
-      "org.violetmoon.botania.test.item.SpectatorScanTest",
-      "org.violetmoon.botania.test.item.lens.BoreLensTest",
-      "org.violetmoon.botania.test.item.lens.BoreWarpLensTest",
-      "org.violetmoon.botania.test.item.lens.EntropicWarpLensTest",
-      "org.violetmoon.botania.test.item.lens.PaintslingerLensTest",
-      "org.violetmoon.botania.test.item.lens.WarpForceTest",
-      "org.violetmoon.botania.test.TranslationKeysTest"
-    ],
     "fabric-datagen": [
       "org.violetmoon.botania.fabric.data.FabricDatagenInitializer"
     ],

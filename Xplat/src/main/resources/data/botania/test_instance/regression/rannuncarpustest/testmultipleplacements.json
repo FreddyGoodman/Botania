@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "botania:regression/rannuncarpus3",
+  "function": "botania:regression/rannuncarpustest/testmultipleplacements",
+  "max_ticks": 240,
+  "structure": "botania:block/rannuncarpus_candles"
+}

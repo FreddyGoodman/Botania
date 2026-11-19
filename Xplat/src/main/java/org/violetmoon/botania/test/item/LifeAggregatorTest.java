@@ -11,8 +11,8 @@ package org.violetmoon.botania.test.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,30 +31,29 @@ import org.violetmoon.botania.common.item.LifeAggregatorItem;
 import org.violetmoon.botania.test.TestingUtil;
 
 public class LifeAggregatorTest {
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void testSpawnerMover(GameTestHelper helper) {
 		var spawnerPos = BlockPos.ZERO;
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
 		var stack = new ItemStack(BotaniaItems.LIFE_AGGREGATOR);
 
 		helper.setBlock(spawnerPos, Blocks.SPAWNER);
-		SpawnerBlockEntity be = helper.getBlockEntity(spawnerPos);
+		SpawnerBlockEntity be = helper.getBlockEntity(spawnerPos, SpawnerBlockEntity.class);
 		be.setEntityId(EntityType.PIG, RandomSource.create());
 
 		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
 
 		InteractionResult result = stack.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND,
 				new BlockHitResult(Vec3.ZERO, Direction.DOWN, helper.absolutePos(spawnerPos), false)));
-		TestingUtil.assertThat(result.consumesAction(), () -> "Should have succeeded");
-		TestingUtil.assertThat(LifeAggregatorItem.hasData(stack),
+		TestingUtil.assertThat(helper, result.consumesAction(), () -> "Should have succeeded");
+		TestingUtil.assertThat(helper, LifeAggregatorItem.hasData(stack),
 				() -> "Spawner mover should recognize saved data. Full NBT: " + stack.getComponents());
-		helper.assertBlockState(spawnerPos, BlockState::isAir, () -> "Spawner should be gone");
+		helper.assertBlockState(spawnerPos, BlockState::isAir, _ -> Component.literal("Spawner should be gone"));
 
 		result = stack.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND,
 				new BlockHitResult(Vec3.ZERO, Direction.UP, helper.absolutePos(spawnerPos.below()), false)));
-		TestingUtil.assertThat(result.consumesAction(), () -> "Should have succeeded");
+		TestingUtil.assertThat(helper, result.consumesAction(), () -> "Should have succeeded");
 		helper.assertBlockPresent(Blocks.SPAWNER, spawnerPos);
-		TestingUtil.assertThat(stack.isEmpty(), () -> "Spawner mover should be broken after placing");
+		TestingUtil.assertThat(helper, stack.isEmpty(), () -> "Spawner mover should be broken after placing");
 
 		helper.setBlock(spawnerPos, Blocks.AIR); // Don't spawn mobs that interfere with other continuing tests
 		helper.succeed();

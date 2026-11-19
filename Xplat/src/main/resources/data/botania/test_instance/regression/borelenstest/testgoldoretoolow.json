@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "botania:regression/bore_lens_test_mining_level_1",
+  "function": "botania:regression/borelenstest/testgoldoretoolow",
+  "max_ticks": 100,
+  "structure": "botania:item/lens/bore_lens"
+}

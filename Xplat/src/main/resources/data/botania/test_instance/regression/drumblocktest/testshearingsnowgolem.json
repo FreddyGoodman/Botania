@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/drumblocktest/testshearingsnowgolem",
+  "max_ticks": 20,
+  "structure": "botania:block/drum_of_the_gathering"
+}

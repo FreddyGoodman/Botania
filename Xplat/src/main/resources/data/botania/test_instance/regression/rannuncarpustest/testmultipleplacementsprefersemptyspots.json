@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/rannuncarpustest/testmultipleplacementsprefersemptyspots",
+  "max_ticks": 190,
+  "structure": "botania:block/rannuncarpus"
+}

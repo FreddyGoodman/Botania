@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "botania:regression/apothecary",
+  "function": "botania:regression/apothecaryrecipetest/testitementerprevention",
+  "max_ticks": 100,
+  "structure": "botania:block/apothecary_recipe"
+}

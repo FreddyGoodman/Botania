@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "botania:regression/idle_flower_ticking",
+  "function": "botania:regression/idleflowertickingtest/test_shulk_me_not_idle",
+  "max_ticks": 102,
+  "structure": "botania:block/flower_binding_arena"
+}

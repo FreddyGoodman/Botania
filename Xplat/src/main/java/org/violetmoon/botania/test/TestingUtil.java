@@ -11,9 +11,8 @@ package org.violetmoon.botania.test;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTestAssertException;
-import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -36,20 +35,17 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class TestingUtil {
-	// Copied from FabricGameTest. Needs to be replaced if we ever run tests on both loaders
-	public static final String EMPTY_STRUCTURE = "fabric-gametest-api-v1:empty";
-
 	@Contract("_,_,_ -> fail")
 	public static void throwPositionedAssertion(GameTestHelper helper, BlockPos relativePos, Supplier<String> msg) {
 		//A couple of GameTestHelper's assertion errors throw this exception, but it's inconvenient to throw yourself
-		throw new GameTestAssertPosException(msg.get(), helper.absolutePos(relativePos), relativePos, helper.getTick());
+		throw helper.assertionException(relativePos, Component.literal(msg.get()));
 	}
 
-	@Contract("false,_ -> fail")
-	public static void assertThat(boolean value, Supplier<String> message) {
+	@Contract("_,false,_ -> fail")
+	public static void assertThat(GameTestHelper helper, boolean value, Supplier<String> message) {
 		//The same as Preconditions.checkArgument but throws a GameTestAssertException
 		if (!value) {
-			throw new GameTestAssertException(message.get());
+			throw helper.assertionException(Component.literal(message.get()));
 		}
 	}
 
@@ -61,12 +57,12 @@ public class TestingUtil {
 		}
 	}
 
-	public static void assertEquals(@Nullable Object a, @Nullable Object b) {
-		assertEquals(a, b, () -> "Expected " + a + " to equal " + b);
+	public static void assertEquals(GameTestHelper helper, @Nullable Object a, @Nullable Object b) {
+		assertEquals(helper, a, b, () -> "Expected " + a + " to equal " + b);
 	}
 
-	public static void assertEquals(@Nullable Object a, @Nullable Object b, Supplier<String> message) {
-		assertThat(Objects.equals(a, b), message);
+	public static void assertEquals(GameTestHelper helper, @Nullable Object a, @Nullable Object b, Supplier<String> message) {
+		assertThat(helper, Objects.equals(a, b), message);
 	}
 
 	public static void assertEqualsAt(GameTestHelper helper, BlockPos relativePos, @Nullable Object a, @Nullable Object b) {
@@ -79,7 +75,7 @@ public class TestingUtil {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends BlockEntity> T assertBlockEntity(GameTestHelper helper, BlockPos relativePos, BlockEntityType<T> type) {
-		BlockEntity be = helper.getBlockEntity(relativePos);
+		BlockEntity be = helper.getBlockEntity(relativePos, BlockEntity.class);
 
 		assertAt(helper, relativePos, be.getType() == type, () -> "Expected BlockEntity of type " + BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type) + " but found " + BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(be.getType()));
 
@@ -87,7 +83,7 @@ public class TestingUtil {
 	}
 
 	public static <T extends BlockEntity> T assertBlockEntity(GameTestHelper helper, BlockPos relativePos, Class<T> classs) {
-		BlockEntity be = helper.getBlockEntity(relativePos);
+		BlockEntity be = helper.getBlockEntity(relativePos, BlockEntity.class);
 
 		assertAt(helper, relativePos, classs.isAssignableFrom(be.getClass()), () -> "Expected BlockEntity to be an instance of " + classs.getSimpleName() + " but found " + be.getClass().getSimpleName());
 

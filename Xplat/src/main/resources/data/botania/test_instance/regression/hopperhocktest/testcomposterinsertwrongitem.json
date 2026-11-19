@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/hopperhocktest/testcomposterinsertwrongitem",
+  "max_ticks": 100,
+  "structure": "botania:block/hopperhock_furnace"
+}

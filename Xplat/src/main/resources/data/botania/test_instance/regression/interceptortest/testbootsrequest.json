@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/interceptortest/testbootsrequest",
+  "max_ticks": 100,
+  "structure": "botania:block/interceptor",
+  "setup_ticks": 1
+}

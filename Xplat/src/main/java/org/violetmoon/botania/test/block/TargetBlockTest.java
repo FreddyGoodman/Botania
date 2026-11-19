@@ -21,9 +21,7 @@ import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.test.TestingUtil;
 
 public class TargetBlockTest {
-	public static final String ARENA = "botania:block/target_block_trigger";
 
-	@GameTest(template = ARENA)
 	public void testFakeBurstNoShooty(GameTestHelper helper) {
 		var spreaderPos = new BlockPos(5, 2, 5);
 		var lampPos = new BlockPos(3, 3, 5);
@@ -34,7 +32,7 @@ public class TargetBlockTest {
 		// that the spreader is pointed at the mana void properly, in case the test
 		// structure is placed rotated.
 		var spreader = TestingUtil.assertBlockEntity(helper, spreaderPos, BotaniaBlockEntities.MANA_SPREADER);
-		TestingUtil.assertThat(spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST), helper.absolutePos(bindPos), Direction.UP),
+		TestingUtil.assertThat(helper, spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST), helper.absolutePos(bindPos), Direction.UP),
 				() -> "Failed to bind spreader");
 
 		helper.startSequence()

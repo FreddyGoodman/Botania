@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/entropinnyumunethicaltntdetectiontest/testlegitimatetnt",
+  "max_ticks": 100,
+  "structure": "botania:block/entropinnyum_ethical_tnt_block"
+}

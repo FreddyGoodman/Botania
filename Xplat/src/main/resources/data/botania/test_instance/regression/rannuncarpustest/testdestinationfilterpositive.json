@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "botania:regression/rannuncarpus1",
+  "function": "botania:regression/rannuncarpustest/testdestinationfilterpositive",
+  "max_ticks": 100,
+  "structure": "botania:block/rannuncarpus"
+}

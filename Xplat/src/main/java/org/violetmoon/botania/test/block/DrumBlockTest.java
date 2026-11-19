@@ -12,7 +12,7 @@ package org.violetmoon.botania.test.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class DrumBlockTest {
-	private static final String TEMPLATE = "botania:block/drum_of_the_gathering";
 
 	private static final BlockPos POSITION_BUTTON = new BlockPos(10, 10, 9);
 	private static final BlockPos POSITION_SPREADER = new BlockPos(10, 10, 10);
@@ -46,7 +45,7 @@ public class DrumBlockTest {
 	private static <T extends Mob> T setup(GameTestHelper helper, EntityType<T> entityType, @Nullable Item item) {
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
 		var spreader = TestingUtil.assertBlockEntity(helper, POSITION_SPREADER, BotaniaBlockEntities.MANA_SPREADER);
-		TestingUtil.assertThat(spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST),
+		TestingUtil.assertThat(helper, spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST),
 				helper.absolutePos(POSITION_DRUM), Direction.UP),
 				() -> "Failed to bind spreader");
 		if (item != null) {
@@ -63,30 +62,25 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingGoat(GameTestHelper helper) {
 		testMilkingAdultAnimal(helper, EntityType.GOAT, Items.BUCKET, Items.MILK_BUCKET);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingCow(GameTestHelper helper) {
 		testMilkingAdultAnimal(helper, EntityType.COW, Items.BUCKET, Items.MILK_BUCKET);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingMooshroom(GameTestHelper helper) {
 		testMilkingAdultAnimal(helper, EntityType.MOOSHROOM, Items.BUCKET, Items.MILK_BUCKET);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingMooshroomSoup(GameTestHelper helper) {
 		testMilkingAdultAnimal(helper, EntityType.MOOSHROOM, Items.BOWL, Items.MUSHROOM_STEW);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingBrownMooshroomSuspiciousStew(GameTestHelper helper) {
 		var cow = setup(helper, EntityType.MOOSHROOM, Items.BOWL);
-		cow.setVariant(MushroomCow.MushroomType.BROWN);
+		cow.setComponent(DataComponents.MOOSHROOM_VARIANT, MushroomCow.Variant.BROWN);
 		var cowAccessor = (MushroomCowAccessor) cow;
 		cowAccessor.botania_setStewEffects(new SuspiciousStewEffects(List.of(new SuspiciousStewEffects.Entry(MobEffects.BLINDNESS, 15))));
 		helper.startSequence()
@@ -115,28 +109,24 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testMilkingBabyGoat(GameTestHelper helper) {
 		testMilkingBabyAnimal(helper, EntityType.GOAT, Items.BUCKET);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testMilkingBabyMooshroom(GameTestHelper helper) {
 		testMilkingBabyAnimal(helper, EntityType.MOOSHROOM, Items.BOWL);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testMilkingDeadAnimal(GameTestHelper helper) {
 		var cow = setup(helper, EntityType.COW, Items.BUCKET);
 		helper.startSequence()
 				// mobs play 20 ticks of dying animation when killed, so the cow is still there when the drum goes off
-				.thenExecute(cow::kill)
+				.thenExecute(() -> cow.kill(helper.getLevel()))
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_BUTTON))
 				.thenExecuteAfter(20, () -> helper.assertItemEntityPresent(Items.BUCKET, POSITION_MOB, 1.0))
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testMilkingNearBergamute(GameTestHelper helper) {
 		setup(helper, EntityType.COW, Items.BUCKET);
 		// Bergamute should protect from drum interactions
@@ -147,7 +137,6 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testShearingSheep(GameTestHelper helper) {
 		var sheep = setup(helper, EntityType.SHEEP, null);
 		sheep.setColor(DyeColor.LIME);
@@ -158,7 +147,6 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testShearingBabySheep(GameTestHelper helper) {
 		var sheep = setup(helper, EntityType.SHEEP, null);
 		sheep.setBaby(true);
@@ -168,7 +156,6 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testShearingSnowGolem(GameTestHelper helper) {
 		var golem = setup(helper, EntityType.SNOW_GOLEM, null);
 		helper.startSequence()
@@ -178,7 +165,6 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testShearingPumpkinlessSnowGolem(GameTestHelper helper) {
 		var golem = setup(helper, EntityType.SNOW_GOLEM, null);
 		golem.setPumpkin(false);
@@ -189,7 +175,6 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testShearingMooshroom(GameTestHelper helper) {
 		setup(helper, EntityType.MOOSHROOM, null);
 		helper.startSequence()

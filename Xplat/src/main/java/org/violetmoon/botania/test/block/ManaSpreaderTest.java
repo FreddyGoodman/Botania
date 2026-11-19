@@ -11,7 +11,6 @@ package org.violetmoon.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -28,7 +27,6 @@ public class ManaSpreaderTest {
 	private static final BlockPos SINK_POS = new BlockPos(4, 1, 1);
 	private static final BlockPos LEVER_POS = new BlockPos(1, 2, 2);
 
-	@GameTest(template = "botania:block/spreader_pool_default_aim")
 	public void testSpreaderDefaultAimHittingPool(GameTestHelper helper) {
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
 
@@ -36,10 +34,10 @@ public class ManaSpreaderTest {
 		for (int i = 0; i < NUM_SPREADERS; i++) {
 			var spreaderName = SPREADERS[i];
 			var pool = TestingUtil.assertBlockEntity(helper, POOL_POS.south(i), BotaniaBlockEntities.MANA_POOL);
-			TestingUtil.assertEquals(pool.getCurrentMana(), 0, () -> String.format("Pool for %s does not start empty", spreaderName));
+			TestingUtil.assertEquals(helper, pool.getCurrentMana(), 0, () -> String.format("Pool for %s does not start empty", spreaderName));
 			var spreader = TestingUtil.assertBlockEntity(helper, SPREADER_POS.south(i), BotaniaBlockEntities.MANA_SPREADER);
 			var bindPos = SINK_POS.south(i);
-			TestingUtil.assertThat(spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST), helper.absolutePos(bindPos), Direction.UP),
+			TestingUtil.assertThat(helper, spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST), helper.absolutePos(bindPos), Direction.UP),
 					() -> "Failed to bind spreader");
 		}
 
@@ -50,8 +48,8 @@ public class ManaSpreaderTest {
 						var spreaderName = SPREADERS[i];
 						var pool = TestingUtil.assertBlockEntity(helper, POOL_POS.south(i), BotaniaBlockEntities.MANA_POOL);
 						var sink = TestingUtil.assertBlockEntity(helper, SINK_POS.south(i), BotaniaBlockEntities.MANA_FLUXFIELD);
-						TestingUtil.assertThat(pool.getCurrentMana() > 0, () -> String.format("Pool for %s did not receive mana", spreaderName));
-						TestingUtil.assertEquals(sink.getCurrentMana(), 0, () -> String.format("Sink for %s should not have received", spreaderName));
+						TestingUtil.assertThat(helper, pool.getCurrentMana() > 0, () -> String.format("Pool for %s did not receive mana", spreaderName));
+						TestingUtil.assertEquals(helper, sink.getCurrentMana(), 0, () -> String.format("Sink for %s should not have received", spreaderName));
 					}
 				})
 				.thenSucceed();

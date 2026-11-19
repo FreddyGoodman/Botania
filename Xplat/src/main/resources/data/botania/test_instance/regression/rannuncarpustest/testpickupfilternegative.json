@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/rannuncarpustest/testpickupfilternegative",
+  "max_ticks": 100,
+  "structure": "botania:block/rannuncarpus"
+}

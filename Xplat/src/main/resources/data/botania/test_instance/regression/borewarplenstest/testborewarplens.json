@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/borewarplenstest/testborewarplens",
+  "max_ticks": 25,
+  "structure": "botania:item/lens/bore_warp_relay_interaction"
+}

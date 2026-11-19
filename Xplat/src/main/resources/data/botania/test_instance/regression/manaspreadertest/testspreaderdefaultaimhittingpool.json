@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/manaspreadertest/testspreaderdefaultaimhittingpool",
+  "max_ticks": 100,
+  "structure": "botania:block/spreader_pool_default_aim"
+}

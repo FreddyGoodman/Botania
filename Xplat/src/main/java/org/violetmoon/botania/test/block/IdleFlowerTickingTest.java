@@ -11,22 +11,17 @@ package org.violetmoon.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.TestFunction;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.violetmoon.botania.api.block.WandBindable;
 import org.violetmoon.botania.api.block_entity.BindableSpecialFlowerBlockEntity;
 import org.violetmoon.botania.api.block_entity.FunctionalFlowerBlockEntity;
 import org.violetmoon.botania.api.block_entity.SpecialFlowerBlockEntity;
-import org.violetmoon.botania.common.block.flower.FloatingSpecialFlowerBlock;
 import org.violetmoon.botania.common.block.flower.SpecialFlowerBlock;
 
-import java.util.Collection;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 /**
@@ -35,42 +30,16 @@ import java.util.function.Consumer;
  */
 public class IdleFlowerTickingTest {
 	private static final BlockPos FLOWER_POS = new BlockPos(16, 16, 16);
-	private static final String BATCH_NAME = "IdleFlowerTickingTest";
-	private static final String TEMPLATE = "botania:block/flower_binding_arena";
 
-	@GameTestGenerator
-	public Collection<TestFunction> generateTestForEachSpecialFlowerBlockEntity() {
-		return BuiltInRegistries.BLOCK.stream()
-				.filter(block -> block instanceof SpecialFlowerBlock || block instanceof FloatingSpecialFlowerBlock)
-				.map(block -> {
-					String testName = "%s.test_%s_idle".formatted(
-							IdleFlowerTickingTest.class.getSimpleName(),
-							BuiltInRegistries.BLOCK.getKey(block).getPath().toLowerCase(Locale.ROOT));
-					return new TestFunction(
-							BATCH_NAME,
-							testName,
-							TEMPLATE,
-							102,
-							0L,
-							true,
-							testSpecialFlowerIdle(block)
-					);
-				})
-				.toList();
-	}
-
-	private Consumer<GameTestHelper> testSpecialFlowerIdle(Block block) {
+	public static Consumer<GameTestHelper> testSpecialFlowerIdle(Identifier id) {
 		return helper -> {
+			Block block = BuiltInRegistries.BLOCK.getValue(id);
 			if (block instanceof SpecialFlowerBlock) {
 				helper.setBlock(FLOWER_POS.below(), Blocks.GRASS_BLOCK);
 			}
 			helper.setBlock(FLOWER_POS, block);
-			BlockEntity be = helper.getBlockEntity(FLOWER_POS);
-			if (!(be instanceof SpecialFlowerBlockEntity specialFlower)) {
-				helper.fail("Missing special flower block entity");
-				return;
-			}
-			if (be instanceof BindableSpecialFlowerBlockEntity<?> && WandBindable.LOOKUP.find(be, null) == null) {
+			SpecialFlowerBlockEntity specialFlower = helper.getBlockEntity(FLOWER_POS, SpecialFlowerBlockEntity.class);
+			if (specialFlower instanceof BindableSpecialFlowerBlockEntity<?> && WandBindable.LOOKUP.find(specialFlower, null) == null) {
 				helper.fail("Bindable special flower block entity is not registered as WandBindable");
 				return;
 			}

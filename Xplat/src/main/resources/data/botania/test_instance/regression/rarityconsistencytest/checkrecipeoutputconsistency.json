@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/rarityconsistencytest/checkrecipeoutputconsistency",
+  "max_ticks": 1,
+  "structure": "minecraft:empty"
+}

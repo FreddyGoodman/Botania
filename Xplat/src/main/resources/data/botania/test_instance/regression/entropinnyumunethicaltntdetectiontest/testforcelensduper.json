@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/entropinnyumunethicaltntdetectiontest/testforcelensduper",
+  "max_ticks": 150,
+  "structure": "botania:block/entropinnyum_unethical_slime_duper_force_lens"
+}

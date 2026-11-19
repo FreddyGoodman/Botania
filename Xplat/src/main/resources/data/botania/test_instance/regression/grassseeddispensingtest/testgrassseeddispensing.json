@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:regression/grassseeddispensingtest/testgrassseeddispensing",
+  "max_ticks": 100,
+  "structure": "botania:item/grass_seed_dispensing"
+}

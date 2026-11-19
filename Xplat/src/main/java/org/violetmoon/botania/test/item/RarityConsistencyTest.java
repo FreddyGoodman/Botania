@@ -10,7 +10,6 @@
 package org.violetmoon.botania.test.item;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,18 +20,18 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.brew.BrewContainer;
+import org.violetmoon.botania.api.recipe.BotaniaRecipe;
 import org.violetmoon.botania.api.recipe.BotanicalBreweryRecipe;
 import org.violetmoon.botania.api.recipe.ElvenTradeRecipe;
 import org.violetmoon.botania.api.recipe.OrechidRecipe;
 import org.violetmoon.botania.api.recipe.PureDaisyRecipe;
 import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
 import org.violetmoon.botania.common.crafting.LexiconElvenTradeRecipe;
-import org.violetmoon.botania.test.TestingUtil;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -40,7 +39,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * Tests the consistency of recipe output item rarities using several rules.
@@ -53,29 +51,29 @@ public class RarityConsistencyTest {
 			Items.GOLDEN_APPLE, Rarity.COMMON
 	);
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE, timeoutTicks = 1)
 	public void checkRecipeOutputConsistency(GameTestHelper helper) {
 		boolean failedAnyChecks = false;
 		Set<Item> craftableItems = new HashSet<>();
-		for (RecipeHolder<?> recipeHolder : helper.getLevel().getRecipeManager().getRecipes()) {
+		for (RecipeHolder<?> recipeHolder : helper.getLevel().recipeAccess().getRecipes()) {
 			Rarity highestIngredientRarity = Rarity.COMMON;
 			Set<ItemStack> highestRarityIngredients = new LinkedHashSet<>();
 			Recipe<?> recipe = recipeHolder.value();
 			Collection<ItemStack> resultItems = getResultItems(helper, recipe);
-			if (resultItems.isEmpty() && recipeHolder.id().getNamespace().equals(BotaniaAPI.MODID)) {
+			if (resultItems.isEmpty() && recipeHolder.id().identifier().getNamespace().equals(BotaniaAPI.MODID)) {
 				BotaniaAPI.LOGGER.warn("Empty recipe output for {} ({})", recipeHolder, recipe.getType());
 			}
 			for (ItemStack resultItem : resultItems) {
 				craftableItems.add(resultItem.getItem());
 
-				if (!resultItem.getItemHolder().unwrapKey().orElseThrow().identifier().getNamespace()
+				if (!resultItem.typeHolder().unwrapKey().orElseThrow().identifier().getNamespace()
 						.equals(BotaniaAPI.MODID)) {
 					// only check recipes that make Botania items
 					continue;
 				}
-				for (Ingredient ingredient : recipe.getIngredients()) {
-					ItemStack[] items = ingredient.getItems();
-					Rarity ingredientRarity = Stream.of(items)
+				var ingredients = recipe instanceof BotaniaRecipe<?> botaniaRecipe ? botaniaRecipe.getIngredients() : recipe.placementInfo().ingredients();
+				for (Ingredient ingredient : ingredients) {
+					var items = ingredient.items().map(ItemStack::new).toList();
+					Rarity ingredientRarity = items.stream()
 							.map(this::getRarity)
 							.min(Comparator.naturalOrder())
 							.orElse(Rarity.COMMON);
@@ -83,9 +81,9 @@ public class RarityConsistencyTest {
 					if (rarityDifference > 0) {
 						highestIngredientRarity = ingredientRarity;
 						highestRarityIngredients.clear();
-						highestRarityIngredients.addAll(Arrays.asList(items));
+						highestRarityIngredients.addAll(items);
 					} else if (rarityDifference == 0) {
-						highestRarityIngredients.addAll(Arrays.asList(items));
+						highestRarityIngredients.addAll(items);
 					}
 				}
 				Rarity outputRarity = resultItem.getRarity();
@@ -148,12 +146,15 @@ public class RarityConsistencyTest {
 			case PureDaisyRecipe pureDaisyRecipe -> {
 				return pureDaisyRecipe.getOutput().getDisplayedStacks();
 			}
+			case BotaniaRecipe<?> botaniaRecipe -> {
+				ItemStack result = botaniaRecipe.getResultItem(helper.getLevel().registryAccess());
+				return result.isEmpty() ? List.of() : List.of(result);
+			}
 			default -> {
-				ItemStack singleResultItem = recipe.getResultItem(helper.getLevel().registryAccess());
-				if (singleResultItem.isEmpty()) {
-					return List.of();
-				}
-				return List.of(singleResultItem);
+				var context = SlotDisplayContext.fromLevel(helper.getLevel());
+				return recipe.display().stream()
+						.flatMap(display -> display.result().resolveForStacks(context).stream())
+						.toList();
 			}
 		}
 	}

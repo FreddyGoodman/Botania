@@ -10,8 +10,8 @@
 package org.violetmoon.botania.test.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -24,8 +24,6 @@ import org.violetmoon.botania.common.internal_caps.ItemLifetime;
 import org.violetmoon.botania.test.TestingUtil;
 
 public class RannuncarpusTest {
-	private static final String TEMPLATE = "botania:block/rannuncarpus";
-	private static final String TEMPLATE_CANDLES = "botania:block/rannuncarpus_candles";
 
 	private static final BlockPos FLOWER_POS = new BlockPos(2, 3, 2);
 	private static final BlockPos FILTER_POS = FLOWER_POS.below();
@@ -39,7 +37,6 @@ public class RannuncarpusTest {
 	private static final BlockPos SEA_PICKLE_POS = new BlockPos(1, 2, 1);
 	private static final BlockPos FLOATING_YELLOW_CANDLE_POS = new BlockPos(1, 5, 2);
 
-	@GameTest(template = TEMPLATE, batch = "rannuncarpus1")
 	public void testDestinationFilterPositive(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			helper.killAllEntities();
@@ -49,7 +46,6 @@ public class RannuncarpusTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, batch = "rannuncarpus2")
 	public void testDestinationFilterNegative(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			helper.killAllEntities();
@@ -61,7 +57,6 @@ public class RannuncarpusTest {
 				}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testPickupFilterPositive(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			var frame = getItemFrame(helper);
@@ -72,7 +67,6 @@ public class RannuncarpusTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
 	public void testPickupFilterNegative(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			var frame = getItemFrame(helper);
@@ -84,13 +78,7 @@ public class RannuncarpusTest {
 				}).thenSucceed();
 	}
 
-	private static final int MULTI_PLACEMENT_TIMEOUT_TICKS =
-			// 10 blocks to place, 1 interval where nothing should be placed, 1 interval leeway
-			(10 + 1 + 1) * RannuncarpusBlockEntity.PLACE_INTERVAL_TICKS
-					// new items are supplied twice during the test
-					+ 2 * ItemLifetime.FUNCTIONAL_INHERENT_DELAY;
 
-	@GameTest(template = TEMPLATE_CANDLES, timeoutTicks = MULTI_PLACEMENT_TIMEOUT_TICKS, batch = "rannuncarpus3")
 	public void testMultiplePlacements(GameTestHelper helper) {
 		final var yellowCandles = helper.spawnItem(Blocks.YELLOW_CANDLE.asItem(), FLOWER_POS.getX(), FLOWER_POS.getY() + 1, FLOWER_POS.getZ());
 		helper.startSequence().thenExecute(() -> {
@@ -108,7 +96,7 @@ public class RannuncarpusTest {
 			// once both spots are filled, no other yellow candles should have been place anywhere else
 			helper.assertBlockProperty(FLOATING_YELLOW_CANDLE_POS, CandleBlock.CANDLES, 1);
 			if (yellowCandles.getItem().getCount() < 2) {
-				helper.fail("Too few yellow candles left over", yellowCandles);
+				helper.fail(Component.literal("Too few yellow candles left over"), yellowCandles);
 			}
 			helper.killAllEntities();
 		}).thenExecute(() -> {
@@ -124,7 +112,6 @@ public class RannuncarpusTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = ItemLifetime.FUNCTIONAL_INHERENT_DELAY + 13 * RannuncarpusBlockEntity.PLACE_INTERVAL_TICKS)
 	public void testMultiplePlacementsPrefersEmptySpots(GameTestHelper helper) {
 		// have the flower place across the entire platform
 		helper.setBlock(FILTER_POS, Blocks.POLISHED_ANDESITE);
@@ -154,7 +141,7 @@ public class RannuncarpusTest {
 						helper.assertBlockProperty(pos, SeaPickleBlock.PICKLES, 1);
 					}
 					if (!stack.isEmpty()) {
-						helper.fail("Not all items used", seaPickles);
+						helper.fail(Component.literal("Not all items used"), seaPickles);
 					}
 				}).thenSucceed();
 	}
@@ -162,7 +149,7 @@ public class RannuncarpusTest {
 	private static ItemFrame getItemFrame(GameTestHelper helper) {
 		var bounds = new AABB(helper.absolutePos(FLOWER_POS));
 		var list = helper.getLevel().getEntitiesOfClass(ItemFrame.class, bounds);
-		TestingUtil.assertThat(list.size() == 1, () -> "Number of item frames wasn't 1");
+		TestingUtil.assertThat(helper, list.size() == 1, () -> "Number of item frames wasn't 1");
 		return list.getFirst();
 	}
 }

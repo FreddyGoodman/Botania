@@ -11,7 +11,6 @@ package org.violetmoon.botania.test.item.lens;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +25,6 @@ import org.violetmoon.botania.test.TestingUtil;
 public class PaintslingerLensTest {
 
 	// TODO: test structure data needs upgrading; maybe useful as first datafixer test, but optional result for now
-	@GameTest(template = "botania:item/lens/paintslinger_lens", required = false)
 	public void testPainting(GameTestHelper helper) {
 		BlockPos spreaderPos = new BlockPos(2, 5, 2);
 		BlockPos buttonPos = new BlockPos(2, 5, 3);
@@ -34,7 +32,7 @@ public class PaintslingerLensTest {
 		Player player = helper.makeMockPlayer(GameType.CREATIVE);
 
 		var spreader = TestingUtil.assertBlockEntity(helper, spreaderPos, BotaniaBlockEntities.MANA_SPREADER);
-		TestingUtil.assertThat(spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST), helper.absolutePos(bindPos), Direction.UP),
+		TestingUtil.assertThat(helper, spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST), helper.absolutePos(bindPos), Direction.UP),
 				() -> "Failed to bind spreader");
 
 		helper.startSequence()
