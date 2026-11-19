@@ -164,7 +164,7 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectDropAllItems(Level level, LivingEntity living) {
-		if (level instanceof ServerLevel serverLevel && living instanceof Player player) {
+		if (!level.isClientSide() && living instanceof Player player) {
 			player.getInventory().dropAll();
 		}
 	}
@@ -197,7 +197,7 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectDropOwnHead(Level level, LivingEntity living) {
-		if (!level.isClientSide() && living instanceof Player player) {
+		if (level instanceof ServerLevel serverLevel && living instanceof Player player) {
 			living.hurt(living.damageSources().magic(), living.getHealth() - 1);
 			ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
 			skull.set(DataComponents.PROFILE, ResolvableProfile.createResolved(player.getGameProfile()));
