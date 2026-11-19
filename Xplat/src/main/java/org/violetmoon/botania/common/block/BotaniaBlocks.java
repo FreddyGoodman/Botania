@@ -426,7 +426,7 @@ public final class BotaniaBlocks {
 
 	public static final Block ENDOFLAME = make(LibBlockNames.SUBTILE_ENDOFLAME,
 			new SlowGeneratingFlowerWithCooldownBlock(
-					MobEffects.MOVEMENT_SLOWDOWN,
+					MobEffects.SLOWNESS,
 					10,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.ENDOFLAME));
@@ -477,7 +477,7 @@ public final class BotaniaBlocks {
 
 	public static final Block ENTROPINNYUM = make(LibBlockNames.SUBTILE_ENTROPINNYUM,
 			new SpecialFlowerBlock(
-					MobEffects.DAMAGE_RESISTANCE,
+					MobEffects.RESISTANCE,
 					72,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.ENTROPINNYUM));
@@ -540,7 +540,7 @@ public final class BotaniaBlocks {
 
 	public static final Block DANDELIFEON = make(LibBlockNames.SUBTILE_DANDELIFEON,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.CONFUSION,
+					MobEffects.NAUSEA,
 					240,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.DANDELIFEON));
@@ -643,7 +643,7 @@ public final class BotaniaBlocks {
 
 	public static final Block TIGERSEYE = make(LibBlockNames.SUBTILE_TIGERSEYE,
 			new SpecialFlowerBlock(
-					MobEffects.DAMAGE_BOOST,
+					MobEffects.STRENGTH,
 					90,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.TIGERSEYE));
@@ -656,7 +656,7 @@ public final class BotaniaBlocks {
 
 	public static final Block JADED_AMARANTHUS = make(LibBlockNames.SUBTILE_JADED_AMARANTHUS,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.HEAL,
+					MobEffects.INSTANT_HEALTH,
 					1,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.JADED_AMARANTHUS));
@@ -669,7 +669,7 @@ public final class BotaniaBlocks {
 
 	public static final Block ORECHID = make(LibBlockNames.SUBTILE_ORECHID,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.DIG_SPEED,
+					MobEffects.HASTE,
 					10,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.ORECHID));
@@ -694,7 +694,7 @@ public final class BotaniaBlocks {
 			flowerPot(FALLEN_KANADE, 0));
 
 	public static final Block EXOFLAME = make(LibBlockNames.SUBTILE_EXOFLAME,
-			new SpecialFlowerBlock(MobEffects.MOVEMENT_SPEED,
+			new SpecialFlowerBlock(MobEffects.SPEED,
 					240,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.EXOFLAME));
@@ -731,13 +731,13 @@ public final class BotaniaBlocks {
 			flowerPot(AGRICARNATION_PETITE, 0));
 
 	public static final Block HOPPERHOCK = make(LibBlockNames.SUBTILE_HOPPERHOCK,
-			new HopperhockBlock(MobEffects.MOVEMENT_SPEED,
+			new HopperhockBlock(MobEffects.SPEED,
 					30,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.HOPPERHOCK));
 	public static final Block HOPPERHOCK_PETITE = make(petite(LibBlockNames.SUBTILE_HOPPERHOCK),
 			new HopperhockBlock(
-					MobEffects.MOVEMENT_SPEED,
+					MobEffects.SPEED,
 					30,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.HOPPERHOCK_PETITE));
@@ -806,13 +806,13 @@ public final class BotaniaBlocks {
 
 	public static final Block RANNUNCARPUS = make(LibBlockNames.SUBTILE_RANNUNCARPUS,
 			new RannuncarpusBlock(
-					MobEffects.JUMP,
+					MobEffects.JUMP_BOOST,
 					30,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.RANNUNCARPUS));
 	public static final Block RANNUNCARPUS_PETITE = make(petite(LibBlockNames.SUBTILE_RANNUNCARPUS),
 			new RannuncarpusBlock(
-					MobEffects.JUMP,
+					MobEffects.JUMP_BOOST,
 					30,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.RANNUNCARPUS_PETITE));
@@ -844,7 +844,7 @@ public final class BotaniaBlocks {
 
 	public static final Block POLLIDISIAC = make(LibBlockNames.SUBTILE_POLLIDISIAC,
 			new PollidisiacBlock(
-					MobEffects.DIG_SPEED,
+					MobEffects.HASTE,
 					369,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.POLLIDISIAC));
@@ -934,7 +934,7 @@ public final class BotaniaBlocks {
 
 	public static final Block MEDUMONE = make(LibBlockNames.SUBTILE_MEDUMONE,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.MOVEMENT_SLOWDOWN,
+					MobEffects.SLOWNESS,
 					3600,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.MEDUMONE));
@@ -947,13 +947,13 @@ public final class BotaniaBlocks {
 
 	public static final Block MARIMORPHOSIS = make(LibBlockNames.SUBTILE_MARIMORPHOSIS,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.DIG_SLOWDOWN,
+					MobEffects.MINING_FATIGUE,
 					60,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.MARIMORPHOSIS));
 	public static final Block MARIMORPHOSIS_PETITE = make(petite(LibBlockNames.SUBTILE_MARIMORPHOSIS),
 			new PoweredSpecialFlowerBlock(
-					MobEffects.DIG_SLOWDOWN,
+					MobEffects.MINING_FATIGUE,
 					60,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.MARIMORPHOSIS_PETITE));
@@ -996,13 +996,13 @@ public final class BotaniaBlocks {
 
 	public static final Block SOLEGNOLIA = make(LibBlockNames.SUBTILE_SOLEGNOLIA,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.HARM,
+					MobEffects.INSTANT_DAMAGE,
 					1,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.SOLEGNOLIA));
 	public static final Block SOLEGNOLIA_PETITE = make(petite(LibBlockNames.SUBTILE_SOLEGNOLIA),
 			new PoweredSpecialFlowerBlock(
-					MobEffects.HARM,
+					MobEffects.INSTANT_DAMAGE,
 					1,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.SOLEGNOLIA_PETITE));
@@ -3543,21 +3543,21 @@ public final class BotaniaBlocks {
 
 	private static Holder<MobEffect> effectForFlower(DyeColor color) {
 		return switch (color) {
-			case WHITE -> MobEffects.MOVEMENT_SPEED;
+			case WHITE -> MobEffects.SPEED;
 			case ORANGE -> MobEffects.FIRE_RESISTANCE;
-			case MAGENTA -> MobEffects.DIG_SLOWDOWN;
-			case LIGHT_BLUE -> MobEffects.JUMP;
+			case MAGENTA -> MobEffects.MINING_FATIGUE;
+			case LIGHT_BLUE -> MobEffects.JUMP_BOOST;
 			case YELLOW -> MobEffects.ABSORPTION;
 			case LIME -> MobEffects.POISON;
 			case PINK -> MobEffects.REGENERATION;
-			case GRAY -> MobEffects.DAMAGE_RESISTANCE;
+			case GRAY -> MobEffects.RESISTANCE;
 			case LIGHT_GRAY -> MobEffects.WEAKNESS;
 			case CYAN -> MobEffects.WATER_BREATHING;
-			case PURPLE -> MobEffects.CONFUSION;
+			case PURPLE -> MobEffects.NAUSEA;
 			case BLUE -> MobEffects.NIGHT_VISION;
 			case BROWN -> MobEffects.WITHER;
 			case GREEN -> MobEffects.HUNGER;
-			case RED -> MobEffects.DAMAGE_BOOST;
+			case RED -> MobEffects.STRENGTH;
 			case BLACK -> MobEffects.BLINDNESS;
 		};
 	}
