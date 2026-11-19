@@ -117,7 +117,7 @@ public class ShadedMesaRodItem extends Item implements ClientInventoryTick {
 		Integer targetID = stack.get(BotaniaDataComponents.TARGET_ENTITY);
 		float length = stack.getOrDefault(BotaniaDataComponents.TARGET_DIST, 0f);
 
-		if (!player.getCooldowns().isOnCooldown(this)) {
+		if (!player.getCooldowns().isOnCooldown(stack)) {
 			Entity target = null;
 			if (targetID != null && player.level().getEntity(targetID) != null) {
 				Entity taritem = player.level().getEntity(targetID);
@@ -254,7 +254,7 @@ public class ShadedMesaRodItem extends Item implements ClientInventoryTick {
 						}
 						target.setDeltaMovement(moveVector.multiply(3, 1.5, 3));
 					}
-					player.getCooldowns().addCooldown(stack.getItem(), 10);
+					player.getCooldowns().addCooldown(stack, 10);
 				}
 			}
 		}

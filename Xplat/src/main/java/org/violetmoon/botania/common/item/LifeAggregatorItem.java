@@ -160,7 +160,7 @@ public class LifeAggregatorItem extends Item {
 					carryable.gatherBlockEntityData(level.registryAccess()));
 			level.destroyBlock(pos, false, player);
 			if (player != null) {
-				player.getCooldowns().addCooldown(this, 20);
+				player.getCooldowns().addCooldown(stack, 20);
 				if (player instanceof ServerPlayer serverPlayer) {
 					UseItemSuccessTrigger.INSTANCE.trigger(serverPlayer, stack, serverPlayer.serverLevel(),
 							pos.getX(), pos.getY(), pos.getZ());

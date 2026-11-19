@@ -98,7 +98,7 @@ public final class BotaniaItemProperties {
 
 		ClampedItemPropertyFunction ringOnGetter = (stack, worldIn, entityIn, seed) -> {
 			if (entityIn instanceof Player player) {
-				if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+				if (player.getCooldowns().isOnCooldown(stack)) {
 					return 0;
 				} else {
 					return 1;

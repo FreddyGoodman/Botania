@@ -43,7 +43,7 @@ public class RingOfDexterousMotionItem extends BaubleItem {
 			}
 
 			ItemStack ringStack = EquipmentHandler.findOrEmpty(BotaniaItems.RING_OF_DEXTEROUS_MOTION, mc.player);
-			if (ringStack.isEmpty() || mc.player.getCooldowns().isOnCooldown(ringStack.getItem())) {
+			if (ringStack.isEmpty() || mc.player.getCooldowns().isOnCooldown(ringStack)) {
 				return;
 			}
 
@@ -89,7 +89,7 @@ public class RingOfDexterousMotionItem extends BaubleItem {
 			int y = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2 + 20;
 
 			if (!player.getAbilities().flying) {
-				int width = (int) (player.getCooldowns().getCooldownPercent(stack.getItem(), pticks) * 40);
+				int width = (int) (player.getCooldowns().getCooldownPercent(stack, pticks) * 40);
 				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 				if (width > 0) {
 					gui.fill(xo, y - 2, xo + 40, y - 1, 0x88000000);

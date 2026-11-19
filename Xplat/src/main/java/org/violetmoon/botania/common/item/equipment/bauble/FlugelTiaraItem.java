@@ -237,11 +237,11 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 					newTime--;
 				}
 				final int maxCd = 40;
-				boolean isOnCooldown = player.getCooldowns().isOnCooldown(this);
+				boolean isOnCooldown = player.getCooldowns().isOnCooldown(stack);
 				if (!wasSprting && isSprinting && !isOnCooldown && !StoneOfTemperanceItem.hasTemperanceActive(player)) {
 					player.setDeltaMovement(player.getDeltaMovement().add(look.x, 0, look.z));
 					player.level().playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.DASH, SoundSource.PLAYERS, 1F, 1F);
-					player.getCooldowns().addCooldown(this, maxCd);
+					player.getCooldowns().addCooldown(stack, maxCd);
 					DataComponentHelper.setFlag(stack, BotaniaDataComponents.BOOST_PENDING, true);
 				} else if (isOnCooldown) {
 					if (stack.has(BotaniaDataComponents.BOOST_PENDING)) {
@@ -516,7 +516,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			}
 
 			if (player.getAbilities().flying) {
-				int width = (int) (player.getCooldowns().getCooldownPercent(stack.getItem(), partialTicks) * 80);
+				int width = (int) (player.getCooldowns().getCooldownPercent(stack, partialTicks) * 80);
 				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 				if (width > 0) {
 					gui.fill(xo, y - 2, xo + 80, y - 1, 0x88000000);
