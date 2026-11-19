@@ -16,7 +16,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -93,14 +92,14 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
 			Player player, InteractionHand hand, BlockHitResult hitResult) {
 		// implementation is inspired by ChiseledBookShelfBlock::useItemOn
 
 		if (stack.getItem() instanceof WandOfTheForestItem
 				|| !(level.getBlockEntity(pos) instanceof HoveringHourglassBlockEntity hourglass)) {
 			// player has wand or this block's entity data is invalid, so skip useWithoutItem
-			return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.PASS;
 		}
 
 		boolean locked = state.getValue(LOCKED);
@@ -110,8 +109,8 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 			// hourglass is locked, already filled, or the item is not an hourglass material
 			return canRemove || locked && canInsert
 					// only show lock notice if trying to insert or remove material
-					? ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION
-					: ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+					? InteractionResult.TRY_WITH_EMPTY_HAND
+					: InteractionResult.PASS;
 		}
 
 		// put the material into the hourglass
@@ -121,7 +120,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 			level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 		}
 
-		return ItemInteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -141,7 +140,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 				player.displayClientMessage(Component.translatable("botaniamisc.hourglassLock"), true);
 			}
 			// There's BS going on in the server code. "Fail" doesn't prevent the item itself from being used/placed.
-			return InteractionResult.CONSUME_PARTIAL;
+			return InteractionResult.CONSUME.withoutItem();
 		}
 
 		ItemStack hourglassStack = hourglass.getContents();
@@ -157,7 +156,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 			}
 			level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 		}
-		return InteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -161,7 +161,7 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
 			Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (stack.is(BotaniaTags.Items.PETALS) && stack.getItem() instanceof Colored colorSource) {
 			DyeColor itemColor = colorSource.getColor();
@@ -171,7 +171,7 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 				if (!player.hasInfiniteMaterials()) {
 					stack.shrink(1);
 				}
-				return ItemInteractionResult.sidedSuccess(level.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		}
 		if (stack.is(BotaniaTags.Items.MANA_POOL_DYE_REMOVER) && this.color != null) {
@@ -180,9 +180,9 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 			if (!player.hasInfiniteMaterials()) {
 				stack.shrink(1);
 			}
-			return ItemInteractionResult.sidedSuccess(level.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

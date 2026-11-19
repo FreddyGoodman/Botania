@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -82,9 +82,9 @@ public class ManaPrismBlock extends BotaniaWaterloggedEntityBlock
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (!(level.getBlockEntity(pos) instanceof ManaPrismBlockEntity prism)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
 		ItemStack lens = prism.getItemHandler().getItem(0);
@@ -102,7 +102,7 @@ public class ManaPrismBlock extends BotaniaWaterloggedEntityBlock
 			prism.getItemHandler().setItem(0, toInsert);
 			level.playSound(player, pos, BotaniaSounds.PRISM_ADD_LENS, SoundSource.BLOCKS, 1F, 1F);
 			level.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
-			return ItemInteractionResult.sidedSuccess(level.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		if (!lens.isEmpty() && (mainHandEmpty || lensIsSame)) {
 			player.getInventory().placeItemBackInInventory(lens);
@@ -110,9 +110,9 @@ public class ManaPrismBlock extends BotaniaWaterloggedEntityBlock
 
 			level.playSound(player, pos, BotaniaSounds.PRISM_REMOVE_LENS, SoundSource.BLOCKS, 1F, 1F);
 			level.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
-			return ItemInteractionResult.sidedSuccess(level.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

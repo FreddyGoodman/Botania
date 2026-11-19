@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -49,13 +49,13 @@ public class SeasRodItem extends Item {
 
 	// [VanillaCopy] BucketItem, placement case
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+	public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
 		ItemStack itemStack = player.getItemInHand(interactionHand);
 		BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
 		if (blockHitResult.getType() == HitResult.Type.MISS) {
-			return InteractionResultHolder.pass(itemStack);
+			return InteractionResult.PASS;
 		} else if (blockHitResult.getType() != HitResult.Type.BLOCK) {
-			return InteractionResultHolder.pass(itemStack);
+			return InteractionResult.PASS;
 		} else {
 			BlockPos blockPos = blockHitResult.getBlockPos();
 			Direction direction = blockHitResult.getDirection();
@@ -78,7 +78,8 @@ public class SeasRodItem extends Item {
 						if (result.consumesAction()) {
 							spawnParticles(player, blockPos);
 						}
-						return new InteractionResultHolder<>(result.result(), itemStack);
+						return result instanceof InteractionResult.Success success
+								? success.heldItemTransformedTo(itemStack) : result;
 					}
 				}
 
@@ -94,10 +95,10 @@ public class SeasRodItem extends Item {
 					player.awardStat(Stats.ITEM_USED.get(this));
 					// Botania - particles
 					spawnParticles(player, blockPos3);
-					return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+					return InteractionResult.SUCCESS;
 				}
 			}
-			return InteractionResultHolder.fail(itemStack);
+			return InteractionResult.FAIL;
 		}
 	}
 

@@ -85,7 +85,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 				setHitPos(stack, ctx.getClickLocation());
 
 				displayRemainderCounter(player, stack);
-				return InteractionResult.sidedSuccess(world.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		} else if (canExchange(stack) && !stack.has(BotaniaDataComponents.SWAPPING)) {
 			Item replacement = getItemToPlace(stack);
@@ -98,7 +98,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 			}
 		}
 
-		return InteractionResult.sidedSuccess(world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -56,10 +56,10 @@ public class ManaEnchanterBlock extends BotaniaEntityBlock {
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (!(level.getBlockEntity(pos) instanceof ManaEnchanterBlockEntity enchanter)
 				|| !stack.isEmpty() && stack.getItem() instanceof WandOfTheForestItem) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
 		boolean stackEnchantable = !stack.isEmpty()
@@ -73,7 +73,7 @@ public class ManaEnchanterBlock extends BotaniaEntityBlock {
 				player.setItemInHand(hand, ItemStack.EMPTY);
 				enchanter.sync();
 			} else {
-				return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+				return InteractionResult.TRY_WITH_EMPTY_HAND;
 			}
 		} else if (enchanter.stage == ManaEnchanterBlockEntity.State.IDLE) {
 			player.getInventory().placeItemBackInInventory(enchanter.itemToEnchant.copy());
@@ -81,7 +81,7 @@ public class ManaEnchanterBlock extends BotaniaEntityBlock {
 			enchanter.sync();
 		}
 
-		return ItemInteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

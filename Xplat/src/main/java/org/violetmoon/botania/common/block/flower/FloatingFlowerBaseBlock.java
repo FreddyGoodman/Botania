@@ -14,7 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -79,7 +79,7 @@ public abstract class FloatingFlowerBaseBlock extends BotaniaWaterloggedEntityBl
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
 			Player player, InteractionHand hand, BlockHitResult hitResult) {
 		BlockEntity te = level.getBlockEntity(pos);
 		if (te instanceof FloatingFlowerProvider provider && provider.getFloatingData() != null) {
@@ -98,7 +98,7 @@ public abstract class FloatingFlowerBaseBlock extends BotaniaWaterloggedEntityBl
 				if (!player.hasInfiniteMaterials()) {
 					stack.shrink(1);
 				}
-				return ItemInteractionResult.sidedSuccess(level.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		}
 		Boolean isDimmed = state.getValue(BotaniaStateProperties.DIMMED);
@@ -112,9 +112,9 @@ public abstract class FloatingFlowerBaseBlock extends BotaniaWaterloggedEntityBl
 			if (!player.hasInfiniteMaterials()) {
 				stack.shrink(1);
 			}
-			return ItemInteractionResult.sidedSuccess(level.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Nullable

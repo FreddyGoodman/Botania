@@ -78,7 +78,7 @@ public class GrassSeedsItem extends Item {
 				spawnParticles(world, pos, color);
 			}
 
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return InteractionResult.PASS;

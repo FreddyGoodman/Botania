@@ -64,7 +64,7 @@ public class HellsRodItem extends Item {
 			player.playSound(BotaniaSounds.ROD_OF_THE_HELLS, 1, 1);
 		}
 
-		return InteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	public record AvatarBehavior(ItemStack rod, Avatar avatar) implements AvatarWieldable {

@@ -17,7 +17,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -51,15 +50,15 @@ public class BlackHoleTalismanItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (getBlock(stack) != null && player.isSecondaryUseActive()) {
 			DataComponentHelper.setFlag(stack, BotaniaDataComponents.ACTIVE, !stack.has(BotaniaDataComponents.ACTIVE));
 			player.playSound(BotaniaSounds.BLACK_HOLE_TALISMAN_CONFIGURE, 1F, 1F);
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	@Override
@@ -72,7 +71,7 @@ public class BlackHoleTalismanItem extends Item {
 		ItemStack stack = ctx.getItemInHand();
 
 		if (!state.isAir() && setBlock(stack, state.getBlock())) {
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		} else {
 			Block bBlock = getBlock(stack);
 
@@ -90,7 +89,7 @@ public class BlackHoleTalismanItem extends Item {
 						add(stack, remainder.getCount());
 					}
 				}
-				return InteractionResult.sidedSuccess(world.isClientSide());
+				return InteractionResult.SUCCESS;
 			} else {
 				if (player == null || player.hasInfiniteMaterials() || getBlockCount(stack) > 0) {
 					ItemStack toUse = new ItemStack(bBlock);

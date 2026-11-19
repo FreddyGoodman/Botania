@@ -26,7 +26,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -283,7 +283,7 @@ public class SextantItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!player.isSecondaryUseActive()) {
 			BlockHitResult rtr = ToolCommons.raytraceFromEntity(player, 128, false);
@@ -294,10 +294,10 @@ public class SextantItem extends Item {
 				}
 				return ItemUtils.startUsingInstantly(world, player, hand);
 			}
-			return InteractionResultHolder.pass(stack);
+			return InteractionResult.PASS;
 		} else {
 			reset(world, player, stack);
-			return InteractionResultHolder.success(stack);
+			return InteractionResult.SUCCESS;
 		}
 	}
 

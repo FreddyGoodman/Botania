@@ -13,7 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -71,7 +71,7 @@ public class AvatarBlock extends BotaniaWaterloggedEntityBlock implements Redsto
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackOnPlayer, BlockState state, Level level, BlockPos pos, Player player,
+	public InteractionResult useItemOn(ItemStack stackOnPlayer, BlockState state, Level level, BlockPos pos, Player player,
 			InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof AvatarBlockEntity avatar) {
 			ItemStack stackOnAvatar = avatar.getItemHandler().getItem(0);
@@ -81,18 +81,18 @@ public class AvatarBlock extends BotaniaWaterloggedEntityBlock implements Redsto
 					player.getInventory().placeItemBackInInventory(stackOnAvatar);
 					level.setBlockAndUpdate(pos, state.setValue(ACTIVE, false));
 				}
-				return ItemInteractionResult.sidedSuccess(level.isClientSide());
+				return InteractionResult.SUCCESS;
 
 			} else if (!stackOnPlayer.isEmpty() && AvatarWieldable.LOOKUP.find(stackOnPlayer, avatar) != null) {
 				if (!level.isClientSide()) {
 					avatar.getItemHandler().setItem(0, stackOnPlayer.split(1));
 					level.setBlockAndUpdate(pos, state.setValue(ACTIVE, true));
 				}
-				return ItemInteractionResult.sidedSuccess(level.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

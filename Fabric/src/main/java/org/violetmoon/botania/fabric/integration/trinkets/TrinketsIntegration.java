@@ -28,7 +28,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -66,12 +66,12 @@ public class TrinketsIntegration extends EquipmentHandler {
 		return oldRule;
 	}
 
-	private static InteractionResultHolder<ItemStack> useBaubleItem(Player player, Level level, InteractionHand hand) {
+	private static InteractionResult useBaubleItem(Player player, Level level, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (stack.getItem() instanceof BaubleItem bi && bi.canEquip(stack, player) && TrinketItem.equipItem(player, stack)) {
-			return InteractionResultHolder.success(stack);
+			return InteractionResult.SUCCESS;
 		}
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	@Override
