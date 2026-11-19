@@ -8,15 +8,13 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-import com.mojang.serialization.MapCodec;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -26,14 +24,16 @@ import org.violetmoon.botania.common.item.WandOfTheForestItem;
 import org.violetmoon.botania.common.item.material.MysticalPetalItem;
 import org.violetmoon.botania.mixin.ShapedRecipeAccessor;
 
-import java.util.function.Function;
 
 public class WandOfTheForestRecipe extends ShapedRecipe {
-	public static final WrappingRecipeSerializer<WandOfTheForestRecipe> SERIALIZER = new Serializer();
+	public static final WrappingRecipeSerializer<ShapedRecipe, WandOfTheForestRecipe> SERIALIZER =
+			WrappingRecipeSerializer.of(ShapedRecipe.class, ShapedRecipe.SERIALIZER, WandOfTheForestRecipe::new);
 
 	private WandOfTheForestRecipe(ShapedRecipe recipe) {
-		super(recipe.getGroup(), recipe.category(), ((ShapedRecipeAccessor) recipe).botania_getPattern(),
-				((ShapedRecipeAccessor) recipe).botania_getResult(), recipe.showNotification());
+		super(new Recipe.CommonInfo(recipe.showNotification()),
+				new CraftingRecipe.CraftingBookInfo(recipe.category(), recipe.group()),
+				((ShapedRecipeAccessor) recipe).botania_getPattern(),
+				((ShapedRecipeAccessor) recipe).botania_getResult());
 	}
 
 	@Override
@@ -61,32 +61,8 @@ public class WandOfTheForestRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
+		return SERIALIZER.serializer();
 	}
 
-	private static class Serializer implements WrappingRecipeSerializer<WandOfTheForestRecipe> {
-		public static final MapCodec<WandOfTheForestRecipe> CODEC = SHAPED_RECIPE.codec()
-				.xmap(WandOfTheForestRecipe::new, Function.identity());
-		public static final StreamCodec<RegistryFriendlyByteBuf, WandOfTheForestRecipe> STREAM_CODEC = SHAPED_RECIPE.streamCodec()
-				.map(WandOfTheForestRecipe::new, Function.identity());
-
-		@Override
-		public WandOfTheForestRecipe wrap(Recipe<?> recipe) {
-			if (!(recipe instanceof ShapedRecipe shapedRecipe)) {
-				throw new IllegalArgumentException("Unsupported recipe type to wrap: " + recipe.getType());
-			}
-			return new WandOfTheForestRecipe(shapedRecipe);
-		}
-
-		@Override
-		public MapCodec<WandOfTheForestRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, WandOfTheForestRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
 }

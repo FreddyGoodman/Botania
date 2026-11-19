@@ -8,51 +8,65 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.mixin.ShapedRecipeAccessor;
-import org.violetmoon.botania.mixin.ShapedRecipePatternAccessor;
 
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WaterBottleMatchingRecipe extends ShapedRecipe {
-	public static final WrappingRecipeSerializer<WaterBottleMatchingRecipe> SERIALIZER = new Serializer();
-
-	private static ShapedRecipePattern transformPattern(ShapedRecipePattern pattern) {
-		final var testPotion = new ItemStack(Items.POTION);
-		final NonNullList<Ingredient> ingredients = NonNullList.of(Ingredient.EMPTY,
-				pattern.ingredients().stream().map(i -> i.test(testPotion)
-						? Ingredient.of(PotionContents.createItemStack(Items.POTION, Potions.WATER))
-						: i).toArray(Ingredient[]::new));
-		return new ShapedRecipePattern(pattern.width(), pattern.height(), ingredients,
-				// TODO: verify
-				((ShapedRecipePatternAccessor) (Object) pattern).botania_getData());
-	}
+	public static final WrappingRecipeSerializer<ShapedRecipe, WaterBottleMatchingRecipe> SERIALIZER =
+			WrappingRecipeSerializer.of(ShapedRecipe.class, ShapedRecipe.SERIALIZER, WaterBottleMatchingRecipe::new);
 
 	public WaterBottleMatchingRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result) {
-		super(group, category, transformPattern(pattern), result);
+		super(new Recipe.CommonInfo(true), new CraftingRecipe.CraftingBookInfo(category, group),
+				pattern, ItemStackTemplate.fromNonEmptyStack(result));
 	}
 
 	private WaterBottleMatchingRecipe(ShapedRecipe recipe) {
-		super(recipe.getGroup(), recipe.category(), transformPattern(((ShapedRecipeAccessor) recipe).botania_getPattern()),
-				((ShapedRecipeAccessor) recipe).botania_getResult(), recipe.showNotification());
+		super(new Recipe.CommonInfo(recipe.showNotification()),
+				new CraftingRecipe.CraftingBookInfo(recipe.category(), recipe.group()),
+				((ShapedRecipeAccessor) recipe).botania_getPattern(),
+				((ShapedRecipeAccessor) recipe).botania_getResult());
+	}
+
+	@Override
+	public List<RecipeDisplay> display() {
+		var pattern = ((ShapedRecipeAccessor) this).botania_getPattern();
+		var ingredients = pattern.ingredients();
+		var plainPotion = new ItemStack(Items.POTION);
+		var water = ItemStackTemplate.fromNonEmptyStack(PotionContents.createItemStack(Items.POTION, Potions.WATER));
+		return super.display().stream().map(display -> {
+			if (!(display instanceof ShapedCraftingRecipeDisplay shaped)) {
+				return display;
+			}
+			var slots = new ArrayList<>(shaped.ingredients());
+			for (int i = 0; i < ingredients.size(); ++i) {
+				var ingredient = ingredients.get(i);
+				if (ingredient.isPresent() && ingredient.get().test(plainPotion)) {
+					slots.set(i, new SlotDisplay.ItemStackSlotDisplay(water));
+				}
+			}
+			return new ShapedCraftingRecipeDisplay(shaped.width(), shaped.height(), slots, shaped.result(), shaped.craftingStation());
+		}).toList();
 	}
 
 	@Override
@@ -70,32 +84,8 @@ public class WaterBottleMatchingRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
+		return SERIALIZER.serializer();
 	}
 
-	private static class Serializer implements WrappingRecipeSerializer<WaterBottleMatchingRecipe> {
-		public static final MapCodec<WaterBottleMatchingRecipe> CODEC = SHAPED_RECIPE.codec()
-				.xmap(WaterBottleMatchingRecipe::new, Function.identity());
-		public static final StreamCodec<RegistryFriendlyByteBuf, WaterBottleMatchingRecipe> STREAM_CODEC = SHAPED_RECIPE.streamCodec()
-				.map(WaterBottleMatchingRecipe::new, Function.identity());
-
-		@Override
-		public WaterBottleMatchingRecipe wrap(Recipe<?> recipe) {
-			if (!(recipe instanceof ShapedRecipe shapedRecipe)) {
-				throw new IllegalArgumentException("Unsupported recipe type to wrap: " + recipe.getType());
-			}
-			return new WaterBottleMatchingRecipe(shapedRecipe);
-		}
-
-		@Override
-		public MapCodec<WaterBottleMatchingRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, WaterBottleMatchingRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
 }

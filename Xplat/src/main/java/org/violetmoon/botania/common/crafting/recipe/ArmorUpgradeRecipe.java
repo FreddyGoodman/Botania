@@ -8,27 +8,27 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-import com.mojang.serialization.MapCodec;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import org.violetmoon.botania.mixin.ShapedRecipeAccessor;
 
-import java.util.function.Function;
 
 public class ArmorUpgradeRecipe extends ShapedRecipe {
-	public static final WrappingRecipeSerializer<ArmorUpgradeRecipe> SERIALIZER = new Serializer();
+	public static final WrappingRecipeSerializer<ShapedRecipe, ArmorUpgradeRecipe> SERIALIZER =
+			WrappingRecipeSerializer.of(ShapedRecipe.class, ShapedRecipe.SERIALIZER, ArmorUpgradeRecipe::new);
 
 	private ArmorUpgradeRecipe(ShapedRecipe recipe) {
-		super(recipe.getGroup(), recipe.category(), ((ShapedRecipeAccessor) recipe).botania_getPattern(),
-				((ShapedRecipeAccessor) recipe).botania_getResult(), recipe.showNotification());
+		super(new Recipe.CommonInfo(recipe.showNotification()),
+				new CraftingRecipe.CraftingBookInfo(recipe.category(), recipe.group()),
+				((ShapedRecipeAccessor) recipe).botania_getPattern(),
+				((ShapedRecipeAccessor) recipe).botania_getResult());
 	}
 
 	@Override
@@ -46,32 +46,8 @@ public class ArmorUpgradeRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
+		return SERIALIZER.serializer();
 	}
 
-	private static class Serializer implements WrappingRecipeSerializer<ArmorUpgradeRecipe> {
-		public static final MapCodec<ArmorUpgradeRecipe> CODEC = SHAPED_RECIPE.codec()
-				.xmap(ArmorUpgradeRecipe::new, Function.identity());
-		public static final StreamCodec<RegistryFriendlyByteBuf, ArmorUpgradeRecipe> STREAM_CODEC = SHAPED_RECIPE.streamCodec()
-				.map(ArmorUpgradeRecipe::new, Function.identity());
-
-		@Override
-		public ArmorUpgradeRecipe wrap(Recipe<?> recipe) {
-			if (!(recipe instanceof ShapedRecipe shapedRecipe)) {
-				throw new IllegalArgumentException("Unsupported recipe type to wrap: " + recipe.getType());
-			}
-			return new ArmorUpgradeRecipe(shapedRecipe);
-		}
-
-		@Override
-		public MapCodec<ArmorUpgradeRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ArmorUpgradeRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
 }

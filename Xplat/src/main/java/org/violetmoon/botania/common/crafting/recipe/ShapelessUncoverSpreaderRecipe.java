@@ -8,15 +8,13 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -25,13 +23,16 @@ import org.violetmoon.botania.common.block.mana.ManaSpreaderBlock;
 import org.violetmoon.botania.common.helper.ColorHelper;
 import org.violetmoon.botania.mixin.ShapelessRecipeAccessor;
 
-import java.util.function.Function;
 
 public class ShapelessUncoverSpreaderRecipe extends ShapelessRecipe {
-	public static final WrappingRecipeSerializer<ShapelessUncoverSpreaderRecipe> SERIALIZER = new Serializer();
+	public static final WrappingRecipeSerializer<ShapelessRecipe, ShapelessUncoverSpreaderRecipe> SERIALIZER =
+			WrappingRecipeSerializer.of(ShapelessRecipe.class, ShapelessRecipe.SERIALIZER, ShapelessUncoverSpreaderRecipe::new);
 
 	private ShapelessUncoverSpreaderRecipe(ShapelessRecipe recipe) {
-		super(recipe.getGroup(), recipe.category(), ((ShapelessRecipeAccessor) recipe).botania_getResult(), recipe.getIngredients());
+		super(new Recipe.CommonInfo(recipe.showNotification()),
+				new CraftingRecipe.CraftingBookInfo(recipe.category(), recipe.group()),
+				((ShapelessRecipeAccessor) recipe).botania_getResult(),
+				((ShapelessRecipeAccessor) recipe).botania_getIngredients());
 	}
 
 	@Override
@@ -51,32 +52,8 @@ public class ShapelessUncoverSpreaderRecipe extends ShapelessRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+	public RecipeSerializer<ShapelessRecipe> getSerializer() {
+		return SERIALIZER.serializer();
 	}
 
-	private static class Serializer implements WrappingRecipeSerializer<ShapelessUncoverSpreaderRecipe> {
-		public static final MapCodec<ShapelessUncoverSpreaderRecipe> CODEC = SHAPELESS_RECIPE.codec()
-				.xmap(ShapelessUncoverSpreaderRecipe::new, Function.identity());
-		public static final StreamCodec<RegistryFriendlyByteBuf, ShapelessUncoverSpreaderRecipe> STREAM_CODEC = SHAPELESS_RECIPE.streamCodec()
-				.map(ShapelessUncoverSpreaderRecipe::new, Function.identity());
-
-		@Override
-		public ShapelessUncoverSpreaderRecipe wrap(Recipe<?> recipe) {
-			if (!(recipe instanceof ShapelessRecipe shapelessRecipe)) {
-				throw new IllegalArgumentException("Unsupported recipe type to wrap: " + recipe.getType());
-			}
-			return new ShapelessUncoverSpreaderRecipe(shapelessRecipe);
-		}
-
-		@Override
-		public MapCodec<ShapelessUncoverSpreaderRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ShapelessUncoverSpreaderRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
 }

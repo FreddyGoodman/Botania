@@ -8,12 +8,10 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-import com.mojang.serialization.MapCodec;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -21,14 +19,16 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import org.violetmoon.botania.api.mana.ManaItem;
 import org.violetmoon.botania.mixin.ShapedRecipeAccessor;
 
-import java.util.function.Function;
 
 public class ManaUpgradeRecipe extends ShapedRecipe {
-	public static final WrappingRecipeSerializer<ManaUpgradeRecipe> SERIALIZER = new Serializer();
+	public static final WrappingRecipeSerializer<ShapedRecipe, ManaUpgradeRecipe> SERIALIZER =
+			WrappingRecipeSerializer.of(ShapedRecipe.class, ShapedRecipe.SERIALIZER, ManaUpgradeRecipe::new);
 
 	private ManaUpgradeRecipe(ShapedRecipe recipe) {
-		super(recipe.getGroup(), recipe.category(), ((ShapedRecipeAccessor) recipe).botania_getPattern(),
-				((ShapedRecipeAccessor) recipe).botania_getResult(), recipe.showNotification());
+		super(new Recipe.CommonInfo(recipe.showNotification()),
+				new CraftingRecipe.CraftingBookInfo(recipe.category(), recipe.group()),
+				((ShapedRecipeAccessor) recipe).botania_getPattern(),
+				((ShapedRecipeAccessor) recipe).botania_getResult());
 	}
 
 	public static ItemStack output(ItemStack output, CraftingInput inv) {
@@ -53,32 +53,8 @@ public class ManaUpgradeRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
+		return SERIALIZER.serializer();
 	}
 
-	private static class Serializer implements WrappingRecipeSerializer<ManaUpgradeRecipe> {
-		public static final MapCodec<ManaUpgradeRecipe> CODEC = SHAPED_RECIPE.codec()
-				.xmap(ManaUpgradeRecipe::new, Function.identity());
-		public static final StreamCodec<RegistryFriendlyByteBuf, ManaUpgradeRecipe> STREAM_CODEC = SHAPED_RECIPE.streamCodec()
-				.map(ManaUpgradeRecipe::new, Function.identity());
-
-		@Override
-		public ManaUpgradeRecipe wrap(Recipe<?> recipe) {
-			if (!(recipe instanceof ShapedRecipe shapedRecipe)) {
-				throw new IllegalArgumentException("Unsupported recipe type to wrap: " + recipe.getType());
-			}
-			return new ManaUpgradeRecipe(shapedRecipe);
-		}
-
-		@Override
-		public MapCodec<ManaUpgradeRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ManaUpgradeRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
 }
