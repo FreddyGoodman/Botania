@@ -47,7 +47,6 @@ import org.violetmoon.botania.api.block.PetalApothecary.State;
 import org.violetmoon.botania.api.mana.ManaItemHandler;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 import org.violetmoon.botania.common.block.block_entity.PetalApothecaryBlockEntity;
-import org.violetmoon.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import org.violetmoon.botania.common.helper.InventoryHelper;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.rod.SeasRodItem;
@@ -213,15 +212,11 @@ public class PetalApothecaryBlock extends BotaniaEntityBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		boolean blockChanged = !state.is(newState.getBlock());
-		if (blockChanged || newState.getValue(FLUID) != State.WATER) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(level, pos, inventory.getItemHandler());
-			}
-			if (blockChanged) {
-				super.onRemove(state, level, pos, newState, movedByPiston);
-			}
+	protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+		super.onPlace(state, level, pos, oldState, movedByPiston);
+		if (oldState.is(this) && state.getValue(FLUID) != State.WATER
+				&& level.getBlockEntity(pos) instanceof PetalApothecaryBlockEntity apothecary) {
+			Containers.dropContents(level, pos, apothecary.getItemHandler());
 		}
 	}
 

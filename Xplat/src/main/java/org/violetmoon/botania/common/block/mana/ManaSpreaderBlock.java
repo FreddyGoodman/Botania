@@ -15,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -241,7 +240,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedEntityBlock
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override
@@ -339,15 +338,9 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedEntityBlock
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (state.getBlock() instanceof ManaSpreaderBlock oldBlock
-				&& newState.getBlock() instanceof ManaSpreaderBlock newBlock
-				&& ManaSpreaderBlock.getBaseBlock(oldBlock) == ManaSpreaderBlock.getBaseBlock(newBlock)) {
-			// don't delete block entity if it's the same spreader type
-			return;
-		}
-		Containers.dropContentsOnDestroy(state, newState, level, pos);
-		super.onRemove(state, level, pos, newState, movedByPiston);
+	protected boolean shouldChangedStateKeepBlockEntity(BlockState oldState) {
+		return oldState.getBlock() instanceof ManaSpreaderBlock oldBlock
+				&& getBaseBlock(oldBlock) == getBaseBlock(this);
 	}
 
 	@Override

@@ -9,7 +9,6 @@
 package org.violetmoon.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.common.block.BotaniaWaterloggedEntityBlock;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 import org.violetmoon.botania.common.block.block_entity.RunicAltarBlockEntity;
-import org.violetmoon.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import org.violetmoon.botania.common.helper.InventoryHelper;
 
 public class RunicAltarBlock extends BotaniaWaterloggedEntityBlock {
@@ -70,16 +68,6 @@ public class RunicAltarBlock extends BotaniaWaterloggedEntityBlock {
 		}
 
 		return InteractionResult.TRY_WITH_EMPTY_HAND;
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!state.is(newState.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(level, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, level, pos, newState, movedByPiston);
-		}
 	}
 
 	@Override

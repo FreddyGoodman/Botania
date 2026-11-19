@@ -50,7 +50,7 @@ public class CocoonBlock extends BotaniaWaterloggedEntityBlock {
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override

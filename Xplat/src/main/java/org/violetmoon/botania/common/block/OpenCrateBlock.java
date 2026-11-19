@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -27,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.block.RedstoneSensitiveBlock;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 import org.violetmoon.botania.common.block.block_entity.OpenCrateBlockEntity;
-import org.violetmoon.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 
 public class OpenCrateBlock extends BotaniaEntityBlock {
 
@@ -50,16 +48,6 @@ public class OpenCrateBlock extends BotaniaEntityBlock {
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
 		RedstoneSensitiveBlock.updateRedstonePower(state, level, pos);
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!newState.is(state.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(level, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, level, pos, newState, movedByPiston);
-		}
 	}
 
 	@Override

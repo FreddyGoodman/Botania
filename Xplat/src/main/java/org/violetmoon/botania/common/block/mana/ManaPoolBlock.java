@@ -186,14 +186,9 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 	}
 
 	@Override
-	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (state.getBlock() instanceof ManaPoolBlock oldBlock
-				&& newState.getBlock() instanceof ManaPoolBlock newBlock
-				&& ManaPoolBlock.getUndyedBlock(oldBlock) == ManaPoolBlock.getUndyedBlock(newBlock)) {
-			// don't delete block entity if it's the same pool type
-			return;
-		}
-		super.onRemove(state, level, pos, newState, movedByPiston);
+	protected boolean shouldChangedStateKeepBlockEntity(BlockState oldState) {
+		return oldState.getBlock() instanceof ManaPoolBlock oldBlock
+				&& getUndyedBlock(oldBlock) == getUndyedBlock(this);
 	}
 
 	@Override
@@ -217,7 +212,7 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
 		if (fabulous) {
-			return RenderShape.ENTITYBLOCK_ANIMATED;
+			return RenderShape.INVISIBLE;
 		} else {
 			return RenderShape.MODEL;
 		}

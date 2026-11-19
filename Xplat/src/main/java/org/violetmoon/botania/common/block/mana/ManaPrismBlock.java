@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.block.mana;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +34,6 @@ import org.violetmoon.botania.api.mana.BasicLensItem;
 import org.violetmoon.botania.api.mana.ManaCollisionGhost;
 import org.violetmoon.botania.api.state.BotaniaStateProperties;
 import org.violetmoon.botania.common.block.BotaniaWaterloggedEntityBlock;
-import org.violetmoon.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import org.violetmoon.botania.common.block.block_entity.mana.ManaPrismBlockEntity;
 import org.violetmoon.botania.common.entity.ManaBurstEntity;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
@@ -123,16 +121,6 @@ public class ManaPrismBlock extends BotaniaWaterloggedEntityBlock
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
 		RedstoneSensitiveBlock.updateRedstonePower(state, level, pos);
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!state.is(newState.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(level, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, level, pos, newState, movedByPiston);
-		}
 	}
 
 	@Override

@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +40,6 @@ import org.violetmoon.botania.api.item.AvatarWieldable;
 import org.violetmoon.botania.api.state.BotaniaStateProperties;
 import org.violetmoon.botania.common.block.block_entity.AvatarBlockEntity;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
-import org.violetmoon.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 
 public class AvatarBlock extends BotaniaWaterloggedEntityBlock implements RedstoneSensitiveBlock {
 
@@ -96,16 +94,6 @@ public class AvatarBlock extends BotaniaWaterloggedEntityBlock implements Redsto
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!state.is(newState.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(level, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, level, pos, newState, movedByPiston);
-		}
-	}
-
-	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return RedstoneSensitiveBlock.getPoweredStateForPlacement(super.getStateForPlacement(context), context)
 				.setValue(FACING, context.getHorizontalDirection().getOpposite());
@@ -118,7 +106,7 @@ public class AvatarBlock extends BotaniaWaterloggedEntityBlock implements Redsto
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override

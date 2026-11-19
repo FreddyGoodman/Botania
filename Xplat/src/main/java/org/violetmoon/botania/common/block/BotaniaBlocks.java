@@ -76,7 +76,7 @@ public final class BotaniaBlocks {
 			// [VanillaCopy] Blocks.POPPY
 			BlockBehaviour.Properties.of()
 					.mapColor(MapColor.PLANT)
-					.noCollission()
+					.noCollision()
 					.instabreak()
 					.offsetType(BlockBehaviour.OffsetType.XZ)
 					.pushReaction(PushReaction.DESTROY)
@@ -1202,20 +1202,20 @@ public final class BotaniaBlocks {
 	public static final Block LIVINGWOOD_PRESSURE_PLATE = make(LibBlockNames.LIVINGWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
 			new PressurePlateBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET,
 					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.forceSolidOn()
 							.pushReaction(PushReaction.DESTROY)));
 	public static final Block LIVINGWOOD_BUTTON = make(LibBlockNames.LIVINGWOOD + LibBlockNames.BUTTON_SUFFIX,
 			new ButtonBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET, 30,
 					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.pushReaction(PushReaction.DESTROY)));
 	public static final Block LIVINGWOOD_SIGN = make(LibBlockNames.LIVINGWOOD + LibBlockNames.SIGN_SUFFIX,
 			new StandingSignBlock(BotaniaBlockSetTypes.LIVINGWOOD,
 					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(1.0f)
 							.forceSolidOn()));
 	public static final Block LIVINGWOOD_WALL_SIGN = make(LibBlockNames.LIVINGWOOD + LibBlockNames.WALL_INFIX + LibBlockNames.SIGN_SUFFIX,
@@ -1288,20 +1288,20 @@ public final class BotaniaBlocks {
 	public static final Block DREAMWOOD_PRESSURE_PLATE = make(LibBlockNames.DREAMWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
 			new PressurePlateBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET,
 					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.forceSolidOn()
 							.pushReaction(PushReaction.DESTROY)));
 	public static final Block DREAMWOOD_BUTTON = make(LibBlockNames.DREAMWOOD + LibBlockNames.BUTTON_SUFFIX,
 			new ButtonBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET, 30,
 					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.pushReaction(PushReaction.DESTROY)));
 	public static final Block DREAMWOOD_SIGN = make(LibBlockNames.DREAMWOOD + LibBlockNames.SIGN_SUFFIX,
 			new StandingSignBlock(BotaniaBlockSetTypes.DREAMWOOD,
 					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(1.0f)
 							.forceSolidOn()));
 	public static final Block DREAMWOOD_WALL_SIGN = make(LibBlockNames.DREAMWOOD + LibBlockNames.WALL_INFIX + LibBlockNames.SIGN_SUFFIX,
@@ -1479,7 +1479,7 @@ public final class BotaniaBlocks {
 			new PowerGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
 	public static final Block MANA_PRISM = make(LibBlockNames.MANA_PRISM,
 			new ManaPrismBlock(BlockBehaviour.Properties.ofFullCopy(ALFGLASS)
-					.noCollission()));
+					.noCollision()));
 	public static final Block MANA_PUMP = make(LibBlockNames.MANA_PUMP,
 			new ManaPumpBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
 	public static final Block SPARK_TINKERER = make(LibBlockNames.SPARK_TINKERER,
@@ -1588,7 +1588,7 @@ public final class BotaniaBlocks {
 			new SpectralRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL)));
 	public static final Block LUMINIZER = make(LibBlockNames.LUMINIZER,
 			new LuminizerBlock(BlockBehaviour.Properties.of()
-					.noCollission()));
+					.noCollision()));
 	public static final Block DETECTOR_LUMINIZER = make("detector" + LibBlockNames.LUMINIZER_SUFFIX,
 			new LuminizerDetectorBlock(BlockBehaviour.Properties.ofFullCopy(LUMINIZER)));
 	public static final Block FORK_LUMINIZER = make("fork" + LibBlockNames.LUMINIZER_SUFFIX,
@@ -1613,7 +1613,7 @@ public final class BotaniaBlocks {
 	public static final Block FAKE_AIR = make(LibBlockNames.FAKE_AIR,
 			new FakeAirBlock(BlockBehaviour.Properties.of()
 					.replaceable()
-					.noCollission()
+					.noCollision()
 					.noLootTable()
 					.air()
 					.randomTicks()));
@@ -1629,7 +1629,7 @@ public final class BotaniaBlocks {
 					.sound(SoundType.WOOL)));
 	public static final Block ANIMATED_TORCH = make(LibBlockNames.ANIMATED_TORCH,
 			new AnimatedTorchBlock(BlockBehaviour.Properties.of()
-					.noCollission()
+					.noCollision()
 					.instabreak()
 					.lightLevel(state -> state.getValue(AnimatedTorchBlock.TRIGGERED) ? 0 : 7)
 					.sound(SoundType.WOOD)
@@ -1683,7 +1683,7 @@ public final class BotaniaBlocks {
 					.pushReaction(PushReaction.DESTROY)
 					.sound(SoundType.WOOL)
 					.lightLevel(constInt(15))
-					.noCollission()));
+					.noCollision()));
 	public static final Block BLAZE_MESH = make(LibBlockNames.BLAZE_BLOCK,
 			new Block(BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
 					.instrument(NoteBlockInstrument.PLING)
@@ -1727,14 +1727,14 @@ public final class BotaniaBlocks {
 	public static final Block SHIMMERWOOD_PRESSURE_PLATE = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
 			new PressurePlateBlock(BotaniaBlockSetTypes.SHIMMERWOOD_BLOCK_SET,
 					BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.forceSolidOn()
 							.pushReaction(PushReaction.DESTROY)));
 	public static final Block SHIMMERWOOD_BUTTON = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.BUTTON_SUFFIX,
 			new ButtonBlock(BotaniaBlockSetTypes.SHIMMERWOOD_BLOCK_SET, 30,
 					BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.pushReaction(PushReaction.DESTROY)));
 

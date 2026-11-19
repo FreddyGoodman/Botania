@@ -10,6 +10,7 @@ package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -69,13 +70,15 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedEntityBlock {
 
 	@Override
 	protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+		if (oldState.is(this) && oldState.getValue(FACING) != state.getValue(FACING)) {
+			this.updateNeighborsInFront(level, pos, oldState);
+		}
 		this.updateNeighborsInFront(level, pos, state);
 	}
 
 	@Override
-	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		super.onRemove(state, level, pos, newState, movedByPiston);
-		if (!movedByPiston && !state.is(newState.getBlock()) || state.getValue(FACING) != newState.getValue(FACING)) {
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		if (!movedByPiston) {
 			this.updateNeighborsInFront(level, pos, state);
 		}
 	}
@@ -124,7 +127,7 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedEntityBlock {
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override

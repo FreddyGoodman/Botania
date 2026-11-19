@@ -40,7 +40,6 @@ import org.violetmoon.botania.api.item.HourglassMaterial;
 import org.violetmoon.botania.api.state.BotaniaStateProperties;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 import org.violetmoon.botania.common.block.block_entity.HoveringHourglassBlockEntity;
-import org.violetmoon.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import org.violetmoon.botania.common.item.WandOfTheForestItem;
 
 import java.util.function.BiConsumer;
@@ -187,14 +186,8 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 	}
 
 	@Override
-	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		SimpleInventoryBlockEntity.dropContentsOnDestroy(state, newState, level, pos);
-		super.onRemove(state, level, pos, newState, movedByPiston);
-	}
-
-	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override

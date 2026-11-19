@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -84,16 +83,4 @@ public class ManaEnchanterBlock extends BotaniaEntityBlock {
 		return InteractionResult.SUCCESS;
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!state.is(newState.getBlock())) {
-
-			if (level.getBlockEntity(pos) instanceof ManaEnchanterBlockEntity enchanter
-					&& !enchanter.itemToEnchant.isEmpty()) {
-				Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), enchanter.itemToEnchant);
-			}
-
-			super.onRemove(state, level, pos, newState, movedByPiston);
-		}
-	}
 }

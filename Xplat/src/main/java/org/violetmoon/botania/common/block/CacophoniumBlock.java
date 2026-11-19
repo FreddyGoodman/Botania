@@ -9,7 +9,6 @@
 package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Containers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -43,16 +42,6 @@ public class CacophoniumBlock extends BotaniaEntityBlock {
 		} else if (!power && powered) {
 			level.setBlock(pos, state.setValue(BlockStateProperties.POWERED, false), Block.UPDATE_INVISIBLE);
 		}
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!state.is(newState.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof CacophoniumBlockEntity cacophonium) {
-				Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), cacophonium.stack);
-			}
-		}
-		super.onRemove(state, level, pos, newState, movedByPiston);
 	}
 
 	@Override

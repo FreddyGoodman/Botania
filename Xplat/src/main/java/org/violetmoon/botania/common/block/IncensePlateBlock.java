@@ -13,7 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -137,15 +136,6 @@ public class IncensePlateBlock extends BotaniaWaterloggedEntityBlock {
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return createTickerHelper(type, BotaniaBlockEntities.INCENSE_PLATE,
 				level.isClientSide() ? IncensePlateBlockEntity::clientTick : IncensePlateBlockEntity::serverTick);
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!state.is(newState.getBlock()) && !state.getValue(BlockStateProperties.LIT)
-				&& level.getBlockEntity(pos) instanceof IncensePlateBlockEntity plate) {
-			Containers.dropContents(level, pos, plate.getItemHandler());
-		}
-		super.onRemove(state, level, pos, newState, movedByPiston);
 	}
 
 	@Override

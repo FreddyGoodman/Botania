@@ -28,7 +28,6 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,13 +49,10 @@ public abstract class SimpleInventoryBlockEntity extends BlockEntity implements 
 		this.synchronize = synchronize;
 	}
 
-	// [VanillaCopy] Containers::dropContentsOnDestroy, except for SimpleInventoryBlockEntity instead of Container
-	public static void dropContentsOnDestroy(BlockState state, BlockState newState, Level level, BlockPos pos) {
-		if (!state.is(newState.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity simpleInventory) {
-				Containers.dropContents(level, pos, simpleInventory.getItemHandler());
-				level.updateNeighbourForOutputSignal(pos, state.getBlock());
-			}
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (level != null) {
+			Containers.dropContents(level, pos, getItemHandler());
 		}
 	}
 

@@ -203,4 +203,11 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 	public boolean canTakeItemThroughFace(int index, ItemStack stack, @Nullable Direction direction) {
 		return false;
 	}
+
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (!state.getValue(BlockStateProperties.LIT)) {
+			super.preRemoveSideEffects(pos, state);
+		}
+	}
 }

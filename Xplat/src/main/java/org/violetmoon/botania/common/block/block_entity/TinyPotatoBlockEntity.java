@@ -375,4 +375,12 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 	private static boolean isRunningBlessing() {
 		return XplatAbstractions.instance().isRunningCategory(BotaniaSpeedrunCategories.BLESSING);
 	}
+
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		super.preRemoveSideEffects(pos, state);
+		if (level != null) {
+			level.updateNeighbourForOutputSignal(pos, state.getBlock());
+		}
+	}
 }

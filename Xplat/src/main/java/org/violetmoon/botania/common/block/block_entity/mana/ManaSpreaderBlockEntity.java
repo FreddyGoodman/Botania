@@ -797,4 +797,12 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 		return identity;
 	}
 
+
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		super.preRemoveSideEffects(pos, state);
+		if (level != null) {
+			level.updateNeighbourForOutputSignal(pos, state.getBlock());
+		}
+	}
 }
