@@ -17,8 +17,6 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.client.data.models.blockstates.Variant;
-import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
@@ -33,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
+import static org.violetmoon.botania.data.BlockstateProvider.plainVariant;
 
 public class PottedPlantModelProvider implements DataProvider {
 	private final PackOutput packOutput;
@@ -68,7 +67,7 @@ public class PottedPlantModelProvider implements DataProvider {
 	}
 
 	static MultiVariantGenerator createSimpleBlock(Block block, Identifier resourceLocation) {
-		return MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, resourceLocation));
+		return MultiVariantGenerator.dispatch(block, plainVariant(resourceLocation));
 	}
 
 	@Override
