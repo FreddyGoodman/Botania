@@ -34,8 +34,7 @@
     "client.ClientPacketListenerMixin",
     "client.DebugScreenOverlayFabricMixin",
     "client.KeyboardHandlerFabricMixin",
-    "client.MinecraftFabricMixin",
-    "client.ParticleEngineFabricMixin"
+    "client.MinecraftFabricMixin"
   ],
   "server": [],
   "injectors": {

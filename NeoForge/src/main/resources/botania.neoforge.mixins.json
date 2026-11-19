@@ -11,7 +11,6 @@
     "WorldPresetNeoForgeAccessor"
   ],
   "client": [
-    "client.ParticleEngineNeoForgeMixin"
   ],
   "server": [],
   "injectors": {

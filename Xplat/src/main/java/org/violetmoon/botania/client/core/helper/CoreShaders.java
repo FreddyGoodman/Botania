@@ -41,7 +41,6 @@ public class CoreShaders {
 	@Nullable
 	private static ShaderInstance halo;
 	@Nullable
-	private static ShaderInstance filmGrainParticle;
 	@Nullable
 	private static ShaderInstance gaiaBossBar;
 
@@ -87,11 +86,6 @@ public class CoreShaders {
 				botaniaRL("halo"),
 				DefaultVertexFormat.POSITION_TEX_COLOR,
 				inst -> halo = inst
-		);
-		registrations.accept(
-				botaniaRL("film_grain_particle"),
-				DefaultVertexFormat.PARTICLE,
-				inst -> filmGrainParticle = inst
 		);
 		registrations.accept(
 				botaniaRL("gaia_boss_bar"),
@@ -167,15 +161,6 @@ public class CoreShaders {
 			return halo;
 		} else {
 			return GameRenderer.getPositionTexColorShader();
-		}
-	}
-
-	@Nullable
-	public static ShaderInstance filmGrainParticle() {
-		if (BotaniaConfig.client().useShaders()) {
-			return filmGrainParticle;
-		} else {
-			return GameRenderer.getParticleShader();
 		}
 	}
 
