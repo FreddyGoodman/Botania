@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.HangingSignItem;
@@ -3145,7 +3144,7 @@ public final class BotaniaBlocks {
 				GAIA_HEAD, new OptionalDispenseItemBehavior() {
 					@Override
 					protected ItemStack execute(BlockSource blockSource, ItemStack item) {
-						setSuccess(ArmorItem.dispenseArmor(blockSource, item));
+						setSuccess(EquipmentDispenseItemBehavior.dispenseEquipment(blockSource, item));
 						return item;
 					}
 				});

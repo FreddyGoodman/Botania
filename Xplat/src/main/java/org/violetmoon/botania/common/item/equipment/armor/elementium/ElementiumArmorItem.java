@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.item.equipment.armor.elementium;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -19,8 +18,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.common.handler.PixieHandler;
@@ -33,11 +32,9 @@ import java.util.function.Supplier;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class ElementiumArmorItem extends ManasteelArmorItem {
-	private final Supplier<ItemAttributeModifiers> defaultModifiers;
 
-	public ElementiumArmorItem(Type type, Holder<ArmorMaterial> material, double pixieChance, Properties properties) {
-		super(type, material, properties);
-		this.defaultModifiers = Suppliers.memoize(() -> super.getDefaultAttributeModifiers()
+	public ElementiumArmorItem(ArmorType type, ArmorMaterial material, double pixieChance, Properties properties) {
+		super(type, material, properties, defaultModifiers -> defaultModifiers
 				.withModifierAdded(PixieHandler.PIXIE_SPAWN_CHANCE, PixieHandler.makeModifier(
 						botaniaRL("armor." + type.getName()), pixieChance),
 						EquipmentSlotGroup.bySlot(type.getSlot())));
@@ -90,11 +87,6 @@ public class ElementiumArmorItem extends ManasteelArmorItem {
 	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
 		super.addArmorSetDescription(stack, list);
 		list.add(Component.translatable("botania.armorset.elementium.desc").withStyle(ChatFormatting.GRAY));
-	}
-
-	@Override
-	public ItemAttributeModifiers getDefaultAttributeModifiers() {
-		return this.defaultModifiers.get();
 	}
 
 }

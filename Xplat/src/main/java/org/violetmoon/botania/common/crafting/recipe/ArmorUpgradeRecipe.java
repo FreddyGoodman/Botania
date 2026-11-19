@@ -9,7 +9,10 @@
 package org.violetmoon.botania.common.crafting.recipe;
 
 
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -36,7 +39,10 @@ public class ArmorUpgradeRecipe extends ShapedRecipe {
 		ItemStack out = super.assemble(inv);
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
-			if (stack.getItem() instanceof ArmorItem) {
+			var equippable = stack.get(DataComponents.EQUIPPABLE);
+			if (equippable != null && equippable.slot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR
+					&& stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY)
+							.modifiers().stream().anyMatch(entry -> entry.attribute().equals(Attributes.ARMOR))) {
 				// TODO: verify this works as intended
 				out.applyComponents(stack.getComponentsPatch());
 				break;

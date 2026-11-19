@@ -93,6 +93,7 @@
     "client.ClientAdvancementsAccessor",
     "client.ClientLevelDataMixin",
     "client.GuiBookEntryListMixin",
+    "client.EquipmentLayerRendererMixin",
     "client.GuiButtonEntryMixin",
     "client.GuiGraphicsMixin",
     "client.GuiTooltipPositionMixin",

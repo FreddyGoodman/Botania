@@ -8,10 +8,10 @@
  */
 package org.violetmoon.botania.common.item.equipment.armor.manaweave;
 
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +20,7 @@ import org.violetmoon.botania.api.mana.ManaDiscountArmor;
 
 public class ManaweaveHelmItem extends ManaweaveArmorItem implements ManaDiscountArmor, ManaProficiencyArmor {
 
-	public ManaweaveHelmItem(Type type, Holder<ArmorMaterial> material, Properties properties) {
+	public ManaweaveHelmItem(ArmorType type, ArmorMaterial material, Properties properties) {
 		super(type, material, properties);
 	}
 

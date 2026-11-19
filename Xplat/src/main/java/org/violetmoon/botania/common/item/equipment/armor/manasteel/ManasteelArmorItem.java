@@ -11,35 +11,50 @@ package org.violetmoon.botania.common.item.equipment.armor.manasteel;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import org.violetmoon.botania.api.item.PhantomInkable;
 import org.violetmoon.botania.client.gui.TooltipHandler;
 import org.violetmoon.botania.client.lib.ResourcesLib;
-import org.violetmoon.botania.common.annotations.SoftImplement;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.proxy.Proxy;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
-public class ManasteelArmorItem extends ArmorItem implements PhantomInkable {
+public class ManasteelArmorItem extends Item implements PhantomInkable {
+	private final ArmorType armorType;
 
-	public ManasteelArmorItem(Type type, Holder<ArmorMaterial> material, Properties properties) {
-		super(material, type, properties);
+	public ManasteelArmorItem(ArmorType type, ArmorMaterial material, Properties properties) {
+		super(properties.humanoidArmor(material, type));
+		this.armorType = type;
 	}
 
-	@SoftImplement("IItemExtension")
-	public final Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
+	protected ManasteelArmorItem(ArmorType type, ArmorMaterial material, Properties properties,
+			UnaryOperator<ItemAttributeModifiers> modifyAttributes) {
+		super(properties.humanoidArmor(material, type).attributes(modifyAttributes.apply(material.createAttributes(type))));
+		this.armorType = type;
+	}
+
+	public EquipmentSlot getEquipmentSlot() {
+		return armorType.getSlot();
+	}
+
+	public final Identifier getArmorTexture(ItemStack stack, EquipmentSlot slot) {
 		return hasPhantomInk(stack) ? Identifier.parse(ResourcesLib.MODEL_INVISIBLE_ARMOR) : getArmorTextureAfterInk(stack, slot);
 	}
 
@@ -48,8 +63,11 @@ public class ManasteelArmorItem extends ArmorItem implements PhantomInkable {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
+			Consumer<Component> tooltip, TooltipFlag flags) {
+		List<Component> list = new ArrayList<>();
 		TooltipHandler.addOnShift(list, flags, () -> addInformationAfterShift(stack, context, list, flags));
+		list.forEach(tooltip);
 	}
 
 	public void addInformationAfterShift(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
@@ -58,7 +76,7 @@ public class ManasteelArmorItem extends ArmorItem implements PhantomInkable {
 		addArmorSetDescription(stack, list);
 		ItemStack[] stacks = getArmorSetStacks();
 		for (ItemStack armor : stacks) {
-			EquipmentSlot slot = ((ArmorItem) armor.getItem()).getEquipmentSlot();
+			EquipmentSlot slot = ((ManasteelArmorItem) armor.getItem()).getEquipmentSlot();
 			MutableComponent cmp = Component.translatable("botaniamisc.template.tooltip_list", armor.getHoverName())
 					.withStyle(hasArmorSetItem(player, slot) ? ChatFormatting.GREEN : ChatFormatting.GRAY);
 			list.add(cmp);
@@ -84,7 +102,7 @@ public class ManasteelArmorItem extends ArmorItem implements PhantomInkable {
 	}
 
 	public boolean hasArmorSetItem(Player player, EquipmentSlot slot) {
-		if (player == null || player.getInventory() == null || player.getInventory().armor == null) {
+		if (player == null) {
 			return false;
 		}
 

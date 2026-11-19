@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.item.equipment.armor.terrasteel;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -22,8 +21,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.common.annotations.SoftImplement;
@@ -37,23 +36,17 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class TerrasteelArmorItem extends ManasteelArmorItem {
 
-	public TerrasteelArmorItem(Type type, Holder<ArmorMaterial> material, Properties properties) {
-		super(type, material, properties);
+	public TerrasteelArmorItem(ArmorType type, ArmorMaterial material, Properties properties) {
+		super(type, material, properties, defaultModifiers -> defaultModifiers.withModifierAdded(
+				Attributes.KNOCKBACK_RESISTANCE,
+				new AttributeModifier(botaniaRL("terrasteel_modifier." + type.getName()),
+						material.defense().getOrDefault(type, 0) / 20.0, AttributeModifier.Operation.ADD_VALUE),
+				EquipmentSlotGroup.bySlot(type.getSlot())));
 	}
 
 	@Override
 	public Identifier getArmorTextureAfterInk(ItemStack stack, EquipmentSlot slot) {
 		return Identifier.parse(ResourcesLib.MODEL_TERRASTEEL_NEW);
-	}
-
-	//TODO Very unsure if this works
-	@Override
-	public ItemAttributeModifiers getDefaultAttributeModifiers() {
-		int reduction = getMaterial().value().getDefense(getType());
-
-		return super.getDefaultAttributeModifiers().withModifierAdded(Attributes.KNOCKBACK_RESISTANCE,
-				new AttributeModifier(botaniaRL("terrasteel_modifier." + type.getName()), (double) reduction / 20, AttributeModifier.Operation.ADD_VALUE), //TODO I changed the name here to fit mc's way of naming the modifier. Check if this is alr!
-				EquipmentSlotGroup.bySlot(type.getSlot()));
 	}
 
 	private static final Supplier<ItemStack[]> armorSet = Suppliers.memoize(() -> new ItemStack[] {

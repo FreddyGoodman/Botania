@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.item.equipment.armor.manaweave;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -19,6 +18,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 
 public class ManaweaveArmorItem extends ManasteelArmorItem {
 
-	public ManaweaveArmorItem(Type type, Holder<ArmorMaterial> material, Properties properties) {
+	public ManaweaveArmorItem(ArmorType type, ArmorMaterial material, Properties properties) {
 		super(type, material, properties);
 	}
 
@@ -44,12 +44,11 @@ public class ManaweaveArmorItem extends ManasteelArmorItem {
 	}
 
 	@Override
-	public String getDescriptionId(ItemStack stack) {
-		String name = super.getDescriptionId(stack);
+	public Component getName(ItemStack stack) {
 		if (XplatAbstractions.INSTANCE.isPhysicalClient() && ClientProxy.jingleTheBells) {
-			name = name.replace("manaweave", "santaweave");
+			return Component.translatable(getDescriptionId().replace("manaweave", "santaweave"));
 		}
-		return name;
+		return super.getName(stack);
 	}
 
 	private static final Supplier<ItemStack[]> armorSet = Suppliers.memoize(() -> new ItemStack[] {

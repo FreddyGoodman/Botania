@@ -31,11 +31,8 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.Item;
 
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -58,12 +55,10 @@ import org.violetmoon.botania.client.gui.box.TrinketCaseScreen;
 import org.violetmoon.botania.client.gui.enderhand.HandOfEnderScreen;
 import org.violetmoon.botania.client.integration.ears.EarsIntegration;
 import org.violetmoon.botania.client.model.BotaniaLayerDefinitions;
-import org.violetmoon.botania.client.model.armor.ArmorModels;
 import org.violetmoon.botania.client.render.BlockRenderLayers;
 import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.client.render.entity.*;
 import org.violetmoon.botania.common.item.BotaniaItems;
-import org.violetmoon.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import org.violetmoon.botania.fabric.network.FabricPacketHandler;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 import org.violetmoon.botania.xplat.XplatAbstractions;
@@ -72,9 +67,7 @@ import vazkii.patchouli.api.BookDrawScreenCallback;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 public class FabricClientInitializer implements ClientModInitializer {
@@ -148,7 +141,6 @@ public class FabricClientInitializer implements ClientModInitializer {
 		ClientProxy.initSeasonal();
 		ClientProxy.initKeybindings(KeyBindingHelper::registerKeyBinding);
 
-		registerArmors();
 		registerCapabilities();
 
 		if (XplatAbstractions.INSTANCE.isModLoaded("ears")) {
@@ -159,29 +151,6 @@ public class FabricClientInitializer implements ClientModInitializer {
 	private static void registerCapabilities() {
 		BotaniaClientCapabilities.registerCapabilityProviders(BotaniaFabricCapabilities.getProviderRegistration());
 		BotaniaClientCapabilities.registerCapabilityFallbackProviders(BotaniaFabricCapabilities.getProviderRegistration());
-	}
-
-	private static void registerArmors() {
-		Map<Item, ArmorMaterial.Layer> armors = new LinkedHashMap<>();
-		for (var entry : BuiltInRegistries.ITEM.entrySet()) {
-			Item item = entry.getValue();
-			Identifier id = entry.getKey().identifier();
-			if (item instanceof ManasteelArmorItem armor
-					&& id.getNamespace().equals(BotaniaAPI.MODID)) {
-				armors.put(armor, armor.getMaterial().value().layers().getFirst());
-			}
-		}
-
-		ArmorRenderer renderer = (matrices, vertexConsumers, stack, entity, slot, light, contextModel) -> {
-			ManasteelArmorItem armor = (ManasteelArmorItem) stack.getItem();
-			var model = ArmorModels.get(stack);
-			var texture = armor.getArmorTexture(stack, entity, slot, armors.get(stack.getItem()), false);
-			if (model != null) {
-				contextModel.copyPropertiesTo(model);
-				ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, model, texture);
-			}
-		};
-		ArmorRenderer.register(renderer, armors.keySet().toArray(Item[]::new));
 	}
 
 	private void loadComplete(Minecraft mc) {

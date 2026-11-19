@@ -25,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -296,21 +297,17 @@ public final class BotaniaItems {
 	public static final int ATTACK_DAMAGE_SWORD = 3;
 	public static final float ATTACK_SPEED_SWORD = -2.4f;
 	public static final Item MANASTEEL_HELMET = make(LibItemNames.MANASTEEL_HELMET,
-			props -> new ManasteelHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.HELMET.getDurability(MANASTEEL_DURABILITY_FACTOR))));
+			props -> new ManasteelHelmItem(ArmorType.HELMET, BotaniaArmorMaterials.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item MANASTEEL_CHESTPLATE = make(LibItemNames.MANASTEEL_CHESTPLATE,
-			props -> new ManasteelArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.CHESTPLATE.getDurability(MANASTEEL_DURABILITY_FACTOR))));
+			props -> new ManasteelArmorItem(ArmorType.CHESTPLATE, BotaniaArmorMaterials.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item MANASTEEL_LEGGINGS = make(LibItemNames.MANASTEEL_LEGGINGS,
-			props -> new ManasteelArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.LEGGINGS.getDurability(MANASTEEL_DURABILITY_FACTOR))));
+			props -> new ManasteelArmorItem(ArmorType.LEGGINGS, BotaniaArmorMaterials.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item MANASTEEL_BOOTS = make(LibItemNames.MANASTEEL_BOOTS,
-			props -> new ManasteelArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.BOOTS.getDurability(MANASTEEL_DURABILITY_FACTOR))));
+			props -> new ManasteelArmorItem(ArmorType.BOOTS, BotaniaArmorMaterials.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item MANASTEEL_PICKAXE = make(LibItemNames.MANASTEEL_PICKAXE,
 			props -> new ManasteelPickaxeItem(BotaniaItemTiers.MANASTEEL,
 					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
@@ -346,21 +343,17 @@ public final class BotaniaItems {
 					.component(DataComponents.TOOL, ShearsItem.createToolProperties())));
 	public static final int ELEMENTIUM_DURABILITY_FACTOR = 18;
 	public static final Item ELEMENTIUM_HELMET = make(LibItemNames.ELEMENTIUM_HELMET,
-			props -> new ElementiumHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.ELEMENTIUM, 0.11,
-					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.HELMET.getDurability(ELEMENTIUM_DURABILITY_FACTOR))));
+			props -> new ElementiumHelmItem(ArmorType.HELMET, BotaniaArmorMaterials.ELEMENTIUM, 0.11,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item ELEMENTIUM_CHESTPLATE = make(LibItemNames.ELEMENTIUM_CHESTPLATE,
-			props -> new ElementiumArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.ELEMENTIUM, 0.17,
-					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.CHESTPLATE.getDurability(ELEMENTIUM_DURABILITY_FACTOR))));
+			props -> new ElementiumArmorItem(ArmorType.CHESTPLATE, BotaniaArmorMaterials.ELEMENTIUM, 0.17,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item ELEMENTIUM_LEGGINGS = make(LibItemNames.ELEMENTIUM_LEGGINGS,
-			props -> new ElementiumArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.ELEMENTIUM, 0.15,
-					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.LEGGINGS.getDurability(ELEMENTIUM_DURABILITY_FACTOR))));
+			props -> new ElementiumArmorItem(ArmorType.LEGGINGS, BotaniaArmorMaterials.ELEMENTIUM, 0.15,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item ELEMENTIUM_BOOTS = make(LibItemNames.ELEMENTIUM_BOOTS,
-			props -> new ElementiumArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.ELEMENTIUM, 0.09,
-					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.BOOTS.getDurability(ELEMENTIUM_DURABILITY_FACTOR))));
+			props -> new ElementiumArmorItem(ArmorType.BOOTS, BotaniaArmorMaterials.ELEMENTIUM, 0.09,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item ELEMENTIUM_PICKAXE = make(LibItemNames.ELEMENTIUM_PICKAXE,
 			props -> new ElementiumPickaxeItem(BotaniaItemTiers.ELEMENTIUM,
 					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
@@ -395,27 +388,23 @@ public final class BotaniaItems {
 					.component(DataComponents.TOOL, ShearsItem.createToolProperties())));
 	public static final int TERRASTEEL_DURABILITY_FACTOR = 34;
 	public static final Item TERRASTEEL_HELMET = make(LibItemNames.TERRASTEEL_HELMET,
-			props -> new TerrasteelHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.TERRASTEEL,
+			props -> new TerrasteelHelmItem(ArmorType.HELMET, BotaniaArmorMaterials.TERRASTEEL,
 					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.HELMET.getDurability(TERRASTEEL_DURABILITY_FACTOR))
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRASTEEL_CHESTPLATE = make(LibItemNames.TERRASTEEL_CHESTPLATE,
-			props -> new TerrasteelArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.TERRASTEEL,
+			props -> new TerrasteelArmorItem(ArmorType.CHESTPLATE, BotaniaArmorMaterials.TERRASTEEL,
 					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.CHESTPLATE.getDurability(TERRASTEEL_DURABILITY_FACTOR))
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRASTEEL_LEGGINGS = make(LibItemNames.TERRASTEEL_LEGGINGS,
-			props -> new TerrasteelArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.TERRASTEEL,
+			props -> new TerrasteelArmorItem(ArmorType.LEGGINGS, BotaniaArmorMaterials.TERRASTEEL,
 					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.LEGGINGS.getDurability(TERRASTEEL_DURABILITY_FACTOR))
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRASTEEL_BOOTS = make(LibItemNames.TERRASTEEL_BOOTS,
-			props -> new TerrasteelArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.TERRASTEEL,
+			props -> new TerrasteelArmorItem(ArmorType.BOOTS, BotaniaArmorMaterials.TERRASTEEL,
 					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
-							.durability(ArmorItem.Type.BOOTS.getDurability(TERRASTEEL_DURABILITY_FACTOR))
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRA_SHATTERER = make(LibItemNames.TERRA_SHATTERER,
@@ -458,21 +447,17 @@ public final class BotaniaItems {
 									ATTACK_DAMAGE_SWORD, 1.5f))));
 	public static final int MANAWEAVE_DURABILITY_FACTOR = 5;
 	public static final Item MANAWEAVE_HELMET = make(LibItemNames.MANAWEAVE_HELMET,
-			props -> new ManaweaveHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.MANAWEAVE,
-					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
-							.durability(ArmorItem.Type.HELMET.getDurability(MANAWEAVE_DURABILITY_FACTOR))));
+			props -> new ManaweaveHelmItem(ArmorType.HELMET, BotaniaArmorMaterials.MANAWEAVE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)));
 	public static final Item MANAWEAVE_CHESTPLATE = make(LibItemNames.MANAWEAVE_CHESTPLATE,
-			props -> new ManaweaveArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.MANAWEAVE,
-					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
-							.durability(ArmorItem.Type.CHESTPLATE.getDurability(MANAWEAVE_DURABILITY_FACTOR))));
+			props -> new ManaweaveArmorItem(ArmorType.CHESTPLATE, BotaniaArmorMaterials.MANAWEAVE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)));
 	public static final Item MANAWEAVE_LEGGINGS = make(LibItemNames.MANAWEAVE_LEGGINGS,
-			props -> new ManaweaveArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.MANAWEAVE,
-					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
-							.durability(ArmorItem.Type.LEGGINGS.getDurability(MANAWEAVE_DURABILITY_FACTOR))));
+			props -> new ManaweaveArmorItem(ArmorType.LEGGINGS, BotaniaArmorMaterials.MANAWEAVE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)));
 	public static final Item MANAWEAVE_BOOTS = make(LibItemNames.MANAWEAVE_BOOTS,
-			props -> new ManaweaveArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.MANAWEAVE,
-					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
-							.durability(ArmorItem.Type.BOOTS.getDurability(MANAWEAVE_DURABILITY_FACTOR))));
+			props -> new ManaweaveArmorItem(ArmorType.BOOTS, BotaniaArmorMaterials.MANAWEAVE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)));
 	public static final Item SOULSCRIBE = make(LibItemNames.SOULSCRIBE,
 			props -> new SoulscribeItem(BotaniaItemTiers.MANASTEEL,
 					props // no mana repair

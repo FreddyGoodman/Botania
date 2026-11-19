@@ -52,6 +52,11 @@ public class ItemTagProvider extends CopyingItemTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
+		tag(BotaniaTags.Items.REPAIRS_MANASTEEL_ARMOR).add(BotaniaItems.MANASTEEL_INGOT);
+		tag(BotaniaTags.Items.REPAIRS_MANAWEAVE_ARMOR).add(BotaniaItems.MANAWEAVE_CLOTH);
+		tag(BotaniaTags.Items.REPAIRS_ELEMENTIUM_ARMOR).add(BotaniaItems.ELEMENTIUM_INGOT);
+		tag(BotaniaTags.Items.REPAIRS_TERRASTEEL_ARMOR).add(BotaniaItems.TERRASTEEL_INGOT);
+
 		this.tag(ItemTags.AXES)
 				.add(BotaniaItems.MANASTEEL_AXE, BotaniaItems.ELEMENTIUM_AXE, BotaniaItems.TERRA_TRUNCATOR);
 		this.tag(ItemTags.HOES).add(BotaniaItems.MANASTEEL_HOE, BotaniaItems.ELEMENTIUM_HOE);
