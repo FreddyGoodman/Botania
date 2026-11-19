@@ -25,10 +25,10 @@ import static org.violetmoon.botania.api.BotaniaAPI.gogRL;
 
 public class BotaniaTags {
 	public static class Items {
-		public static final TagKey<Item> REPAIRS_MANASTEEL_ARMOR = tag("repairs_manasteel_armor");
-		public static final TagKey<Item> REPAIRS_MANAWEAVE_ARMOR = tag("repairs_manaweave_armor");
-		public static final TagKey<Item> REPAIRS_ELEMENTIUM_ARMOR = tag("repairs_elementium_armor");
-		public static final TagKey<Item> REPAIRS_TERRASTEEL_ARMOR = tag("repairs_terrasteel_armor");
+		public static final TagKey<Item> REPAIRS_MANASTEEL = tag("repairs_manasteel");
+		public static final TagKey<Item> REPAIRS_MANAWEAVE = tag("repairs_manaweave");
+		public static final TagKey<Item> REPAIRS_ELEMENTIUM = tag("repairs_elementium");
+		public static final TagKey<Item> REPAIRS_TERRASTEEL = tag("repairs_terrasteel");
 
 		public static final TagKey<Item> BLOCKS_QUARTZ = tag("quartz_blocks");
 

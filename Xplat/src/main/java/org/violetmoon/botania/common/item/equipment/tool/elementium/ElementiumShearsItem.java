@@ -10,6 +10,7 @@ package org.violetmoon.botania.common.item.equipment.tool.elementium;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Shearable;
@@ -48,7 +49,7 @@ public class ElementiumShearsItem extends ManasteelShearsItem {
 
 	@Override
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int count) {
-		if (world.isClientSide()) {
+		if (!(world instanceof ServerLevel level)) {
 			return;
 		}
 
@@ -58,8 +59,8 @@ public class ElementiumShearsItem extends ManasteelShearsItem {
 			if (!shearables.isEmpty()) {
 				for (Entity entity : shearables) {
 					if (entity instanceof Shearable shearable && shearable.readyForShearing()) {
-						shearable.shear(living.getSoundSource());
-						stack.hurtAndBreak(1, living, LivingEntity.getSlotForHand(living.getUsedItemHand()));
+						shearable.shear(level, living.getSoundSource(), stack);
+						stack.hurtAndBreak(1, living, living.getUsedItemHand().asEquipmentSlot());
 						break;
 					}
 				}

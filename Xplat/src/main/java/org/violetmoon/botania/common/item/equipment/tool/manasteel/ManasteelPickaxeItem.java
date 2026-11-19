@@ -21,12 +21,12 @@ import org.violetmoon.botania.common.helper.PlayerHelper;
 import org.violetmoon.botania.common.item.equipment.tool.ToolCommons;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
-public class ManasteelPickaxeItem extends PickaxeItem implements SortableTool {
+public class ManasteelPickaxeItem extends Item implements SortableTool {
 
 	private static final int TIME = 5;
 
-	public ManasteelPickaxeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ManasteelPickaxeItem(Properties properties) {
+		super(properties);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class ManasteelPickaxeItem extends PickaxeItem implements SortableTool {
 						if (!context.getLevel().isClientSide()) {
 							ItemsRemainingRenderHandler.send(player, displayStack, BotaniaTags.Items.TOOL_PLACEABLE_PICKAXE);
 						}
-						player.getCooldowns().addCooldown(this, TIME);
+						player.getCooldowns().addCooldown(context.getItemInHand(), TIME);
 						return did;
 					}
 				}

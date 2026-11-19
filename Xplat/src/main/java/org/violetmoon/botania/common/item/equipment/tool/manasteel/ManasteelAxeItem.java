@@ -23,8 +23,8 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 
 public class ManasteelAxeItem extends AxeItem implements SortableTool {
 
-	public ManasteelAxeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ManasteelAxeItem(ToolMaterial material, float attackDamage, float attackSpeed, Properties properties) {
+		super(material, attackDamage, attackSpeed, properties);
 	}
 
 	@Override

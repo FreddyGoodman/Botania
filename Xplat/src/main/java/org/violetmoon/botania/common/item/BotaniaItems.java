@@ -309,37 +309,24 @@ public final class BotaniaItems {
 			props -> new ManasteelArmorItem(ArmorType.BOOTS, BotaniaArmorMaterials.MANASTEEL,
 					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item MANASTEEL_PICKAXE = make(LibItemNames.MANASTEEL_PICKAXE,
-			props -> new ManasteelPickaxeItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
-							.attributes(ManasteelPickaxeItem.createAttributes(
-									BotaniaItemTiers.MANASTEEL,
-									ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE))));
+			props -> new ManasteelPickaxeItem(manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
+							.pickaxe(BotaniaItemTiers.MANASTEEL, ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE)));
 	public static final Item MANASTEEL_SHOVEL = make(LibItemNames.MANASTEEL_SHOVEL,
-			props -> new ManasteelShovelItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
-							.attributes(ManasteelShovelItem.createAttributes(
-									BotaniaItemTiers.MANASTEEL,
-									ATTACK_DAMAGE_SHOVEL, ATTACK_SPEED_SHOVEL))));
+			props -> new ManasteelShovelItem(BotaniaItemTiers.MANASTEEL, ATTACK_DAMAGE_SHOVEL, ATTACK_SPEED_SHOVEL,
+					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)));
 	public static final Item MANASTEEL_AXE = make(LibItemNames.MANASTEEL_AXE,
-			props -> new ManasteelAxeItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
-							.attributes(ManasteelAxeItem.createAttributes(BotaniaItemTiers.MANASTEEL, 6, -3.1f))));
+			props -> new ManasteelAxeItem(BotaniaItemTiers.MANASTEEL, 6, -3.1f,
+					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)));
 	public static final Item MANASTEEL_HOE = make(LibItemNames.MANASTEEL_HOE,
-			props -> new ManasteelHoeItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
-							.attributes(ManasteelHoeItem.createAttributes(
-									BotaniaItemTiers.MANASTEEL,
-									-BotaniaItemTiers.MANASTEEL.getAttackDamageBonus(), ATTACK_SPEED_HOE))));
+			props -> new ManasteelHoeItem(BotaniaItemTiers.MANASTEEL, -BotaniaItemTiers.MANASTEEL.attackDamageBonus(), ATTACK_SPEED_HOE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)));
 	public static final Item MANASTEEL_SWORD = make(LibItemNames.MANASTEEL_SWORD,
-			props -> new SwordItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
-							.attributes(SwordItem.createAttributes(
-									BotaniaItemTiers.MANASTEEL,
-									ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD))));
+			props -> new Item(manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
+							.sword(BotaniaItemTiers.MANASTEEL, ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD)));
 	public static final int SHEARS_DURABILITY = 238;
 	public static final Item MANASTEEL_SHEARS = make(LibItemNames.MANASTEEL_SHEARS,
 			props -> new ManasteelShearsItem(manaRepairable(props, MANA_PER_DAMAGE_SHEARS)
-					.durability(SHEARS_DURABILITY * BotaniaItemTiers.MANASTEEL.getUses() / Tiers.IRON.getUses())
+					.durability(SHEARS_DURABILITY * BotaniaItemTiers.MANASTEEL.durability() / ToolMaterial.IRON.durability())
 					.component(DataComponents.TOOL, ShearsItem.createToolProperties())));
 	public static final int ELEMENTIUM_DURABILITY_FACTOR = 18;
 	public static final Item ELEMENTIUM_HELMET = make(LibItemNames.ELEMENTIUM_HELMET,
@@ -355,36 +342,23 @@ public final class BotaniaItems {
 			props -> new ElementiumArmorItem(ArmorType.BOOTS, BotaniaArmorMaterials.ELEMENTIUM, 0.09,
 					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)));
 	public static final Item ELEMENTIUM_PICKAXE = make(LibItemNames.ELEMENTIUM_PICKAXE,
-			props -> new ElementiumPickaxeItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
-							.attributes(ElementiumPickaxeItem.createAttributes(
-									BotaniaItemTiers.ELEMENTIUM,
-									ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE))));
+			props -> new ElementiumPickaxeItem(manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
+							.pickaxe(BotaniaItemTiers.ELEMENTIUM, ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE)));
 	public static final Item ELEMENTIUM_SHOVEL = make(LibItemNames.ELEMENTIUM_SHOVEL,
-			props -> new ElementiumShovelItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
-							.attributes(ElementiumShovelItem.createAttributes(
-									BotaniaItemTiers.ELEMENTIUM,
-									ATTACK_DAMAGE_SHOVEL, ATTACK_SPEED_SHOVEL))));
+			props -> new ElementiumShovelItem(BotaniaItemTiers.ELEMENTIUM, ATTACK_DAMAGE_SHOVEL, ATTACK_SPEED_SHOVEL,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)));
 	public static final Item ELEMENTIUM_AXE = make(LibItemNames.ELEMENTIUM_AXE,
-			props -> new ElementiumAxeItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
-							.attributes(ElementiumAxeItem.createAttributes(BotaniaItemTiers.ELEMENTIUM, 6, -3.1f))));
+			props -> new ElementiumAxeItem(BotaniaItemTiers.ELEMENTIUM, 6, -3.1f,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)));
 	public static final Item ELEMENTIUM_HOE = make(LibItemNames.ELEMENTIUM_HOE,
-			props -> new ElementiumHoeItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
-							.attributes(ElementiumHoeItem.createAttributes(
-									BotaniaItemTiers.ELEMENTIUM,
-									-BotaniaItemTiers.ELEMENTIUM.getAttackDamageBonus(), ATTACK_SPEED_HOE))));
+			props -> new ElementiumHoeItem(BotaniaItemTiers.ELEMENTIUM, -BotaniaItemTiers.ELEMENTIUM.attackDamageBonus(), ATTACK_SPEED_HOE,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)));
 	public static final Item ELEMENTIUM_SWORD = make(LibItemNames.ELEMENTIUM_SWORD,
-			props -> new ElementiumSwordItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
-							.attributes(ElementiumSwordItem.createAttributes(
-									BotaniaItemTiers.ELEMENTIUM,
-									ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD))));
+			props -> new ElementiumSwordItem(BotaniaItemTiers.ELEMENTIUM, ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)));
 	public static final Item ELEMENTIUM_SHEARS = make(LibItemNames.ELEMENTIUM_SHEARS,
 			props -> new ElementiumShearsItem(manaRepairable(props, MANA_PER_DAMAGE_SHEARS)
-					.durability(SHEARS_DURABILITY * BotaniaItemTiers.ELEMENTIUM.getUses() / Tiers.IRON.getUses())
+					.durability(SHEARS_DURABILITY * BotaniaItemTiers.ELEMENTIUM.durability() / ToolMaterial.IRON.durability())
 					.component(DataComponents.TOOL, ShearsItem.createToolProperties())));
 	public static final int TERRASTEEL_DURABILITY_FACTOR = 34;
 	public static final Item TERRASTEEL_HELMET = make(LibItemNames.TERRASTEEL_HELMET,
@@ -408,43 +382,30 @@ public final class BotaniaItems {
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRA_SHATTERER = make(LibItemNames.TERRA_SHATTERER,
-			props -> new TerraShattererItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_TERRASTEEL_TOOL)
+			props -> new TerraShattererItem(manaRepairable(props, MANA_PER_DAMAGE_TERRASTEEL_TOOL)
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)
 							.component(BotaniaDataComponents.MAX_MANA, TerraShattererItem.MAX_MANA)
 							.component(BotaniaDataComponents.CAN_RECEIVE_MANA_FROM_POOL, Unit.INSTANCE)
-							.attributes(TerraShattererItem.createAttributes(
-									BotaniaItemTiers.TERRASTEEL,
-									ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE))));
+							.pickaxe(BotaniaItemTiers.TERRASTEEL, ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE)));
 	public static final Item TERRA_TRUNCATOR = make(LibItemNames.TERRA_TRUNCATOR,
-			props -> new TerraTruncatorItem(BotaniaItemTiers.TERRASTEEL,
+			props -> new TerraTruncatorItem(BotaniaItemTiers.TERRASTEEL, 5, -3,
 					manaRepairable(props, MANA_PER_DAMAGE_TERRASTEEL_TOOL)
 							.fireResistant()
-							.rarity(Rarity.UNCOMMON)
-							.attributes(TerraTruncatorItem.createAttributes(BotaniaItemTiers.TERRASTEEL, 5, -3))));
+							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRA_BLADE = make(LibItemNames.TERRA_BLADE,
-			props -> new TerraBladeItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_TERRASTEEL_TOOL)
+			props -> new TerraBladeItem(manaRepairable(props, MANA_PER_DAMAGE_TERRASTEEL_TOOL)
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)
-							.attributes(TerraBladeItem.createAttributes(
-									BotaniaItemTiers.TERRASTEEL,
-									ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD))));
+							.sword(BotaniaItemTiers.TERRASTEEL, ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD)));
 	public static final Item STARCALLER = make(LibItemNames.STARCALLER,
-			props -> new StarcallerItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_UPGRADED_SWORD)
+			props -> new StarcallerItem(manaRepairable(props, MANA_PER_DAMAGE_UPGRADED_SWORD)
 							.rarity(Rarity.UNCOMMON)
-							.attributes(StarcallerItem.createAttributes(
-									BotaniaItemTiers.TERRASTEEL,
-									ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD))));
+							.sword(BotaniaItemTiers.TERRASTEEL, ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD)));
 	public static final Item THUNDERCALLER = make(LibItemNames.THUNDERCALLER,
-			props -> new ThundercallerItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(props, MANA_PER_DAMAGE_UPGRADED_SWORD)
+			props -> new ThundercallerItem(manaRepairable(props, MANA_PER_DAMAGE_UPGRADED_SWORD)
 							.rarity(Rarity.UNCOMMON)
-							.attributes(ThundercallerItem.createAttributes(
-									BotaniaItemTiers.TERRASTEEL,
-									ATTACK_DAMAGE_SWORD, 1.5f))));
+							.sword(BotaniaItemTiers.TERRASTEEL, ATTACK_DAMAGE_SWORD, 1.5f)));
 	public static final int MANAWEAVE_DURABILITY_FACTOR = 5;
 	public static final Item MANAWEAVE_HELMET = make(LibItemNames.MANAWEAVE_HELMET,
 			props -> new ManaweaveHelmItem(ArmorType.HELMET, BotaniaArmorMaterials.MANAWEAVE,
@@ -459,18 +420,11 @@ public final class BotaniaItems {
 			props -> new ManaweaveArmorItem(ArmorType.BOOTS, BotaniaArmorMaterials.MANAWEAVE,
 					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)));
 	public static final Item SOULSCRIBE = make(LibItemNames.SOULSCRIBE,
-			props -> new SoulscribeItem(BotaniaItemTiers.MANASTEEL,
-					props // no mana repair
-							.durability(69) // What you looking at?
-							.attributes(SoulscribeItem.createAttributes(
-									BotaniaItemTiers.MANASTEEL,
-									ATTACK_DAMAGE_SWORD, -1.25f))));
+			props -> new SoulscribeItem(props.sword(BotaniaItemTiers.MANASTEEL, ATTACK_DAMAGE_SWORD, -1.25f).durability(69)));
 	public static final Item VITREOUS_PICKAXE = make(LibItemNames.VITREOUS_PICKAXE,
-			props -> new VitreousPickaxeItem(BotaniaItemTiers.VITREOUS,
-					manaRepairable(props, MANA_PER_DAMAGE_VITREOUS_TOOL)
-							.attributes(VitreousPickaxeItem.createAttributes(
-									BotaniaItemTiers.VITREOUS,
-									ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE))));
+			props -> new VitreousPickaxeItem(manaRepairable(props, MANA_PER_DAMAGE_VITREOUS_TOOL)
+							.pickaxe(BotaniaItemTiers.VITREOUS, ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE)
+							.component(DataComponents.TOOL, BotaniaItemTiers.vitreousTool())));
 	public static final int BOW_DURABILITY = 384; // like vanilla
 	public static final Item LIVINGWOOD_BOW = make(LibItemNames.LIVINGWOOD_BOW,
 			props -> new BowItem(manaRepairable(props, MANA_PER_DAMAGE_BOW)

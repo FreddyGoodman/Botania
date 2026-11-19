@@ -124,11 +124,11 @@ public interface BotaniaAPI {
 
 	Holder<ArmorMaterial> getTerrasteelArmorMaterial();
 
-	Tier getManasteelItemTier();
+	ToolMaterial getManasteelItemTier();
 
-	Tier getElementiumItemTier();
+	ToolMaterial getElementiumItemTier();
 
-	Tier getTerrasteelItemTier();
+	ToolMaterial getTerrasteelItemTier();
 
 	default ManaNetwork getManaNetworkInstance() {
 		return DummyManaNetwork.instance;

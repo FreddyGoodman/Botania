@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.item.equipment.tool.elementium;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
 
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.equipment.tool.manasteel.ManasteelPickaxeItem;
@@ -19,8 +18,8 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 
 public class ElementiumPickaxeItem extends ManasteelPickaxeItem {
 
-	public ElementiumPickaxeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ElementiumPickaxeItem(Properties properties) {
+		super(properties);
 	}
 
 	public static boolean shouldFilterOut(Entity e, ItemStack tool, ItemStack drop) {

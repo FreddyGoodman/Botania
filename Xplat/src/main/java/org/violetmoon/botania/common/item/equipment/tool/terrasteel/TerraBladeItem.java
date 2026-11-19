@@ -13,12 +13,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -37,12 +37,12 @@ import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 
 import java.util.List;
 
-public class TerraBladeItem extends SwordItem implements LensEffectItem {
+public class TerraBladeItem extends Item implements LensEffectItem {
 
 	private static final int BURST_MANA = 100;
 
-	public TerraBladeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public TerraBladeItem(Properties properties) {
+		super(properties);
 	}
 
 	public static void leftClick(ItemStack stack) {
@@ -69,7 +69,7 @@ public class TerraBladeItem extends SwordItem implements LensEffectItem {
 				&& attackStrength == 1) {
 			ManaBurstEntity burst = getBurst(player, player.getMainHandItem());
 			player.level().addFreshEntity(burst);
-			player.getMainHandItem().hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+			player.getMainHandItem().hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.TERRABLADE, SoundSource.PLAYERS, 1F, 1F);
 		}
 	}

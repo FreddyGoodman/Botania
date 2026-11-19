@@ -93,17 +93,17 @@ public class BotaniaAPIImpl implements BotaniaAPI {
 	}
 
 	@Override
-	public Tier getManasteelItemTier() {
+	public ToolMaterial getManasteelItemTier() {
 		return BotaniaItemTiers.MANASTEEL;
 	}
 
 	@Override
-	public Tier getElementiumItemTier() {
+	public ToolMaterial getElementiumItemTier() {
 		return BotaniaItemTiers.ELEMENTIUM;
 	}
 
 	@Override
-	public Tier getTerrasteelItemTier() {
+	public ToolMaterial getTerrasteelItemTier() {
 		return BotaniaItemTiers.TERRASTEEL;
 	}
 

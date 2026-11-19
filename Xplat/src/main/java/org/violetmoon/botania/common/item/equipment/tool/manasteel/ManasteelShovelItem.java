@@ -10,7 +10,7 @@ package org.violetmoon.botania.common.item.equipment.tool.manasteel;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.violetmoon.botania.api.item.SortableTool;
@@ -18,8 +18,8 @@ import org.violetmoon.botania.common.item.equipment.tool.ToolCommons;
 
 public class ManasteelShovelItem extends ShovelItem implements SortableTool {
 
-	public ManasteelShovelItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ManasteelShovelItem(ToolMaterial material, float attackDamage, float attackSpeed, Properties properties) {
+		super(material, attackDamage, attackSpeed, properties);
 	}
 
 	@Override

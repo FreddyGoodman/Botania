@@ -29,19 +29,19 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 public final class BotaniaArmorMaterials {
 	public static final ArmorMaterial MANASTEEL = create("manasteel", BotaniaItems.MANASTEEL_DURABILITY_FACTOR,
 			Map.of(ArmorType.BOOTS, 2, ArmorType.LEGGINGS, 5, ArmorType.CHESTPLATE, 6, ArmorType.HELMET, 2),
-			18, BotaniaSounds.EQUIP_MANASTEEL, BotaniaTags.Items.REPAIRS_MANASTEEL_ARMOR, 0);
+			18, BotaniaSounds.EQUIP_MANASTEEL, BotaniaTags.Items.REPAIRS_MANASTEEL, 0);
 
 	public static final ArmorMaterial MANAWEAVE = create("manaweave", BotaniaItems.MANAWEAVE_DURABILITY_FACTOR,
 			Map.of(ArmorType.BOOTS, 1, ArmorType.LEGGINGS, 2, ArmorType.CHESTPLATE, 3, ArmorType.HELMET, 1),
-			18, BotaniaSounds.EQUIP_MANAWEAVE, BotaniaTags.Items.REPAIRS_MANAWEAVE_ARMOR, 0);
+			18, BotaniaSounds.EQUIP_MANAWEAVE, BotaniaTags.Items.REPAIRS_MANAWEAVE, 0);
 
 	public static final ArmorMaterial ELEMENTIUM = create("elementium", BotaniaItems.ELEMENTIUM_DURABILITY_FACTOR,
 			Map.of(ArmorType.BOOTS, 2, ArmorType.LEGGINGS, 5, ArmorType.CHESTPLATE, 6, ArmorType.HELMET, 2),
-			18, BotaniaSounds.EQUIP_ELEMENTIUM, BotaniaTags.Items.REPAIRS_ELEMENTIUM_ARMOR, 0);
+			18, BotaniaSounds.EQUIP_ELEMENTIUM, BotaniaTags.Items.REPAIRS_ELEMENTIUM, 0);
 
 	public static final ArmorMaterial TERRASTEEL = create("terrasteel", BotaniaItems.TERRASTEEL_DURABILITY_FACTOR,
 			Map.of(ArmorType.BOOTS, 3, ArmorType.LEGGINGS, 6, ArmorType.CHESTPLATE, 8, ArmorType.HELMET, 3),
-			26, BotaniaSounds.EQUIP_TERRASTEEL, BotaniaTags.Items.REPAIRS_TERRASTEEL_ARMOR, 3);
+			26, BotaniaSounds.EQUIP_TERRASTEEL, BotaniaTags.Items.REPAIRS_TERRASTEEL, 3);
 
 	private BotaniaArmorMaterials() {}
 

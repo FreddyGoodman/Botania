@@ -68,8 +68,8 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 			10000 - 1, 1000000 - 1, 10000000 - 1, 100000000 - 1, 1000000000 - 1, MAX_MANA - 1
 	};
 
-	public TerraShattererItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public TerraShattererItem(Properties properties) {
+		super(properties);
 	}
 
 	@Override
