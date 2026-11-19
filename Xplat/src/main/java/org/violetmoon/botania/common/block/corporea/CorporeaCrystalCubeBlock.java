@@ -75,7 +75,7 @@ public class CorporeaCrystalCubeBlock extends BotaniaWaterloggedEntityBlock {
 		}
 		if (cube.isLocked()) {
 			if (!level.isClientSide()) {
-				player.displayClientMessage(Component.translatable("botaniamisc.crystalCubeLocked"), false);
+				player.sendSystemMessage(Component.translatable("botaniamisc.crystalCubeLocked"));
 			}
 		} else {
 			cube.setRequestTarget(stack);

@@ -136,7 +136,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 
 		if (state.getValue(LOCKED)) {
 			if (level.isClientSide()) {
-				player.displayClientMessage(Component.translatable("botaniamisc.hourglassLock"), true);
+				player.sendOverlayMessage(Component.translatable("botaniamisc.hourglassLock"));
 			}
 			// There's BS going on in the server code. "Fail" doesn't prevent the item itself from being used/placed.
 			return InteractionResult.CONSUME.withoutItem();
