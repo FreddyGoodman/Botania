@@ -11,7 +11,7 @@ package org.violetmoon.botania.data;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
@@ -30,6 +30,7 @@ import org.violetmoon.botania.common.item.AncientWillItem;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.lens.LensItem;
 import org.violetmoon.botania.common.lib.BotaniaTags;
+import org.violetmoon.botania.data.util.CopyingItemTagsProvider;
 import org.violetmoon.botania.data.util.DummyTagLookup;
 
 import java.util.Comparator;
@@ -37,7 +38,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
-public class ItemTagProvider extends ItemTagsProvider {
+public class ItemTagProvider extends CopyingItemTagsProvider {
 	private static final Set<TagKey<Item>> REQUIRED_TAGS = Set.of(
 			ItemTags.SAND,
 			ItemTags.ARROWS,
@@ -117,7 +118,7 @@ public class ItemTagProvider extends ItemTagsProvider {
 				.addTag(BotaniaTags.Items.SPECIAL_FLOWERS)
 				.add(BotaniaBlocks.DAYBLOOM_MOTIF.asItem(), BotaniaBlocks.NIGHTSHADE_MOTIF.asItem());
 
-		this.tag(ItemTags.TALL_FLOWERS).addTag(BotaniaTags.Items.TALL_MYSTICAL_FLOWERS);
+		this.tag(ItemTags.FLOWERS).addTag(BotaniaTags.Items.TALL_MYSTICAL_FLOWERS);
 		this.tag(ItemTags.SMALL_FLOWERS)
 				.addTag(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS)
 				.addTag(BotaniaTags.Items.GLIMMERING_FLOWERS)
@@ -157,15 +158,16 @@ public class ItemTagProvider extends ItemTagsProvider {
 						Items.DIRT, Items.GRAVEL, Items.COBBLESTONE, Items.NETHERRACK, Items.COBBLED_DEEPSLATE,
 						Items.END_STONE)
 				.addTag(ItemTags.SAND);
-		this.tag(BotaniaTags.Items.SEMI_DISPOSABLE)
+		tag(BotaniaTags.Items.SEMI_DISPOSABLE)
 				.add(
 						Items.ANDESITE, Items.DIORITE, Items.GRANITE, Items.TUFF, Items.CALCITE, Items.STONE,
 						Items.BASALT, Items.BLACKSTONE, Items.DEEPSLATE, Items.DRIPSTONE_BLOCK, Items.POINTED_DRIPSTONE,
-						Items.MOSS_BLOCK, Items.SANDSTONE, Items.RED_SANDSTONE)
-				.addOptional(Identifier.fromNamespaceAndPath("quark", "jasper"))
-				.addOptional(Identifier.fromNamespaceAndPath("quark", "limestone"))
-				.addOptional(Identifier.fromNamespaceAndPath("quark", "marble"))
-				.addOptional(Identifier.fromNamespaceAndPath("quark", "slate"));
+						Items.MOSS_BLOCK, Items.SANDSTONE, Items.RED_SANDSTONE);
+		getOrCreateRawBuilder(BotaniaTags.Items.SEMI_DISPOSABLE)
+				.addOptionalElement(Identifier.fromNamespaceAndPath("quark", "jasper"))
+				.addOptionalElement(Identifier.fromNamespaceAndPath("quark", "limestone"))
+				.addOptionalElement(Identifier.fromNamespaceAndPath("quark", "marble"))
+				.addOptionalElement(Identifier.fromNamespaceAndPath("quark", "slate"));
 
 		this.copy(BotaniaTags.Blocks.BLOCKS_QUARTZ, BotaniaTags.Items.BLOCKS_QUARTZ);
 
@@ -180,14 +182,14 @@ public class ItemTagProvider extends ItemTagsProvider {
 
 		this.tag(BotaniaTags.Items.ANCIENT_WILLS).add(getItems(AncientWillItem.class::isInstance));
 
-		TagAppender<Item> allPetals = this.tag(BotaniaTags.Items.PETALS);
+		TagAppender<Item, Item> allPetals = this.tag(BotaniaTags.Items.PETALS);
 		ColorHelper.supportedColors().forEach(color -> {
 			var petalTag = BotaniaTags.Items.getPetalTag(color);
 			this.tag(petalTag).add(BotaniaItems.getPetal(color), BotaniaBlocks.getShimmeringMushroom(color).asItem());
 			allPetals.addTag(petalTag);
 		});
 
-		IntrinsicTagAppender<Item> petalApothecaries = this.tag(BotaniaTags.Items.PETAL_APOTHECARIES);
+		TagAppender<Item, Item> petalApothecaries = this.tag(BotaniaTags.Items.PETAL_APOTHECARIES);
 		for (Block apothecary : BotaniaBlocks.ALL_APOTHECARIES) {
 			petalApothecaries.add(apothecary.asItem());
 		}
@@ -308,10 +310,11 @@ public class ItemTagProvider extends ItemTagsProvider {
 
 		tag(BotaniaTags.Items.TOOL_PLACEABLE_AXE).addTag(ItemTags.SAPLINGS);
 		tag(BotaniaTags.Items.TOOL_PLACEABLE_PICKAXE)
-				.add(Items.TORCH, Items.SOUL_TORCH, Items.REDSTONE_TORCH)
-				.addOptional(Identifier.fromNamespaceAndPath("copperagebackport", "copper_torch"))
-				.addOptional(Identifier.fromNamespaceAndPath("occultism", "spirit_torch"))
-				.addOptional(Identifier.fromNamespaceAndPath("torches", "stone_torch"))
+				.add(Items.TORCH, Items.SOUL_TORCH, Items.REDSTONE_TORCH);
+		getOrCreateRawBuilder(BotaniaTags.Items.TOOL_PLACEABLE_PICKAXE)
+				.addOptionalElement(Identifier.fromNamespaceAndPath("copperagebackport", "copper_torch"))
+				.addOptionalElement(Identifier.fromNamespaceAndPath("occultism", "spirit_torch"))
+				.addOptionalElement(Identifier.fromNamespaceAndPath("torches", "stone_torch"))
 				// Well, "More Beautiful Torches", this could be your spot if you were tagging your countless items
 				.addOptionalTag(Identifier.fromNamespaceAndPath("quad-mstv-mtv", "fire_torch_variants"))
 				.addOptionalTag(Identifier.fromNamespaceAndPath("quad-mstv-mtv", "redstone_torch_variants"))

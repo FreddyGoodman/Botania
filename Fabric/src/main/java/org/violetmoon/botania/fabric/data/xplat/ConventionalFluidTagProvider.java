@@ -41,8 +41,4 @@ public class ConventionalFluidTagProvider extends IntrinsicHolderTagsProvider<Fl
 		this.tag(BotaniaTags.Fluids.THERMALILY_CONSUMABLE).addTag(ConventionalFluidTags.LAVA);
 	}
 
-	@Override
-	public String getName() {
-		return "Conventional " + super.getName();
-	}
 }

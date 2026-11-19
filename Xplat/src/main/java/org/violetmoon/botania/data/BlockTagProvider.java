@@ -246,7 +246,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 				.addTag(BotaniaTags.Blocks.POTTED_GLIMMERING_FLOWERS);
 
 		// Special flowers intentionally excluded due to unwanted behaviors with tree growth and mod compat.
-		tag(BlockTags.TALL_FLOWERS).addTag(BotaniaTags.Blocks.TALL_MYSTICAL_FLOWERS);
+		tag(BlockTags.FLOWERS).addTag(BotaniaTags.Blocks.TALL_MYSTICAL_FLOWERS);
 		tag(BlockTags.SMALL_FLOWERS).addTag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
 		// intentionally not added to small flowers so Endermen don't grab them
 		tag(BlockTags.FLOWERS).addTag(BotaniaTags.Blocks.GLIMMERING_FLOWERS);
@@ -377,7 +377,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 		tag(BotaniaTags.Blocks.WEIGHT_LENS_AFFECTED);
 
-		tag(BlockTags.MUSHROOM_GROW_BLOCK).add(
+		tag(BlockTags.OVERRIDES_MUSHROOM_LIGHT_REQUIREMENT).add(
 				BotaniaBlocks.MYCELITE, BotaniaBlocks.MYCELITE_SLAB, BotaniaBlocks.MYCELITE_STAIRS,
 				BotaniaBlocks.MYCELITE_WALL, BotaniaBlocks.MYCELITE_BRICKS, BotaniaBlocks.MYCELITE_BRICK_SLAB,
 				BotaniaBlocks.MYCELITE_BRICK_STAIRS, BotaniaBlocks.MYCELITE_BRICK_WALL, BotaniaBlocks.COBBLED_MYCELITE,
@@ -388,9 +388,10 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 		);
 
 		tag(BotaniaTags.Blocks.HORN_OF_THE_WILD_BREAKABLE)
-				.add(Blocks.MOSS_CARPET)
-				.addOptional(Identifier.fromNamespaceAndPath("biomesoplenty", "high_grass"))
-				.addOptional(Identifier.fromNamespaceAndPath("biomesoplenty", "high_grass_plant"));
+				.add(Blocks.MOSS_CARPET);
+		getOrCreateRawBuilder(BotaniaTags.Blocks.HORN_OF_THE_WILD_BREAKABLE)
+				.addOptionalElement(Identifier.fromNamespaceAndPath("biomesoplenty", "high_grass"))
+				.addOptionalElement(Identifier.fromNamespaceAndPath("biomesoplenty", "high_grass_plant"));
 		tag(BotaniaTags.Blocks.HORN_OF_THE_WILD_IMMUNE)
 				.addTag(BotaniaTags.Blocks.GLIMMERING_FLOWERS)
 				.addTag(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS);
@@ -413,7 +414,8 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 				.add(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.PODZOL, Blocks.ROOTED_DIRT)
 				.add(grassBlockVariants);
 
-		tag(BotaniaTags.Blocks.UNETHICAL_TNT_CHECK).addOptional(Identifier.fromNamespaceAndPath("ae2", "tiny_tnt"));
+		getOrCreateRawBuilder(BotaniaTags.Blocks.UNETHICAL_TNT_CHECK)
+				.addOptionalElement(Identifier.fromNamespaceAndPath("ae2", "tiny_tnt"));
 
 		tag(BotaniaTags.Blocks.SINGLE_ITEM_INSERT).add(Blocks.CRAFTER);
 
@@ -474,16 +476,18 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 		tag(BotaniaTags.Blocks.TERRA_TRUNCATOR_TRUNK_BLOCKS)
 				.addTag(BlockTags.LOGS)
-				.add(Blocks.MANGROVE_ROOTS, Blocks.MUSHROOM_STEM)
-				.addOptional(Identifier.fromNamespaceAndPath("quark", "glow_shroom_stem"));
+				.add(Blocks.MANGROVE_ROOTS, Blocks.MUSHROOM_STEM);
+		getOrCreateRawBuilder(BotaniaTags.Blocks.TERRA_TRUNCATOR_TRUNK_BLOCKS)
+				.addOptionalElement(Identifier.fromNamespaceAndPath("quark", "glow_shroom_stem"));
 		tag(BotaniaTags.Blocks.TERRA_TRUNCATOR_CROWN_BLOCKS)
 				.addTag(BlockTags.LEAVES)
 				.add(
 						Blocks.NETHER_WART_BLOCK, Blocks.WARPED_WART_BLOCK, Blocks.SHROOMLIGHT,
 						Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK
-				)
-				.addOptional(Identifier.fromNamespaceAndPath("quark", "glow_shroom_block"))
-				.addOptional(Identifier.fromNamespaceAndPath("quark", "glow_ring_of_shroom"));
+				);
+		getOrCreateRawBuilder(BotaniaTags.Blocks.TERRA_TRUNCATOR_CROWN_BLOCKS)
+				.addOptionalElement(Identifier.fromNamespaceAndPath("quark", "glow_shroom_block"))
+				.addOptionalElement(Identifier.fromNamespaceAndPath("quark", "glow_ring_of_shroom"));
 
 		// for Diagonal Windows compatibility (DW adds its version of the block to the tag automatically)
 		tag(BotaniaTags.Blocks.FEL_BLAZE_BASE).add(Blocks.IRON_BARS);

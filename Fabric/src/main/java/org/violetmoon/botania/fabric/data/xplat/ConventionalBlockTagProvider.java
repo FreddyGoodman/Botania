@@ -162,8 +162,4 @@ public class ConventionalBlockTagProvider extends BlockTagProvider {
 		tag(BotaniaTags.Blocks.ROD_OF_THE_PLENTIFUL_MANTLE_HIGHLIGHTED).addTag(ConventionalBlockTags.ORES);
 	}
 
-	@Override
-	public String getName() {
-		return "Conventional " + super.getName();
-	}
 }

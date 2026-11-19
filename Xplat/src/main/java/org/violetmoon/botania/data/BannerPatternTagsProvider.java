@@ -12,7 +12,7 @@ package org.violetmoon.botania.data;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.world.level.block.entity.BannerPattern;
 
 import org.violetmoon.botania.common.block.BotaniaBannerPatterns;
@@ -20,7 +20,7 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class BannerPatternTagsProvider extends TagsProvider<BannerPattern> {
+public class BannerPatternTagsProvider extends KeyTagProvider<BannerPattern> {
 	public BannerPatternTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(packOutput, Registries.BANNER_PATTERN, lookupProvider);
 	}

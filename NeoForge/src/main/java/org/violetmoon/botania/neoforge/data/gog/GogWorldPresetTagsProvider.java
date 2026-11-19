@@ -12,24 +12,20 @@ package org.violetmoon.botania.neoforge.data.gog;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.tags.WorldPresetTags;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import org.jetbrains.annotations.NotNull;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.neoforge.data.NeoForgeDatagenInitializer;
 
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class GogWorldPresetTagsProvider extends TagsProvider<WorldPreset> {
+public class GogWorldPresetTagsProvider extends KeyTagProvider<WorldPreset> {
 	public GogWorldPresetTagsProvider(PackOutput output,
 			CompletableFuture<HolderLookup.Provider> provider) {
-		super(output, Registries.WORLD_PRESET, provider, BotaniaAPI.MODID,
-				new ExistingFileHelper(List.of(), Set.of(), false, null, null));
+		super(output, Registries.WORLD_PRESET, provider, BotaniaAPI.GOG_MODID);
 	}
 
 	@NotNull

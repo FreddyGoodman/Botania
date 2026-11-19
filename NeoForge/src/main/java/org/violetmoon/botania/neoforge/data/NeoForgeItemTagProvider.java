@@ -10,9 +10,10 @@
 package org.violetmoon.botania.neoforge.data;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
@@ -26,10 +27,11 @@ import org.violetmoon.botania.common.item.BotaniaItems;
 
 import java.util.concurrent.CompletableFuture;
 
-public class NeoForgeItemTagProvider extends ItemTagsProvider {
+public class NeoForgeItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 	public NeoForgeItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
 			CompletableFuture<TagsProvider.TagLookup<Block>> blockTags) {
-		super(output, lookupProvider, blockTags, BotaniaAPI.MODID, null);
+		super(output, Registries.ITEM, lookupProvider,
+				item -> BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow(), BotaniaAPI.MODID);
 	}
 
 	@NotNull

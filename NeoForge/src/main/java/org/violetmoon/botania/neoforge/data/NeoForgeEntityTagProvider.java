@@ -29,7 +29,7 @@ public class NeoForgeEntityTagProvider extends IntrinsicHolderTagsProvider<Entit
 	public NeoForgeEntityTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(packOutput, Registries.ENTITY_TYPE, lookupProvider, (entityType) -> ResourceKey
 				.create(Registries.ENTITY_TYPE, BuiltInRegistries.ENTITY_TYPE.getKey(entityType)),
-				BotaniaAPI.MODID, null);
+				BotaniaAPI.MODID);
 	}
 
 	@NotNull

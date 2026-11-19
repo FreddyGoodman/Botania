@@ -39,8 +39,9 @@ public class EntityTagProvider extends IntrinsicHolderTagsProvider<EntityType<?>
 						EntityType.ARMADILLO);
 
 		tag(BotaniaTags.Entities.COCOON_COMMON_AQUATIC)
-				.add(EntityType.COD, EntityType.SALMON, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SQUID, EntityType.FROG)
-				.addOptional(Identifier.fromNamespaceAndPath("quark", "crab"));
+				.add(EntityType.COD, EntityType.SALMON, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SQUID, EntityType.FROG);
+		getOrCreateRawBuilder(BotaniaTags.Entities.COCOON_COMMON_AQUATIC)
+				.addOptionalElement(Identifier.fromNamespaceAndPath("quark", "crab"));
 		tag(BotaniaTags.Entities.COCOON_RARE_AQUATIC).add(EntityType.DOLPHIN, EntityType.GLOW_SQUID, EntityType.AXOLOTL);
 
 		tag(BotaniaTags.Entities.DRUM_MILKABLE).add(EntityType.COW, EntityType.MOOSHROOM, EntityType.GOAT);

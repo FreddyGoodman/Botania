@@ -36,7 +36,7 @@ public class NeoForgeBlockTagProvider extends IntrinsicHolderTagsProvider<Block>
 	public NeoForgeBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
 		super(output, Registries.BLOCK, provider, DummyTagLookup.completedFuture(REQUIRED_TAGS),
 				block -> ResourceKey.create(Registries.BLOCK, BuiltInRegistries.BLOCK.getKey(block)),
-				BotaniaAPI.MODID, null);
+				BotaniaAPI.MODID);
 	}
 
 	@NotNull

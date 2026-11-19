@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -27,12 +26,13 @@ import org.violetmoon.botania.common.helper.ColorHelper;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 import org.violetmoon.botania.common.lib.ConventionalBotaniaTags;
+import org.violetmoon.botania.data.util.CopyingItemTagsProvider;
 import org.violetmoon.botania.data.util.DummyTagLookup;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class ConventionalItemTagProvider extends ItemTagsProvider {
+public class ConventionalItemTagProvider extends CopyingItemTagsProvider {
 	private static final Set<TagKey<Item>> RELEVANT_TAGS = Set.of(
 			BotaniaTags.Items.SHIMMERING_MUSHROOMS,
 			ConventionalItemTags.SEEDS
@@ -250,8 +250,4 @@ public class ConventionalItemTagProvider extends ItemTagsProvider {
 				.addTag(ConventionalItemTags.SEEDS);
 	}
 
-	@Override
-	public String getName() {
-		return "Conventional " + super.getName();
-	}
 }

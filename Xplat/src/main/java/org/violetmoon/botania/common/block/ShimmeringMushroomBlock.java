@@ -70,7 +70,7 @@ public class ShimmeringMushroomBlock extends MushroomBlock implements CustomApot
 	public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
 		BlockPos blockpos = pos.below();
 		BlockState blockstate = level.getBlockState(blockpos);
-		if (!blockstate.is(BlockTags.MUSHROOM_GROW_BLOCK)) {
+		if (!blockstate.is(BlockTags.OVERRIDES_MUSHROOM_LIGHT_REQUIREMENT)) {
 			return this.mayPlaceOn(blockstate, level, blockpos);
 		} else {
 			return true;

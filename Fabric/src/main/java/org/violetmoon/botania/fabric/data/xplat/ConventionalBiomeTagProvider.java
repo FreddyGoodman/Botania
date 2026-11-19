@@ -14,7 +14,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -47,6 +49,10 @@ public class ConventionalBiomeTagProvider extends TagsProvider<Biome> {
 
 	public ConventionalBiomeTagProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(packOutput, Registries.BIOME, lookupProvider, DummyTagLookup.completedFuture(RELEVANT_TAGS));
+	}
+
+	private TagAppender<ResourceKey<Biome>, Biome> tag(TagKey<Biome> key) {
+		return TagAppender.forBuilder(getOrCreateRawBuilder(key));
 	}
 
 	@Override
@@ -98,10 +104,4 @@ public class ConventionalBiomeTagProvider extends TagsProvider<Biome> {
 		tag(BotaniaTags.Biomes.ORECHID_DEEPSLATE_EMERALD_BONUS)
 				.addTag(ConventionalBiomeTags.IS_MOUNTAIN);
 	}
-
-	@Override
-	public String getName() {
-		return "Conventional " + super.getName();
-	}
-
 }

@@ -12,7 +12,7 @@ package org.violetmoon.botania.data;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -22,7 +22,7 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DamageTypeTagProvider extends TagsProvider<DamageType> {
+public class DamageTypeTagProvider extends KeyTagProvider<DamageType> {
 
 	public DamageTypeTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(packOutput, Registries.DAMAGE_TYPE, lookupProvider);
@@ -36,7 +36,7 @@ public class DamageTypeTagProvider extends TagsProvider<DamageType> {
 				.add(DamageTypes.IN_WALL)
 				.add(DamageTypes.STARVE)
 				.add(DamageTypes.FLY_INTO_WALL)
-				.addOptionalTag(DamageTypeTags.IS_FIRE.location());
+				.addOptionalTag(DamageTypeTags.IS_FIRE);
 
 		/*
 		Optional tag workaround for error:

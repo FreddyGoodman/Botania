@@ -37,8 +37,4 @@ public class ConventionalEntityTypeTagProvider extends FabricTagProvider.EntityT
 		tag(ConventionalEntityTypeTags.MINECARTS).add(reverseLookup(BotaniaEntities.MANA_POOL_MINECART));
 	}
 
-	@Override
-	public String getName() {
-		return "Conventional " + super.getName();
-	}
 }

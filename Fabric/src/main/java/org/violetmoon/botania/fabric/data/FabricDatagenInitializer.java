@@ -14,6 +14,8 @@ import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedReso
 import net.fabricmc.fabric.impl.resource.conditions.conditions.NotResourceCondition;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.damagesource.DamageType;
@@ -48,6 +50,7 @@ import org.violetmoon.botania.fabric.data.xplat.StonecuttingProvider;
 import org.violetmoon.botania.fabric.data.xplat.TerrestrialAgglomerationProvider;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.violetmoon.botania.common.BotaniaDamageTypes.*;
 
@@ -83,12 +86,15 @@ public class FabricDatagenInitializer implements DataGeneratorEntrypoint {
 		BlockTagProvider blockTagProvider = pack.addProvider(BlockTagProvider::new);
 		pack.addProvider((output, registriesFuture) -> new ItemTagProvider(
 				output, registriesFuture, blockTagProvider.contentsGetter()));
-		var conventionalBlockTagProvider = pack.addProvider(ConventionalBlockTagProvider::new);
-		pack.addProvider((output, registriesFuture) -> new ConventionalItemTagProvider(
-				output, registriesFuture, conventionalBlockTagProvider.contentsGetter()));
+		pack.addProvider((output, registriesFuture) -> {
+			var blocks = new ConventionalBlockTagProvider(output, registriesFuture);
+			var items = new ConventionalItemTagProvider(output, registriesFuture, blocks.contentsGetter());
+			return new TagProviders("Conventional block and item tags", List.of(blocks, items));
+		});
 		pack.addProvider(ConventionalFluidTagProvider::new);
 		pack.addProvider(EntityTagProvider::new);
-		pack.addProvider(ConventionalEntityTypeTagProvider::new);
+		pack.addProvider((output, registriesFuture) -> new TagProviders("Conventional entity tags",
+				List.of(new ConventionalEntityTypeTagProvider(output, registriesFuture))));
 		pack.addProvider(BannerPatternProvider::new);
 		pack.addProvider(BannerPatternTagsProvider::new);
 		pack.addProvider(ConventionalBiomeTagProvider::new);
@@ -124,5 +130,17 @@ public class FabricDatagenInitializer implements DataGeneratorEntrypoint {
 		context.register(PLAYER_ATTACK_ARMOR_PIERCING, PLAYER_AP);
 		context.register(KEY_EXPLOSION, KEY);
 		context.register(PORTAL_BREAD_EXPLOSION, PORTAL);
+	}
+
+	private record TagProviders(String name, List<DataProvider> providers) implements DataProvider {
+		@Override
+		public CompletableFuture<?> run(CachedOutput output) {
+			return CompletableFuture.allOf(providers.stream().map(provider -> provider.run(output)).toArray(CompletableFuture[]::new));
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
 	}
 }

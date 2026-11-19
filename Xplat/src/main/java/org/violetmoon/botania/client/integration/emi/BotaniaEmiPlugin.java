@@ -404,7 +404,7 @@ public class BotaniaEmiPlugin implements EmiPlugin {
 					Identifier mushroomId = BuiltInRegistries.BLOCK.getKey(shimmeringMushroom);
 					registry.addRecipe(EmiWorldInteractionRecipe.builder()
 							.leftInput(EmiStack.of(BotaniaItems.FLORAL_FERTILIZER))
-							.rightInput(EmiIngredient.of(BlockTags.MUSHROOM_GROW_BLOCK), true)
+							.rightInput(EmiIngredient.of(BlockTags.OVERRIDES_MUSHROOM_LIGHT_REQUIREMENT), true)
 							.output(EmiStack.of(shimmeringMushroom))
 							.id(mushroomId.withPrefix("/world/floral_fertilizer/"))
 							.build());

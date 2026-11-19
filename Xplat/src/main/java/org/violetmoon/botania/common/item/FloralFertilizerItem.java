@@ -101,7 +101,7 @@ public class FloralFertilizerItem extends Item {
 	}
 
 	private static boolean canPlaceMushroom(BlockState belowState) {
-		return belowState.is(BlockTags.MUSHROOM_GROW_BLOCK);
+		return belowState.is(BlockTags.OVERRIDES_MUSHROOM_LIGHT_REQUIREMENT);
 	}
 
 	private static boolean canPlaceFlower(BlockState belowState, Level world) {
