@@ -108,7 +108,7 @@ public class GaiaHeadBlockEntityRenderer implements BlockEntityRenderer<GaiaHead
 		SkullBlock.Type type = getViewType();
 		ResolvableProfile profile = null;
 		if (type == SkullBlock.Types.PLAYER && Minecraft.getInstance().getCameraEntity() instanceof Player player) {
-			profile = new ResolvableProfile(player.getGameProfile());
+			profile = ResolvableProfile.createResolved(player.getGameProfile());
 		}
 
 		RenderType layer = SkullBlockRenderer.getRenderType(type, profile);

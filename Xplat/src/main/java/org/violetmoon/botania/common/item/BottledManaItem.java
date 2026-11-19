@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -163,7 +164,7 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectDropAllItems(Level level, LivingEntity living) {
-		if (!level.isClientSide() && living instanceof Player player) {
+		if (level instanceof ServerLevel serverLevel && living instanceof Player player) {
 			player.getInventory().dropAll();
 		}
 	}
@@ -199,8 +200,8 @@ public class BottledManaItem extends Item {
 		if (!level.isClientSide() && living instanceof Player player) {
 			living.hurt(living.damageSources().magic(), living.getHealth() - 1);
 			ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
-			skull.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
-			living.spawnAtLocation(skull, 0);
+			skull.set(DataComponents.PROFILE, ResolvableProfile.createResolved(player.getGameProfile()));
+			living.spawnAtLocation(serverLevel, skull, 0);
 		}
 	}
 
