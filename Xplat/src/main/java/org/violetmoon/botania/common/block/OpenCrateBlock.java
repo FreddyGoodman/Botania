@@ -61,7 +61,7 @@ public class OpenCrateBlock extends BotaniaEntityBlock {
 	public static void redstoneParticlesOnFullBlock(Level world, BlockPos pos, RandomSource random) {
 		for (Direction direction : Direction.values()) {
 			BlockPos blockpos = pos.relative(direction);
-			if (!world.getBlockState(blockpos).isSolidRender(world, blockpos)) {
+			if (!world.getBlockState(blockpos).isSolidRender()) {
 				Direction.Axis axis = direction.getAxis();
 				double dx = axis == Direction.Axis.X ? 0.5D + 0.5625D * direction.getStepX() : random.nextFloat();
 				double dy = axis == Direction.Axis.Y ? 0.5D + 0.5625D * direction.getStepY() : random.nextFloat();

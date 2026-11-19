@@ -77,7 +77,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 
 		if (player != null && player.isSecondaryUseActive()) {
 			if (world.getBlockEntity(pos) == null && block.asItem() != Items.AIR
-					&& (wstate.isSolidRender(world, pos) || wstate.getRenderShape() == RenderShape.MODEL)
+					&& (wstate.isSolidRender() || wstate.getRenderShape() == RenderShape.MODEL)
 					&& (wstate.canOcclude() || block instanceof TransparentBlock || block instanceof IronBarsBlock)
 					&& block.asItem() instanceof BlockItem) {
 				setItemToPlace(stack, block.asItem());

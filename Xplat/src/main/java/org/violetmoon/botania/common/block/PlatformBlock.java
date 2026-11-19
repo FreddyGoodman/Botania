@@ -111,7 +111,7 @@ public abstract class PlatformBlock extends BotaniaEntityBlock implements ManaCo
 			BlockState changeState = Block.byItem(currentStack.getItem()).getStateForPlacement(ctx);
 
 			if (changeState != null && !changeState.is(BotaniaTags.Blocks.UNSUPPORTED_PLATFORM_DISGUISE)
-					&& (changeState.isSolidRender(level, pos) || changeState.getRenderShape() == RenderShape.MODEL)
+					&& (changeState.isSolidRender() || changeState.getRenderShape() == RenderShape.MODEL)
 					&& !(changeState.getBlock() instanceof PlatformBlock)
 					&& !changeState.isAir()) {
 				if (!level.isClientSide()) {
