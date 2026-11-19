@@ -70,7 +70,7 @@ public class ResoluteIvyRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<ResoluteIvyRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

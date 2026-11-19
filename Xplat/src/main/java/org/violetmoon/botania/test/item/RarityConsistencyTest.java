@@ -31,6 +31,7 @@ import org.violetmoon.botania.api.recipe.OrechidRecipe;
 import org.violetmoon.botania.api.recipe.PureDaisyRecipe;
 import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
 import org.violetmoon.botania.common.crafting.LexiconElvenTradeRecipe;
+import org.violetmoon.botania.common.crafting.recipe.BotaniaSpecialRecipe;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -70,7 +71,11 @@ public class RarityConsistencyTest {
 					// only check recipes that make Botania items
 					continue;
 				}
-				var ingredients = recipe instanceof BotaniaRecipe<?> botaniaRecipe ? botaniaRecipe.getIngredients() : recipe.placementInfo().ingredients();
+				var ingredients = switch (recipe) {
+					case BotaniaRecipe<?> botaniaRecipe -> botaniaRecipe.getIngredients();
+					case BotaniaSpecialRecipe specialRecipe -> specialRecipe.getIngredients();
+					default -> recipe.placementInfo().ingredients();
+				};
 				for (Ingredient ingredient : ingredients) {
 					var items = ingredient.items().map(ItemStack::new).toList();
 					Rarity ingredientRarity = items.stream()
@@ -148,6 +153,10 @@ public class RarityConsistencyTest {
 			}
 			case BotaniaRecipe<?> botaniaRecipe -> {
 				ItemStack result = botaniaRecipe.getResultItem(helper.getLevel().registryAccess());
+				return result.isEmpty() ? List.of() : List.of(result);
+			}
+			case BotaniaSpecialRecipe specialRecipe -> {
+				ItemStack result = specialRecipe.getResultItem(helper.getLevel().registryAccess());
 				return result.isEmpty() ? List.of() : List.of(result);
 			}
 			default -> {

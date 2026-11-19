@@ -76,7 +76,7 @@ public class SplitLensRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<SplitLensRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

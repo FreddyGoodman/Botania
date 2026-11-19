@@ -69,7 +69,7 @@ public class ManaBlasterRemoveLensRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<ManaBlasterRemoveLensRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

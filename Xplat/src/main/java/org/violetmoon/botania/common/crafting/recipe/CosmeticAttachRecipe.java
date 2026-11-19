@@ -82,7 +82,7 @@ public class CosmeticAttachRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<CosmeticAttachRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

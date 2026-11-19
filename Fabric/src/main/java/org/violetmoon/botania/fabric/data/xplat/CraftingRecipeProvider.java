@@ -49,6 +49,7 @@ import org.violetmoon.botania.data.recipes.builder.WrapperRecipeBuilder;
 import org.violetmoon.botania.fabric.data.FabricDatagenInitializer;
 import org.violetmoon.botania.mixin.RecipeProviderAccessor;
 
+import java.util.Optional;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -1630,7 +1631,7 @@ public class CraftingRecipeProvider extends FabricRecipeProvider {
 				BotaniaItems.RED_QUARTZ, BotaniaItems.ELVEN_QUARTZ, BotaniaItems.SUNNY_QUARTZ
 		};
 		for (int variant = 0; variant < items.length; variant++) {
-			Ingredient material = items[variant] == null ? Ingredient.EMPTY : Ingredient.of(items[variant]);
+			var material = Optional.ofNullable(items[variant]).map(Ingredient::of);
 			TiaraWingsRecipeBuilder.with(material, variant)
 					.unlockedBy("has_item", conditionsFromItem(BotaniaItems.FLUGEL_TIARA))
 					.save(recipeOutput);

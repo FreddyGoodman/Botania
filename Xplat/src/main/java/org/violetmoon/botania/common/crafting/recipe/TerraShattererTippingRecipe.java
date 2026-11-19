@@ -25,7 +25,7 @@ public class TerraShattererTippingRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<TerraShattererTippingRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

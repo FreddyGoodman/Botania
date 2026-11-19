@@ -19,15 +19,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 
 import org.violetmoon.botania.api.recipe.StateIngredient;
 import org.violetmoon.botania.api.recipe.StateIngredientType;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 public record BlockStateIngredient(BlockState state) implements StateIngredient {
@@ -49,19 +46,10 @@ public record BlockStateIngredient(BlockState state) implements StateIngredient 
 
 	@Override
 	public List<Component> descriptionTooltip() {
-		Map<Property<?>, Comparable<?>> map = state.getValues();
-		if (map.isEmpty()) {
-			return StateIngredient.super.descriptionTooltip();
-		}
-		List<Component> tooltip = new ArrayList<>(map.size());
-		for (Map.Entry<Property<?>, Comparable<?>> entry : map.entrySet()) {
-			Property<?> key = entry.getKey();
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			String name = ((Property) key).getName(entry.getValue());
-
-			tooltip.add(Component.literal(key.getName() + " = " + name).withStyle(ChatFormatting.GRAY));
-		}
-		return tooltip;
+		List<Component> tooltip = state.getValues()
+				.<Component>map(value -> Component.literal(value.property().getName() + " = " + value.valueName()).withStyle(ChatFormatting.GRAY))
+				.toList();
+		return tooltip.isEmpty() ? StateIngredient.super.descriptionTooltip() : tooltip;
 	}
 
 	@Override

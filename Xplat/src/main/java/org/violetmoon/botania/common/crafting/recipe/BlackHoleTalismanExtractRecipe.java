@@ -80,7 +80,7 @@ public class BlackHoleTalismanExtractRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<BlackHoleTalismanExtractRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

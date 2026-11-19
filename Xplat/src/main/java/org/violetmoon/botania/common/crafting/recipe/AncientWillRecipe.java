@@ -97,7 +97,7 @@ public class AncientWillRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<AncientWillRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

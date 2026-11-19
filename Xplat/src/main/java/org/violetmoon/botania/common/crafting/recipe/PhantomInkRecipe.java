@@ -72,7 +72,7 @@ public class PhantomInkRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<PhantomInkRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

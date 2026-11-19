@@ -121,7 +121,7 @@ public class MergeVialRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<MergeVialRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

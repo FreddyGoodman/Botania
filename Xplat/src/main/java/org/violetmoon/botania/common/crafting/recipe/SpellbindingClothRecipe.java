@@ -74,7 +74,7 @@ public class SpellbindingClothRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<SpellbindingClothRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

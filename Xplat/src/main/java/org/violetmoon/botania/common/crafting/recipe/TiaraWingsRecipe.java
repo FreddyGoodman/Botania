@@ -14,7 +14,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,15 +25,18 @@ import net.minecraft.world.level.Level;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.equipment.bauble.FlugelTiaraItem;
 
+import java.util.List;
+import java.util.Optional;
+
 public class TiaraWingsRecipe extends BotaniaSpecialRecipe {
 	public static final RecipeSerializer<TiaraWingsRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 
-	private final Ingredient material;
+	private final Optional<Ingredient> material;
 	private final int variant;
 
-	public TiaraWingsRecipe(CraftingBookCategory category, Ingredient material, int variant) {
+	public TiaraWingsRecipe(CraftingBookCategory category, Optional<Ingredient> material, int variant) {
 		super(category);
-		if (material.test(BotaniaItems.FLUGEL_TIARA.getDefaultInstance())) {
+		if (material.isPresent() && material.get().test(BotaniaItems.FLUGEL_TIARA.getDefaultInstance())) {
 			throw new IllegalArgumentException("Material cannot be a Flügel Tiara");
 		}
 		this.material = material;
@@ -56,7 +58,7 @@ public class TiaraWingsRecipe extends BotaniaSpecialRecipe {
 			}
 			if (!foundTiara && matchesTiara(stack)) {
 				foundTiara = true;
-			} else if (!foundMaterial && material.test(stack)) {
+			} else if (!foundMaterial && material.orElseThrow().test(stack)) {
 				foundMaterial = true;
 			} else {
 				return false;
@@ -84,10 +86,9 @@ public class TiaraWingsRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public NonNullList<Ingredient> getIngredients() {
-		return material.isEmpty()
-				? NonNullList.of(Ingredient.EMPTY, Ingredient.of(BotaniaItems.FLUGEL_TIARA))
-				: NonNullList.of(Ingredient.EMPTY, Ingredient.of(BotaniaItems.FLUGEL_TIARA), material);
+	public List<Ingredient> getIngredients() {
+		Ingredient tiara = Ingredient.of(BotaniaItems.FLUGEL_TIARA);
+		return material.map(ingredient -> List.of(tiara, ingredient)).orElseGet(() -> List.of(tiara));
 	}
 
 	@Override
@@ -98,11 +99,11 @@ public class TiaraWingsRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public String getGroup() {
+	public String group() {
 		return "botania:flugel_tiara_wings";
 	}
 
-	public Ingredient material() {
+	public Optional<Ingredient> material() {
 		return material;
 	}
 
@@ -118,12 +119,12 @@ public class TiaraWingsRecipe extends BotaniaSpecialRecipe {
 	private static final class Serializer {
 		private static final MapCodec<TiaraWingsRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.EQUIPMENT).forGetter(TiaraWingsRecipe::category),
-				Ingredient.CODEC.fieldOf("material").forGetter(TiaraWingsRecipe::material),
+				Ingredient.CODEC.optionalFieldOf("material").forGetter(TiaraWingsRecipe::material),
 				ExtraCodecs.intRange(0, FlugelTiaraItem.WING_TYPES).fieldOf("variant").forGetter(TiaraWingsRecipe::variant)
 		).apply(instance, TiaraWingsRecipe::new));
 		private static final StreamCodec<RegistryFriendlyByteBuf, TiaraWingsRecipe> STREAM_CODEC = StreamCodec.composite(
 				CraftingBookCategory.STREAM_CODEC, TiaraWingsRecipe::category,
-				Ingredient.CONTENTS_STREAM_CODEC, TiaraWingsRecipe::material,
+				Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, TiaraWingsRecipe::material,
 				ByteBufCodecs.VAR_INT, TiaraWingsRecipe::variant,
 				TiaraWingsRecipe::new
 		);

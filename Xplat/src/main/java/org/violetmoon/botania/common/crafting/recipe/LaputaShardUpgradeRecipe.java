@@ -9,7 +9,6 @@
 package org.violetmoon.botania.common.crafting.recipe;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -21,6 +20,8 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.LaputaShardItem;
+
+import java.util.List;
 
 public class LaputaShardUpgradeRecipe extends BotaniaSpecialRecipe {
 	public static final RecipeSerializer<LaputaShardUpgradeRecipe> SERIALIZER = serializer(LaputaShardUpgradeRecipe::new);
@@ -56,8 +57,8 @@ public class LaputaShardUpgradeRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY,
+	public List<Ingredient> getIngredients() {
+		return List.of(
 				Ingredient.of(BotaniaItems.SHARD_OF_LAPUTA),
 				Ingredient.of(BotaniaItems.GAIA_SPIRIT));
 	}
@@ -84,7 +85,7 @@ public class LaputaShardUpgradeRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<LaputaShardUpgradeRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

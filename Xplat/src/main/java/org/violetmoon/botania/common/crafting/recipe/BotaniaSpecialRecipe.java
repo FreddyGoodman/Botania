@@ -2,14 +2,18 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
+import java.util.List;
 import java.util.function.Function;
 
-abstract class BotaniaSpecialRecipe extends CustomRecipe {
+public abstract class BotaniaSpecialRecipe extends CustomRecipe {
 	private final CraftingBookCategory category;
 
 	protected BotaniaSpecialRecipe(CraftingBookCategory category) {
@@ -19,6 +23,16 @@ abstract class BotaniaSpecialRecipe extends CustomRecipe {
 	@Override
 	public final CraftingBookCategory category() {
 		return category;
+	}
+
+	public abstract boolean canCraftInDimensions(int width, int height);
+
+	public List<Ingredient> getIngredients() {
+		return List.of();
+	}
+
+	public ItemStack getResultItem(HolderLookup.Provider registries) {
+		return ItemStack.EMPTY;
 	}
 
 	protected static <T extends BotaniaSpecialRecipe> RecipeSerializer<T> serializer(

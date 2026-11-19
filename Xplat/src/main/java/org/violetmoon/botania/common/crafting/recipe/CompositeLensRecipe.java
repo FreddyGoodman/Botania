@@ -89,7 +89,7 @@ public class CompositeLensRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<CompositeLensRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

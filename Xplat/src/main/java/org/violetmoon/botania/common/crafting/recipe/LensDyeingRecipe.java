@@ -10,6 +10,7 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 import com.google.common.base.Suppliers;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +49,7 @@ public class LensDyeingRecipe extends BotaniaSpecialRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<LensDyeingRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
@@ -64,7 +65,7 @@ public class LensDyeingRecipe extends BotaniaSpecialRecipe {
 					foundLens = true;
 				} else if (!foundDye) {
 					// TODO: rainbow tinting items should be a tag
-					if (stack.getItem() instanceof DyeItem || stack.is(BotaniaItems.MANA_PEARL)) {
+					if (stack.getItem() instanceof DyeItem && stack.has(DataComponents.DYE) || stack.is(BotaniaItems.MANA_PEARL)) {
 						foundDye = true;
 					} else {
 						return false;
@@ -88,9 +89,9 @@ public class LensDyeingRecipe extends BotaniaSpecialRecipe {
 			if (!stack.isEmpty()) {
 				if (stack.getItem() instanceof BasicLensItem && lens.isEmpty()) {
 					lens = stack;
-				} else if (stack.getItem() instanceof DyeItem dyeItem) {
+				} else if (stack.getItem() instanceof DyeItem) {
 					// we can assume that otherwise it's rainbow color, as we matched the ingredients already
-					color = dyeItem.getDyeColor();
+					color = stack.get(DataComponents.DYE);
 				}
 			}
 		}
