@@ -11,11 +11,11 @@ package org.violetmoon.botania.common.block.block_entity;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -326,7 +326,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 	}
 
 	public static class Hud {
-		public static void render(PetalApothecaryBlockEntity altar, GuiGraphics gui, Window window, Font font, float partialTick) {
+		public static void render(PetalApothecaryBlockEntity altar, GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			int xc = window.getGuiScaledWidth() / 2;
 			int yc = window.getGuiScaledHeight() / 2;
 
@@ -350,7 +350,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 					RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, xc + radius + 9, yc - 8, 0, 8, 22, 15);
 
 					ItemStack stack = recipe.value().assemble(altar.getRecipeInput());
-					gui.renderFakeItem(stack, xc + radius + 32, yc - 8);
+					gui.fakeItem(stack, xc + radius + 32, yc - 8);
 
 					var reagents = recipe.value().getReagent().getItems();
 					ItemStack reagent;
@@ -360,8 +360,8 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 						int idx = (int) ((altar.level.getGameTime() / 20) % reagents.length);
 						reagent = reagents[idx];
 					}
-					gui.renderFakeItem(reagent, xc + radius + 16, yc + 6);
-					gui.drawString(font, "+", xc + radius + 14, yc + 10, 0xFFFFFF, false);
+					gui.fakeItem(reagent, xc + radius + 16, yc + 6);
+					gui.text(font, "+", xc + radius + 14, yc + 10, 0xFFFFFF, false);
 				});
 
 				for (int i = 0; i < amt; i++) {
@@ -371,7 +371,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 					pose.pushMatrix();
 					pose.translate((float) xPos, (float) yPos, 0);
 					RenderSystem.applyModelViewMatrix();
-					gui.renderFakeItem(altar.getItemHandler().getItem(i), 0, 0);
+					gui.fakeItem(altar.getItemHandler().getItem(i), 0, 0);
 					pose.popMatrix();
 					RenderSystem.applyModelViewMatrix();
 
@@ -380,9 +380,9 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			}
 			if (altar.recipeKeepTicks > 0 && altar.canAddLastRecipe()) {
 				String s = I18n.get("botaniamisc.altarRefill0");
-				gui.drawString(font, s, xc - font.width(s) / 2, yc + 10, 0xFFFFFF, false);
+				gui.text(font, s, xc - font.width(s) / 2, yc + 10, 0xFFFFFF, false);
 				s = I18n.get("botaniamisc.altarRefill1");
-				gui.drawString(font, s, xc - font.width(s) / 2, yc + 20, 0xFFFFFF, false);
+				gui.text(font, s, xc - font.width(s) / 2, yc + 20, 0xFFFFFF, false);
 			}
 		}
 	}

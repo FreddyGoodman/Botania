@@ -12,7 +12,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -217,7 +217,7 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 	}
 
 	public static class Hud {
-		public static void render(CorporeaCrystalCubeBlockEntity cube, GuiGraphics gui, Window window, Font font, float partialTick) {
+		public static void render(CorporeaCrystalCubeBlockEntity cube, GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			PoseStack ps = gui.pose();
 
 			ItemStack target = cube.getRequestTarget();
@@ -239,13 +239,13 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 
 				RenderHelper.renderHUDBox(gui, 8, -11, strlen + 32, locked ? 21 : 11);
 
-				gui.drawString(font, nameStr, 30, -9, 0x6666FF);
-				gui.drawString(font, countStr, 30, 1, 0xFFFFFF);
+				gui.text(font, nameStr, 30, -9, 0x6666FF);
+				gui.text(font, countStr, 30, 1, 0xFFFFFF);
 				if (locked) {
-					gui.drawString(font, lockedStr, 30, 11, 0xFFAA00);
+					gui.text(font, lockedStr, 30, 11, 0xFFAA00);
 				}
 
-				gui.renderItem(target, 10, -9);
+				gui.item(target, 10, -9);
 
 				ps.popPose();
 			}

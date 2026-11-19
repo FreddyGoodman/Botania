@@ -19,7 +19,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -57,7 +57,7 @@ public class TerrestrialAgglomerationRecipeCategory extends BotaniaRecipeCategor
 	}
 
 	@Override
-	public void draw(TerrestrialAgglomerationRecipe recipe, IRecipeSlotsView view, GuiGraphics gui, double mouseX, double mouseY) {
+	public void draw(TerrestrialAgglomerationRecipe recipe, IRecipeSlotsView view, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, view, gui, mouseX, mouseY);
 		RenderSystem.enableBlend();
 		overlay.draw(gui, 25, 14);

@@ -12,7 +12,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ARGB;
@@ -37,7 +37,7 @@ public final class ItemsRemainingRenderHandler {
 	private static Component customString;
 	private static int ticks, count;
 
-	public static void render(GuiGraphics gui, float partialTick) {
+	public static void render(GuiGraphicsExtractor gui, float partialTick) {
 		PoseStack ms = gui.pose();
 		if (ticks > 0 && !stack.isEmpty()) {
 			int pos = MAX_TICKS - ticks;
@@ -53,13 +53,13 @@ public final class ItemsRemainingRenderHandler {
 			ms.pushPose();
 			ms.translate(xp, y, 0F);
 			ms.scale(alpha, 1F, 1F);
-			gui.renderItem(stack, 0, 0);
+			gui.item(stack, 0, 0);
 			ms.popPose();
 
 			Component text = customString != null ? customString : getRemainingCount(stack, count);
 
 			int color = ARGB.color(ARGB.as8BitChannel(alpha), 0xFFFFFF);
-			gui.drawString(mc.font, text, x + 20, y + 6, color);
+			gui.text(mc.font, text, x + 20, y + 6, color);
 		}
 	}
 

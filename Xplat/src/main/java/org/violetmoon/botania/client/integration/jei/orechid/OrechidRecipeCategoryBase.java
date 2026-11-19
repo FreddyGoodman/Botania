@@ -21,7 +21,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -60,14 +60,14 @@ public abstract class OrechidRecipeCategoryBase extends BotaniaRecipeCategoryBas
 	}
 
 	@Override
-	public void draw(OrechidRecipe recipe, IRecipeSlotsView view, GuiGraphics gui, double mouseX, double mouseY) {
+	public void draw(OrechidRecipe recipe, IRecipeSlotsView view, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, view, gui, mouseX, mouseY);
 		final Double chance = getChance(recipe);
 		if (chance != null) {
 			final Component chanceComponent = OrechidUIHelper.getPercentageComponent(chance);
 			Font font = Minecraft.getInstance().font;
 			int xOffset = 90 - font.width(chanceComponent);
-			gui.drawString(font, chanceComponent, xOffset, 1, 0x888888, false);
+			gui.text(font, chanceComponent, xOffset, 1, 0x888888, false);
 		}
 		RenderSystem.enableBlend();
 		overlay.draw(gui, 17, 0);

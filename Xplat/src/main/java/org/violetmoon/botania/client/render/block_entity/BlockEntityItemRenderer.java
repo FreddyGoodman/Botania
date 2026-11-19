@@ -40,7 +40,7 @@ public class BlockEntityItemRenderer {
 			Minecraft minecraft = Minecraft.getInstance();
 			BlockEntityRenderer<?> r = minecraft.getBlockEntityRenderDispatcher().getRenderer(dummy.get());
 			if (r != null) {
-				r.render(null, minecraft.getTimer().getGameTimeDeltaPartialTick(true), ms, buffers, light, overlay);
+				r.render(null, minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true), ms, buffers, light, overlay);
 			}
 		}
 	}

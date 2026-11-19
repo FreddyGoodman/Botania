@@ -96,6 +96,7 @@
     "client.GuiBookEntryListMixin",
     "client.GuiButtonEntryMixin",
     "client.GuiGraphicsMixin",
+    "client.GuiTooltipPositionMixin",
     "client.ItemInHandRendererMixin",
     "client.ItemRendererAccessor",
     "client.LevelRendererAccessor",

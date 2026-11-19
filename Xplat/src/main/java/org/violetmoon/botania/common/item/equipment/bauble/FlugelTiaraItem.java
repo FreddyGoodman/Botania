@@ -13,7 +13,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -488,7 +488,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			return 0;
 		}
 
-		public static void renderHUD(GuiGraphics gui, float partialTicks, Player player, ItemStack stack) {
+		public static void renderHUD(GuiGraphicsExtractor gui, float partialTicks, Player player, ItemStack stack) {
 			int u = Math.max(1, getVariant(stack)) * 9 - 9;
 			int v = 0;
 

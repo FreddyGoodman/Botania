@@ -84,7 +84,7 @@ public class ClientProxy implements Proxy {
 	public void lightningFX(Level level, Vec3 vectorStart, Vec3 vectorEnd, float ticksPerMeter, long seed, int colorOuter, int colorInner) {
 		// todo wip, params are ignored
 		BoltRenderer.INSTANCE.add(level, new BoltParticleOptions(vectorStart, vectorEnd).size(0.08F),
-				Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+				Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
 	}
 
 	@Override

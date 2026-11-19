@@ -10,7 +10,6 @@
 package org.violetmoon.botania.neoforge.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
@@ -44,7 +43,6 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.BotaniaAPIClient;
 import org.violetmoon.botania.api.mana.ManaBarTooltip;
-import org.violetmoon.botania.api.mana.ManaItem;
 import org.violetmoon.botania.api.neoforge.BotaniaNeoForgeCapabilities;
 import org.violetmoon.botania.client.BotaniaClientCapabilities;
 import org.violetmoon.botania.client.BotaniaItemProperties;
@@ -133,25 +131,6 @@ public class NeoForgeClientInitializer {
 		bus.addListener((InputEvent.Key e) -> {
 			RingOfDexterousMotionItem.ClientLogic.onKeyDown();
 			KonamiHandler.handleInput(e.getKey(), e.getAction(), e.getModifiers());
-		});
-		bus.addListener(EventPriority.LOWEST, (RenderTooltipEvent.Color e) -> {
-			var manaItem = ManaItem.LOOKUP.find(e.getItemStack());
-			if (manaItem == null) {
-				return;
-			}
-			// NeoForge does not pass the tooltip width to any tooltip event.
-			// To avoid a mixin here, we just duplicate the width checking part.
-			int width = 0;
-			ManaBarTooltipComponent manaBar = null;
-			for (ClientTooltipComponent component : e.getComponents()) {
-				width = Math.max(width, component.getWidth(e.getFont()));
-				if (component instanceof ManaBarTooltipComponent c) {
-					manaBar = c;
-				}
-			}
-			if (manaBar != null) {
-				manaBar.setContext(e.getX(), e.getY(), width);
-			}
 		});
 
 		if (XplatAbstractions.INSTANCE.isModLoaded("ears")) {

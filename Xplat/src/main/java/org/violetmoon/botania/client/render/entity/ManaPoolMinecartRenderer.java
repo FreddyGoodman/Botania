@@ -40,7 +40,7 @@ public class ManaPoolMinecartRenderer extends MinecartRenderer<ManaPoolMinecartE
 		ManaPoolBlockEntityRenderer.cartMaxMana = ManaPoolBlock.MAX_MANA;
 		ManaPoolBlockEntityRenderer.cartBlock = BotaniaBlocks.MANA_POOL;
 		Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(DUMMY)
-				.render(null, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false), ms, buffers, light, OverlayTexture.NO_OVERLAY);
+				.render(null, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false), ms, buffers, light, OverlayTexture.NO_OVERLAY);
 	}
 
 }

@@ -14,7 +14,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.*;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -494,7 +494,7 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			ItemStack poolStack = new ItemStack(pool.getBlockState().getBlock());
 			String name = poolStack.getHoverName().getString();
 
@@ -518,8 +518,8 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 			ItemStack tablet = new ItemStack(BotaniaItems.MANA_TABLET);
 			ManaTabletItem.setStackCreative(tablet);
 
-			gui.renderItem(tablet, centerX - 31, centerY + 30);
-			gui.renderItem(poolStack, centerX + 15, centerY + 30);
+			gui.item(tablet, centerX - 31, centerY + 30);
+			gui.item(poolStack, centerX + 15, centerY + 30);
 
 			RenderSystem.disableBlend();
 		}

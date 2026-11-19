@@ -6,13 +6,13 @@
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
  */
-package org.violetmoon.botania.fabric.mixin.client;
+package org.violetmoon.botania.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 
@@ -23,10 +23,10 @@ import org.violetmoon.botania.client.gui.ManaBarTooltipComponent;
 
 import java.util.List;
 
-@Mixin(GuiGraphics.class)
-public class GuiGraphicsFabricMixin {
+@Mixin(GuiGraphicsExtractor.class)
+public class GuiTooltipPositionMixin {
 	@WrapOperation(
-		method = "renderTooltipInternal",
+		method = "tooltip",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;positionTooltip(IIIIII)Lorg/joml/Vector2ic;"

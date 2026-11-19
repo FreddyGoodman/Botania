@@ -20,23 +20,24 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -302,8 +303,8 @@ public final class RenderHelper extends RenderType {
 		return GAIA_NOISE_CONSTANT_LAYER.apply(texture);
 	}
 
-	public static void drawTexturedModalRect(GuiGraphics gui, Identifier textureId, int x, int y, int u, int v, int width, int height) {
-		gui.blit(textureId, x, y, u, v, width, height, 256, 256);
+	public static void drawTexturedModalRect(GuiGraphicsExtractor gui, Identifier textureId, int x, int y, int u, int v, int width, int height) {
+		gui.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, u, v, width, height, 256, 256);
 	}
 
 	public static void renderStar(PoseStack ms, MultiBufferSource buffers, int color, float xScale, float yScale, float zScale, long seed, float partialTicks) {
@@ -368,7 +369,7 @@ public final class RenderHelper extends RenderType {
 		buffer.addVertex(mat, xMax, y, zMax).setColor(r, g, b, a);
 	}
 
-	public static void renderProgressPie(GuiGraphics gui, float partialTick, int x, int y, float progress, ItemStack stack) {
+	public static void renderProgressPie(GuiGraphicsExtractor gui, float partialTick, int x, int y, float progress, ItemStack stack) {
 		PoseStack ms = gui.pose();
 		Minecraft mc = Minecraft.getInstance();
 
@@ -395,7 +396,7 @@ public final class RenderHelper extends RenderType {
 		BufferUploader.drawWithShader(buf.buildOrThrow());
 		RenderSystem.disableBlend();
 
-		gui.renderItem(stack, x, y);
+		gui.item(stack, x, y);
 	}
 
 	/**
@@ -619,7 +620,7 @@ public final class RenderHelper extends RenderType {
 	* Renders a transparent black box with a soft border. The parameters describe the inner box, there will also be drawn
 	* another box that is 2px bigger in each direction
 	*/
-	public static void renderHUDBox(GuiGraphics gui, int startX, int startY, int endX, int endY) {
+	public static void renderHUDBox(GuiGraphicsExtractor gui, int startX, int startY, int endX, int endY) {
 		gui.fill(startX, startY, endX, endY, 0x40000000);
 		gui.fill(startX - 2, startY - 2, endX + 2, endY + 2, 0x40000000);
 	}
@@ -628,14 +629,14 @@ public final class RenderHelper extends RenderType {
 	* Renders an item and its name, vertically centered next to it. Renders nothing if the stack is empty
 	* Note: The item renderer does not respect the PoseStack
 	*/
-	public static void renderItemWithName(GuiGraphics gui, Font font, ItemStack itemStack, int startX, int startY, int color) {
+	public static void renderItemWithName(GuiGraphicsExtractor gui, Font font, ItemStack itemStack, int startX, int startY, int color) {
 		if (!itemStack.isEmpty()) {
-			gui.drawString(font, itemStack.getHoverName(), startX + ITEM_AND_PADDING_WIDTH, startY + 4, color);
-			gui.renderItem(itemStack, startX, startY);
+			gui.text(font, itemStack.getHoverName(), startX + ITEM_AND_PADDING_WIDTH, startY + 4, color);
+			gui.item(itemStack, startX, startY);
 		}
 	}
 
-	public static void renderItemWithNameCentered(GuiGraphics gui, Window window, Font font, ItemStack itemStack, int startY, int color) {
+	public static void renderItemWithNameCentered(GuiGraphicsExtractor gui, Window window, Font font, ItemStack itemStack, int startY, int color) {
 		int centerX = window.getGuiScaledWidth() / 2;
 		int startX = centerX - itemWithNameWidth(itemStack, font) / 2;
 		renderItemWithName(gui, font, itemStack, startX, startY, color);

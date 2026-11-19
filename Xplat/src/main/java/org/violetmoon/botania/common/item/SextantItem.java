@@ -17,7 +17,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -346,7 +346,7 @@ public class SextantItem extends Item {
 	}
 
 	public static class Hud {
-		public static void render(GuiGraphics gui, Player player, ItemStack stack) {
+		public static void render(GuiGraphicsExtractor gui, Player player, ItemStack stack) {
 			PoseStack ms = gui.pose();
 			ItemStack onUse = player.getUseItem();
 			int time = player.getUseItemRemainingTicks();
@@ -363,7 +363,7 @@ public class SextantItem extends Item {
 					s = ChatFormatting.RED + s;
 				}
 
-				gui.drawString(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFF);
+				gui.text(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFF);
 
 				if (inRange) {
 					radius += 4;

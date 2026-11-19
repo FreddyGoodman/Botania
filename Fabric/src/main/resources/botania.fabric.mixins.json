@@ -33,7 +33,6 @@
     "client.BossHealthOverlayFabricMixin",
     "client.ClientPacketListenerMixin",
     "client.DebugScreenOverlayFabricMixin",
-    "client.GuiGraphicsFabricMixin",
     "client.KeyboardHandlerFabricMixin",
     "client.MinecraftFabricMixin",
     "client.ParticleEngineFabricMixin"
