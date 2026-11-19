@@ -958,7 +958,7 @@ public final class BotaniaItems {
 	}
 
 	private static <T extends Item> T make(String name, Function<Item.Properties, T> factory) {
-		T item = factory.apply(defaultBuilder().setId(ResourceKey.create(Registries.ITEM, botaniaRL(name))));
+		T item = factory.apply(properties(botaniaRL(name)));
 		var old = ALL.put(name, item);
 		if (old != null) {
 			throw new IllegalArgumentException("Typo? Duplicate name: " + name);
@@ -971,8 +971,8 @@ public final class BotaniaItems {
 				props -> new MysticalPetalItem(BotaniaBlocks.getBuriedPetal(dyeColor), dyeColor, props));
 	}
 
-	public static Item.Properties defaultBuilder() {
-		return new Item.Properties();
+	public static Item.Properties properties(Identifier id) {
+		return new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id));
 	}
 
 	private static Item.Properties manaRepairable(Item.Properties properties, int manaPerDamage) {

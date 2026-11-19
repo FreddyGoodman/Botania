@@ -2362,10 +2362,6 @@ public final class BotaniaBlocks {
 	}
 
 	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
-		Item.Properties props = BotaniaItems.defaultBuilder();
-		Item.Properties uncommonProps = BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON);
-		Item.Properties rareProps = BotaniaItems.defaultBuilder().rarity(Rarity.RARE);
-		Item.Properties epicProps = BotaniaItems.defaultBuilder().rarity(Rarity.EPIC);
 		Stream.<Function<DyeColor, Block>>of(
 				BotaniaBlocks::getMysticalFlower,
 				BotaniaBlocks::getGlimmeringFlower,
@@ -2375,769 +2371,641 @@ public final class BotaniaBlocks {
 				BotaniaBlocks::getTallMysticalFlower
 		).forEach(
 				blockGetter -> ColorHelper.supportedColors().map(blockGetter).forEach(
-						block -> r.accept(new ColoredBlockItem(block, ((Colored) block).getColor(), props), BuiltInRegistries.BLOCK.getKey(block))
+						block -> registerBlockItem(r, block, props -> new ColoredBlockItem(block, ((Colored) block).getColor(), props))
 				)
 		);
 
-		r.accept(new SpecialFlowerBlockItem(PURE_DAISY, props), BuiltInRegistries.BLOCK.getKey(PURE_DAISY));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_PURE_DAISY, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_PURE_DAISY));
+		registerBlockItem(r, PURE_DAISY, props -> new SpecialFlowerBlockItem(PURE_DAISY, props));
+		registerBlockItem(r, FLOATING_PURE_DAISY, props -> new SpecialFlowerBlockItem(FLOATING_PURE_DAISY, props));
 
-		r.accept(new SpecialFlowerBlockItem(MANASTAR, props), BuiltInRegistries.BLOCK.getKey(MANASTAR));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MANASTAR, props), BuiltInRegistries.BLOCK.getKey(FLOATING_MANASTAR));
+		registerBlockItem(r, MANASTAR, props -> new SpecialFlowerBlockItem(MANASTAR, props));
+		registerBlockItem(r, FLOATING_MANASTAR, props -> new SpecialFlowerBlockItem(FLOATING_MANASTAR, props));
 
-		r.accept(new DecayableSpecialFlowerBlockItem(HYDROANGEAS, HydroangeasBlockEntity.DECAY_TIME, props), BuiltInRegistries.BLOCK.getKey(
-				HYDROANGEAS));
-		r.accept(new DecayableSpecialFlowerBlockItem(FLOATING_HYDROANGEAS, HydroangeasBlockEntity.DECAY_TIME, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_HYDROANGEAS));
+		registerBlockItem(r, HYDROANGEAS, props -> new DecayableSpecialFlowerBlockItem(HYDROANGEAS, HydroangeasBlockEntity.DECAY_TIME, props));
+		registerBlockItem(r, FLOATING_HYDROANGEAS, props -> new DecayableSpecialFlowerBlockItem(FLOATING_HYDROANGEAS, HydroangeasBlockEntity.DECAY_TIME, props));
 
-		r.accept(new SpecialFlowerBlockItem(ENDOFLAME, props), BuiltInRegistries.BLOCK.getKey(ENDOFLAME));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ENDOFLAME, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_ENDOFLAME));
+		registerBlockItem(r, ENDOFLAME, props -> new SpecialFlowerBlockItem(ENDOFLAME, props));
+		registerBlockItem(r, FLOATING_ENDOFLAME, props -> new SpecialFlowerBlockItem(FLOATING_ENDOFLAME, props));
 
-		r.accept(new SpecialFlowerBlockItem(THERMALILY, props), BuiltInRegistries.BLOCK.getKey(THERMALILY));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_THERMALILY, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_THERMALILY));
+		registerBlockItem(r, THERMALILY, props -> new SpecialFlowerBlockItem(THERMALILY, props));
+		registerBlockItem(r, FLOATING_THERMALILY, props -> new SpecialFlowerBlockItem(FLOATING_THERMALILY, props));
 
-		r.accept(new SpecialFlowerBlockItem(ROSA_ARCANA, props), BuiltInRegistries.BLOCK.getKey(ROSA_ARCANA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ROSA_ARCANA, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_ROSA_ARCANA));
+		registerBlockItem(r, ROSA_ARCANA, props -> new SpecialFlowerBlockItem(ROSA_ARCANA, props));
+		registerBlockItem(r, FLOATING_ROSA_ARCANA, props -> new SpecialFlowerBlockItem(FLOATING_ROSA_ARCANA, props));
 
-		r.accept(new SpecialFlowerBlockItem(MUNCHDEW, props), BuiltInRegistries.BLOCK.getKey(MUNCHDEW));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MUNCHDEW, props), BuiltInRegistries.BLOCK.getKey(FLOATING_MUNCHDEW));
+		registerBlockItem(r, MUNCHDEW, props -> new SpecialFlowerBlockItem(MUNCHDEW, props));
+		registerBlockItem(r, FLOATING_MUNCHDEW, props -> new SpecialFlowerBlockItem(FLOATING_MUNCHDEW, props));
 
-		r.accept(new SpecialFlowerBlockItem(ENTROPINNYUM, props), BuiltInRegistries.BLOCK.getKey(ENTROPINNYUM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ENTROPINNYUM, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_ENTROPINNYUM));
+		registerBlockItem(r, ENTROPINNYUM, props -> new SpecialFlowerBlockItem(ENTROPINNYUM, props));
+		registerBlockItem(r, FLOATING_ENTROPINNYUM, props -> new SpecialFlowerBlockItem(FLOATING_ENTROPINNYUM, props));
 
-		r.accept(new SpecialFlowerBlockItem(KEKIMURUS, props), BuiltInRegistries.BLOCK.getKey(KEKIMURUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_KEKIMURUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_KEKIMURUS));
+		registerBlockItem(r, KEKIMURUS, props -> new SpecialFlowerBlockItem(KEKIMURUS, props));
+		registerBlockItem(r, FLOATING_KEKIMURUS, props -> new SpecialFlowerBlockItem(FLOATING_KEKIMURUS, props));
 
-		r.accept(new SpecialFlowerBlockItem(GOURMARYLLIS, props), BuiltInRegistries.BLOCK.getKey(GOURMARYLLIS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_GOURMARYLLIS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_GOURMARYLLIS));
+		registerBlockItem(r, GOURMARYLLIS, props -> new SpecialFlowerBlockItem(GOURMARYLLIS, props));
+		registerBlockItem(r, FLOATING_GOURMARYLLIS, props -> new SpecialFlowerBlockItem(FLOATING_GOURMARYLLIS, props));
 
-		r.accept(new SpecialFlowerBlockItem(NARSLIMMUS, props), BuiltInRegistries.BLOCK.getKey(NARSLIMMUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_NARSLIMMUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_NARSLIMMUS));
+		registerBlockItem(r, NARSLIMMUS, props -> new SpecialFlowerBlockItem(NARSLIMMUS, props));
+		registerBlockItem(r, FLOATING_NARSLIMMUS, props -> new SpecialFlowerBlockItem(FLOATING_NARSLIMMUS, props));
 
-		r.accept(new SpecialFlowerBlockItem(SPECTROLUS, props), BuiltInRegistries.BLOCK.getKey(SPECTROLUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SPECTROLUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SPECTROLUS));
+		registerBlockItem(r, SPECTROLUS, props -> new SpecialFlowerBlockItem(SPECTROLUS, props));
+		registerBlockItem(r, FLOATING_SPECTROLUS, props -> new SpecialFlowerBlockItem(FLOATING_SPECTROLUS, props));
 
-		r.accept(new SpecialFlowerBlockItem(DANDELIFEON, rareProps), BuiltInRegistries.BLOCK.getKey(DANDELIFEON));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_DANDELIFEON, rareProps), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_DANDELIFEON));
+		registerBlockItem(r, DANDELIFEON, props -> new SpecialFlowerBlockItem(DANDELIFEON, props.rarity(Rarity.RARE)));
+		registerBlockItem(r, FLOATING_DANDELIFEON, props -> new SpecialFlowerBlockItem(FLOATING_DANDELIFEON, props.rarity(Rarity.RARE)));
 
-		r.accept(new SpecialFlowerBlockItem(RAFFLOWSIA, props), BuiltInRegistries.BLOCK.getKey(RAFFLOWSIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_RAFFLOWSIA, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_RAFFLOWSIA));
+		registerBlockItem(r, RAFFLOWSIA, props -> new SpecialFlowerBlockItem(RAFFLOWSIA, props));
+		registerBlockItem(r, FLOATING_RAFFLOWSIA, props -> new SpecialFlowerBlockItem(FLOATING_RAFFLOWSIA, props));
 
-		r.accept(new SpecialFlowerBlockItem(SHULK_ME_NOT, rareProps), BuiltInRegistries.BLOCK.getKey(SHULK_ME_NOT));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SHULK_ME_NOT, rareProps), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SHULK_ME_NOT));
+		registerBlockItem(r, SHULK_ME_NOT, props -> new SpecialFlowerBlockItem(SHULK_ME_NOT, props.rarity(Rarity.RARE)));
+		registerBlockItem(r, FLOATING_SHULK_ME_NOT, props -> new SpecialFlowerBlockItem(FLOATING_SHULK_ME_NOT, props.rarity(Rarity.RARE)));
 
-		r.accept(new SpecialFlowerBlockItem(BELLETHORNE, props), BuiltInRegistries.BLOCK.getKey(BELLETHORNE));
-		r.accept(new SpecialFlowerBlockItem(BELLETHORNE_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				BELLETHORNE_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BELLETHORNE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_BELLETHORNE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BELLETHORNE_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_BELLETHORNE_PETITE));
+		registerBlockItem(r, BELLETHORNE, props -> new SpecialFlowerBlockItem(BELLETHORNE, props));
+		registerBlockItem(r, BELLETHORNE_PETITE, props -> new SpecialFlowerBlockItem(BELLETHORNE_PETITE, props));
+		registerBlockItem(r, FLOATING_BELLETHORNE, props -> new SpecialFlowerBlockItem(FLOATING_BELLETHORNE, props));
+		registerBlockItem(r, FLOATING_BELLETHORNE_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_BELLETHORNE_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(BERGAMUTE, props), BuiltInRegistries.BLOCK.getKey(BERGAMUTE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BERGAMUTE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_BERGAMUTE));
+		registerBlockItem(r, BERGAMUTE, props -> new SpecialFlowerBlockItem(BERGAMUTE, props));
+		registerBlockItem(r, FLOATING_BERGAMUTE, props -> new SpecialFlowerBlockItem(FLOATING_BERGAMUTE, props));
 
-		r.accept(new SpecialFlowerBlockItem(DREADTHORNE, props), BuiltInRegistries.BLOCK.getKey(DREADTHORNE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_DREADTHORNE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_DREADTHORNE));
+		registerBlockItem(r, DREADTHORNE, props -> new SpecialFlowerBlockItem(DREADTHORNE, props));
+		registerBlockItem(r, FLOATING_DREADTHORNE, props -> new SpecialFlowerBlockItem(FLOATING_DREADTHORNE, props));
 
-		r.accept(new SpecialFlowerBlockItem(HEISEI_DREAM, props), BuiltInRegistries.BLOCK.getKey(HEISEI_DREAM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_HEISEI_DREAM, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_HEISEI_DREAM));
+		registerBlockItem(r, HEISEI_DREAM, props -> new SpecialFlowerBlockItem(HEISEI_DREAM, props));
+		registerBlockItem(r, FLOATING_HEISEI_DREAM, props -> new SpecialFlowerBlockItem(FLOATING_HEISEI_DREAM, props));
 
-		r.accept(new SpecialFlowerBlockItem(TIGERSEYE, props), BuiltInRegistries.BLOCK.getKey(TIGERSEYE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_TIGERSEYE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_TIGERSEYE));
+		registerBlockItem(r, TIGERSEYE, props -> new SpecialFlowerBlockItem(TIGERSEYE, props));
+		registerBlockItem(r, FLOATING_TIGERSEYE, props -> new SpecialFlowerBlockItem(FLOATING_TIGERSEYE, props));
 
-		r.accept(new SpecialFlowerBlockItem(JADED_AMARANTHUS, props), BuiltInRegistries.BLOCK.getKey(JADED_AMARANTHUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_JADED_AMARANTHUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_JADED_AMARANTHUS));
+		registerBlockItem(r, JADED_AMARANTHUS, props -> new SpecialFlowerBlockItem(JADED_AMARANTHUS, props));
+		registerBlockItem(r, FLOATING_JADED_AMARANTHUS, props -> new SpecialFlowerBlockItem(FLOATING_JADED_AMARANTHUS, props));
 
-		r.accept(new SpecialFlowerBlockItem(ORECHID, props), BuiltInRegistries.BLOCK.getKey(ORECHID));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ORECHID, props), BuiltInRegistries.BLOCK.getKey(FLOATING_ORECHID));
+		registerBlockItem(r, ORECHID, props -> new SpecialFlowerBlockItem(ORECHID, props));
+		registerBlockItem(r, FLOATING_ORECHID, props -> new SpecialFlowerBlockItem(FLOATING_ORECHID, props));
 
-		r.accept(new SpecialFlowerBlockItem(FALLEN_KANADE, props), BuiltInRegistries.BLOCK.getKey(FALLEN_KANADE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_FALLEN_KANADE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_FALLEN_KANADE));
+		registerBlockItem(r, FALLEN_KANADE, props -> new SpecialFlowerBlockItem(FALLEN_KANADE, props));
+		registerBlockItem(r, FLOATING_FALLEN_KANADE, props -> new SpecialFlowerBlockItem(FLOATING_FALLEN_KANADE, props));
 
-		r.accept(new SpecialFlowerBlockItem(EXOFLAME, props), BuiltInRegistries.BLOCK.getKey(EXOFLAME));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_EXOFLAME, props), BuiltInRegistries.BLOCK.getKey(FLOATING_EXOFLAME));
+		registerBlockItem(r, EXOFLAME, props -> new SpecialFlowerBlockItem(EXOFLAME, props));
+		registerBlockItem(r, FLOATING_EXOFLAME, props -> new SpecialFlowerBlockItem(FLOATING_EXOFLAME, props));
 
-		r.accept(new SpecialFlowerBlockItem(AGRICARNATION, props), BuiltInRegistries.BLOCK.getKey(AGRICARNATION));
-		r.accept(new SpecialFlowerBlockItem(AGRICARNATION_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				AGRICARNATION_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_AGRICARNATION, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_AGRICARNATION));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_AGRICARNATION_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_AGRICARNATION_PETITE));
+		registerBlockItem(r, AGRICARNATION, props -> new SpecialFlowerBlockItem(AGRICARNATION, props));
+		registerBlockItem(r, AGRICARNATION_PETITE, props -> new SpecialFlowerBlockItem(AGRICARNATION_PETITE, props));
+		registerBlockItem(r, FLOATING_AGRICARNATION, props -> new SpecialFlowerBlockItem(FLOATING_AGRICARNATION, props));
+		registerBlockItem(r, FLOATING_AGRICARNATION_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_AGRICARNATION_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(HOPPERHOCK, props), BuiltInRegistries.BLOCK.getKey(HOPPERHOCK));
-		r.accept(new SpecialFlowerBlockItem(HOPPERHOCK_PETITE, props), BuiltInRegistries.BLOCK.getKey(HOPPERHOCK_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_HOPPERHOCK, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_HOPPERHOCK));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_HOPPERHOCK_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_HOPPERHOCK_PETITE));
+		registerBlockItem(r, HOPPERHOCK, props -> new SpecialFlowerBlockItem(HOPPERHOCK, props));
+		registerBlockItem(r, HOPPERHOCK_PETITE, props -> new SpecialFlowerBlockItem(HOPPERHOCK_PETITE, props));
+		registerBlockItem(r, FLOATING_HOPPERHOCK, props -> new SpecialFlowerBlockItem(FLOATING_HOPPERHOCK, props));
+		registerBlockItem(r, FLOATING_HOPPERHOCK_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_HOPPERHOCK_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(TANGLEBERRIE, props), BuiltInRegistries.BLOCK.getKey(TANGLEBERRIE));
-		r.accept(new SpecialFlowerBlockItem(TANGLEBERRIE_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				TANGLEBERRIE_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_TANGLEBERRIE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_TANGLEBERRIE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_TANGLEBERRIE_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_TANGLEBERRIE_PETITE));
+		registerBlockItem(r, TANGLEBERRIE, props -> new SpecialFlowerBlockItem(TANGLEBERRIE, props));
+		registerBlockItem(r, TANGLEBERRIE_PETITE, props -> new SpecialFlowerBlockItem(TANGLEBERRIE_PETITE, props));
+		registerBlockItem(r, FLOATING_TANGLEBERRIE, props -> new SpecialFlowerBlockItem(FLOATING_TANGLEBERRIE, props));
+		registerBlockItem(r, FLOATING_TANGLEBERRIE_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_TANGLEBERRIE_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(JIYUULIA, props), BuiltInRegistries.BLOCK.getKey(JIYUULIA));
-		r.accept(new SpecialFlowerBlockItem(JIYUULIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(JIYUULIA_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_JIYUULIA, props), BuiltInRegistries.BLOCK.getKey(FLOATING_JIYUULIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_JIYUULIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_JIYUULIA_PETITE));
+		registerBlockItem(r, JIYUULIA, props -> new SpecialFlowerBlockItem(JIYUULIA, props));
+		registerBlockItem(r, JIYUULIA_PETITE, props -> new SpecialFlowerBlockItem(JIYUULIA_PETITE, props));
+		registerBlockItem(r, FLOATING_JIYUULIA, props -> new SpecialFlowerBlockItem(FLOATING_JIYUULIA, props));
+		registerBlockItem(r, FLOATING_JIYUULIA_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_JIYUULIA_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(RANNUNCARPUS, props), BuiltInRegistries.BLOCK.getKey(RANNUNCARPUS));
-		r.accept(new SpecialFlowerBlockItem(RANNUNCARPUS_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				RANNUNCARPUS_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_RANNUNCARPUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_RANNUNCARPUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_RANNUNCARPUS_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_RANNUNCARPUS_PETITE));
+		registerBlockItem(r, RANNUNCARPUS, props -> new SpecialFlowerBlockItem(RANNUNCARPUS, props));
+		registerBlockItem(r, RANNUNCARPUS_PETITE, props -> new SpecialFlowerBlockItem(RANNUNCARPUS_PETITE, props));
+		registerBlockItem(r, FLOATING_RANNUNCARPUS, props -> new SpecialFlowerBlockItem(FLOATING_RANNUNCARPUS, props));
+		registerBlockItem(r, FLOATING_RANNUNCARPUS_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_RANNUNCARPUS_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(HYACIDUS, props), BuiltInRegistries.BLOCK.getKey(HYACIDUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_HYACIDUS, props), BuiltInRegistries.BLOCK.getKey(FLOATING_HYACIDUS));
+		registerBlockItem(r, HYACIDUS, props -> new SpecialFlowerBlockItem(HYACIDUS, props));
+		registerBlockItem(r, FLOATING_HYACIDUS, props -> new SpecialFlowerBlockItem(FLOATING_HYACIDUS, props));
 
-		r.accept(new SpecialFlowerBlockItem(POLLIDISIAC, props), BuiltInRegistries.BLOCK.getKey(POLLIDISIAC));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_POLLIDISIAC, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_POLLIDISIAC));
+		registerBlockItem(r, POLLIDISIAC, props -> new SpecialFlowerBlockItem(POLLIDISIAC, props));
+		registerBlockItem(r, FLOATING_POLLIDISIAC, props -> new SpecialFlowerBlockItem(FLOATING_POLLIDISIAC, props));
 
-		r.accept(new SpecialFlowerBlockItem(CLAYCONIA, props), BuiltInRegistries.BLOCK.getKey(CLAYCONIA));
-		r.accept(new SpecialFlowerBlockItem(CLAYCONIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(CLAYCONIA_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_CLAYCONIA, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_CLAYCONIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_CLAYCONIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_CLAYCONIA_PETITE));
+		registerBlockItem(r, CLAYCONIA, props -> new SpecialFlowerBlockItem(CLAYCONIA, props));
+		registerBlockItem(r, CLAYCONIA_PETITE, props -> new SpecialFlowerBlockItem(CLAYCONIA_PETITE, props));
+		registerBlockItem(r, FLOATING_CLAYCONIA, props -> new SpecialFlowerBlockItem(FLOATING_CLAYCONIA, props));
+		registerBlockItem(r, FLOATING_CLAYCONIA_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_CLAYCONIA_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(LOONIUM, props), BuiltInRegistries.BLOCK.getKey(LOONIUM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_LOONIUM, props), BuiltInRegistries.BLOCK.getKey(FLOATING_LOONIUM));
+		registerBlockItem(r, LOONIUM, props -> new SpecialFlowerBlockItem(LOONIUM, props));
+		registerBlockItem(r, FLOATING_LOONIUM, props -> new SpecialFlowerBlockItem(FLOATING_LOONIUM, props));
 
-		r.accept(new SpecialFlowerBlockItem(DAFFOMILL, props), BuiltInRegistries.BLOCK.getKey(DAFFOMILL));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_DAFFOMILL, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_DAFFOMILL));
+		registerBlockItem(r, DAFFOMILL, props -> new SpecialFlowerBlockItem(DAFFOMILL, props));
+		registerBlockItem(r, FLOATING_DAFFOMILL, props -> new SpecialFlowerBlockItem(FLOATING_DAFFOMILL, props));
 
-		r.accept(new SpecialFlowerBlockItem(VINCULOTUS, props), BuiltInRegistries.BLOCK.getKey(VINCULOTUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_VINCULOTUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_VINCULOTUS));
+		registerBlockItem(r, VINCULOTUS, props -> new SpecialFlowerBlockItem(VINCULOTUS, props));
+		registerBlockItem(r, FLOATING_VINCULOTUS, props -> new SpecialFlowerBlockItem(FLOATING_VINCULOTUS, props));
 
-		r.accept(new SpecialFlowerBlockItem(SPECTRANTHEMUM, props), BuiltInRegistries.BLOCK.getKey(SPECTRANTHEMUM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SPECTRANTHEMUM, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SPECTRANTHEMUM));
+		registerBlockItem(r, SPECTRANTHEMUM, props -> new SpecialFlowerBlockItem(SPECTRANTHEMUM, props));
+		registerBlockItem(r, FLOATING_SPECTRANTHEMUM, props -> new SpecialFlowerBlockItem(FLOATING_SPECTRANTHEMUM, props));
 
-		r.accept(new SpecialFlowerBlockItem(MEDUMONE, props), BuiltInRegistries.BLOCK.getKey(MEDUMONE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MEDUMONE, props), BuiltInRegistries.BLOCK.getKey(FLOATING_MEDUMONE));
+		registerBlockItem(r, MEDUMONE, props -> new SpecialFlowerBlockItem(MEDUMONE, props));
+		registerBlockItem(r, FLOATING_MEDUMONE, props -> new SpecialFlowerBlockItem(FLOATING_MEDUMONE, props));
 
-		r.accept(new SpecialFlowerBlockItem(MARIMORPHOSIS, props), BuiltInRegistries.BLOCK.getKey(MARIMORPHOSIS));
-		r.accept(new SpecialFlowerBlockItem(MARIMORPHOSIS_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				MARIMORPHOSIS_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MARIMORPHOSIS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_MARIMORPHOSIS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MARIMORPHOSIS_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_MARIMORPHOSIS_PETITE));
+		registerBlockItem(r, MARIMORPHOSIS, props -> new SpecialFlowerBlockItem(MARIMORPHOSIS, props));
+		registerBlockItem(r, MARIMORPHOSIS_PETITE, props -> new SpecialFlowerBlockItem(MARIMORPHOSIS_PETITE, props));
+		registerBlockItem(r, FLOATING_MARIMORPHOSIS, props -> new SpecialFlowerBlockItem(FLOATING_MARIMORPHOSIS, props));
+		registerBlockItem(r, FLOATING_MARIMORPHOSIS_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_MARIMORPHOSIS_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(BUBBELL, props), BuiltInRegistries.BLOCK.getKey(BUBBELL));
-		r.accept(new SpecialFlowerBlockItem(BUBBELL_PETITE, props), BuiltInRegistries.BLOCK.getKey(BUBBELL_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BUBBELL, props), BuiltInRegistries.BLOCK.getKey(FLOATING_BUBBELL));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BUBBELL_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_BUBBELL_PETITE));
+		registerBlockItem(r, BUBBELL, props -> new SpecialFlowerBlockItem(BUBBELL, props));
+		registerBlockItem(r, BUBBELL_PETITE, props -> new SpecialFlowerBlockItem(BUBBELL_PETITE, props));
+		registerBlockItem(r, FLOATING_BUBBELL, props -> new SpecialFlowerBlockItem(FLOATING_BUBBELL, props));
+		registerBlockItem(r, FLOATING_BUBBELL_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_BUBBELL_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(SOLEGNOLIA, props), BuiltInRegistries.BLOCK.getKey(SOLEGNOLIA));
-		r.accept(new SpecialFlowerBlockItem(SOLEGNOLIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(SOLEGNOLIA_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SOLEGNOLIA, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SOLEGNOLIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SOLEGNOLIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SOLEGNOLIA_PETITE));
+		registerBlockItem(r, SOLEGNOLIA, props -> new SpecialFlowerBlockItem(SOLEGNOLIA, props));
+		registerBlockItem(r, SOLEGNOLIA_PETITE, props -> new SpecialFlowerBlockItem(SOLEGNOLIA_PETITE, props));
+		registerBlockItem(r, FLOATING_SOLEGNOLIA, props -> new SpecialFlowerBlockItem(FLOATING_SOLEGNOLIA, props));
+		registerBlockItem(r, FLOATING_SOLEGNOLIA_PETITE, props -> new SpecialFlowerBlockItem(FLOATING_SOLEGNOLIA_PETITE, props));
 
-		r.accept(new SpecialFlowerBlockItem(ORECHID_IGNEM, props), BuiltInRegistries.BLOCK.getKey(ORECHID_IGNEM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ORECHID_IGNEM, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_ORECHID_IGNEM));
+		registerBlockItem(r, ORECHID_IGNEM, props -> new SpecialFlowerBlockItem(ORECHID_IGNEM, props));
+		registerBlockItem(r, FLOATING_ORECHID_IGNEM, props -> new SpecialFlowerBlockItem(FLOATING_ORECHID_IGNEM, props));
 
-		r.accept(new SpecialFlowerBlockItem(LABELLIA, props), BuiltInRegistries.BLOCK.getKey(LABELLIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_LABELLIA, props), BuiltInRegistries.BLOCK.getKey(FLOATING_LABELLIA));
+		registerBlockItem(r, LABELLIA, props -> new SpecialFlowerBlockItem(LABELLIA, props));
+		registerBlockItem(r, FLOATING_LABELLIA, props -> new SpecialFlowerBlockItem(FLOATING_LABELLIA, props));
 
-		r.accept(new BlockItem(PETAL_APOTHECARY, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY));
-		r.accept(new BlockItem(PETAL_APOTHECARY_DEEPSLATE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_DEEPSLATE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_LIVINGROCK, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_LIVINGROCK));
-		r.accept(new BlockItem(PETAL_APOTHECARY_BLACKSTONE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_BLACKSTONE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_NETHER_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_NETHER_BRICKS));
-		r.accept(new BlockItem(PETAL_APOTHECARY_RED_NETHER_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_RED_NETHER_BRICKS));
-		r.accept(new BlockItem(PETAL_APOTHECARY_MOSSY, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_MOSSY));
-		r.accept(new BlockItem(PETAL_APOTHECARY_FUCHSITE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_FUCHSITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_TALC, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_TALC));
-		r.accept(new BlockItem(PETAL_APOTHECARY_GNEISS, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_GNEISS));
-		r.accept(new BlockItem(PETAL_APOTHECARY_MYCELITE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_MYCELITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_CATACLASITE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_CATACLASITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_SOLITE, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_SOLITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_LUNITE, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_LUNITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_ROSY_TALC, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_ROSY_TALC));
+		registerBlockItem(r, PETAL_APOTHECARY);
+		registerBlockItem(r, PETAL_APOTHECARY_DEEPSLATE);
+		registerBlockItem(r, PETAL_APOTHECARY_LIVINGROCK);
+		registerBlockItem(r, PETAL_APOTHECARY_BLACKSTONE);
+		registerBlockItem(r, PETAL_APOTHECARY_NETHER_BRICKS);
+		registerBlockItem(r, PETAL_APOTHECARY_RED_NETHER_BRICKS);
+		registerBlockItem(r, PETAL_APOTHECARY_MOSSY);
+		registerBlockItem(r, PETAL_APOTHECARY_FUCHSITE);
+		registerBlockItem(r, PETAL_APOTHECARY_TALC);
+		registerBlockItem(r, PETAL_APOTHECARY_GNEISS);
+		registerBlockItem(r, PETAL_APOTHECARY_MYCELITE);
+		registerBlockItem(r, PETAL_APOTHECARY_CATACLASITE);
+		registerBlockItem(r, PETAL_APOTHECARY_SOLITE);
+		registerBlockItem(r, PETAL_APOTHECARY_LUNITE);
+		registerBlockItem(r, PETAL_APOTHECARY_ROSY_TALC);
 
-		r.accept(new BlockItem(LIVINGROCK, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK));
-		r.accept(new BlockItem(LIVINGROCK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_STAIRS));
-		r.accept(new BlockItem(LIVINGROCK_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_SLAB));
-		r.accept(new BlockItem(LIVINGROCK_WALL, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_WALL));
-		r.accept(new BlockItem(LIVINGROCK_BUTTON, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BUTTON));
-		r.accept(new BlockItem(LIVINGROCK_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				LIVINGROCK_PRESSURE_PLATE));
-		r.accept(new BlockItem(POLISHED_LIVINGROCK, props), BuiltInRegistries.BLOCK.getKey(POLISHED_LIVINGROCK));
-		r.accept(new BlockItem(POLISHED_LIVINGROCK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				POLISHED_LIVINGROCK_STAIRS));
-		r.accept(new BlockItem(POLISHED_LIVINGROCK_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				POLISHED_LIVINGROCK_SLAB));
-		r.accept(new BlockItem(POLISHED_LIVINGROCK_WALL, props), BuiltInRegistries.BLOCK.getKey(
-				POLISHED_LIVINGROCK_WALL));
-		r.accept(new BlockItem(LIVINGROCK_SLATE, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_SLATE));
-		r.accept(new BlockItem(LIVINGROCK_BRICKS, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BRICKS));
-		r.accept(new BlockItem(LIVINGROCK_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BRICK_STAIRS));
-		r.accept(new BlockItem(LIVINGROCK_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BRICK_SLAB));
-		r.accept(new BlockItem(LIVINGROCK_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BRICK_WALL));
-		r.accept(new BlockItem(MOSSY_LIVINGROCK_BRICKS, props), BuiltInRegistries.BLOCK.getKey(MOSSY_LIVINGROCK_BRICKS));
-		r.accept(new BlockItem(MOSSY_LIVINGROCK_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				MOSSY_LIVINGROCK_BRICK_STAIRS));
-		r.accept(new BlockItem(MOSSY_LIVINGROCK_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				MOSSY_LIVINGROCK_BRICK_SLAB));
-		r.accept(new BlockItem(MOSSY_LIVINGROCK_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(
-				MOSSY_LIVINGROCK_BRICK_WALL));
-		r.accept(new BlockItem(CRACKED_LIVINGROCK_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CRACKED_LIVINGROCK_BRICKS));
-		r.accept(new BlockItem(CHISELED_LIVINGROCK_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_LIVINGROCK_BRICKS));
+		registerBlockItem(r, LIVINGROCK);
+		registerBlockItem(r, LIVINGROCK_STAIRS);
+		registerBlockItem(r, LIVINGROCK_SLAB);
+		registerBlockItem(r, LIVINGROCK_WALL);
+		registerBlockItem(r, LIVINGROCK_BUTTON);
+		registerBlockItem(r, LIVINGROCK_PRESSURE_PLATE);
+		registerBlockItem(r, POLISHED_LIVINGROCK);
+		registerBlockItem(r, POLISHED_LIVINGROCK_STAIRS);
+		registerBlockItem(r, POLISHED_LIVINGROCK_SLAB);
+		registerBlockItem(r, POLISHED_LIVINGROCK_WALL);
+		registerBlockItem(r, LIVINGROCK_SLATE);
+		registerBlockItem(r, LIVINGROCK_BRICKS);
+		registerBlockItem(r, LIVINGROCK_BRICK_STAIRS);
+		registerBlockItem(r, LIVINGROCK_BRICK_SLAB);
+		registerBlockItem(r, LIVINGROCK_BRICK_WALL);
+		registerBlockItem(r, MOSSY_LIVINGROCK_BRICKS);
+		registerBlockItem(r, MOSSY_LIVINGROCK_BRICK_STAIRS);
+		registerBlockItem(r, MOSSY_LIVINGROCK_BRICK_SLAB);
+		registerBlockItem(r, MOSSY_LIVINGROCK_BRICK_WALL);
+		registerBlockItem(r, CRACKED_LIVINGROCK_BRICKS);
+		registerBlockItem(r, CHISELED_LIVINGROCK_BRICKS);
 
-		r.accept(new BlockItem(LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_LOG));
-		r.accept(new BlockItem(LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD));
-		r.accept(new BlockItem(LIVINGWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_STAIRS));
-		r.accept(new BlockItem(LIVINGWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_SLAB));
-		r.accept(new BlockItem(LIVINGWOOD_WALL, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_WALL));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_LIVINGWOOD_LOG));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_LIVINGWOOD));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_LIVINGWOOD_STAIRS));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_LIVINGWOOD_SLAB));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_WALL, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_LIVINGWOOD_WALL));
-		r.accept(new BlockItem(GLIMMERING_LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
-				GLIMMERING_LIVINGWOOD_LOG));
-		r.accept(new BlockItem(GLIMMERING_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(GLIMMERING_LIVINGWOOD));
-		r.accept(new BlockItem(STRIPPED_GLIMMERING_LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_GLIMMERING_LIVINGWOOD_LOG));
-		r.accept(new BlockItem(STRIPPED_GLIMMERING_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_GLIMMERING_LIVINGWOOD));
-		r.accept(new BlockItem(LIVINGWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_PLANKS));
-		r.accept(new BlockItem(LIVINGWOOD_PLANK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_PLANK_STAIRS));
-		r.accept(new BlockItem(LIVINGWOOD_PLANK_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_PLANK_SLAB));
-		r.accept(new BlockItem(LIVINGWOOD_FENCE, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_FENCE));
-		r.accept(new BlockItem(LIVINGWOOD_FENCE_GATE, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_FENCE_GATE));
-		r.accept(new BlockItem(LIVINGWOOD_DOOR, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_DOOR));
-		r.accept(new BlockItem(LIVINGWOOD_TRAPDOOR, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_TRAPDOOR));
-		r.accept(new BlockItem(LIVINGWOOD_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				LIVINGWOOD_PRESSURE_PLATE));
-		r.accept(new BlockItem(LIVINGWOOD_BUTTON, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_BUTTON));
-		r.accept(new SignItem(BotaniaItems.defaultBuilder().stacksTo(16), LIVINGWOOD_SIGN,
-				LIVINGWOOD_WALL_SIGN
-		), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_SIGN));
-		r.accept(new HangingSignItem(
+		registerBlockItem(r, LIVINGWOOD_LOG);
+		registerBlockItem(r, LIVINGWOOD);
+		registerBlockItem(r, LIVINGWOOD_STAIRS);
+		registerBlockItem(r, LIVINGWOOD_SLAB);
+		registerBlockItem(r, LIVINGWOOD_WALL);
+		registerBlockItem(r, STRIPPED_LIVINGWOOD_LOG);
+		registerBlockItem(r, STRIPPED_LIVINGWOOD);
+		registerBlockItem(r, STRIPPED_LIVINGWOOD_STAIRS);
+		registerBlockItem(r, STRIPPED_LIVINGWOOD_SLAB);
+		registerBlockItem(r, STRIPPED_LIVINGWOOD_WALL);
+		registerBlockItem(r, GLIMMERING_LIVINGWOOD_LOG);
+		registerBlockItem(r, GLIMMERING_LIVINGWOOD);
+		registerBlockItem(r, STRIPPED_GLIMMERING_LIVINGWOOD_LOG);
+		registerBlockItem(r, STRIPPED_GLIMMERING_LIVINGWOOD);
+		registerBlockItem(r, LIVINGWOOD_PLANKS);
+		registerBlockItem(r, LIVINGWOOD_PLANK_STAIRS);
+		registerBlockItem(r, LIVINGWOOD_PLANK_SLAB);
+		registerBlockItem(r, LIVINGWOOD_FENCE);
+		registerBlockItem(r, LIVINGWOOD_FENCE_GATE);
+		registerBlockItem(r, LIVINGWOOD_DOOR);
+		registerBlockItem(r, LIVINGWOOD_TRAPDOOR);
+		registerBlockItem(r, LIVINGWOOD_PRESSURE_PLATE);
+		registerBlockItem(r, LIVINGWOOD_BUTTON);
+		registerBlockItem(r, LIVINGWOOD_SIGN, props -> new SignItem(
+				LIVINGWOOD_SIGN, LIVINGWOOD_WALL_SIGN, props.stacksTo(16)));
+		registerBlockItem(r, LIVINGWOOD_HANGING_SIGN, props -> new HangingSignItem(
 				LIVINGWOOD_HANGING_SIGN, LIVINGWOOD_WALL_HANGING_SIGN,
-				BotaniaItems.defaultBuilder().stacksTo(16)), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_HANGING_SIGN));
-		r.accept(new BlockItem(MOSSY_LIVINGWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(MOSSY_LIVINGWOOD_PLANKS));
-		r.accept(new BlockItem(FRAMED_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(FRAMED_LIVINGWOOD));
-		r.accept(new BlockItem(PATTERN_FRAMED_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(
-				PATTERN_FRAMED_LIVINGWOOD));
+				props.stacksTo(16)));
+		registerBlockItem(r, MOSSY_LIVINGWOOD_PLANKS);
+		registerBlockItem(r, FRAMED_LIVINGWOOD);
+		registerBlockItem(r, PATTERN_FRAMED_LIVINGWOOD);
 
-		r.accept(new BlockItem(DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_LOG));
-		r.accept(new BlockItem(DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD));
-		r.accept(new BlockItem(DREAMWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_STAIRS));
-		r.accept(new BlockItem(DREAMWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_SLAB));
-		r.accept(new BlockItem(DREAMWOOD_WALL, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_WALL));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_LOG));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_DREAMWOOD_STAIRS));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_SLAB));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_WALL, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_WALL));
-		r.accept(new BlockItem(GLIMMERING_DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
-				GLIMMERING_DREAMWOOD_LOG));
-		r.accept(new BlockItem(GLIMMERING_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(GLIMMERING_DREAMWOOD));
-		r.accept(new BlockItem(STRIPPED_GLIMMERING_DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_GLIMMERING_DREAMWOOD_LOG));
-		r.accept(new BlockItem(STRIPPED_GLIMMERING_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_GLIMMERING_DREAMWOOD));
-		r.accept(new BlockItem(DREAMWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_PLANKS));
-		r.accept(new BlockItem(DREAMWOOD_PLANK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_PLANK_STAIRS));
-		r.accept(new BlockItem(DREAMWOOD_PLANK_SLAB, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_PLANK_SLAB));
-		r.accept(new BlockItem(DREAMWOOD_FENCE, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_FENCE));
-		r.accept(new BlockItem(DREAMWOOD_FENCE_GATE, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_FENCE_GATE));
-		r.accept(new BlockItem(DREAMWOOD_DOOR, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_DOOR));
-		r.accept(new BlockItem(DREAMWOOD_TRAPDOOR, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_TRAPDOOR));
-		r.accept(new BlockItem(DREAMWOOD_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				DREAMWOOD_PRESSURE_PLATE));
-		r.accept(new BlockItem(DREAMWOOD_BUTTON, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_BUTTON));
-		r.accept(new SignItem(BotaniaItems.defaultBuilder().stacksTo(16), DREAMWOOD_SIGN,
-				DREAMWOOD_WALL_SIGN
-		), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_SIGN));
-		r.accept(new HangingSignItem(
+		registerBlockItem(r, DREAMWOOD_LOG);
+		registerBlockItem(r, DREAMWOOD);
+		registerBlockItem(r, DREAMWOOD_STAIRS);
+		registerBlockItem(r, DREAMWOOD_SLAB);
+		registerBlockItem(r, DREAMWOOD_WALL);
+		registerBlockItem(r, STRIPPED_DREAMWOOD_LOG);
+		registerBlockItem(r, STRIPPED_DREAMWOOD);
+		registerBlockItem(r, STRIPPED_DREAMWOOD_STAIRS);
+		registerBlockItem(r, STRIPPED_DREAMWOOD_SLAB);
+		registerBlockItem(r, STRIPPED_DREAMWOOD_WALL);
+		registerBlockItem(r, GLIMMERING_DREAMWOOD_LOG);
+		registerBlockItem(r, GLIMMERING_DREAMWOOD);
+		registerBlockItem(r, STRIPPED_GLIMMERING_DREAMWOOD_LOG);
+		registerBlockItem(r, STRIPPED_GLIMMERING_DREAMWOOD);
+		registerBlockItem(r, DREAMWOOD_PLANKS);
+		registerBlockItem(r, DREAMWOOD_PLANK_STAIRS);
+		registerBlockItem(r, DREAMWOOD_PLANK_SLAB);
+		registerBlockItem(r, DREAMWOOD_FENCE);
+		registerBlockItem(r, DREAMWOOD_FENCE_GATE);
+		registerBlockItem(r, DREAMWOOD_DOOR);
+		registerBlockItem(r, DREAMWOOD_TRAPDOOR);
+		registerBlockItem(r, DREAMWOOD_PRESSURE_PLATE);
+		registerBlockItem(r, DREAMWOOD_BUTTON);
+		registerBlockItem(r, DREAMWOOD_SIGN, props -> new SignItem(
+				DREAMWOOD_SIGN, DREAMWOOD_WALL_SIGN, props.stacksTo(16)));
+		registerBlockItem(r, DREAMWOOD_HANGING_SIGN, props -> new HangingSignItem(
 				DREAMWOOD_HANGING_SIGN, DREAMWOOD_WALL_HANGING_SIGN,
-				BotaniaItems.defaultBuilder().stacksTo(16)), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_HANGING_SIGN));
-		r.accept(new BlockItem(MOSSY_DREAMWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(MOSSY_DREAMWOOD_PLANKS));
-		r.accept(new BlockItem(FRAMED_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(FRAMED_DREAMWOOD));
-		r.accept(new BlockItem(PATTERN_FRAMED_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(
-				PATTERN_FRAMED_DREAMWOOD));
+				props.stacksTo(16)));
+		registerBlockItem(r, MOSSY_DREAMWOOD_PLANKS);
+		registerBlockItem(r, FRAMED_DREAMWOOD);
+		registerBlockItem(r, PATTERN_FRAMED_DREAMWOOD);
 
-		registerBlockItemWithColoredVariants(r, MANA_SPREADER, props, LibBlockNames.COVERED_INFIX);
-		registerBlockItemWithColoredVariants(r, PULSE_MANA_SPREADER, props, LibBlockNames.COVERED_INFIX);
-		registerBlockItemWithColoredVariants(r, ELVEN_MANA_SPREADER, props, LibBlockNames.COVERED_INFIX);
-		registerBlockItemWithColoredVariants(r, GAIA_MANA_SPREADER, rareProps, LibBlockNames.COVERED_INFIX);
-		registerBlockItemWithColoredVariants(r, MANA_POOL, props);
-		registerBlockItemWithColoredVariants(r, CREATIVE_MANA_POOL, epicProps);
-		registerBlockItemWithColoredVariants(r, DILUTED_MANA_POOL, props);
-		registerBlockItemWithColoredVariants(r, FABULOUS_MANA_POOL, props);
-		r.accept(new BlockItem(ALCHEMY_CATALYST, props), BuiltInRegistries.BLOCK.getKey(ALCHEMY_CATALYST));
-		r.accept(new BlockItem(CONJURATION_CATALYST, props), BuiltInRegistries.BLOCK.getKey(CONJURATION_CATALYST));
-		r.accept(new BlockItem(MANASTEEL_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MANASTEEL_BLOCK));
-		r.accept(new BlockItem(TERRASTEEL_BLOCK, uncommonProps), BuiltInRegistries.BLOCK.getKey(TERRASTEEL_BLOCK));
-		r.accept(new BlockItem(ELEMENTIUM_BLOCK, props), BuiltInRegistries.BLOCK.getKey(ELEMENTIUM_BLOCK));
-		r.accept(new BlockItem(MANA_DIAMOND_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MANA_DIAMOND_BLOCK));
-		r.accept(new BlockItem(DRAGONSTONE_BLOCK, props), BuiltInRegistries.BLOCK.getKey(DRAGONSTONE_BLOCK));
-		r.accept(new BlockItem(MANAGLASS, props), BuiltInRegistries.BLOCK.getKey(MANAGLASS));
-		r.accept(new BlockItem(ALFGLASS, props), BuiltInRegistries.BLOCK.getKey(ALFGLASS));
-		r.accept(new BlockItem(BIFROST, props), BuiltInRegistries.BLOCK.getKey(BIFROST));
-		r.accept(new BlockItem(RUNIC_ALTAR, props), BuiltInRegistries.BLOCK.getKey(RUNIC_ALTAR));
-		r.accept(new BlockItem(MANA_ENCHANTER, props), BuiltInRegistries.BLOCK.getKey(MANA_ENCHANTER));
-		r.accept(new BlockItem(BOTANICAL_BREWERY, props), BuiltInRegistries.BLOCK.getKey(BOTANICAL_BREWERY));
-		r.accept(new BlockItem(TERRESTRIAL_AGGLOMERATION_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				TERRESTRIAL_AGGLOMERATION_PLATE));
-		r.accept(new BlockItem(ELVEN_GATEWAY_CORE, uncommonProps), BuiltInRegistries.BLOCK.getKey(ELVEN_GATEWAY_CORE));
+		registerBlockItemWithColoredVariants(r, MANA_SPREADER, Rarity.COMMON, LibBlockNames.COVERED_INFIX);
+		registerBlockItemWithColoredVariants(r, PULSE_MANA_SPREADER, Rarity.COMMON, LibBlockNames.COVERED_INFIX);
+		registerBlockItemWithColoredVariants(r, ELVEN_MANA_SPREADER, Rarity.COMMON, LibBlockNames.COVERED_INFIX);
+		registerBlockItemWithColoredVariants(r, GAIA_MANA_SPREADER, Rarity.RARE, LibBlockNames.COVERED_INFIX);
+		registerBlockItemWithColoredVariants(r, MANA_POOL, Rarity.COMMON);
+		registerBlockItemWithColoredVariants(r, CREATIVE_MANA_POOL, Rarity.EPIC);
+		registerBlockItemWithColoredVariants(r, DILUTED_MANA_POOL, Rarity.COMMON);
+		registerBlockItemWithColoredVariants(r, FABULOUS_MANA_POOL, Rarity.COMMON);
+		registerBlockItem(r, ALCHEMY_CATALYST);
+		registerBlockItem(r, CONJURATION_CATALYST);
+		registerBlockItem(r, MANASTEEL_BLOCK);
+		registerBlockItem(r, TERRASTEEL_BLOCK, props -> new BlockItem(TERRASTEEL_BLOCK, props.rarity(Rarity.UNCOMMON)));
+		registerBlockItem(r, ELEMENTIUM_BLOCK);
+		registerBlockItem(r, MANA_DIAMOND_BLOCK);
+		registerBlockItem(r, DRAGONSTONE_BLOCK);
+		registerBlockItem(r, MANAGLASS);
+		registerBlockItem(r, ALFGLASS);
+		registerBlockItem(r, BIFROST);
+		registerBlockItem(r, RUNIC_ALTAR);
+		registerBlockItem(r, MANA_ENCHANTER);
+		registerBlockItem(r, BOTANICAL_BREWERY);
+		registerBlockItem(r, TERRESTRIAL_AGGLOMERATION_PLATE);
+		registerBlockItem(r, ELVEN_GATEWAY_CORE, props -> new BlockItem(ELVEN_GATEWAY_CORE, props.rarity(Rarity.UNCOMMON)));
 
-		r.accept(new BlockItem(MANA_PYLON, props), BuiltInRegistries.BLOCK.getKey(MANA_PYLON));
-		r.accept(new BlockItem(NATURA_PYLON, uncommonProps), BuiltInRegistries.BLOCK.getKey(NATURA_PYLON));
-		r.accept(new BlockItem(GAIA_PYLON, props), BuiltInRegistries.BLOCK.getKey(GAIA_PYLON));
-		r.accept(new BlockItem(MANA_SPLITTER, props), BuiltInRegistries.BLOCK.getKey(MANA_SPLITTER));
-		r.accept(new BlockItem(MANA_VOID, props), BuiltInRegistries.BLOCK.getKey(MANA_VOID));
-		r.accept(new BlockItem(MANA_DETECTOR, props), BuiltInRegistries.BLOCK.getKey(MANA_DETECTOR));
-		r.accept(new BlockItem(FORCE_RELAY, props), BuiltInRegistries.BLOCK.getKey(FORCE_RELAY));
-		r.accept(new BlockItem(SPREADER_TURNTABLE, props), BuiltInRegistries.BLOCK.getKey(SPREADER_TURNTABLE));
-		r.accept(new BlockItem(TINY_PLANET, props), BuiltInRegistries.BLOCK.getKey(TINY_PLANET));
-		r.accept(new BlockItem(DRUM_OF_THE_WILD, props), BuiltInRegistries.BLOCK.getKey(DRUM_OF_THE_WILD));
-		r.accept(new BlockItem(DRUM_OF_THE_GATHERING, props), BuiltInRegistries.BLOCK.getKey(DRUM_OF_THE_GATHERING));
-		r.accept(new BlockItem(DRUM_OF_THE_CANOPY, props), BuiltInRegistries.BLOCK.getKey(DRUM_OF_THE_CANOPY));
-		r.accept(new BlockItem(LIFE_IMBUER, props), BuiltInRegistries.BLOCK.getKey(LIFE_IMBUER));
-		r.accept(new BlockItem(MANA_FLUXFIELD, props), BuiltInRegistries.BLOCK.getKey(MANA_FLUXFIELD));
-		r.accept(new BlockItem(MANA_PRISM, props), BuiltInRegistries.BLOCK.getKey(MANA_PRISM));
-		r.accept(new BlockItem(MANA_PUMP, props), BuiltInRegistries.BLOCK.getKey(MANA_PUMP));
-		r.accept(new BlockItem(SPARK_TINKERER, props), BuiltInRegistries.BLOCK.getKey(SPARK_TINKERER));
-		r.accept(new BlockItem(MANASTORM_CHARGE, rareProps), BuiltInRegistries.BLOCK.getKey(MANASTORM_CHARGE));
-		r.accept(new BlockItem(MANATIDE_BELLOWS, props), BuiltInRegistries.BLOCK.getKey(MANATIDE_BELLOWS));
-		r.accept(new BlockItem(OPEN_CRATE, props), BuiltInRegistries.BLOCK.getKey(OPEN_CRATE));
-		r.accept(new BlockItem(CRAFTY_CRATE, props), BuiltInRegistries.BLOCK.getKey(CRAFTY_CRATE));
-		r.accept(new BlockItem(EYE_OF_THE_ANCIENTS, props), BuiltInRegistries.BLOCK.getKey(EYE_OF_THE_ANCIENTS));
-		r.accept(new BlockItem(ABSTRUSE_PLATFORM, props), BuiltInRegistries.BLOCK.getKey(ABSTRUSE_PLATFORM));
-		r.accept(new BlockItem(SPECTRAL_PLATFORM, props), BuiltInRegistries.BLOCK.getKey(SPECTRAL_PLATFORM));
-		r.accept(new BlockItem(INFRANGIBLE_PLATFORM, epicProps), BuiltInRegistries.BLOCK.getKey(INFRANGIBLE_PLATFORM));
-		r.accept(new TinyPotatoBlockItem(TINY_POTATO, props), BuiltInRegistries.BLOCK.getKey(TINY_POTATO));
-		r.accept(new BlockItem(ENDER_OVERSEER, props), BuiltInRegistries.BLOCK.getKey(ENDER_OVERSEER));
-		r.accept(new BlockItem(RED_STRINGED_CONTAINER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_CONTAINER));
-		r.accept(new BlockItem(RED_STRINGED_DISPENSER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_DISPENSER));
-		r.accept(new BlockItem(RED_STRINGED_NUTRIFIER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_NUTRIFIER));
-		r.accept(new BlockItem(RED_STRINGED_COMPARATOR, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_COMPARATOR));
-		r.accept(new BlockItem(RED_STRINGED_SPOOFER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_SPOOFER));
-		r.accept(new BlockItem(RED_STRINGED_INTERCEPTOR, props), BuiltInRegistries.BLOCK.getKey(
-				RED_STRINGED_INTERCEPTOR));
-		r.accept(new BlockItem(CORPOREA_FUNNEL, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_FUNNEL));
-		r.accept(new BlockItem(CORPOREA_INTERCEPTOR, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_INTERCEPTOR));
-		r.accept(new BlockItem(CORPOREA_INDEX, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_INDEX));
-		r.accept(new BlockItem(CORPOREA_CRYSTAL_CUBE, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_CRYSTAL_CUBE));
-		r.accept(new BlockItem(CORPOREA_RETAINER, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_RETAINER));
-		r.accept(new BlockItem(CORPOREA_BLOCK, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BLOCK));
-		r.accept(new BlockItem(CORPOREA_STAIRS, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_STAIRS));
-		r.accept(new BlockItem(CORPOREA_SLAB, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_SLAB));
-		r.accept(new BlockItem(CORPOREA_WALL, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_WALL));
-		r.accept(new BlockItem(CORPOREA_BUTTON, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BUTTON));
-		r.accept(new BlockItem(CORPOREA_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_PRESSURE_PLATE));
-		r.accept(new BlockItem(CORPOREA_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BRICKS));
-		r.accept(new BlockItem(CORPOREA_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BRICK_STAIRS));
-		r.accept(new BlockItem(CORPOREA_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BRICK_SLAB));
-		r.accept(new BlockItem(CORPOREA_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BRICK_WALL));
-		r.accept(new BlockItem(INCENSE_PLATE, props), BuiltInRegistries.BLOCK.getKey(INCENSE_PLATE));
-		r.accept(new BlockItem(HOVERING_HOURGLASS, props), BuiltInRegistries.BLOCK.getKey(HOVERING_HOURGLASS));
-		r.accept(new BlockItem(SPECTRAL_RAIL, props), BuiltInRegistries.BLOCK.getKey(SPECTRAL_RAIL));
-		r.accept(new BlockItem(LUMINIZER, props), BuiltInRegistries.BLOCK.getKey(LUMINIZER));
-		r.accept(new BlockItem(DETECTOR_LUMINIZER, props), BuiltInRegistries.BLOCK.getKey(DETECTOR_LUMINIZER));
-		r.accept(new BlockItem(FORK_LUMINIZER, props), BuiltInRegistries.BLOCK.getKey(FORK_LUMINIZER));
-		r.accept(new BlockItem(TOGGLE_LUMINIZER, props), BuiltInRegistries.BLOCK.getKey(TOGGLE_LUMINIZER));
-		r.accept(new BlockItem(LUMINIZER_LAUNCHER, props), BuiltInRegistries.BLOCK.getKey(LUMINIZER_LAUNCHER));
-		r.accept(new BlockItem(CACOPHONIUM_BLOCK, props), BuiltInRegistries.BLOCK.getKey(CACOPHONIUM_BLOCK));
-		r.accept(new BlockItem(CELLULAR_BLOCK, props), BuiltInRegistries.BLOCK.getKey(CELLULAR_BLOCK));
-		r.accept(new BlockItem(TERU_TERU_BOZU, props), BuiltInRegistries.BLOCK.getKey(TERU_TERU_BOZU));
-		r.accept(new BlockItem(LIVINGWOOD_AVATAR, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_AVATAR));
-		r.accept(new BlockItem(LIVING_ROOT, props), BuiltInRegistries.BLOCK.getKey(LIVING_ROOT));
-		r.accept(new BlockItem(FEL_PUMPKIN, props), BuiltInRegistries.BLOCK.getKey(FEL_PUMPKIN));
-		r.accept(new BlockItem(COCOON_OF_CAPRICE, props), BuiltInRegistries.BLOCK.getKey(COCOON_OF_CAPRICE));
-		r.accept(new BlockItem(ANIMATED_TORCH, props), BuiltInRegistries.BLOCK.getKey(ANIMATED_TORCH));
-		r.accept(new BlockItem(STARFIELD_CREATOR, props), BuiltInRegistries.BLOCK.getKey(STARFIELD_CREATOR));
-		r.accept(new BlockItem(AZULEJO_0, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_0));
-		r.accept(new BlockItem(AZULEJO_1, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_1));
-		r.accept(new BlockItem(AZULEJO_2, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_2));
-		r.accept(new BlockItem(AZULEJO_3, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_3));
-		r.accept(new BlockItem(AZULEJO_4, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_4));
-		r.accept(new BlockItem(AZULEJO_5, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_5));
-		r.accept(new BlockItem(AZULEJO_6, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_6));
-		r.accept(new BlockItem(AZULEJO_7, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_7));
-		r.accept(new BlockItem(AZULEJO_8, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_8));
-		r.accept(new BlockItem(AZULEJO_9, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_9));
-		r.accept(new BlockItem(AZULEJO_10, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_10));
-		r.accept(new BlockItem(AZULEJO_11, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_11));
-		r.accept(new BlockItem(AZULEJO_12, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_12));
-		r.accept(new BlockItem(AZULEJO_13, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_13));
-		r.accept(new BlockItem(AZULEJO_14, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_14));
-		r.accept(new BlockItem(AZULEJO_15, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_15));
-		r.accept(new BlockItem(BLAZE_MESH, props), BuiltInRegistries.BLOCK.getKey(BLAZE_MESH));
-		r.accept(new StandingAndWallBlockItem(GAIA_HEAD, GAIA_WALL_HEAD_BLOCK, rareProps, Direction.DOWN), BuiltInRegistries.BLOCK.getKey(
-				GAIA_HEAD));
-		r.accept(new BlockItem(SHIMMERROCK, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK));
-		r.accept(new BlockItem(SHIMMERROCK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_STAIRS));
-		r.accept(new BlockItem(SHIMMERROCK_SLAB, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_SLAB));
-		r.accept(new BlockItem(SHIMMERROCK_WALL, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_WALL));
-		r.accept(new BlockItem(SHIMMERROCK_BUTTON, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_BUTTON));
-		r.accept(new BlockItem(SHIMMERROCK_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				SHIMMERROCK_PRESSURE_PLATE));
-		r.accept(new BlockItem(SHIMMERWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_PLANKS));
-		r.accept(new BlockItem(SHIMMERWOOD_PLANK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SHIMMERWOOD_PLANK_STAIRS));
-		r.accept(new BlockItem(SHIMMERWOOD_PLANK_SLAB, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_PLANK_SLAB));
-		r.accept(new BlockItem(SHIMMERWOOD_FENCE, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_FENCE));
-		r.accept(new BlockItem(SHIMMERWOOD_FENCE_GATE, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_FENCE_GATE));
-		r.accept(new BlockItem(SHIMMERWOOD_BUTTON, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_BUTTON));
-		r.accept(new BlockItem(SHIMMERWOOD_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				SHIMMERWOOD_PRESSURE_PLATE));
-		r.accept(new BlockItem(DRY_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(DRY_GRASS_BLOCK));
-		r.accept(new BlockItem(GOLDEN_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(GOLDEN_GRASS_BLOCK));
-		r.accept(new BlockItem(VIVID_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(VIVID_GRASS_BLOCK));
-		r.accept(new BlockItem(SCORCHED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SCORCHED_GRASS_BLOCK));
-		r.accept(new BlockItem(INFUSED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(INFUSED_GRASS_BLOCK));
-		r.accept(new BlockItem(MUTATED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MUTATED_GRASS_BLOCK));
-		r.accept(new BlockItem(DAYBLOOM_MOTIF, props), BuiltInRegistries.BLOCK.getKey(DAYBLOOM_MOTIF));
-		r.accept(new BlockItem(NIGHTSHADE_MOTIF, props), BuiltInRegistries.BLOCK.getKey(NIGHTSHADE_MOTIF));
-		r.accept(new BlockItem(HYDROANGEAS_MOTIF, props), BuiltInRegistries.BLOCK.getKey(HYDROANGEAS_MOTIF));
+		registerBlockItem(r, MANA_PYLON);
+		registerBlockItem(r, NATURA_PYLON, props -> new BlockItem(NATURA_PYLON, props.rarity(Rarity.UNCOMMON)));
+		registerBlockItem(r, GAIA_PYLON);
+		registerBlockItem(r, MANA_SPLITTER);
+		registerBlockItem(r, MANA_VOID);
+		registerBlockItem(r, MANA_DETECTOR);
+		registerBlockItem(r, FORCE_RELAY);
+		registerBlockItem(r, SPREADER_TURNTABLE);
+		registerBlockItem(r, TINY_PLANET);
+		registerBlockItem(r, DRUM_OF_THE_WILD);
+		registerBlockItem(r, DRUM_OF_THE_GATHERING);
+		registerBlockItem(r, DRUM_OF_THE_CANOPY);
+		registerBlockItem(r, LIFE_IMBUER);
+		registerBlockItem(r, MANA_FLUXFIELD);
+		registerBlockItem(r, MANA_PRISM);
+		registerBlockItem(r, MANA_PUMP);
+		registerBlockItem(r, SPARK_TINKERER);
+		registerBlockItem(r, MANASTORM_CHARGE, props -> new BlockItem(MANASTORM_CHARGE, props.rarity(Rarity.RARE)));
+		registerBlockItem(r, MANATIDE_BELLOWS);
+		registerBlockItem(r, OPEN_CRATE);
+		registerBlockItem(r, CRAFTY_CRATE);
+		registerBlockItem(r, EYE_OF_THE_ANCIENTS);
+		registerBlockItem(r, ABSTRUSE_PLATFORM);
+		registerBlockItem(r, SPECTRAL_PLATFORM);
+		registerBlockItem(r, INFRANGIBLE_PLATFORM, props -> new BlockItem(INFRANGIBLE_PLATFORM, props.rarity(Rarity.EPIC)));
+		registerBlockItem(r, TINY_POTATO, props -> new TinyPotatoBlockItem(TINY_POTATO, props));
+		registerBlockItem(r, ENDER_OVERSEER);
+		registerBlockItem(r, RED_STRINGED_CONTAINER);
+		registerBlockItem(r, RED_STRINGED_DISPENSER);
+		registerBlockItem(r, RED_STRINGED_NUTRIFIER);
+		registerBlockItem(r, RED_STRINGED_COMPARATOR);
+		registerBlockItem(r, RED_STRINGED_SPOOFER);
+		registerBlockItem(r, RED_STRINGED_INTERCEPTOR);
+		registerBlockItem(r, CORPOREA_FUNNEL);
+		registerBlockItem(r, CORPOREA_INTERCEPTOR);
+		registerBlockItem(r, CORPOREA_INDEX);
+		registerBlockItem(r, CORPOREA_CRYSTAL_CUBE);
+		registerBlockItem(r, CORPOREA_RETAINER);
+		registerBlockItem(r, CORPOREA_BLOCK);
+		registerBlockItem(r, CORPOREA_STAIRS);
+		registerBlockItem(r, CORPOREA_SLAB);
+		registerBlockItem(r, CORPOREA_WALL);
+		registerBlockItem(r, CORPOREA_BUTTON);
+		registerBlockItem(r, CORPOREA_PRESSURE_PLATE);
+		registerBlockItem(r, CORPOREA_BRICKS);
+		registerBlockItem(r, CORPOREA_BRICK_STAIRS);
+		registerBlockItem(r, CORPOREA_BRICK_SLAB);
+		registerBlockItem(r, CORPOREA_BRICK_WALL);
+		registerBlockItem(r, INCENSE_PLATE);
+		registerBlockItem(r, HOVERING_HOURGLASS);
+		registerBlockItem(r, SPECTRAL_RAIL);
+		registerBlockItem(r, LUMINIZER);
+		registerBlockItem(r, DETECTOR_LUMINIZER);
+		registerBlockItem(r, FORK_LUMINIZER);
+		registerBlockItem(r, TOGGLE_LUMINIZER);
+		registerBlockItem(r, LUMINIZER_LAUNCHER);
+		registerBlockItem(r, CACOPHONIUM_BLOCK);
+		registerBlockItem(r, CELLULAR_BLOCK);
+		registerBlockItem(r, TERU_TERU_BOZU);
+		registerBlockItem(r, LIVINGWOOD_AVATAR);
+		registerBlockItem(r, LIVING_ROOT);
+		registerBlockItem(r, FEL_PUMPKIN);
+		registerBlockItem(r, COCOON_OF_CAPRICE);
+		registerBlockItem(r, ANIMATED_TORCH);
+		registerBlockItem(r, STARFIELD_CREATOR);
+		registerBlockItem(r, AZULEJO_0);
+		registerBlockItem(r, AZULEJO_1);
+		registerBlockItem(r, AZULEJO_2);
+		registerBlockItem(r, AZULEJO_3);
+		registerBlockItem(r, AZULEJO_4);
+		registerBlockItem(r, AZULEJO_5);
+		registerBlockItem(r, AZULEJO_6);
+		registerBlockItem(r, AZULEJO_7);
+		registerBlockItem(r, AZULEJO_8);
+		registerBlockItem(r, AZULEJO_9);
+		registerBlockItem(r, AZULEJO_10);
+		registerBlockItem(r, AZULEJO_11);
+		registerBlockItem(r, AZULEJO_12);
+		registerBlockItem(r, AZULEJO_13);
+		registerBlockItem(r, AZULEJO_14);
+		registerBlockItem(r, AZULEJO_15);
+		registerBlockItem(r, BLAZE_MESH);
+		registerBlockItem(r, GAIA_HEAD, props -> new StandingAndWallBlockItem(
+				GAIA_HEAD, GAIA_WALL_HEAD_BLOCK, Direction.DOWN, props.rarity(Rarity.RARE)));
+		registerBlockItem(r, SHIMMERROCK);
+		registerBlockItem(r, SHIMMERROCK_STAIRS);
+		registerBlockItem(r, SHIMMERROCK_SLAB);
+		registerBlockItem(r, SHIMMERROCK_WALL);
+		registerBlockItem(r, SHIMMERROCK_BUTTON);
+		registerBlockItem(r, SHIMMERROCK_PRESSURE_PLATE);
+		registerBlockItem(r, SHIMMERWOOD_PLANKS);
+		registerBlockItem(r, SHIMMERWOOD_PLANK_STAIRS);
+		registerBlockItem(r, SHIMMERWOOD_PLANK_SLAB);
+		registerBlockItem(r, SHIMMERWOOD_FENCE);
+		registerBlockItem(r, SHIMMERWOOD_FENCE_GATE);
+		registerBlockItem(r, SHIMMERWOOD_BUTTON);
+		registerBlockItem(r, SHIMMERWOOD_PRESSURE_PLATE);
+		registerBlockItem(r, DRY_GRASS_BLOCK);
+		registerBlockItem(r, GOLDEN_GRASS_BLOCK);
+		registerBlockItem(r, VIVID_GRASS_BLOCK);
+		registerBlockItem(r, SCORCHED_GRASS_BLOCK);
+		registerBlockItem(r, INFUSED_GRASS_BLOCK);
+		registerBlockItem(r, MUTATED_GRASS_BLOCK);
+		registerBlockItem(r, DAYBLOOM_MOTIF);
+		registerBlockItem(r, NIGHTSHADE_MOTIF);
+		registerBlockItem(r, HYDROANGEAS_MOTIF);
 
-		r.accept(new BlockItem(SMOKEY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOKEY_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOKEY_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_SMOKEY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_SMOKEY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOKEY_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_BRICKS));
-		r.accept(new BlockItem(SMOKEY_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_SMOKEY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SMOKEY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_SMOKEY_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SMOKEY_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_SMOKEY_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SMOKEY_QUARTZ_SLAB));
+		registerBlockItem(r, SMOKEY_QUARTZ_BLOCK);
+		registerBlockItem(r, SMOKEY_QUARTZ_STAIRS);
+		registerBlockItem(r, SMOKEY_QUARTZ_SLAB);
+		registerBlockItem(r, CHISELED_SMOKEY_QUARTZ_BLOCK);
+		registerBlockItem(r, SMOKEY_QUARTZ_BRICKS);
+		registerBlockItem(r, SMOKEY_QUARTZ_PILLAR);
+		registerBlockItem(r, SMOOTH_SMOKEY_QUARTZ_BLOCK);
+		registerBlockItem(r, SMOOTH_SMOKEY_QUARTZ_STAIRS);
+		registerBlockItem(r, SMOOTH_SMOKEY_QUARTZ_SLAB);
 
-		r.accept(new BlockItem(MANA_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_BLOCK));
-		r.accept(new BlockItem(MANA_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_STAIRS));
-		r.accept(new BlockItem(MANA_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_MANA_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_MANA_QUARTZ_BLOCK));
-		r.accept(new BlockItem(MANA_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_BRICKS));
-		r.accept(new BlockItem(MANA_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_MANA_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_MANA_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_MANA_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_MANA_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_MANA_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(SMOOTH_MANA_QUARTZ_SLAB));
+		registerBlockItem(r, MANA_QUARTZ_BLOCK);
+		registerBlockItem(r, MANA_QUARTZ_STAIRS);
+		registerBlockItem(r, MANA_QUARTZ_SLAB);
+		registerBlockItem(r, CHISELED_MANA_QUARTZ_BLOCK);
+		registerBlockItem(r, MANA_QUARTZ_BRICKS);
+		registerBlockItem(r, MANA_QUARTZ_PILLAR);
+		registerBlockItem(r, SMOOTH_MANA_QUARTZ_BLOCK);
+		registerBlockItem(r, SMOOTH_MANA_QUARTZ_STAIRS);
+		registerBlockItem(r, SMOOTH_MANA_QUARTZ_SLAB);
 
-		r.accept(new BlockItem(BLAZE_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_BLOCK));
-		r.accept(new BlockItem(BLAZE_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_STAIRS));
-		r.accept(new BlockItem(BLAZE_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_BLAZE_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_BLAZE_QUARTZ_BLOCK));
-		r.accept(new BlockItem(BLAZE_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_BRICKS));
-		r.accept(new BlockItem(BLAZE_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_BLAZE_QUARTZ_BLOCKS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_BLAZE_QUARTZ_BLOCKS));
-		r.accept(new BlockItem(SMOOTH_BLAZE_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_BLAZE_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_BLAZE_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_BLAZE_QUARTZ_SLAB));
+		registerBlockItem(r, BLAZE_QUARTZ_BLOCK);
+		registerBlockItem(r, BLAZE_QUARTZ_STAIRS);
+		registerBlockItem(r, BLAZE_QUARTZ_SLAB);
+		registerBlockItem(r, CHISELED_BLAZE_QUARTZ_BLOCK);
+		registerBlockItem(r, BLAZE_QUARTZ_BRICKS);
+		registerBlockItem(r, BLAZE_QUARTZ_PILLAR);
+		registerBlockItem(r, SMOOTH_BLAZE_QUARTZ_BLOCKS);
+		registerBlockItem(r, SMOOTH_BLAZE_QUARTZ_STAIRS);
+		registerBlockItem(r, SMOOTH_BLAZE_QUARTZ_SLAB);
 
-		r.accept(new BlockItem(LAVENDER_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_BLOCK));
-		r.accept(new BlockItem(LAVENDER_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_STAIRS));
-		r.accept(new BlockItem(LAVENDER_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_LAVENDER_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_LAVENDER_QUARTZ_BLOCK));
-		r.accept(new BlockItem(LAVENDER_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_BRICKS));
-		r.accept(new BlockItem(LAVENDER_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_LAVENDER_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_LAVENDER_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_LAVENDER_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_LAVENDER_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_LAVENDER_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_LAVENDER_QUARTZ_SLAB));
+		registerBlockItem(r, LAVENDER_QUARTZ_BLOCK);
+		registerBlockItem(r, LAVENDER_QUARTZ_STAIRS);
+		registerBlockItem(r, LAVENDER_QUARTZ_SLAB);
+		registerBlockItem(r, CHISELED_LAVENDER_QUARTZ_BLOCK);
+		registerBlockItem(r, LAVENDER_QUARTZ_BRICKS);
+		registerBlockItem(r, LAVENDER_QUARTZ_PILLAR);
+		registerBlockItem(r, SMOOTH_LAVENDER_QUARTZ_BLOCK);
+		registerBlockItem(r, SMOOTH_LAVENDER_QUARTZ_STAIRS);
+		registerBlockItem(r, SMOOTH_LAVENDER_QUARTZ_SLAB);
 
-		r.accept(new BlockItem(RED_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_BLOCK));
-		r.accept(new BlockItem(RED_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_STAIRS));
-		r.accept(new BlockItem(RED_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_RED_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_RED_QUARTZ_BLOCK));
-		r.accept(new BlockItem(RED_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_BRICKS));
-		r.accept(new BlockItem(RED_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_RED_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SMOOTH_RED_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_RED_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_RED_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_RED_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(SMOOTH_RED_QUARTZ_SLAB));
+		registerBlockItem(r, RED_QUARTZ_BLOCK);
+		registerBlockItem(r, RED_QUARTZ_STAIRS);
+		registerBlockItem(r, RED_QUARTZ_SLAB);
+		registerBlockItem(r, CHISELED_RED_QUARTZ_BLOCK);
+		registerBlockItem(r, RED_QUARTZ_BRICKS);
+		registerBlockItem(r, RED_QUARTZ_PILLAR);
+		registerBlockItem(r, SMOOTH_RED_QUARTZ_BLOCK);
+		registerBlockItem(r, SMOOTH_RED_QUARTZ_STAIRS);
+		registerBlockItem(r, SMOOTH_RED_QUARTZ_SLAB);
 
-		r.accept(new BlockItem(ELVEN_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_BLOCK));
-		r.accept(new BlockItem(ELVEN_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_STAIRS));
-		r.accept(new BlockItem(ELVEN_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_ELVEN_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_ELVEN_QUARTZ_BLOCK));
-		r.accept(new BlockItem(ELVEN_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_BRICKS));
-		r.accept(new BlockItem(ELVEN_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_ELVEN_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_ELVEN_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_ELVEN_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_ELVEN_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_ELVEN_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_ELVEN_QUARTZ_SLAB));
+		registerBlockItem(r, ELVEN_QUARTZ_BLOCK);
+		registerBlockItem(r, ELVEN_QUARTZ_STAIRS);
+		registerBlockItem(r, ELVEN_QUARTZ_SLAB);
+		registerBlockItem(r, CHISELED_ELVEN_QUARTZ_BLOCK);
+		registerBlockItem(r, ELVEN_QUARTZ_BRICKS);
+		registerBlockItem(r, ELVEN_QUARTZ_PILLAR);
+		registerBlockItem(r, SMOOTH_ELVEN_QUARTZ_BLOCK);
+		registerBlockItem(r, SMOOTH_ELVEN_QUARTZ_STAIRS);
+		registerBlockItem(r, SMOOTH_ELVEN_QUARTZ_SLAB);
 
-		r.accept(new BlockItem(SUNNY_QUART_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUART_BLOCK));
-		r.accept(new BlockItem(SUNNY_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SUNNY_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_SUNNY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_SUNNY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SUNNY_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUARTZ_BRICKS));
-		r.accept(new BlockItem(SUNNY_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_SUNNY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SUNNY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_SUNNY_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SUNNY_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_SUNNY_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SUNNY_QUARTZ_SLAB));
+		registerBlockItem(r, SUNNY_QUART_BLOCK);
+		registerBlockItem(r, SUNNY_QUARTZ_STAIRS);
+		registerBlockItem(r, SUNNY_QUARTZ_SLAB);
+		registerBlockItem(r, CHISELED_SUNNY_QUARTZ_BLOCK);
+		registerBlockItem(r, SUNNY_QUARTZ_BRICKS);
+		registerBlockItem(r, SUNNY_QUARTZ_PILLAR);
+		registerBlockItem(r, SMOOTH_SUNNY_QUARTZ_BLOCK);
+		registerBlockItem(r, SMOOTH_SUNNY_QUARTZ_STAIRS);
+		registerBlockItem(r, SMOOTH_SUNNY_QUARTZ_SLAB);
 
-		r.accept(new BlockItem(FUCHSITE, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE));
-		r.accept(new BlockItem(FUCHSITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_STAIRS));
-		r.accept(new BlockItem(FUCHSITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_SLAB));
-		r.accept(new BlockItem(FUCHSITE_WALL, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_WALL));
-		r.accept(new BlockItem(FUCHSITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BUTTON));
-		r.accept(new BlockItem(FUCHSITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(FUCHSITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BRICKS));
-		r.accept(new BlockItem(FUCHSITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BRICK_STAIRS));
-		r.accept(new BlockItem(FUCHSITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BRICK_SLAB));
-		r.accept(new BlockItem(FUCHSITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_FUCHSITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_FUCHSITE));
-		r.accept(new BlockItem(COBBLED_FUCHSITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_FUCHSITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_FUCHSITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_FUCHSITE_SLAB));
-		r.accept(new BlockItem(COBBLED_FUCHSITE_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_FUCHSITE_WALL));
-		r.accept(new BlockItem(CHISELED_FUCHSITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_FUCHSITE_BRICKS));
+		registerBlockItem(r, FUCHSITE);
+		registerBlockItem(r, FUCHSITE_STAIRS);
+		registerBlockItem(r, FUCHSITE_SLAB);
+		registerBlockItem(r, FUCHSITE_WALL);
+		registerBlockItem(r, FUCHSITE_BUTTON);
+		registerBlockItem(r, FUCHSITE_PRESSURE_PLATE);
+		registerBlockItem(r, FUCHSITE_BRICKS);
+		registerBlockItem(r, FUCHSITE_BRICK_STAIRS);
+		registerBlockItem(r, FUCHSITE_BRICK_SLAB);
+		registerBlockItem(r, FUCHSITE_BRICK_WALL);
+		registerBlockItem(r, COBBLED_FUCHSITE);
+		registerBlockItem(r, COBBLED_FUCHSITE_STAIRS);
+		registerBlockItem(r, COBBLED_FUCHSITE_SLAB);
+		registerBlockItem(r, COBBLED_FUCHSITE_WALL);
+		registerBlockItem(r, CHISELED_FUCHSITE_BRICKS);
 
-		r.accept(new BlockItem(TALC, props), BuiltInRegistries.BLOCK.getKey(TALC));
-		r.accept(new BlockItem(TALC_STAIRS, props), BuiltInRegistries.BLOCK.getKey(TALC_STAIRS));
-		r.accept(new BlockItem(TALC_SLAB, props), BuiltInRegistries.BLOCK.getKey(TALC_SLAB));
-		r.accept(new BlockItem(TALC_WALL, props), BuiltInRegistries.BLOCK.getKey(TALC_WALL));
-		r.accept(new BlockItem(TALC_BUTTON, props), BuiltInRegistries.BLOCK.getKey(TALC_BUTTON));
-		r.accept(new BlockItem(TALC_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(TALC_PRESSURE_PLATE));
-		r.accept(new BlockItem(TALC_BRICKS, props), BuiltInRegistries.BLOCK.getKey(TALC_BRICKS));
-		r.accept(new BlockItem(TALC_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(TALC_BRICK_STAIRS));
-		r.accept(new BlockItem(TALC_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(TALC_BRICK_SLAB));
-		r.accept(new BlockItem(TALC_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(TALC_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_TALC, props), BuiltInRegistries.BLOCK.getKey(COBBLED_TALC));
-		r.accept(new BlockItem(COBBLED_TALC_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_TALC_STAIRS));
-		r.accept(new BlockItem(COBBLED_TALC_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_TALC_SLAB));
-		r.accept(new BlockItem(COBBLED_TALC_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_TALC_WALL));
-		r.accept(new BlockItem(CHISELED_TALC_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CHISELED_TALC_BRICKS));
+		registerBlockItem(r, TALC);
+		registerBlockItem(r, TALC_STAIRS);
+		registerBlockItem(r, TALC_SLAB);
+		registerBlockItem(r, TALC_WALL);
+		registerBlockItem(r, TALC_BUTTON);
+		registerBlockItem(r, TALC_PRESSURE_PLATE);
+		registerBlockItem(r, TALC_BRICKS);
+		registerBlockItem(r, TALC_BRICK_STAIRS);
+		registerBlockItem(r, TALC_BRICK_SLAB);
+		registerBlockItem(r, TALC_BRICK_WALL);
+		registerBlockItem(r, COBBLED_TALC);
+		registerBlockItem(r, COBBLED_TALC_STAIRS);
+		registerBlockItem(r, COBBLED_TALC_SLAB);
+		registerBlockItem(r, COBBLED_TALC_WALL);
+		registerBlockItem(r, CHISELED_TALC_BRICKS);
 
-		r.accept(new BlockItem(GNEISS, props), BuiltInRegistries.BLOCK.getKey(GNEISS));
-		r.accept(new BlockItem(GNEISS_STAIRS, props), BuiltInRegistries.BLOCK.getKey(GNEISS_STAIRS));
-		r.accept(new BlockItem(GNEISS_SLAB, props), BuiltInRegistries.BLOCK.getKey(GNEISS_SLAB));
-		r.accept(new BlockItem(GNEISS_WALL, props), BuiltInRegistries.BLOCK.getKey(GNEISS_WALL));
-		r.accept(new BlockItem(GNEISS_BUTTON, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BUTTON));
-		r.accept(new BlockItem(GNEISS_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(GNEISS_PRESSURE_PLATE));
-		r.accept(new BlockItem(GNEISS_BRICKS, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BRICKS));
-		r.accept(new BlockItem(GNEISS_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BRICK_STAIRS));
-		r.accept(new BlockItem(GNEISS_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BRICK_SLAB));
-		r.accept(new BlockItem(GNEISS_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_GNEISS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_GNEISS));
-		r.accept(new BlockItem(COBBLED_GNEISS_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_GNEISS_STAIRS));
-		r.accept(new BlockItem(COBBLED_GNEISS_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_GNEISS_SLAB));
-		r.accept(new BlockItem(COBBLED_GNEISS_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_GNEISS_WALL));
-		r.accept(new BlockItem(CHISELED_GNEISS_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CHISELED_GNEISS_BRICKS));
+		registerBlockItem(r, GNEISS);
+		registerBlockItem(r, GNEISS_STAIRS);
+		registerBlockItem(r, GNEISS_SLAB);
+		registerBlockItem(r, GNEISS_WALL);
+		registerBlockItem(r, GNEISS_BUTTON);
+		registerBlockItem(r, GNEISS_PRESSURE_PLATE);
+		registerBlockItem(r, GNEISS_BRICKS);
+		registerBlockItem(r, GNEISS_BRICK_STAIRS);
+		registerBlockItem(r, GNEISS_BRICK_SLAB);
+		registerBlockItem(r, GNEISS_BRICK_WALL);
+		registerBlockItem(r, COBBLED_GNEISS);
+		registerBlockItem(r, COBBLED_GNEISS_STAIRS);
+		registerBlockItem(r, COBBLED_GNEISS_SLAB);
+		registerBlockItem(r, COBBLED_GNEISS_WALL);
+		registerBlockItem(r, CHISELED_GNEISS_BRICKS);
 
-		r.accept(new BlockItem(MYCELITE, props), BuiltInRegistries.BLOCK.getKey(MYCELITE));
-		r.accept(new BlockItem(MYCELITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_STAIRS));
-		r.accept(new BlockItem(MYCELITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_SLAB));
-		r.accept(new BlockItem(MYCELITE_WALL, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_WALL));
-		r.accept(new BlockItem(MYCELITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BUTTON));
-		r.accept(new BlockItem(MYCELITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(MYCELITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BRICKS));
-		r.accept(new BlockItem(MYCELITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BRICK_STAIRS));
-		r.accept(new BlockItem(MYCELITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BRICK_SLAB));
-		r.accept(new BlockItem(MYCELITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_MYCELITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_MYCELITE));
-		r.accept(new BlockItem(COBBLED_MYCELITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_MYCELITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_MYCELITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_MYCELITE_SLAB));
-		r.accept(new BlockItem(COBBLED_MYCELITE_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_MYCELITE_WALL));
-		r.accept(new BlockItem(CHISELED_MYCELITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_MYCELITE_BRICKS));
+		registerBlockItem(r, MYCELITE);
+		registerBlockItem(r, MYCELITE_STAIRS);
+		registerBlockItem(r, MYCELITE_SLAB);
+		registerBlockItem(r, MYCELITE_WALL);
+		registerBlockItem(r, MYCELITE_BUTTON);
+		registerBlockItem(r, MYCELITE_PRESSURE_PLATE);
+		registerBlockItem(r, MYCELITE_BRICKS);
+		registerBlockItem(r, MYCELITE_BRICK_STAIRS);
+		registerBlockItem(r, MYCELITE_BRICK_SLAB);
+		registerBlockItem(r, MYCELITE_BRICK_WALL);
+		registerBlockItem(r, COBBLED_MYCELITE);
+		registerBlockItem(r, COBBLED_MYCELITE_STAIRS);
+		registerBlockItem(r, COBBLED_MYCELITE_SLAB);
+		registerBlockItem(r, COBBLED_MYCELITE_WALL);
+		registerBlockItem(r, CHISELED_MYCELITE_BRICKS);
 
-		r.accept(new BlockItem(CATACLASITE, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE));
-		r.accept(new BlockItem(CATACLASITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_STAIRS));
-		r.accept(new BlockItem(CATACLASITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_SLAB));
-		r.accept(new BlockItem(CATACLASITE_WALL, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_WALL));
-		r.accept(new BlockItem(CATACLASITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_BUTTON));
-		r.accept(new BlockItem(CATACLASITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				CATACLASITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(CATACLASITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_BRICKS));
-		r.accept(new BlockItem(CATACLASITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				CATACLASITE_BRICK_STAIRS));
-		r.accept(new BlockItem(CATACLASITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_BRICK_SLAB));
-		r.accept(new BlockItem(CATACLASITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_CATACLASITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_CATACLASITE));
-		r.accept(new BlockItem(COBBLED_CATACLASITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				COBBLED_CATACLASITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_CATACLASITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				COBBLED_CATACLASITE_SLAB));
-		r.accept(new BlockItem(COBBLED_CATACLASITE_WALL, props), BuiltInRegistries.BLOCK.getKey(
-				COBBLED_CATACLASITE_WALL));
-		r.accept(new BlockItem(CHISELED_CATACLASITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_CATACLASITE_BRICKS));
+		registerBlockItem(r, CATACLASITE);
+		registerBlockItem(r, CATACLASITE_STAIRS);
+		registerBlockItem(r, CATACLASITE_SLAB);
+		registerBlockItem(r, CATACLASITE_WALL);
+		registerBlockItem(r, CATACLASITE_BUTTON);
+		registerBlockItem(r, CATACLASITE_PRESSURE_PLATE);
+		registerBlockItem(r, CATACLASITE_BRICKS);
+		registerBlockItem(r, CATACLASITE_BRICK_STAIRS);
+		registerBlockItem(r, CATACLASITE_BRICK_SLAB);
+		registerBlockItem(r, CATACLASITE_BRICK_WALL);
+		registerBlockItem(r, COBBLED_CATACLASITE);
+		registerBlockItem(r, COBBLED_CATACLASITE_STAIRS);
+		registerBlockItem(r, COBBLED_CATACLASITE_SLAB);
+		registerBlockItem(r, COBBLED_CATACLASITE_WALL);
+		registerBlockItem(r, CHISELED_CATACLASITE_BRICKS);
 
-		r.accept(new BlockItem(SOLITE, props), BuiltInRegistries.BLOCK.getKey(SOLITE));
-		r.accept(new BlockItem(SOLITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SOLITE_STAIRS));
-		r.accept(new BlockItem(SOLITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(SOLITE_SLAB));
-		r.accept(new BlockItem(SOLITE_WALL, props), BuiltInRegistries.BLOCK.getKey(SOLITE_WALL));
-		r.accept(new BlockItem(SOLITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BUTTON));
-		r.accept(new BlockItem(SOLITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(SOLITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(SOLITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BRICKS));
-		r.accept(new BlockItem(SOLITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BRICK_STAIRS));
-		r.accept(new BlockItem(SOLITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BRICK_SLAB));
-		r.accept(new BlockItem(SOLITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_SOLITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_SOLITE));
-		r.accept(new BlockItem(COBBLED_SOLITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_SOLITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_SOLITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_SOLITE_SLAB));
-		r.accept(new BlockItem(COBBLED_SOLITE_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_SOLITE_WALL));
-		r.accept(new BlockItem(CHISELED_SOLITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CHISELED_SOLITE_BRICKS));
+		registerBlockItem(r, SOLITE);
+		registerBlockItem(r, SOLITE_STAIRS);
+		registerBlockItem(r, SOLITE_SLAB);
+		registerBlockItem(r, SOLITE_WALL);
+		registerBlockItem(r, SOLITE_BUTTON);
+		registerBlockItem(r, SOLITE_PRESSURE_PLATE);
+		registerBlockItem(r, SOLITE_BRICKS);
+		registerBlockItem(r, SOLITE_BRICK_STAIRS);
+		registerBlockItem(r, SOLITE_BRICK_SLAB);
+		registerBlockItem(r, SOLITE_BRICK_WALL);
+		registerBlockItem(r, COBBLED_SOLITE);
+		registerBlockItem(r, COBBLED_SOLITE_STAIRS);
+		registerBlockItem(r, COBBLED_SOLITE_SLAB);
+		registerBlockItem(r, COBBLED_SOLITE_WALL);
+		registerBlockItem(r, CHISELED_SOLITE_BRICKS);
 
-		r.accept(new BlockItem(LUNITE, props), BuiltInRegistries.BLOCK.getKey(LUNITE));
-		r.accept(new BlockItem(LUNITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LUNITE_STAIRS));
-		r.accept(new BlockItem(LUNITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(LUNITE_SLAB));
-		r.accept(new BlockItem(LUNITE_WALL, props), BuiltInRegistries.BLOCK.getKey(LUNITE_WALL));
-		r.accept(new BlockItem(LUNITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BUTTON));
-		r.accept(new BlockItem(LUNITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(LUNITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(LUNITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BRICKS));
-		r.accept(new BlockItem(LUNITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BRICK_STAIRS));
-		r.accept(new BlockItem(LUNITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BRICK_SLAB));
-		r.accept(new BlockItem(LUNITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_LUNITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_LUNITE));
-		r.accept(new BlockItem(COBBLED_LUNITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_LUNITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_LUNITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_LUNITE_SLAB));
-		r.accept(new BlockItem(COBBLED_LUNITE_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_LUNITE_WALL));
-		r.accept(new BlockItem(CHISELED_LUNITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CHISELED_LUNITE_BRICKS));
+		registerBlockItem(r, LUNITE);
+		registerBlockItem(r, LUNITE_STAIRS);
+		registerBlockItem(r, LUNITE_SLAB);
+		registerBlockItem(r, LUNITE_WALL);
+		registerBlockItem(r, LUNITE_BUTTON);
+		registerBlockItem(r, LUNITE_PRESSURE_PLATE);
+		registerBlockItem(r, LUNITE_BRICKS);
+		registerBlockItem(r, LUNITE_BRICK_STAIRS);
+		registerBlockItem(r, LUNITE_BRICK_SLAB);
+		registerBlockItem(r, LUNITE_BRICK_WALL);
+		registerBlockItem(r, COBBLED_LUNITE);
+		registerBlockItem(r, COBBLED_LUNITE_STAIRS);
+		registerBlockItem(r, COBBLED_LUNITE_SLAB);
+		registerBlockItem(r, COBBLED_LUNITE_WALL);
+		registerBlockItem(r, CHISELED_LUNITE_BRICKS);
 
-		r.accept(new BlockItem(ROSY_TALC, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC));
-		r.accept(new BlockItem(ROSY_TALC_STAIRS, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_STAIRS));
-		r.accept(new BlockItem(ROSY_TALC_SLAB, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_SLAB));
-		r.accept(new BlockItem(ROSY_TALC_WALL, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_WALL));
-		r.accept(new BlockItem(ROSY_TALC_BUTTON, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BUTTON));
-		r.accept(new BlockItem(ROSY_TALC_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				ROSY_TALC_PRESSURE_PLATE));
-		r.accept(new BlockItem(ROSY_TALC_BRICKS, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BRICKS));
-		r.accept(new BlockItem(ROSY_TALC_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BRICK_STAIRS));
-		r.accept(new BlockItem(ROSY_TALC_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BRICK_SLAB));
-		r.accept(new BlockItem(ROSY_TALC_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_ROSY_TALC, props), BuiltInRegistries.BLOCK.getKey(COBBLED_ROSY_TALC));
-		r.accept(new BlockItem(COBBLED_ROSY_TALC_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				COBBLED_ROSY_TALC_STAIRS));
-		r.accept(new BlockItem(COBBLED_ROSY_TALC_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_ROSY_TALC_SLAB));
-		r.accept(new BlockItem(COBBLED_ROSY_TALC_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_ROSY_TALC_WALL));
-		r.accept(new BlockItem(CHISELED_ROSY_TALC_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_ROSY_TALC_BRICKS));
+		registerBlockItem(r, ROSY_TALC);
+		registerBlockItem(r, ROSY_TALC_STAIRS);
+		registerBlockItem(r, ROSY_TALC_SLAB);
+		registerBlockItem(r, ROSY_TALC_WALL);
+		registerBlockItem(r, ROSY_TALC_BUTTON);
+		registerBlockItem(r, ROSY_TALC_PRESSURE_PLATE);
+		registerBlockItem(r, ROSY_TALC_BRICKS);
+		registerBlockItem(r, ROSY_TALC_BRICK_STAIRS);
+		registerBlockItem(r, ROSY_TALC_BRICK_SLAB);
+		registerBlockItem(r, ROSY_TALC_BRICK_WALL);
+		registerBlockItem(r, COBBLED_ROSY_TALC);
+		registerBlockItem(r, COBBLED_ROSY_TALC_STAIRS);
+		registerBlockItem(r, COBBLED_ROSY_TALC_SLAB);
+		registerBlockItem(r, COBBLED_ROSY_TALC_WALL);
+		registerBlockItem(r, CHISELED_ROSY_TALC_BRICKS);
 
-		r.accept(new BlockItem(WHITE_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				WHITE_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(WHITE_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				WHITE_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(WHITE_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				WHITE_PORTUGUESE_PAVEMENT_SLAB));
+		registerBlockItem(r, WHITE_PORTUGUESE_PAVEMENT);
+		registerBlockItem(r, WHITE_PORTUGUESE_PAVEMENT_STAIRS);
+		registerBlockItem(r, WHITE_PORTUGUESE_PAVEMENT_SLAB);
 
-		r.accept(new BlockItem(BLACK_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				BLACK_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(BLACK_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				BLACK_PORTUGUESE_PAVEMENT_SLAB));
-		r.accept(new BlockItem(BLACK_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				BLACK_PORTUGUESE_PAVEMENT_STAIRS));
+		registerBlockItem(r, BLACK_PORTUGUESE_PAVEMENT);
+		registerBlockItem(r, BLACK_PORTUGUESE_PAVEMENT_SLAB);
+		registerBlockItem(r, BLACK_PORTUGUESE_PAVEMENT_STAIRS);
 
-		r.accept(new BlockItem(BLUE_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				BLUE_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(BLUE_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				BLUE_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(BLUE_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				BLUE_PORTUGUESE_PAVEMENT_SLAB));
+		registerBlockItem(r, BLUE_PORTUGUESE_PAVEMENT);
+		registerBlockItem(r, BLUE_PORTUGUESE_PAVEMENT_STAIRS);
+		registerBlockItem(r, BLUE_PORTUGUESE_PAVEMENT_SLAB);
 
-		r.accept(new BlockItem(YELLOW_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				YELLOW_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(YELLOW_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				YELLOW_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(YELLOW_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				YELLOW_PORTUGUESE_PAVEMENT_SLAB));
+		registerBlockItem(r, YELLOW_PORTUGUESE_PAVEMENT);
+		registerBlockItem(r, YELLOW_PORTUGUESE_PAVEMENT_STAIRS);
+		registerBlockItem(r, YELLOW_PORTUGUESE_PAVEMENT_SLAB);
 
-		r.accept(new BlockItem(RED_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(RED_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(RED_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				RED_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(RED_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				RED_PORTUGUESE_PAVEMENT_SLAB));
+		registerBlockItem(r, RED_PORTUGUESE_PAVEMENT);
+		registerBlockItem(r, RED_PORTUGUESE_PAVEMENT_STAIRS);
+		registerBlockItem(r, RED_PORTUGUESE_PAVEMENT_SLAB);
 
-		r.accept(new BlockItem(GREEN_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				GREEN_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(GREEN_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				GREEN_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(GREEN_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				GREEN_PORTUGUESE_PAVEMENT_SLAB));
+		registerBlockItem(r, GREEN_PORTUGUESE_PAVEMENT);
+		registerBlockItem(r, GREEN_PORTUGUESE_PAVEMENT_STAIRS);
+		registerBlockItem(r, GREEN_PORTUGUESE_PAVEMENT_SLAB);
 
-		r.accept(new BlockItem(MANAGLASS_PANE, props), BuiltInRegistries.BLOCK.getKey(MANAGLASS_PANE));
-		r.accept(new BlockItem(ALFGLASS_PANE, props), BuiltInRegistries.BLOCK.getKey(ALFGLASS_PANE));
-		r.accept(new BlockItem(BIFROST_PANE, props), BuiltInRegistries.BLOCK.getKey(BIFROST_PANE));
+		registerBlockItem(r, MANAGLASS_PANE);
+		registerBlockItem(r, ALFGLASS_PANE);
+		registerBlockItem(r, BIFROST_PANE);
+	}
+
+	private static void registerBlockItem(BiConsumer<Item, Identifier> registrar, Block block) {
+		registerBlockItem(registrar, block, properties -> new BlockItem(block, properties));
+	}
+
+	private static void registerBlockItem(BiConsumer<Item, Identifier> registrar, Block block,
+			Function<Item.Properties, Item> factory) {
+		Identifier id = BuiltInRegistries.BLOCK.getKey(block);
+		Item.Properties properties = BotaniaItems.properties(id)
+				.useBlockDescriptionPrefix().requiredFeatures(block.requiredFeatures());
+		registrar.accept(factory.apply(properties), id);
 	}
 
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(
-			BiConsumer<Item, Identifier> r, T baseBlock, Item.Properties properties) {
-		registerBlockItemWithColoredVariants(r, baseBlock, properties, "_");
+			BiConsumer<Item, Identifier> r, T baseBlock, Rarity rarity) {
+		registerBlockItemWithColoredVariants(r, baseBlock, rarity, "_");
 	}
 
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(
-			BiConsumer<Item, Identifier> r, T baseBlock, Item.Properties properties, String coloredBlockInfix) {
+			BiConsumer<Item, Identifier> r, T baseBlock, Rarity rarity, String coloredBlockInfix) {
 		Identifier baseId = BuiltInRegistries.BLOCK.getKey(baseBlock);
-		r.accept(new BlockItem(baseBlock, properties), baseId);
+		registerBlockItem(r, baseBlock, props -> new BlockItem(baseBlock, props.rarity(rarity)));
 		ColorHelper.supportedColors().forEach(color -> {
 			Identifier coloredId = baseId.withPrefix(color.getSerializedName() + coloredBlockInfix);
 			Block coloredBlock = ALL.get(coloredId.getPath());
-			r.accept(new BlockItem(coloredBlock, properties), coloredId);
+			registerBlockItem(r, coloredBlock, props -> new BlockItem(coloredBlock, props.rarity(rarity)));
 		});
 	}
 
