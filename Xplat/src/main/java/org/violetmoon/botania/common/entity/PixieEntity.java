@@ -8,22 +8,27 @@
  */
 package org.violetmoon.botania.common.entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.client.fx.SparkleParticleData;
 
-public class PixieEntity extends FlyingMob {
+public class PixieEntity extends Mob {
 	private boolean gaia;
 	@Nullable
 	private LivingEntity summoner;
@@ -66,7 +71,7 @@ public class PixieEntity extends FlyingMob {
 	}
 
 	@Override
-	protected void customServerAiStep() {
+	protected void customServerAiStep(ServerLevel level) {
 		LivingEntity target = getTarget();
 		if (target != null) {
 			double d0 = target.getX() - getX();
@@ -81,12 +86,12 @@ public class PixieEntity extends FlyingMob {
 			if (d3 < 1) {
 				if (summoner != null) {
 					if (summoner instanceof Player player) {
-						target.hurt(damageSources().playerAttack(player), damage);
+						target.hurtServer(level, damageSources().playerAttack(player), damage);
 					} else {
-						target.hurt(damageSources().mobAttack(summoner), damage);
+						target.hurtServer(level, damageSources().mobAttack(summoner), damage);
 					}
 				} else {
-					target.hurt(damageSources().mobAttack(this), damage);
+					target.hurtServer(level, damageSources().mobAttack(this), damage);
 				}
 				if (effect != null && !(target instanceof Player)) {
 					target.addEffect(effect);
@@ -100,7 +105,39 @@ public class PixieEntity extends FlyingMob {
 	}
 
 	@Override
-	public boolean isInvulnerableTo(DamageSource source) {
+	public void travel(Vec3 input) {
+		if (isLocalInstanceAuthoritative()) {
+			float acceleration = 0.02F;
+			float drag;
+			if (isInWater()) {
+				drag = 0.8F;
+			} else if (isInLava()) {
+				drag = 0.5F;
+			} else {
+				drag = 0.91F;
+				if (onGround()) {
+					drag *= level().getBlockState(getBlockPosBelowThatAffectsMyMovement()).getBlock().getFriction();
+					acceleration = 0.1F * (0.16277137F / (drag * drag * drag));
+				}
+			}
+			moveRelative(acceleration, input);
+			move(MoverType.SELF, getDeltaMovement());
+			setDeltaMovement(getDeltaMovement().scale(drag));
+		}
+		calculateEntityAnimation(false);
+	}
+
+	@Override
+	protected void checkFallDamage(double fallDistance, boolean onGround, BlockState onState, BlockPos pos) {
+	}
+
+	@Override
+	public boolean onClimbable() {
+		return false;
+	}
+
+	@Override
+	public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
 		if (!isGaia() && source.getEntity() == summoner) {
 			return true;
 		}
@@ -109,7 +146,7 @@ public class PixieEntity extends FlyingMob {
 			return true;
 		}
 
-		return super.isInvulnerableTo(source);
+		return super.isInvulnerableTo(level, source);
 	}
 
 	@Override
