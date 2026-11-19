@@ -10,6 +10,18 @@ loom {
         gameTest {
             server()
             vmArg("-Dfabric-api.gametest=1")
+            def filter = providers.environmentVariable("BOTANIA_TEST_FILTER").getOrNull()
+            if (filter != null) {
+                vmArg("-Dfabric-api.gametest.filter=${filter}")
+            }
+            def report = providers.environmentVariable("BOTANIA_TEST_REPORT").getOrNull()
+            if (report != null) {
+                vmArg("-Dfabric-api.gametest.report-file=${report}")
+            }
+            def fixtures = providers.environmentVariable("BOTANIA_TEST_FIXTURES").getOrNull()
+            if (fixtures != null) {
+                vmArg("-Dbotania.gametest.fixtures=${fixtures}")
+            }
         }
 
         xplatDatagen {
@@ -28,7 +40,7 @@ loom {
         }
 
         configureEach {
-            runDir("../run")
+            runDir(providers.environmentVariable("BOTANIA_TEST_RUN").orElse("../run").get())
             ideConfigGenerated(true)
             vmArg("-Dfabric-tag-conventions-v2.missingTagTranslationWarning=VERBOSE")
         }

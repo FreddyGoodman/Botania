@@ -125,6 +125,7 @@ import org.violetmoon.botania.fabric.internal_caps.RedStringContainerStorage;
 import org.violetmoon.botania.fabric.loot.LootHandler;
 import org.violetmoon.botania.fabric.network.FabricPacketHandler;
 import org.violetmoon.botania.network.clientbound.ItemLifeTimePacket;
+import org.violetmoon.botania.test.PortParityTests;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import vazkii.patchouli.api.PatchouliAPI;
@@ -199,6 +200,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaBlockEntities.registerTiles(bind(BuiltInRegistries.BLOCK_ENTITY_TYPE));
 		BotaniaBlockEntities.registerAdditionalBlocks(BlockEntityType::addSupportedBlock);
 		BotaniaItems.registerItems(boundForItem);
+		PortParityTests.register(bind(BuiltInRegistries.TEST_FUNCTION));
 		BotaniaBlocks.addDispenserBehaviours();
 		BotaniaBlocks.addAxeStripping(this::registerAxeStripping);
 		BotaniaItems.registerCauldronInteractions();

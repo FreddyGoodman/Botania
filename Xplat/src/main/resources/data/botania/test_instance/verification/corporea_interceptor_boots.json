@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:verification/corporea_interceptor_boots",
+  "max_ticks": 100,
+  "required": true,
+  "setup_ticks": 1,
+  "structure": "botania:block/interceptor"
+}

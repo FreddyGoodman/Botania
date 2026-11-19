@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "botania:verification/mana_spreader_default_aim",
+  "max_ticks": 30,
+  "required": true,
+  "setup_ticks": 0,
+  "structure": "botania:block/spreader_pool_default_aim"
+}

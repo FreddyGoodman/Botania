@@ -122,6 +122,7 @@ import org.violetmoon.botania.neoforge.internal_caps.RedStringContainerCapProvid
 import org.violetmoon.botania.neoforge.internal_caps.WaterBowlFluidHandler;
 import org.violetmoon.botania.neoforge.network.NeoForgePacketHandler;
 import org.violetmoon.botania.network.clientbound.ItemLifeTimePacket;
+import org.violetmoon.botania.test.PortParityTests;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import vazkii.patchouli.api.PatchouliAPI;
@@ -202,6 +203,7 @@ public class NeoForgeCommonInitializer {
 		bindForItems(event, BotaniaBlocks::registerItemBlocks);
 		bind(event, Registries.BLOCK_ENTITY_TYPE, BotaniaBlockEntities::registerTiles);
 		bindForItems(event, BotaniaItems::registerItems);
+		bind(event, Registries.TEST_FUNCTION, PortParityTests::register);
 
 		// GUI and Recipe
 		bind(event, Registries.MENU, BotaniaItems::registerMenuTypes);
