@@ -12,8 +12,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -76,6 +78,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -83,17 +86,17 @@ public final class BotaniaItems {
 	private static final Map<String, Item> ALL = new LinkedHashMap<>(); // Preserve insertion order
 
 	public static final LexicaBotaniaItem LEXICA_BOTANIA = make(LibItemNames.LEXICA_BOTANIA,
-			new LexicaBotaniaItem(unstackable()));
+			props -> new LexicaBotaniaItem(props.stacksTo(1)));
 	public static final Item WAND_OF_THE_FOREST = make(LibItemNames.WAND_OF_THE_FOREST,
-			new WandOfTheForestItem(ChatFormatting.DARK_GREEN, unstackable()
+			props -> new WandOfTheForestItem(ChatFormatting.DARK_GREEN, props.stacksTo(1)
 					.component(BotaniaDataComponents.WAND_BIND_MODE, Unit.INSTANCE)));
 	public static final Item WAND_OF_THE_ELVEN_FOREST = make(LibItemNames.WAND_OF_THE_ELVEN_FOREST,
-			new WandOfTheForestItem(ChatFormatting.LIGHT_PURPLE, unstackable()
+			props -> new WandOfTheForestItem(ChatFormatting.LIGHT_PURPLE, props.stacksTo(1)
 					.component(BotaniaDataComponents.WAND_BIND_MODE, Unit.INSTANCE)));
 	public static final Item FLORAL_OBEDIENCE_STICK = make(LibItemNames.FLORAL_OBEDIENCE_STICK,
-			new FloralObedienceStickItem(unstackable()));
+			props -> new FloralObedienceStickItem(props.stacksTo(1)));
 	public static final Item FLORAL_FERTILIZER = make(LibItemNames.FLORAL_FERTILIZER,
-			new FloralFertilizerItem(defaultBuilder()));
+			FloralFertilizerItem::new);
 
 	// mystical petals
 	public static final Item WHITE_MYSTICAL_PETAL = makePetal(DyeColor.WHITE);
@@ -113,165 +116,165 @@ public final class BotaniaItems {
 	public static final Item MAGENTA_MYSTICAL_PETAL = makePetal(DyeColor.MAGENTA);
 	public static final Item PINK_MYSTICAL_PETAL = makePetal(DyeColor.PINK);
 
-	public static final Item MANASTEEL_INGOT = make(LibItemNames.MANASTEEL_INGOT, new Item(defaultBuilder()));
-	public static final Item MANA_PEARL = make(LibItemNames.MANA_PEARL, new Item(defaultBuilder()));
-	public static final Item MANA_DIAMOND = make(LibItemNames.MANA_DIAMOND, new Item(defaultBuilder()));
-	public static final Item LIVINGWOOD_TWIG = make(LibItemNames.LIVINGWOOD_TWIG, new Item(defaultBuilder()));
+	public static final Item MANASTEEL_INGOT = make(LibItemNames.MANASTEEL_INGOT, Item::new);
+	public static final Item MANA_PEARL = make(LibItemNames.MANA_PEARL, Item::new);
+	public static final Item MANA_DIAMOND = make(LibItemNames.MANA_DIAMOND, Item::new);
+	public static final Item LIVINGWOOD_TWIG = make(LibItemNames.LIVINGWOOD_TWIG, Item::new);
 	public static final Item TERRASTEEL_INGOT = make(LibItemNames.TERRASTEEL_INGOT,
-			new GaiaRitualSacrificeItem(defaultBuilder()
+			props -> new GaiaRitualSacrificeItem(props
 					.rarity(Rarity.UNCOMMON), false));
 	public static final Item GAIA_SPIRIT = make(LibItemNames.GAIA_SPIRIT,
-			new Item(defaultBuilder()
+			props -> new Item(props
 					.rarity(Rarity.RARE)));
-	public static final Item REDSTONE_ROOT = make(LibItemNames.REDSTONE_ROOT, new Item(defaultBuilder()));
-	public static final Item ELEMENTIUM_INGOT = make(LibItemNames.ELEMENTIUM_INGOT, new Item(defaultBuilder()));
-	public static final Item PIXIE_DUST = make(LibItemNames.PIXIE_DUST, new Item(defaultBuilder()));
-	public static final Item DRAGONSTONE = make(LibItemNames.DRAGONSTONE, new Item(defaultBuilder()));
-	public static final Item RED_STRING = make(LibItemNames.RED_STRING, new Item(defaultBuilder()));
-	public static final Item DREAMWOOD_TWIG = make(LibItemNames.DREAMWOOD_TWIG, new Item(defaultBuilder()));
+	public static final Item REDSTONE_ROOT = make(LibItemNames.REDSTONE_ROOT, Item::new);
+	public static final Item ELEMENTIUM_INGOT = make(LibItemNames.ELEMENTIUM_INGOT, Item::new);
+	public static final Item PIXIE_DUST = make(LibItemNames.PIXIE_DUST, Item::new);
+	public static final Item DRAGONSTONE = make(LibItemNames.DRAGONSTONE, Item::new);
+	public static final Item RED_STRING = make(LibItemNames.RED_STRING, Item::new);
+	public static final Item DREAMWOOD_TWIG = make(LibItemNames.DREAMWOOD_TWIG, Item::new);
 	public static final Item GAIA_INGOT = make(LibItemNames.GAIA_INGOT,
-			new GaiaRitualSacrificeItem(defaultBuilder().rarity(Rarity.RARE), true));
-	public static final Item PURE_ENDER_ESSENCE = make(LibItemNames.PURE_ENDER_ESSENCE, new ThrowableEnderEssenceItem(defaultBuilder()));
-	public static final Item DILUTED_ENDER_ESSENCE = make(LibItemNames.DILUTED_ENDER_ESSENCE, new Item(defaultBuilder()));
-	public static final Item MANA_INFUSED_STRING = make(LibItemNames.MANA_STRING, new Item(defaultBuilder()));
-	public static final Item MANASTEEL_NUGGET = make(LibItemNames.MANASTEEL_NUGGET, new Item(defaultBuilder()));
+			props -> new GaiaRitualSacrificeItem(props.rarity(Rarity.RARE), true));
+	public static final Item PURE_ENDER_ESSENCE = make(LibItemNames.PURE_ENDER_ESSENCE, ThrowableEnderEssenceItem::new);
+	public static final Item DILUTED_ENDER_ESSENCE = make(LibItemNames.DILUTED_ENDER_ESSENCE, Item::new);
+	public static final Item MANA_INFUSED_STRING = make(LibItemNames.MANA_STRING, Item::new);
+	public static final Item MANASTEEL_NUGGET = make(LibItemNames.MANASTEEL_NUGGET, Item::new);
 	public static final Item TERRASTEEL_NUGGET = make(LibItemNames.TERRASTEEL_NUGGET,
-			new Item(defaultBuilder().rarity(Rarity.UNCOMMON)));
-	public static final Item ELEMENTIUM_NUGGET = make(LibItemNames.ELEMENTIUM_NUGGET, new Item(defaultBuilder()));
-	public static final Item LIVING_ROOT = make(LibItemNames.LIVING_ROOT, new BoneMealItem(defaultBuilder()));
-	public static final Item PEBBLE = make(LibItemNames.PEBBLE, new Item(defaultBuilder()));
-	public static final Item MANAWEAVE_CLOTH = make(LibItemNames.MANAWEAVE_CLOTH, new Item(defaultBuilder()));
-	public static final Item MANA_POWDER = make(LibItemNames.MANA_POWDER, new Item(defaultBuilder()));
+			props -> new Item(props.rarity(Rarity.UNCOMMON)));
+	public static final Item ELEMENTIUM_NUGGET = make(LibItemNames.ELEMENTIUM_NUGGET, Item::new);
+	public static final Item LIVING_ROOT = make(LibItemNames.LIVING_ROOT, BoneMealItem::new);
+	public static final Item PEBBLE = make(LibItemNames.PEBBLE, Item::new);
+	public static final Item MANAWEAVE_CLOTH = make(LibItemNames.MANAWEAVE_CLOTH, Item::new);
+	public static final Item MANA_POWDER = make(LibItemNames.MANA_POWDER, Item::new);
 
 	// quartz variants
-	public static final Item DARK_QUARTZ = make(LibItemNames.SMOKEY_QUARTZ, new Item(defaultBuilder()));
-	public static final Item MANA_QUARTZ = make(LibItemNames.MANA_QUARTZ, new Item(defaultBuilder()));
-	public static final Item BLAZE_QUARTZ = make(LibItemNames.BLAZE_QUARTZ, new Item(defaultBuilder()));
-	public static final Item LAVENDER_QUARTZ = make(LibItemNames.LAVENDER_QUARTZ, new Item(defaultBuilder()));
-	public static final Item RED_QUARTZ = make(LibItemNames.RED_QUARTZ, new Item(defaultBuilder()));
-	public static final Item ELVEN_QUARTZ = make(LibItemNames.ELVEN_QUARTZ, new Item(defaultBuilder()));
-	public static final Item SUNNY_QUARTZ = make(LibItemNames.SUNNY_QUARTZ, new Item(defaultBuilder()));
+	public static final Item DARK_QUARTZ = make(LibItemNames.SMOKEY_QUARTZ, Item::new);
+	public static final Item MANA_QUARTZ = make(LibItemNames.MANA_QUARTZ, Item::new);
+	public static final Item BLAZE_QUARTZ = make(LibItemNames.BLAZE_QUARTZ, Item::new);
+	public static final Item LAVENDER_QUARTZ = make(LibItemNames.LAVENDER_QUARTZ, Item::new);
+	public static final Item RED_QUARTZ = make(LibItemNames.RED_QUARTZ, Item::new);
+	public static final Item ELVEN_QUARTZ = make(LibItemNames.ELVEN_QUARTZ, Item::new);
+	public static final Item SUNNY_QUARTZ = make(LibItemNames.SUNNY_QUARTZ, Item::new);
 
 	// lenses
 	public static final Item MANA_LENS = make(LibItemNames.MANA_LENS,
-			new LensItem(stackTo16(), new Lens(), LensItem.PROP_NONE));
+			props -> new LensItem(props.stacksTo(16), new Lens(), LensItem.PROP_NONE));
 	public static final Item VELOCITY_LENS = make(LibItemNames.VELOCITY_LENS,
-			new LensItem(stackTo16(), new VelocityLens(), LensItem.PROP_NONE));
+			props -> new LensItem(props.stacksTo(16), new VelocityLens(), LensItem.PROP_NONE));
 	public static final Item POTENCY_LENS = make(LibItemNames.POTENCY_LENS,
-			new LensItem(stackTo16(), new PotencyLens(), LensItem.PROP_POWER));
+			props -> new LensItem(props.stacksTo(16), new PotencyLens(), LensItem.PROP_POWER));
 	public static final Item RESISTANCE_LENS = make(LibItemNames.RESISTANCE_LENS,
-			new LensItem(stackTo16(), new ResistanceLens(), LensItem.PROP_NONE));
+			props -> new LensItem(props.stacksTo(16), new ResistanceLens(), LensItem.PROP_NONE));
 	public static final Item EFFICIENCY_LENS = make(LibItemNames.EFFICIENCY_LENS,
-			new LensItem(stackTo16(), new EfficiencyLens(), LensItem.PROP_NONE));
+			props -> new LensItem(props.stacksTo(16), new EfficiencyLens(), LensItem.PROP_NONE));
 	public static final Item BOUNCE_LENS = make(LibItemNames.BOUNCE_LENS,
-			new LensItem(stackTo16(), new BounceLens(), LensItem.PROP_TOUCH));
+			props -> new LensItem(props.stacksTo(16), new BounceLens(), LensItem.PROP_TOUCH));
 	public static final Item GRAVITY_LENS = make(LibItemNames.GRAVITY_LENS,
-			new LensItem(stackTo16(), new GravityLens(), LensItem.PROP_ORIENTATION));
+			props -> new LensItem(props.stacksTo(16), new GravityLens(), LensItem.PROP_ORIENTATION));
 	public static final Item BORE_LENS = make(LibItemNames.BORE_LENS,
-			new LensItem(stackTo16(), new BoreLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
+			props -> new LensItem(props.stacksTo(16), new BoreLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item DAMAGING_LENS = make(LibItemNames.DAMAGING_LENS,
-			new LensItem(stackTo16(), new DamagingLens(), LensItem.PROP_DAMAGE));
+			props -> new LensItem(props.stacksTo(16), new DamagingLens(), LensItem.PROP_DAMAGE));
 	public static final Item PHANTOM_LENS = make(LibItemNames.PHANTOM_LENS,
-			new LensItem(stackTo16(), new PhantomLens(), LensItem.PROP_TOUCH));
+			props -> new LensItem(props.stacksTo(16), new PhantomLens(), LensItem.PROP_TOUCH));
 	public static final Item MAGNETIZING_LENS = make(LibItemNames.MAGNETIZING_LENS,
-			new LensItem(stackTo16(), new MagnetizingLens(), LensItem.PROP_ORIENTATION));
+			props -> new LensItem(props.stacksTo(16), new MagnetizingLens(), LensItem.PROP_ORIENTATION));
 	public static final Item ENTROPIC_LENS = make(LibItemNames.ENTROPIC_LENS,
-			new LensItem(stackTo16(), new EntropicLens(),
+			props -> new LensItem(props.stacksTo(16), new EntropicLens(),
 					LensItem.PROP_DAMAGE | LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item INFLUENCE_LENS = make(LibItemNames.INFLUENCE_LENS,
-			new LensItem(stackTo16(), new InfluenceLens(), LensItem.PROP_NONE));
+			props -> new LensItem(props.stacksTo(16), new InfluenceLens(), LensItem.PROP_NONE));
 	public static final Item WEIGHT_LENS = make(LibItemNames.WEIGHT_LENS,
-			new LensItem(stackTo16(), new WeightLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
+			props -> new LensItem(props.stacksTo(16), new WeightLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item PAINTSLINGER_LENS = make(LibItemNames.PAINTSLINGER_LENS,
-			new LensItem(stackTo16(), new PaintslingerLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
+			props -> new LensItem(props.stacksTo(16), new PaintslingerLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item KINDLE_LENS = make(LibItemNames.KINDLE_LENS,
-			new LensItem(stackTo16(), new KindleLens(),
+			props -> new LensItem(props.stacksTo(16), new KindleLens(),
 					LensItem.PROP_DAMAGE | LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item FORCE_LENS = make(LibItemNames.FORCE_LENS,
-			new LensItem(stackTo16(), new ForceLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
+			props -> new LensItem(props.stacksTo(16), new ForceLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item FLASH_LENS = make(LibItemNames.FLASH_LENS,
-			new LensItem(stackTo16(), new FlashLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
+			props -> new LensItem(props.stacksTo(16), new FlashLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item WARP_LENS = make(LibItemNames.WARP_LENS,
-			new LensItem(stackTo16(), new WarpLens(), LensItem.PROP_NONE));
+			props -> new LensItem(props.stacksTo(16), new WarpLens(), LensItem.PROP_NONE));
 	public static final Item REDIRECTIVE_LENS = make(LibItemNames.REDIRECTIVE_LENS,
-			new LensItem(stackTo16(), new RedirectiveLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
+			props -> new LensItem(props.stacksTo(16), new RedirectiveLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item CELEBRATORY_LENS = make(LibItemNames.CELEBRATORY_LENS,
-			new LensItem(stackTo16(), new CelebratoryLens(), LensItem.PROP_TOUCH));
+			props -> new LensItem(props.stacksTo(16), new CelebratoryLens(), LensItem.PROP_TOUCH));
 	public static final Item FLARE_LENS = make(LibItemNames.FLARE_LENS,
-			new LensItem(stackTo16(), new FlareLens(), LensItem.PROP_CONTROL));
+			props -> new LensItem(props.stacksTo(16), new FlareLens(), LensItem.PROP_CONTROL));
 	public static final Item MESSENGER_LENS = make(LibItemNames.MESSENGER_LENS,
-			new LensItem(stackTo16(), new MessengerLens(), LensItem.PROP_POWER));
+			props -> new LensItem(props.stacksTo(16), new MessengerLens(), LensItem.PROP_POWER));
 	public static final Item TRIPWIRE_LENS = make(LibItemNames.TRIPWIRE_LENS,
-			new LensItem(stackTo16(), new TripwireLens(), LensItem.PROP_CONTROL));
+			props -> new LensItem(props.stacksTo(16), new TripwireLens(), LensItem.PROP_CONTROL));
 	public static final Item STORM_LENS = make(LibItemNames.LENS_STORM,
-			new LensItem(stackTo16().rarity(Rarity.EPIC), new StormLens(), LensItem.PROP_NONE));
+			props -> new LensItem(props.stacksTo(16).rarity(Rarity.EPIC), new StormLens(), LensItem.PROP_NONE));
 
 	// runes
-	public static final Item RUNE_OF_WATER = make(LibItemNames.RUNE_OF_WATER, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_FIRE = make(LibItemNames.RUNE_OF_FIRE, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_EARTH = make(LibItemNames.RUNE_OF_EARTH, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_AIR = make(LibItemNames.RUNE_OF_AIR, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_SPRING = make(LibItemNames.RUNE_OF_SPRING, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_SUMMER = make(LibItemNames.RUNE_OF_SUMMER, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_AUTUMN = make(LibItemNames.RUNE_OF_AUTUMN, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_WINTER = make(LibItemNames.RUNE_OF_WINTER, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_MANA = make(LibItemNames.RUNE_OF_MANA, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_LUST = make(LibItemNames.RUNE_OF_LUST, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_GLUTTONY = make(LibItemNames.RUNE_OF_GLUTTONY, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_GREED = make(LibItemNames.RUNE_OF_GREED, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_SLOTH = make(LibItemNames.RUNE_OF_SLOTH, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_WRATH = make(LibItemNames.RUNE_OF_WRATH, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_ENVY = make(LibItemNames.RUNE_OF_ENVY, new RuneItem(defaultBuilder()));
-	public static final Item RUNE_OF_PRIDE = make(LibItemNames.RUNE_OF_PRIDE, new RuneItem(defaultBuilder()));
+	public static final Item RUNE_OF_WATER = make(LibItemNames.RUNE_OF_WATER, RuneItem::new);
+	public static final Item RUNE_OF_FIRE = make(LibItemNames.RUNE_OF_FIRE, RuneItem::new);
+	public static final Item RUNE_OF_EARTH = make(LibItemNames.RUNE_OF_EARTH, RuneItem::new);
+	public static final Item RUNE_OF_AIR = make(LibItemNames.RUNE_OF_AIR, RuneItem::new);
+	public static final Item RUNE_OF_SPRING = make(LibItemNames.RUNE_OF_SPRING, RuneItem::new);
+	public static final Item RUNE_OF_SUMMER = make(LibItemNames.RUNE_OF_SUMMER, RuneItem::new);
+	public static final Item RUNE_OF_AUTUMN = make(LibItemNames.RUNE_OF_AUTUMN, RuneItem::new);
+	public static final Item RUNE_OF_WINTER = make(LibItemNames.RUNE_OF_WINTER, RuneItem::new);
+	public static final Item RUNE_OF_MANA = make(LibItemNames.RUNE_OF_MANA, RuneItem::new);
+	public static final Item RUNE_OF_LUST = make(LibItemNames.RUNE_OF_LUST, RuneItem::new);
+	public static final Item RUNE_OF_GLUTTONY = make(LibItemNames.RUNE_OF_GLUTTONY, RuneItem::new);
+	public static final Item RUNE_OF_GREED = make(LibItemNames.RUNE_OF_GREED, RuneItem::new);
+	public static final Item RUNE_OF_SLOTH = make(LibItemNames.RUNE_OF_SLOTH, RuneItem::new);
+	public static final Item RUNE_OF_WRATH = make(LibItemNames.RUNE_OF_WRATH, RuneItem::new);
+	public static final Item RUNE_OF_ENVY = make(LibItemNames.RUNE_OF_ENVY, RuneItem::new);
+	public static final Item RUNE_OF_PRIDE = make(LibItemNames.RUNE_OF_PRIDE, RuneItem::new);
 
 	// seeds
 	public static final Item PASTURE_SEEDS = make(LibItemNames.PASTURE_SEEDS,
-			new GrassSeedsItem(Blocks.GRASS_BLOCK, 0x006600, defaultBuilder()));
+			props -> new GrassSeedsItem(Blocks.GRASS_BLOCK, 0x006600, props));
 	public static final Item BOREAL_SEEDS = make(LibItemNames.BOREAL_SEEDS,
-			new GrassSeedsItem(Blocks.PODZOL, 0x805E00, defaultBuilder()));
+			props -> new GrassSeedsItem(Blocks.PODZOL, 0x805E00, props));
 	public static final Item INFESTATION_SPORES = make(LibItemNames.INFESTATION_SPORES,
-			new GrassSeedsItem(Blocks.MYCELIUM, 0x5E0054, defaultBuilder()));
+			props -> new GrassSeedsItem(Blocks.MYCELIUM, 0x5E0054, props));
 	public static final Item DRY_SEEDS = make(LibItemNames.DRY_PASTURE_SEEDS,
-			new GrassSeedsItem(BotaniaBlocks.DRY_GRASS_BLOCK, 0x66800D, defaultBuilder()));
+			props -> new GrassSeedsItem(BotaniaBlocks.DRY_GRASS_BLOCK, 0x66800D, props));
 	public static final Item GOLDEN_SEEDS = make(LibItemNames.GOLDEN_PASTURE_SEEDS,
-			new GrassSeedsItem(BotaniaBlocks.GOLDEN_GRASS_BLOCK, 0xBFB300, defaultBuilder()));
+			props -> new GrassSeedsItem(BotaniaBlocks.GOLDEN_GRASS_BLOCK, 0xBFB300, props));
 	public static final Item VIVID_SEEDS = make(LibItemNames.VIVID_PASTURE_SEEDS,
-			new GrassSeedsItem(BotaniaBlocks.VIVID_GRASS_BLOCK, 0x00801A, defaultBuilder()));
+			props -> new GrassSeedsItem(BotaniaBlocks.VIVID_GRASS_BLOCK, 0x00801A, props));
 	public static final Item SCORCHED_SEEDS = make(LibItemNames.SCORCHED_PASTURE_SEEDS,
-			new GrassSeedsItem(BotaniaBlocks.SCORCHED_GRASS_BLOCK, 0xBF0000, defaultBuilder()));
+			props -> new GrassSeedsItem(BotaniaBlocks.SCORCHED_GRASS_BLOCK, 0xBF0000, props));
 	public static final Item INFUSED_SEEDS = make(LibItemNames.INFUSED_PASTURE_SEEDS,
-			new GrassSeedsItem(BotaniaBlocks.INFUSED_GRASS_BLOCK, 0x008C8C, defaultBuilder()));
+			props -> new GrassSeedsItem(BotaniaBlocks.INFUSED_GRASS_BLOCK, 0x008C8C, props));
 	public static final Item MUTATED_SEEDS = make(LibItemNames.MUTATED_PASTURE_SEEDS,
-			new GrassSeedsItem(BotaniaBlocks.MUTATED_GRASS_BLOCK, 0x661A66, defaultBuilder()));
+			props -> new GrassSeedsItem(BotaniaBlocks.MUTATED_GRASS_BLOCK, 0x661A66, props));
 
 	// Rods
 	public static final Item ROD_OF_THE_LANDS = make(LibItemNames.ROD_OF_THE_LANDS,
-			new LandsRodItem(unstackable()));
+			props -> new LandsRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_HIGHLANDS = make(LibItemNames.ROD_OF_THE_HIGHLANDS,
-			new HighlandsRodItem(unstackable()));
+			props -> new HighlandsRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_TERRA_FIRMA = make(LibItemNames.ROD_OF_THE_TERRA_FIRMA,
-			new TerraFirmaRodItem(unstackable()
+			props -> new TerraFirmaRodItem(props.stacksTo(1)
 					.rarity(Rarity.UNCOMMON)));
 	public static final Item ROD_OF_THE_DEPTHS = make(LibItemNames.ROD_OF_THE_DEPTHS,
-			new DepthsRodItem(unstackable()));
+			props -> new DepthsRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_SEAS = make(LibItemNames.ROD_OF_THE_SEAS,
-			new SeasRodItem(unstackable()));
+			props -> new SeasRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_SKIES = make(LibItemNames.ROD_OF_THE_SKIES,
-			new SkiesRodItem(unstackable()));
+			props -> new SkiesRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_HELLS = make(LibItemNames.ROD_OF_THE_HELLS,
-			new HellsRodItem(unstackable()));
+			props -> new HellsRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_PLENTIFUL_MANTLE = make(LibItemNames.ROD_OF_THE_PLENTIFUL_MANTLE,
-			new PlentifulMantleRodItem(unstackable()));
+			props -> new PlentifulMantleRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_MOLTEN_CORE = make(LibItemNames.ROD_OF_THE_MOLTEN_CORE,
-			new MoltenCoreRodItem(unstackable()));
+			props -> new MoltenCoreRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_SHIFTING_CRUST = make(LibItemNames.ROD_OF_THE_SHIFTING_CRUST,
-			new ShiftingCrustRodItem(unstackable()));
+			props -> new ShiftingCrustRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_BIFROST = make(LibItemNames.ROD_OF_THE_BIFROST,
-			new BifrostRodItem(unstackable()));
+			props -> new BifrostRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_SHADED_MESA = make(LibItemNames.ROD_OF_THE_SHADED_MESA,
-			new ShadedMesaRodItem(unstackable()));
+			props -> new ShadedMesaRodItem(props.stacksTo(1)));
 	public static final Item ROD_OF_THE_UNSTABLE_RESERVOIR = make(LibItemNames.ROD_OF_THE_UNSTABLE_RESERVOIR,
-			new UnstableReservoirRodItem(unstackable()
+			props -> new UnstableReservoirRodItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 
 	// Equipment
@@ -293,131 +296,131 @@ public final class BotaniaItems {
 	public static final int ATTACK_DAMAGE_SWORD = 3;
 	public static final float ATTACK_SPEED_SWORD = -2.4f;
 	public static final Item MANASTEEL_HELMET = make(LibItemNames.MANASTEEL_HELMET,
-			new ManasteelHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new ManasteelHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.HELMET.getDurability(MANASTEEL_DURABILITY_FACTOR))));
 	public static final Item MANASTEEL_CHESTPLATE = make(LibItemNames.MANASTEEL_CHESTPLATE,
-			new ManasteelArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new ManasteelArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.CHESTPLATE.getDurability(MANASTEEL_DURABILITY_FACTOR))));
 	public static final Item MANASTEEL_LEGGINGS = make(LibItemNames.MANASTEEL_LEGGINGS,
-			new ManasteelArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new ManasteelArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.LEGGINGS.getDurability(MANASTEEL_DURABILITY_FACTOR))));
 	public static final Item MANASTEEL_BOOTS = make(LibItemNames.MANASTEEL_BOOTS,
-			new ManasteelArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new ManasteelArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.BOOTS.getDurability(MANASTEEL_DURABILITY_FACTOR))));
 	public static final Item MANASTEEL_PICKAXE = make(LibItemNames.MANASTEEL_PICKAXE,
-			new ManasteelPickaxeItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_MANASTEEL_TOOL)
+			props -> new ManasteelPickaxeItem(BotaniaItemTiers.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
 							.attributes(ManasteelPickaxeItem.createAttributes(
 									BotaniaItemTiers.MANASTEEL,
 									ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE))));
 	public static final Item MANASTEEL_SHOVEL = make(LibItemNames.MANASTEEL_SHOVEL,
-			new ManasteelShovelItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_MANASTEEL_TOOL)
+			props -> new ManasteelShovelItem(BotaniaItemTiers.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
 							.attributes(ManasteelShovelItem.createAttributes(
 									BotaniaItemTiers.MANASTEEL,
 									ATTACK_DAMAGE_SHOVEL, ATTACK_SPEED_SHOVEL))));
 	public static final Item MANASTEEL_AXE = make(LibItemNames.MANASTEEL_AXE,
-			new ManasteelAxeItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_MANASTEEL_TOOL)
+			props -> new ManasteelAxeItem(BotaniaItemTiers.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
 							.attributes(ManasteelAxeItem.createAttributes(BotaniaItemTiers.MANASTEEL, 6, -3.1f))));
 	public static final Item MANASTEEL_HOE = make(LibItemNames.MANASTEEL_HOE,
-			new ManasteelHoeItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_MANASTEEL_TOOL)
+			props -> new ManasteelHoeItem(BotaniaItemTiers.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
 							.attributes(ManasteelHoeItem.createAttributes(
 									BotaniaItemTiers.MANASTEEL,
 									-BotaniaItemTiers.MANASTEEL.getAttackDamageBonus(), ATTACK_SPEED_HOE))));
 	public static final Item MANASTEEL_SWORD = make(LibItemNames.MANASTEEL_SWORD,
-			new SwordItem(BotaniaItemTiers.MANASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_MANASTEEL_TOOL)
+			props -> new SwordItem(BotaniaItemTiers.MANASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_MANASTEEL_TOOL)
 							.attributes(SwordItem.createAttributes(
 									BotaniaItemTiers.MANASTEEL,
 									ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD))));
 	public static final int SHEARS_DURABILITY = 238;
 	public static final Item MANASTEEL_SHEARS = make(LibItemNames.MANASTEEL_SHEARS,
-			new ManasteelShearsItem(manaRepairable(MANA_PER_DAMAGE_SHEARS)
+			props -> new ManasteelShearsItem(manaRepairable(props, MANA_PER_DAMAGE_SHEARS)
 					.durability(SHEARS_DURABILITY * BotaniaItemTiers.MANASTEEL.getUses() / Tiers.IRON.getUses())
 					.component(DataComponents.TOOL, ShearsItem.createToolProperties())));
 	public static final int ELEMENTIUM_DURABILITY_FACTOR = 18;
 	public static final Item ELEMENTIUM_HELMET = make(LibItemNames.ELEMENTIUM_HELMET,
-			new ElementiumHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.ELEMENTIUM, 0.11,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new ElementiumHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.ELEMENTIUM, 0.11,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.HELMET.getDurability(ELEMENTIUM_DURABILITY_FACTOR))));
 	public static final Item ELEMENTIUM_CHESTPLATE = make(LibItemNames.ELEMENTIUM_CHESTPLATE,
-			new ElementiumArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.ELEMENTIUM, 0.17,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new ElementiumArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.ELEMENTIUM, 0.17,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.CHESTPLATE.getDurability(ELEMENTIUM_DURABILITY_FACTOR))));
 	public static final Item ELEMENTIUM_LEGGINGS = make(LibItemNames.ELEMENTIUM_LEGGINGS,
-			new ElementiumArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.ELEMENTIUM, 0.15,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new ElementiumArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.ELEMENTIUM, 0.15,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.LEGGINGS.getDurability(ELEMENTIUM_DURABILITY_FACTOR))));
 	public static final Item ELEMENTIUM_BOOTS = make(LibItemNames.ELEMENTIUM_BOOTS,
-			new ElementiumArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.ELEMENTIUM, 0.09,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new ElementiumArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.ELEMENTIUM, 0.09,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.BOOTS.getDurability(ELEMENTIUM_DURABILITY_FACTOR))));
 	public static final Item ELEMENTIUM_PICKAXE = make(LibItemNames.ELEMENTIUM_PICKAXE,
-			new ElementiumPickaxeItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
+			props -> new ElementiumPickaxeItem(BotaniaItemTiers.ELEMENTIUM,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
 							.attributes(ElementiumPickaxeItem.createAttributes(
 									BotaniaItemTiers.ELEMENTIUM,
 									ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE))));
 	public static final Item ELEMENTIUM_SHOVEL = make(LibItemNames.ELEMENTIUM_SHOVEL,
-			new ElementiumShovelItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
+			props -> new ElementiumShovelItem(BotaniaItemTiers.ELEMENTIUM,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
 							.attributes(ElementiumShovelItem.createAttributes(
 									BotaniaItemTiers.ELEMENTIUM,
 									ATTACK_DAMAGE_SHOVEL, ATTACK_SPEED_SHOVEL))));
 	public static final Item ELEMENTIUM_AXE = make(LibItemNames.ELEMENTIUM_AXE,
-			new ElementiumAxeItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
+			props -> new ElementiumAxeItem(BotaniaItemTiers.ELEMENTIUM,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
 							.attributes(ElementiumAxeItem.createAttributes(BotaniaItemTiers.ELEMENTIUM, 6, -3.1f))));
 	public static final Item ELEMENTIUM_HOE = make(LibItemNames.ELEMENTIUM_HOE,
-			new ElementiumHoeItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
+			props -> new ElementiumHoeItem(BotaniaItemTiers.ELEMENTIUM,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
 							.attributes(ElementiumHoeItem.createAttributes(
 									BotaniaItemTiers.ELEMENTIUM,
 									-BotaniaItemTiers.ELEMENTIUM.getAttackDamageBonus(), ATTACK_SPEED_HOE))));
 	public static final Item ELEMENTIUM_SWORD = make(LibItemNames.ELEMENTIUM_SWORD,
-			new ElementiumSwordItem(BotaniaItemTiers.ELEMENTIUM,
-					manaRepairable(MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
+			props -> new ElementiumSwordItem(BotaniaItemTiers.ELEMENTIUM,
+					manaRepairable(props, MANA_PER_DAMAGE_ELEMENTIUM_TOOL)
 							.attributes(ElementiumSwordItem.createAttributes(
 									BotaniaItemTiers.ELEMENTIUM,
 									ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD))));
 	public static final Item ELEMENTIUM_SHEARS = make(LibItemNames.ELEMENTIUM_SHEARS,
-			new ElementiumShearsItem(manaRepairable(MANA_PER_DAMAGE_SHEARS)
+			props -> new ElementiumShearsItem(manaRepairable(props, MANA_PER_DAMAGE_SHEARS)
 					.durability(SHEARS_DURABILITY * BotaniaItemTiers.ELEMENTIUM.getUses() / Tiers.IRON.getUses())
 					.component(DataComponents.TOOL, ShearsItem.createToolProperties())));
 	public static final int TERRASTEEL_DURABILITY_FACTOR = 34;
 	public static final Item TERRASTEEL_HELMET = make(LibItemNames.TERRASTEEL_HELMET,
-			new TerrasteelHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new TerrasteelHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.HELMET.getDurability(TERRASTEEL_DURABILITY_FACTOR))
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRASTEEL_CHESTPLATE = make(LibItemNames.TERRASTEEL_CHESTPLATE,
-			new TerrasteelArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new TerrasteelArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.CHESTPLATE.getDurability(TERRASTEEL_DURABILITY_FACTOR))
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRASTEEL_LEGGINGS = make(LibItemNames.TERRASTEEL_LEGGINGS,
-			new TerrasteelArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new TerrasteelArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.LEGGINGS.getDurability(TERRASTEEL_DURABILITY_FACTOR))
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRASTEEL_BOOTS = make(LibItemNames.TERRASTEEL_BOOTS,
-			new TerrasteelArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_METAL_ARMOR)
+			props -> new TerrasteelArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_METAL_ARMOR)
 							.durability(ArmorItem.Type.BOOTS.getDurability(TERRASTEEL_DURABILITY_FACTOR))
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)));
 	public static final Item TERRA_SHATTERER = make(LibItemNames.TERRA_SHATTERER,
-			new TerraShattererItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_TERRASTEEL_TOOL)
+			props -> new TerraShattererItem(BotaniaItemTiers.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_TERRASTEEL_TOOL)
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)
 							.component(BotaniaDataComponents.MAX_MANA, TerraShattererItem.MAX_MANA)
@@ -426,161 +429,161 @@ public final class BotaniaItems {
 									BotaniaItemTiers.TERRASTEEL,
 									ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE))));
 	public static final Item TERRA_TRUNCATOR = make(LibItemNames.TERRA_TRUNCATOR,
-			new TerraTruncatorItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_TERRASTEEL_TOOL)
+			props -> new TerraTruncatorItem(BotaniaItemTiers.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_TERRASTEEL_TOOL)
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)
 							.attributes(TerraTruncatorItem.createAttributes(BotaniaItemTiers.TERRASTEEL, 5, -3))));
 	public static final Item TERRA_BLADE = make(LibItemNames.TERRA_BLADE,
-			new TerraBladeItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_TERRASTEEL_TOOL)
+			props -> new TerraBladeItem(BotaniaItemTiers.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_TERRASTEEL_TOOL)
 							.fireResistant()
 							.rarity(Rarity.UNCOMMON)
 							.attributes(TerraBladeItem.createAttributes(
 									BotaniaItemTiers.TERRASTEEL,
 									ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD))));
 	public static final Item STARCALLER = make(LibItemNames.STARCALLER,
-			new StarcallerItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_UPGRADED_SWORD)
+			props -> new StarcallerItem(BotaniaItemTiers.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_UPGRADED_SWORD)
 							.rarity(Rarity.UNCOMMON)
 							.attributes(StarcallerItem.createAttributes(
 									BotaniaItemTiers.TERRASTEEL,
 									ATTACK_DAMAGE_SWORD, ATTACK_SPEED_SWORD))));
 	public static final Item THUNDERCALLER = make(LibItemNames.THUNDERCALLER,
-			new ThundercallerItem(BotaniaItemTiers.TERRASTEEL,
-					manaRepairable(MANA_PER_DAMAGE_UPGRADED_SWORD)
+			props -> new ThundercallerItem(BotaniaItemTiers.TERRASTEEL,
+					manaRepairable(props, MANA_PER_DAMAGE_UPGRADED_SWORD)
 							.rarity(Rarity.UNCOMMON)
 							.attributes(ThundercallerItem.createAttributes(
 									BotaniaItemTiers.TERRASTEEL,
 									ATTACK_DAMAGE_SWORD, 1.5f))));
 	public static final int MANAWEAVE_DURABILITY_FACTOR = 5;
 	public static final Item MANAWEAVE_HELMET = make(LibItemNames.MANAWEAVE_HELMET,
-			new ManaweaveHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.MANAWEAVE,
-					manaRepairable(MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
+			props -> new ManaweaveHelmItem(ArmorItem.Type.HELMET, BotaniaArmorMaterials.MANAWEAVE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
 							.durability(ArmorItem.Type.HELMET.getDurability(MANAWEAVE_DURABILITY_FACTOR))));
 	public static final Item MANAWEAVE_CHESTPLATE = make(LibItemNames.MANAWEAVE_CHESTPLATE,
-			new ManaweaveArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.MANAWEAVE,
-					manaRepairable(MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
+			props -> new ManaweaveArmorItem(ArmorItem.Type.CHESTPLATE, BotaniaArmorMaterials.MANAWEAVE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
 							.durability(ArmorItem.Type.CHESTPLATE.getDurability(MANAWEAVE_DURABILITY_FACTOR))));
 	public static final Item MANAWEAVE_LEGGINGS = make(LibItemNames.MANAWEAVE_LEGGINGS,
-			new ManaweaveArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.MANAWEAVE,
-					manaRepairable(MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
+			props -> new ManaweaveArmorItem(ArmorItem.Type.LEGGINGS, BotaniaArmorMaterials.MANAWEAVE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
 							.durability(ArmorItem.Type.LEGGINGS.getDurability(MANAWEAVE_DURABILITY_FACTOR))));
 	public static final Item MANAWEAVE_BOOTS = make(LibItemNames.MANAWEAVE_BOOTS,
-			new ManaweaveArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.MANAWEAVE,
-					manaRepairable(MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
+			props -> new ManaweaveArmorItem(ArmorItem.Type.BOOTS, BotaniaArmorMaterials.MANAWEAVE,
+					manaRepairable(props, MANA_PER_DAMAGE_MANAWEAVE_ARMOR)
 							.durability(ArmorItem.Type.BOOTS.getDurability(MANAWEAVE_DURABILITY_FACTOR))));
 	public static final Item SOULSCRIBE = make(LibItemNames.SOULSCRIBE,
-			new SoulscribeItem(BotaniaItemTiers.MANASTEEL,
-					defaultBuilder() // no mana repair
+			props -> new SoulscribeItem(BotaniaItemTiers.MANASTEEL,
+					props // no mana repair
 							.durability(69) // What you looking at?
 							.attributes(SoulscribeItem.createAttributes(
 									BotaniaItemTiers.MANASTEEL,
 									ATTACK_DAMAGE_SWORD, -1.25f))));
 	public static final Item VITREOUS_PICKAXE = make(LibItemNames.VITREOUS_PICKAXE,
-			new VitreousPickaxeItem(BotaniaItemTiers.VITREOUS,
-					manaRepairable(MANA_PER_DAMAGE_VITREOUS_TOOL)
+			props -> new VitreousPickaxeItem(BotaniaItemTiers.VITREOUS,
+					manaRepairable(props, MANA_PER_DAMAGE_VITREOUS_TOOL)
 							.attributes(VitreousPickaxeItem.createAttributes(
 									BotaniaItemTiers.VITREOUS,
 									ATTACK_DAMAGE_PICKAXE, ATTACK_SPEED_PICKAXE))));
 	public static final int BOW_DURABILITY = 384; // like vanilla
 	public static final Item LIVINGWOOD_BOW = make(LibItemNames.LIVINGWOOD_BOW,
-			new BowItem(manaRepairable(MANA_PER_DAMAGE_BOW)
+			props -> new BowItem(manaRepairable(props, MANA_PER_DAMAGE_BOW)
 					.durability(BOW_DURABILITY)));
 	public static final Item CRYSTAL_BOW = make(LibItemNames.CRYSTAL_BOW,
-			new CrystalBowItem(manaRepairable(MANA_PER_DAMAGE_BOW)
+			props -> new CrystalBowItem(manaRepairable(props, MANA_PER_DAMAGE_BOW)
 					.durability(BOW_DURABILITY)));
 	public static final int CHAKRAM_STACK_SIZE = 6;
 	public static final Item THORN_CHAKRAM = make(LibItemNames.THORN_CHAKRAM,
-			new ThornChakramItem(defaultBuilder()
+			props -> new ThornChakramItem(props
 					.stacksTo(CHAKRAM_STACK_SIZE)
 					.rarity(Rarity.UNCOMMON)));
 	public static final Item FLARE_CHAKRAM = make(LibItemNames.FLARE_CHAKRAM,
-			new ThornChakramItem(defaultBuilder()
+			props -> new ThornChakramItem(props
 					.stacksTo(CHAKRAM_STACK_SIZE)
 					.rarity(Rarity.UNCOMMON)));
 
 	// Misc tools
 	public static final Item MANA_TABLET = make(LibItemNames.MANA_TABLET,
-			new ManaTabletItem(unstackable()
+			props -> new ManaTabletItem(props.stacksTo(1)
 					.component(BotaniaDataComponents.MAX_MANA, ManaTabletItem.DEFAULT_MAX_MANA)
 					.component(BotaniaDataComponents.CAN_PROVIDE_MANA_TO_ITEMS, Unit.INSTANCE)
 					.component(BotaniaDataComponents.CAN_DRAIN_MANA_TO_POOL, Unit.INSTANCE)
 					.component(BotaniaDataComponents.CAN_ACCEPT_MANA_FROM_ITEMS, Unit.INSTANCE)
 					.component(BotaniaDataComponents.CAN_RECEIVE_MANA_FROM_POOL, Unit.INSTANCE)));
 	public static final Item MANA_MIRROR = make(LibItemNames.MANA_MIRROR,
-			new ManaMirrorItem(unstackable()
+			props -> new ManaMirrorItem(props.stacksTo(1)
 					.rarity(Rarity.UNCOMMON)
 					.component(BotaniaDataComponents.MAX_MANA, 0)
 					.component(BotaniaDataComponents.MANA_BACKLOG, 0)
 					.component(BotaniaDataComponents.CAN_PROVIDE_MANA_TO_ITEMS, Unit.INSTANCE)));
 	public static final Item MANA_BLASTER = make(LibItemNames.MANA_BLASTER,
-			new ManaBlasterItem(unstackable()));
+			props -> new ManaBlasterItem(props.stacksTo(1)));
 	public static final Item LENS_CLIP = make(LibItemNames.LENS_CLIP,
-			new Item(unstackable()));
+			props -> new Item(props.stacksTo(1)));
 	public static final HornItem HORN_OF_THE_WILD = make(LibItemNames.HORN_OF_THE_WILD,
-			new HornOfTheWildItem(unstackable()));
+			props -> new HornOfTheWildItem(props.stacksTo(1)));
 	public static final HornItem HORN_OF_THE_CANOPY = make(LibItemNames.HORN_OF_THE_CANOPY,
-			new HornOfTheCanopyItem(unstackable()));
+			props -> new HornOfTheCanopyItem(props.stacksTo(1)));
 	public static final HornItem HORN_OF_THE_COVERING = make(LibItemNames.HORN_OF_THE_COVERING,
-			new HornOfTheCoveringItem(unstackable()));
+			props -> new HornOfTheCoveringItem(props.stacksTo(1)));
 	public static final Item VINE_BALL = make(LibItemNames.VINE_BALL,
-			new VineBallItem(defaultBuilder()));
+			VineBallItem::new);
 	public static final Item LIVINGWOOD_SLINGSHOT = make(LibItemNames.LIVINGWOOD_SLINGSHOT,
-			new LivingwoodSlingshotItem(unstackable()));
+			props -> new LivingwoodSlingshotItem(props.stacksTo(1)));
 	public static final Item EXTRAPOLATED_BUCKET = make(LibItemNames.EXTRAPOLATED_BUCKET,
-			new ExtrapolatedBucketItem(unstackable()));
+			props -> new ExtrapolatedBucketItem(props.stacksTo(1)));
 	public static final Item LIFE_AGGREGATOR = make(LibItemNames.LIFE_AGGREGATOR,
-			new LifeAggregatorItem(unstackable().rarity(Rarity.RARE)));
+			props -> new LifeAggregatorItem(props.stacksTo(1).rarity(Rarity.RARE)));
 	public static final Item HAND_OF_ENDER = make(LibItemNames.HAND_OF_ENDER,
-			new EnderHandItem(unstackable()));
+			props -> new EnderHandItem(props.stacksTo(1)));
 	public static final Item ASSEMBLY_HALO = make(LibItemNames.ASSEMBLY_HALO,
-			new AssemblyHaloItem(unstackable()));
+			props -> new AssemblyHaloItem(props.stacksTo(1)));
 	public static final Item MANUFACTORY_HALO = make(LibItemNames.MANUFACTORY_HALO,
-			new ManufactoryHaloItem(unstackable()
+			props -> new ManufactoryHaloItem(props.stacksTo(1)
 					.component(BotaniaDataComponents.ACTIVE, Unit.INSTANCE)));
 	public static final Item SPELLBINDING_CLOTH = make(LibItemNames.SPELLBINDING_CLOTH,
-			new SpellbindingClothItem(XplatAbstractions.INSTANCE.noRepairOnNeoForge(unstackable()
+			props -> new SpellbindingClothItem(XplatAbstractions.INSTANCE.noRepairOnNeoForge(props.stacksTo(1)
 					.durability(35))));
 	public static final FlowerPouchItem FLOWER_POUCH = make(LibItemNames.FLOWER_POUCH,
-			new FlowerPouchItem(unstackable()
+			props -> new FlowerPouchItem(props.stacksTo(1)
 					.component(BotaniaDataComponents.ITEM_TAGS,
 							List.of(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS, BotaniaTags.Items.TALL_MYSTICAL_FLOWERS))));
 	public static final PetalPouchItem PETAL_POUCH = make(LibItemNames.PETAL_POUCH,
-			new PetalPouchItem(unstackable()
+			props -> new PetalPouchItem(props.stacksTo(1)
 					.component(BotaniaDataComponents.ACTIVE, Unit.INSTANCE)
 					.component(BotaniaDataComponents.ITEM_TAGS,
 							List.of(BotaniaTags.Items.PETALS, BotaniaTags.Items.SHIMMERING_MUSHROOMS))
 					.component(BotaniaDataComponents.CRAFTABLE_ITEM_TAGS,
 							List.of(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS, BotaniaTags.Items.TALL_MYSTICAL_FLOWERS))));
 	public static final Item BLACK_HOLE_TALISMAN = make(LibItemNames.BLACK_HOLE_TALISMAN,
-			new BlackHoleTalismanItem(unstackable()
+			props -> new BlackHoleTalismanItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item STONE_OF_TEMPERANCE = make(LibItemNames.STONE_OF_TEMPERANCE,
-			new StoneOfTemperanceItem(unstackable()));
+			props -> new StoneOfTemperanceItem(props.stacksTo(1)));
 	public static final Item WATER_BOWL = make(LibItemNames.WATER_BOWL,
-			new WaterBowlItem(unstackable().craftRemainder(Items.BOWL)));
+			props -> new WaterBowlItem(props.stacksTo(1).craftRemainder(Items.BOWL)));
 	public static final Item CACOPHONIUM = make(LibItemNames.CACOPHONIUM,
-			new CacophoniumItem(unstackable()));
+			props -> new CacophoniumItem(props.stacksTo(1)));
 	public static final Item SLIME_IN_A_BOTTLE = make(LibItemNames.SLIME_IN_A_BOTTLE,
-			new SlimeInABottleItem(unstackable()));
+			props -> new SlimeInABottleItem(props.stacksTo(1)));
 	public static final Item WORLDSHAPERS_SEXTANT = make(LibItemNames.WORLDSHAPERS_SEXTANT,
-			new SextantItem(unstackable()));
+			props -> new SextantItem(props.stacksTo(1)));
 	public static final Item WORLDSHAPERS_ASTROLABE = make(LibItemNames.WORLDSHAPERS_ASTROLABE,
-			new AstrolabeItem(unstackable().rarity(Rarity.RARE)));
+			props -> new AstrolabeItem(props.stacksTo(1).rarity(Rarity.RARE)));
 	public static final Item TRINKET_CASE = make(LibItemNames.TRINKET_CASE,
-			new BaubleBoxItem(unstackable()));
+			props -> new BaubleBoxItem(props.stacksTo(1)));
 
 	// Baubles / trinkets / curios / etc.
 	public static final Item BAND_OF_MANA = make(LibItemNames.BAND_OF_MANA,
-			new BandOfManaItem(unstackable()
+			props -> new BandOfManaItem(props.stacksTo(1)
 					.component(BotaniaDataComponents.MAX_MANA, BandOfManaItem.DEFAULT_MAX_MANA)
 					.component(BotaniaDataComponents.CAN_PROVIDE_MANA_TO_ITEMS, Unit.INSTANCE)
 					.component(BotaniaDataComponents.CAN_DRAIN_MANA_TO_POOL, Unit.INSTANCE)
 					.component(BotaniaDataComponents.CAN_ACCEPT_MANA_FROM_ITEMS, Unit.INSTANCE)
 					.component(BotaniaDataComponents.CAN_RECEIVE_MANA_FROM_POOL, Unit.INSTANCE)));
 	public static final Item GREATER_BAND_OF_MANA = make(LibItemNames.GREATER_BAND_OF_MANA,
-			new BandOfManaItem(unstackable()
+			props -> new BandOfManaItem(props.stacksTo(1)
 					.rarity(Rarity.UNCOMMON)
 					.fireResistant()
 					.component(BotaniaDataComponents.MAX_MANA, BandOfManaItem.DEFAULT_GREATER_MAX_MANA)
@@ -589,316 +592,316 @@ public final class BotaniaItems {
 					.component(BotaniaDataComponents.CAN_ACCEPT_MANA_FROM_ITEMS, Unit.INSTANCE)
 					.component(BotaniaDataComponents.CAN_RECEIVE_MANA_FROM_POOL, Unit.INSTANCE)));
 	public static final Item BAND_OF_AURA = make(LibItemNames.BAND_OF_AURA,
-			new BandOfAuraItem(10, unstackable()));
+			props -> new BandOfAuraItem(10, props.stacksTo(1)));
 	public static final Item GREATER_BAND_OF_AURA = make(LibItemNames.GREATER_BAND_OF_AURA,
-			new BandOfAuraItem(2, unstackable()
+			props -> new BandOfAuraItem(2, props.stacksTo(1)
 					.rarity(Rarity.UNCOMMON)
 					.fireResistant()));
 	public static final Item RING_OF_MAGNETIZATION = make(LibItemNames.RING_OF_MAGNETIZATION,
-			new RingOfMagnetizationItem(unstackable()
+			props -> new RingOfMagnetizationItem(props.stacksTo(1)
 					.component(BotaniaDataComponents.RANGE, RingOfMagnetizationItem.DEFAULT_RANGE)));
 	public static final Item GREATER_RING_OF_MAGNETIZATION = make(LibItemNames.GREATER_RING_OF_MAGNETIZATION,
-			new RingOfMagnetizationItem(unstackable()
+			props -> new RingOfMagnetizationItem(props.stacksTo(1)
 					.rarity(Rarity.UNCOMMON)
 					.fireResistant()
 					.component(BotaniaDataComponents.RANGE, RingOfMagnetizationItem.DEFAULT_GREATER_RANGE)));
 	public static final Item RING_OF_CHORDATA = make(LibItemNames.RING_OF_CHORDATA,
-			new RingOfChordataItem(unstackable()
+			props -> new RingOfChordataItem(props.stacksTo(1)
 					.rarity(Rarity.UNCOMMON)));
 	public static final Item RING_OF_CORRECTION = make(LibItemNames.RING_OF_CORRECTION,
-			new RingOfCorrectionItem(unstackable()));
+			props -> new RingOfCorrectionItem(props.stacksTo(1)));
 	public static final Item RING_OF_DEXTEROUS_MOTION = make(LibItemNames.RING_OF_DEXTEROUS_MOTION,
-			new RingOfDexterousMotionItem(unstackable()));
+			props -> new RingOfDexterousMotionItem(props.stacksTo(1)));
 	public static final Item RING_OF_THE_MANTLE = make(LibItemNames.RING_OF_THE_MANTLE,
-			new RingOfTheMantleItem(unstackable()));
+			props -> new RingOfTheMantleItem(props.stacksTo(1)));
 	public static final Item GREAT_FAIRY_RING = make(LibItemNames.GREAT_FAIRY_RING,
-			new GreatFairyRingItem(unstackable()));
+			props -> new GreatFairyRingItem(props.stacksTo(1)));
 	public static final Item RING_OF_FAR_REACH = make(LibItemNames.RING_OF_FAR_REACH,
-			new RingOfFarReachItem(unstackable()));
+			props -> new RingOfFarReachItem(props.stacksTo(1)));
 	public static final Item SOJOURNERS_SASH = make(LibItemNames.SOJOURNORS_SASH,
-			new SojournersSashItem(unstackable()));
+			props -> new SojournersSashItem(props.stacksTo(1)));
 	public static final Item GLOBETROTTERS_SASH = make(LibItemNames.GLOBETROTTERS_SASH,
-			new GlobetrottersSashItem(unstackable()
+			props -> new GlobetrottersSashItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item PLANESTRIDERS_SASH = make(LibItemNames.PLANESTRIDERS_SASH,
-			new PlanestridersSashItem(unstackable()));
+			props -> new PlanestridersSashItem(props.stacksTo(1)));
 	public static final Item TECTONIC_GIRDLE = make(LibItemNames.TECTONIC_GIRDLE,
-			new TectonicGirdleItem(unstackable()));
+			props -> new TectonicGirdleItem(props.stacksTo(1)));
 	public static final Item SNOWFLAKE_PENDANT = make(LibItemNames.SNOWFLAKE_PENDANT,
-			new SnowflakePendantItem(unstackable()));
+			props -> new SnowflakePendantItem(props.stacksTo(1)));
 	public static final Item PYROCLAST_PENDANT = make(LibItemNames.PYROCLAST_PENDANT,
-			new PyroclastPendantItem(unstackable()));
+			props -> new PyroclastPendantItem(props.stacksTo(1)));
 	public static final Item CRIMSON_PENDANT = make(LibItemNames.CRIMSON_PENDANT,
-			new CrimsonPendantItem(unstackable()
+			props -> new CrimsonPendantItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item CIRRUS_AMULET = make(LibItemNames.CIRRUS_AMULET,
-			new CirrusAmuletItem(unstackable()));
+			props -> new CirrusAmuletItem(props.stacksTo(1)));
 	public static final Item NIMBUS_AMULET = make(LibItemNames.NIMBUS_AMULET,
-			new NimbusAmuletItem(unstackable()
+			props -> new NimbusAmuletItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item CLOAK_OF_VIRTUE = make(LibItemNames.CLOAK_OF_VIRTUE,
-			new CloakOfVirtueItem(unstackable()
+			props -> new CloakOfVirtueItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item CLOAK_OF_SIN = make(LibItemNames.CLOAK_OF_SIN,
-			new CloakOfSinItem(unstackable()
+			props -> new CloakOfSinItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item CLOAK_OF_BALANCE = make(LibItemNames.CLOAK_OF_BALANCE,
-			new CloakOfBalanceItem(unstackable()
+			props -> new CloakOfBalanceItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item INVISIBILITY_CLOAK = make(LibItemNames.INVISIBILITY_CLOAK,
-			new InvisibilityCloakItem(unstackable()));
+			props -> new InvisibilityCloakItem(props.stacksTo(1)));
 	public static final Item THIRD_EYE = make(LibItemNames.THIRD_EYE,
-			new ThirdEyeItem(unstackable()));
+			props -> new ThirdEyeItem(props.stacksTo(1)));
 	public static final Item MANASEER_MONOCLE = make(LibItemNames.MANASEER_MONOCLE,
-			new ManaseerMonocleItem(unstackable()));
+			props -> new ManaseerMonocleItem(props.stacksTo(1)));
 	public static final Item TINY_PLANET = make(LibItemNames.TINY_PLANET,
-			new TinyPlanetItem(unstackable()));
+			props -> new TinyPlanetItem(props.stacksTo(1)));
 	public static final Item BENEVOLENT_GODDESS_CHARM = make(LibItemNames.BENEVOLENT_GODDESS_CHARM,
-			new BenevolentGoddessCharmItem(unstackable()));
+			props -> new BenevolentGoddessCharmItem(props.stacksTo(1)));
 	public static final Item CHARM_OF_THE_DIVA = make(LibItemNames.CHARM_OF_THE_DIVA,
-			new CharmOfTheDivaItem(unstackable()
+			props -> new CharmOfTheDivaItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item THE_SPECTATOR = make(LibItemNames.THE_SPECTATOR,
-			new SpectatorItem(unstackable()));
+			props -> new SpectatorItem(props.stacksTo(1)));
 	public static final Item FLUGEL_TIARA = make(LibItemNames.FLUGEL_TIARA,
-			new FlugelTiaraItem(unstackable()
+			props -> new FlugelTiaraItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 
 	// Misc
 	public static final Item BISCUIT_OF_TOTALITY = make(LibItemNames.BISCUIT_OF_TOTALITY,
-			new Item(defaultBuilder()
+			props -> new Item(props
 					.food(new FoodProperties.Builder()
 							.nutrition(0)
 							.saturationModifier(0.1F)
 							.effect(new MobEffectInstance(MobEffects.SATURATION, 20, 0), 1)
 							.build())));
 	public static final Item MANA_IN_A_BOTTLE = make(LibItemNames.MANA_IN_A_BOTTLE,
-			new BottledManaItem(unstackable()
+			props -> new BottledManaItem(props.stacksTo(1)
 					// Mark as food just to fool foxes into using it
 					.food(new FoodProperties.Builder().alwaysEdible().build())
 					.component(BotaniaDataComponents.REMAINING_USES, BottledManaItem.SWIGS)));
 	public static final Item SHARD_OF_LAPUTA = make(LibItemNames.SHARD_OF_LAPUTA,
-			new LaputaShardItem(unstackable()
+			props -> new LaputaShardItem(props.stacksTo(1)
 					.component(BotaniaDataComponents.SHARD_LEVEL, 1)
 					.rarity(Rarity.RARE)));
 	public static final Item NECRODERMAL_VIRUS = make(LibItemNames.NECRODERMAL_VIRUS,
-			new EquestrianVirusItem(defaultBuilder()
+			props -> new EquestrianVirusItem(props
 					.rarity(Rarity.UNCOMMON)));
 	public static final Item NULLODERMAL_VIRUS = make(LibItemNames.NULLODERMAL_VIRUS,
-			new EquestrianVirusItem(defaultBuilder()
+			props -> new EquestrianVirusItem(props
 					.rarity(Rarity.UNCOMMON)));
-	public static final Item MANA_SPARK = make(LibItemNames.MANA_SPARK, new ManaSparkItem(defaultBuilder()));
+	public static final Item MANA_SPARK = make(LibItemNames.MANA_SPARK, ManaSparkItem::new);
 	public static final Item SPARK_AUGMENT_DISPERSIVE = make(LibItemNames.SPARK_AUGMENT + "_dispersive",
-			new Item(defaultBuilder()
+			props -> new Item(props
 					.component(BotaniaDataComponents.AUGMENT_ICON, botaniaRL("item/spark_augment_rune_dispersive"))
 					.component(BotaniaDataComponents.AUGMENT_ID, (byte) 1)));
 	public static final Item SPARK_AUGMENT_DOMINANT = make(LibItemNames.SPARK_AUGMENT + "_dominant",
-			new Item(defaultBuilder()
+			props -> new Item(props
 					.component(BotaniaDataComponents.AUGMENT_ICON, botaniaRL("item/spark_augment_rune_dominant"))
 					.component(BotaniaDataComponents.AUGMENT_ID, (byte) 2)));
 	public static final Item SPARK_AUGMENT_RECESSIVE = make(LibItemNames.SPARK_AUGMENT + "_recessive",
-			new Item(defaultBuilder()
+			props -> new Item(props
 					.component(BotaniaDataComponents.AUGMENT_ICON, botaniaRL("item/spark_augment_rune_recessive"))
 					.component(BotaniaDataComponents.AUGMENT_ID, (byte) 3)));
 	public static final Item SPARK_AUGMENT_ISOLATED = make(LibItemNames.SPARK_AUGMENT + "_isolated",
-			new Item(defaultBuilder()
+			props -> new Item(props
 					.component(BotaniaDataComponents.AUGMENT_ICON, botaniaRL("item/spark_augment_rune_isolated"))
 					.component(BotaniaDataComponents.AUGMENT_ID, (byte) 4)));
 	public static final Item CORPOREA_SPARK = make(LibItemNames.CORPOREA_SPARK,
-			new CorporeaSparkItem(defaultBuilder()));
+			CorporeaSparkItem::new);
 	public static final Item MASTER_CORPOREA_SPARK = make(LibItemNames.MASTER_CORPOREA_SPARK,
-			new CorporeaSparkItem(defaultBuilder()));
+			CorporeaSparkItem::new);
 	public static final Item CREATIVE_CORPOREA_SPARK = make(LibItemNames.CREATIVE_CORPOREA_SPARK,
-			new CorporeaSparkItem(defaultBuilder()
+			props -> new CorporeaSparkItem(props
 					.rarity(Rarity.EPIC)));
 	public static final Item BLACK_LOTUS = make(LibItemNames.BLACK_LOTUS,
-			new BlackLotusItem(defaultBuilder()
+			props -> new BlackLotusItem(props
 					.rarity(Rarity.UNCOMMON)));
 	public static final Item BLACKER_LOTUS = make(LibItemNames.BLACKER_LOTUS,
-			new BlackLotusItem(defaultBuilder()
+			props -> new BlackLotusItem(props
 					.rarity(Rarity.RARE)));
 	public static final Item WORLD_SEED = make(LibItemNames.WORLD_SEED,
-			new WorldSeedItem(defaultBuilder()));
+			WorldSeedItem::new);
 	public static final Item PHANTOM_INK = make(LibItemNames.PHANTOM_INK,
-			new PhantomInkItem(defaultBuilder()));
+			PhantomInkItem::new);
 	public static final Item MANA_POOL_MINECART = make(LibItemNames.MANA_POOL_MINECART,
-			new ManaPoolMinecartItem(unstackable()));
+			props -> new ManaPoolMinecartItem(props.stacksTo(1)));
 	public static final Item RESOLUTE_IVY = make(LibItemNames.RESOLUTE_IVY,
-			new ResoluteIvyItem(defaultBuilder()));
+			ResoluteIvyItem::new);
 	public static final Item CRAFTING_PLACEHOLDER = make(LibItemNames.CRAFTING_PLACEHOLDER,
-			new SelfReturningItem(defaultBuilder()));
+			SelfReturningItem::new);
 	public static final Item CRAFTING_PATTERN_1_1 = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "1_1",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_1_1, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_1_1, props.stacksTo(1)));
 	public static final Item CRAFTING_PATTERN_2_2 = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "2_2",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_2_2, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_2_2, props.stacksTo(1)));
 	public static final Item CRAFTING_PATTERN_1_2 = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "1_2",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_1_2, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_1_2, props.stacksTo(1)));
 	public static final Item CRAFTING_PATTERN_2_1 = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "2_1",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_2_1, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_2_1, props.stacksTo(1)));
 	public static final Item CRAFTING_PATTERN_1_3 = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "1_3",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_1_3, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_1_3, props.stacksTo(1)));
 	public static final Item CRAFTING_PATTERN_3_1 = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "3_1",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_3_1, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_3_1, props.stacksTo(1)));
 	public static final Item CRAFTING_PATTERN_2_3 = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "2_3",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_2_3, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_2_3, props.stacksTo(1)));
 	public static final Item CRAFTING_PATTERN_3_2 = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "3_2",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_3_2, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_3_2, props.stacksTo(1)));
 	public static final Item CRAFTING_PATTERN_DONUT = make(LibItemNames.CRAFTING_PATTERN_PREFIX + "donut",
-			new CraftingPatternItem(CraftyCratePattern.CRAFTY_DONUT, unstackable()));
+			props -> new CraftingPatternItem(CraftyCratePattern.CRAFTY_DONUT, props.stacksTo(1)));
 
 	// Guardian of Gaia drops
 	public static final Item DICE_OF_FATE = make(LibItemNames.DICE_OF_FATE,
-			new DiceOfFateItem(unstackable()
+			props -> new DiceOfFateItem(props.stacksTo(1)
 					.fireResistant()
 					.rarity(Rarity.EPIC)));
 	public static final Item FRUIT_OF_GRISAIA = make(LibItemNames.THE_FRUIT_OF_GRISAIA,
-			new FruitOfGrisaiaItem(unstackable()
+			props -> new FruitOfGrisaiaItem(props.stacksTo(1)
 					.fireResistant()
 					.rarity(Rarity.EPIC)));
 	public static final Item KEY_OF_THE_KINGS_LAW = make(LibItemNames.KEY_OF_THE_KINGS_LAW,
-			new KeyOfTheKingsLawItem(unstackable()
+			props -> new KeyOfTheKingsLawItem(props.stacksTo(1)
 					.fireResistant()
 					.rarity(Rarity.EPIC)));
 	public static final Item EYE_OF_THE_FLUGEL = make(LibItemNames.EYE_OF_THE_FLUGEL,
-			new EyeOfTheFlugelItem(unstackable()
+			props -> new EyeOfTheFlugelItem(props.stacksTo(1)
 					.fireResistant()
 					.rarity(Rarity.EPIC)));
 	public static final Item RING_OF_THOR = make(LibItemNames.RING_OF_THOR,
-			new RingOfThorItem(unstackable()
+			props -> new RingOfThorItem(props.stacksTo(1)
 					.fireResistant()
 					.rarity(Rarity.EPIC)));
 	public static final Item RING_OF_ODIN = make(LibItemNames.RING_OF_ODIN,
-			new RingOfOdinItem(unstackable()
+			props -> new RingOfOdinItem(props.stacksTo(1)
 					.fireResistant()
 					.rarity(Rarity.EPIC)));
 	public static final Item RING_OF_LOKI = make(LibItemNames.RING_OF_LOKI,
-			new RingOfLokiItem(unstackable()
+			props -> new RingOfLokiItem(props.stacksTo(1)
 					.fireResistant()
 					.rarity(Rarity.EPIC)));
 	public static final Item SCATHED_MUSIC_DISC_1 = make(LibItemNames.SCATHED_MUSIC_DISC_1,
-			new Item(unstackable()
+			props -> new Item(props.stacksTo(1)
 					.rarity(Rarity.RARE)
 					.jukeboxPlayable(BotaniaJukeboxSongs.GAIA_MUSIC_1)));
 	public static final Item SCATHED_MUSIC_DISC_2 = make(LibItemNames.SCATHED_MUSIC_DISC_2,
-			new Item(unstackable()
+			props -> new Item(props.stacksTo(1)
 					.rarity(Rarity.RARE)
 					.jukeboxPlayable(BotaniaJukeboxSongs.GAIA_MUSIC_2)));
 	public static final Item WILL_OF_AHRIM = make(LibItemNames.ANCIENT_WILL_PREFIX + "ahrim",
-			new AncientWillItem(AncientWillContainer.AncientWillType.AHRIM, unstackable()
+			props -> new AncientWillItem(AncientWillContainer.AncientWillType.AHRIM, props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item WILL_OF_DHAROK = make(LibItemNames.ANCIENT_WILL_PREFIX + "dharok",
-			new AncientWillItem(AncientWillContainer.AncientWillType.DHAROK, unstackable()
+			props -> new AncientWillItem(AncientWillContainer.AncientWillType.DHAROK, props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item WILL_OF_GUTHAN = make(LibItemNames.ANCIENT_WILL_PREFIX + "guthan",
-			new AncientWillItem(AncientWillContainer.AncientWillType.GUTHAN, unstackable()
+			props -> new AncientWillItem(AncientWillContainer.AncientWillType.GUTHAN, props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item WILL_OF_TORAG = make(LibItemNames.ANCIENT_WILL_PREFIX + "torag",
-			new AncientWillItem(AncientWillContainer.AncientWillType.TORAG, unstackable()
+			props -> new AncientWillItem(AncientWillContainer.AncientWillType.TORAG, props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item WILL_OF_VERAC = make(LibItemNames.ANCIENT_WILL_PREFIX + "verac",
-			new AncientWillItem(AncientWillContainer.AncientWillType.VERAC, unstackable()
+			props -> new AncientWillItem(AncientWillContainer.AncientWillType.VERAC, props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item WILL_OF_KARIL = make(LibItemNames.ANCIENT_WILL_PREFIX + "karil",
-			new AncientWillItem(AncientWillContainer.AncientWillType.KARIL, unstackable()
+			props -> new AncientWillItem(AncientWillContainer.AncientWillType.KARIL, props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 	public static final Item THE_PINKINATOR = make(LibItemNames.THE_PINKINATOR,
-			new PinkinatorItem(unstackable()
+			props -> new PinkinatorItem(props.stacksTo(1)
 					.rarity(Rarity.RARE)));
 
 	// Brewing
 	public static final Item MANAGLASS_VIAL = make(LibItemNames.MANAGLASS_VIAL,
-			new VialItem(defaultBuilder()));
+			VialItem::new);
 	public static final Item ALFGLASS_FLASK = make(LibItemNames.ALFGLASS_FLASK,
-			new FlaskItem(defaultBuilder()));
+			FlaskItem::new);
 	public static final BaseBrewItem BREW_VIAL = make(LibItemNames.BREW_VIAL,
-			new BaseBrewItem(32, () -> MANAGLASS_VIAL, unstackable()
+			props -> new BaseBrewItem(32, () -> MANAGLASS_VIAL, props.stacksTo(1)
 					.component(BotaniaDataComponents.MAX_USES, BaseBrewItem.DEFAULT_USES_VIAL)));
 	public static final BaseBrewItem BREW_FLASK = make(LibItemNames.BREW_FLASK,
-			new BaseBrewItem(24, () -> ALFGLASS_FLASK, unstackable()
+			props -> new BaseBrewItem(24, () -> ALFGLASS_FLASK, props.stacksTo(1)
 					.component(BotaniaDataComponents.MAX_USES, BaseBrewItem.DEFAULT_USES_FLASK)));
 	public static final Item TAINTED_BLOOD_PENDANT = make(LibItemNames.TAINTED_BLOOD_PENDANT,
-			new TaintedBloodPendantItem(unstackable()));
+			props -> new TaintedBloodPendantItem(props.stacksTo(1)));
 	public static final Item INCENSE_STICK = make(LibItemNames.INCENSE_STICK,
-			new IncenseStickItem(unstackable()));
+			props -> new IncenseStickItem(props.stacksTo(1)));
 
 	// Cosmetics
 	public static final Item COSMETIC_BLACK_BOWTIE = make(LibItemNames.COSMETIC_PREFIX + "black_bowtie",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BLACK_BOWTIE, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BLACK_BOWTIE, props.stacksTo(1)));
 	public static final Item COSMETIC_BLACK_TIE = make(LibItemNames.COSMETIC_PREFIX + "black_tie",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BLACK_TIE, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BLACK_TIE, props.stacksTo(1)));
 	public static final Item COSMETIC_RED_GLASSES = make(LibItemNames.COSMETIC_PREFIX + "red_glasses",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.RED_GLASSES, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.RED_GLASSES, props.stacksTo(1)));
 	public static final Item COSMETIC_PUFFY_SCARF = make(LibItemNames.COSMETIC_PREFIX + "puffy_scarf",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.PUFFY_SCARF, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.PUFFY_SCARF, props.stacksTo(1)));
 	public static final Item COSMETIC_ENGINEER_GOGGLES = make(LibItemNames.COSMETIC_PREFIX + "engineer_goggles",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ENGINEER_GOGGLES, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ENGINEER_GOGGLES, props.stacksTo(1)));
 	public static final Item COSMETIC_EYEPATCH = make(LibItemNames.COSMETIC_PREFIX + "eyepatch",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.EYEPATCH, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.EYEPATCH, props.stacksTo(1)));
 	public static final Item COSMETIC_WICKED_EYEPATCH = make(LibItemNames.COSMETIC_PREFIX + "wicked_eyepatch",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.WICKED_EYEPATCH, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.WICKED_EYEPATCH, props.stacksTo(1)));
 	public static final Item COSMETIC_RED_RIBBONS = make(LibItemNames.COSMETIC_PREFIX + "red_ribbons",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.RED_RIBBONS, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.RED_RIBBONS, props.stacksTo(1)));
 	public static final Item COSMETIC_PINK_FLOWER_BUD = make(LibItemNames.COSMETIC_PREFIX + "pink_flower_bud",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.PINK_FLOWER_BUD, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.PINK_FLOWER_BUD, props.stacksTo(1)));
 	public static final Item COSMETIC_POLKA_DOTTED_BOWS = make(LibItemNames.COSMETIC_PREFIX + "polka_dotted_bows",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.POLKA_DOTTED_BOWS, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.POLKA_DOTTED_BOWS, props.stacksTo(1)));
 	public static final Item COSMETIC_BLUE_BUTTERFLY = make(LibItemNames.COSMETIC_PREFIX + "blue_butterfly",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BLUE_BUTTERFLY, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BLUE_BUTTERFLY, props.stacksTo(1)));
 	public static final Item COSMETIC_CAT_EARS = make(LibItemNames.COSMETIC_PREFIX + "cat_ears",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.CAT_EARS, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.CAT_EARS, props.stacksTo(1)));
 	public static final Item COSMETIC_WITCH_PIN = make(LibItemNames.COSMETIC_PREFIX + "witch_pin",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.WITCH_PIN, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.WITCH_PIN, props.stacksTo(1)));
 	public static final Item COSMETIC_DEVIL_TAIL = make(LibItemNames.COSMETIC_PREFIX + "devil_tail",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.DEVIL_TAIL, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.DEVIL_TAIL, props.stacksTo(1)));
 	public static final Item COSMETIC_KAMUI_EYE = make(LibItemNames.COSMETIC_PREFIX + "kamui_eye",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.KAMUI_EYE, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.KAMUI_EYE, props.stacksTo(1)));
 	public static final Item COSMETIC_GOOGLY_EYES = make(LibItemNames.COSMETIC_PREFIX + "googly_eyes",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.GOOGLY_EYES, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.GOOGLY_EYES, props.stacksTo(1)));
 	public static final Item COSMETIC_FOUR_LEAFED_CLOVER = make(LibItemNames.COSMETIC_PREFIX + "four_leaf_clover",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.FOUR_LEAF_CLOVER, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.FOUR_LEAF_CLOVER, props.stacksTo(1)));
 	public static final Item COSMETIC_CLOCK_EYE = make(LibItemNames.COSMETIC_PREFIX + "clock_eye",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.CLOCK_EYE, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.CLOCK_EYE, props.stacksTo(1)));
 	public static final Item COSMETIC_UNICORN_HORN = make(LibItemNames.COSMETIC_PREFIX + "unicorn_horn",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.UNICORN_HORN, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.UNICORN_HORN, props.stacksTo(1)));
 	public static final Item COSMETIC_DEVIL_HORNS = make(LibItemNames.COSMETIC_PREFIX + "devil_horns",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.DEVIL_HORNS, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.DEVIL_HORNS, props.stacksTo(1)));
 	public static final Item COSMETIC_HYPER_PLUS = make(LibItemNames.COSMETIC_PREFIX + "hyper_plus",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.HYPER_PLUS, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.HYPER_PLUS, props.stacksTo(1)));
 	public static final Item COSMETIC_BOTANIST_EMBLEM = make(LibItemNames.COSMETIC_PREFIX + "botanist_emblem",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BOTANIST_EMBLEM, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BOTANIST_EMBLEM, props.stacksTo(1)));
 	public static final Item COSMETIC_ANCIENT_MASK = make(LibItemNames.COSMETIC_PREFIX + "ancient_mask",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ANCIENT_MASK, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ANCIENT_MASK, props.stacksTo(1)));
 	public static final Item COSMETIC_EERIE_MASK = make(LibItemNames.COSMETIC_PREFIX + "eerie_mask",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.EERIE_MASK, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.EERIE_MASK, props.stacksTo(1)));
 	public static final Item COSMETIC_ALIEN_ANTENNA = make(LibItemNames.COSMETIC_PREFIX + "alien_antenna",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ALIEN_ANTENNA, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ALIEN_ANTENNA, props.stacksTo(1)));
 	public static final Item COSMETIC_ANAGLYPH_GLASSES = make(LibItemNames.COSMETIC_PREFIX + "anaglyph_glasses",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ANAGLYPH_GLASSES, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ANAGLYPH_GLASSES, props.stacksTo(1)));
 	public static final Item COSMETIC_ORANGE_SHADES = make(LibItemNames.COSMETIC_PREFIX + "orange_shades",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ORANGE_SHADES, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.ORANGE_SHADES, props.stacksTo(1)));
 	public static final Item COSMETIC_GROUCHO_GLASSES = make(LibItemNames.COSMETIC_PREFIX + "groucho_glasses",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.GROUCHO_GLASSES, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.GROUCHO_GLASSES, props.stacksTo(1)));
 	public static final Item COSMETIC_THICK_EYEBROWS = make(LibItemNames.COSMETIC_PREFIX + "thick_eyebrows",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.THICK_EYEBROWS, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.THICK_EYEBROWS, props.stacksTo(1)));
 	public static final Item COSMETIC_LUSITANIC_SHIELD = make(LibItemNames.COSMETIC_PREFIX + "lusitanic_shield",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.LUSITANIC_SHIELD, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.LUSITANIC_SHIELD, props.stacksTo(1)));
 	public static final Item COSMETIC_TINY_POTATO_MASK = make(LibItemNames.COSMETIC_PREFIX + "tiny_potato_mask",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.TINY_POTATO_MASK, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.TINY_POTATO_MASK, props.stacksTo(1)));
 	public static final Item COSMETIC_QUESTGIVER_MARK = make(LibItemNames.COSMETIC_PREFIX + "questgiver_mark",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.QUESTGIVER_MARK, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.QUESTGIVER_MARK, props.stacksTo(1)));
 	public static final Item COSMETIC_THINKING_HAND = make(LibItemNames.COSMETIC_PREFIX + "thinking_hand",
-			new CosmeticBaubleItem(CosmeticBaubleItem.Variant.THINKING_HAND, unstackable()));
+			props -> new CosmeticBaubleItem(CosmeticBaubleItem.Variant.THINKING_HAND, props.stacksTo(1)));
 
 	// Banner patterns
 	public static final Item BANNER_PATTERN_BOTANIA = make("botania_banner_pattern",
-			new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_BOTANIA, unstackable()
+			props -> new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_BOTANIA, props.stacksTo(1)
 					.rarity(Rarity.UNCOMMON)));
 	public static final Item BANNER_PATTERN_MATERIALS = make("materials_banner_pattern",
-			new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_MATERIALS, unstackable()));
+			props -> new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_MATERIALS, props.stacksTo(1)));
 	public static final Item BANNER_PATTERN_SPARK_AUGMENTS = make("spark_augments_banner_pattern",
-			new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_SPARK_AUGMENTS, unstackable()));
+			props -> new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_SPARK_AUGMENTS, props.stacksTo(1)));
 	public static final Item BANNER_PATTERN_TOOLS = make("tools_banner_pattern",
-			new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_TOOLS, unstackable()));
+			props -> new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_TOOLS, props.stacksTo(1)));
 
 	public static final MenuType<TrinketCaseMenu> TRINKET_CASE_MENU_TYPE =
 			XplatAbstractions.INSTANCE.createMenuType(TrinketCaseMenu::new, ByteBufCodecs.BOOL);
@@ -954,7 +957,8 @@ public final class BotaniaItems {
 		return InteractionResult.SUCCESS;
 	}
 
-	private static <T extends Item> T make(String name, T item) {
+	private static <T extends Item> T make(String name, Function<Item.Properties, T> factory) {
+		T item = factory.apply(defaultBuilder().setId(ResourceKey.create(Registries.ITEM, botaniaRL(name))));
 		var old = ALL.put(name, item);
 		if (old != null) {
 			throw new IllegalArgumentException("Typo? Duplicate name: " + name);
@@ -964,25 +968,15 @@ public final class BotaniaItems {
 
 	private static MysticalPetalItem makePetal(DyeColor dyeColor) {
 		return make(dyeColor.getName() + LibItemNames.MYSTICAL_PETAL_SUFFIX,
-				new MysticalPetalItem(BotaniaBlocks.getBuriedPetal(dyeColor), dyeColor, defaultBuilder()));
+				props -> new MysticalPetalItem(BotaniaBlocks.getBuriedPetal(dyeColor), dyeColor, props));
 	}
 
 	public static Item.Properties defaultBuilder() {
 		return new Item.Properties();
 	}
 
-	public static Item.Properties manaRepairable(int manaPerDamage) {
-		return defaultBuilder()
-				.component(BotaniaDataComponents.MANA_REPAIR, new ManaRepair(manaPerDamage, 2 * manaPerDamage));
-	}
-
-	private static Item.Properties stackTo16() {
-		return defaultBuilder().stacksTo(16);
-
-	}
-
-	private static Item.Properties unstackable() {
-		return defaultBuilder().stacksTo(1);
+	private static Item.Properties manaRepairable(Item.Properties properties, int manaPerDamage) {
+		return properties.component(BotaniaDataComponents.MANA_REPAIR, new ManaRepair(manaPerDamage, 2 * manaPerDamage));
 	}
 
 	public static void registerItems(BiConsumer<Item, Identifier> r) {
