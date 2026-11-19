@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -16,6 +15,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -121,18 +122,18 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag cmp) {
-		liveTime = cmp.getInt(TAG_TIME);
-		burstColor = cmp.getInt(TAG_BURST_COLOR);
-		burstsFired = cmp.getInt(TAG_BURSTS_FIRED);
-		deathTime = cmp.getInt(TAG_DEATH_TIME);
+	protected void readAdditionalSaveData(ValueInput input) {
+		liveTime = input.getIntOr(TAG_TIME, 0);
+		burstColor = input.getIntOr(TAG_BURST_COLOR, 0);
+		burstsFired = input.getIntOr(TAG_BURSTS_FIRED, 0);
+		deathTime = input.getIntOr(TAG_DEATH_TIME, 0);
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag cmp) {
-		cmp.putInt(TAG_TIME, liveTime);
-		cmp.putInt(TAG_BURST_COLOR, burstColor);
-		cmp.putInt(TAG_BURSTS_FIRED, burstsFired);
-		cmp.putInt(TAG_DEATH_TIME, deathTime);
+	protected void addAdditionalSaveData(ValueOutput output) {
+		output.putInt(TAG_TIME, liveTime);
+		output.putInt(TAG_BURST_COLOR, burstColor);
+		output.putInt(TAG_BURSTS_FIRED, burstsFired);
+		output.putInt(TAG_DEATH_TIME, deathTime);
 	}
 }

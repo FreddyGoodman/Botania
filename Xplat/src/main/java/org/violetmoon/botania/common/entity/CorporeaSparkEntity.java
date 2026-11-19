@@ -16,7 +16,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -32,6 +31,8 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -309,17 +310,17 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag cmp) {
-		super.readAdditionalSaveData(cmp);
-		setMaster(cmp.getBoolean(TAG_MASTER));
-		setCreative(cmp.getBoolean(TAG_CREATIVE));
+	protected void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		setMaster(input.getBooleanOr(TAG_MASTER, false));
+		setCreative(input.getBooleanOr(TAG_CREATIVE, false));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag cmp) {
-		super.addAdditionalSaveData(cmp);
-		cmp.putBoolean(TAG_MASTER, isMaster());
-		cmp.putBoolean(TAG_CREATIVE, isCreative());
+	protected void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putBoolean(TAG_MASTER, isMaster());
+		output.putBoolean(TAG_CREATIVE, isCreative());
 	}
 
 	public record WandHud(CorporeaSparkEntity entity) implements WandHUD {

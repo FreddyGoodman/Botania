@@ -11,8 +11,6 @@ package org.violetmoon.botania.common.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,6 +25,8 @@ import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -136,14 +136,14 @@ public class LuminizerMoverEntity extends Entity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag cmp) {
-		setExit(NbtUtils.readBlockPos(cmp, TAG_EXIT_POS).orElse(blockPosition()));
+	protected void readAdditionalSaveData(ValueInput input) {
+		setExit(input.read(TAG_EXIT_POS, BlockPos.CODEC).orElse(blockPosition()));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag cmp) {
+	protected void addAdditionalSaveData(ValueOutput output) {
 		BlockPos exit = getExitPos();
-		cmp.put(TAG_EXIT_POS, NbtUtils.writeBlockPos(exit));
+		output.store(TAG_EXIT_POS, BlockPos.CODEC, exit);
 	}
 
 	// [VanillaCopy] Pig logic to select a dismount location, but using horizontal passenger direction instead of luminizer movement direction

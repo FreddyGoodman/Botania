@@ -9,7 +9,6 @@
 package org.violetmoon.botania.common.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -18,6 +17,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.violetmoon.botania.api.item.SparkEntity;
 import org.violetmoon.botania.api.mana.ManaCollisionGhost;
@@ -70,15 +71,15 @@ public abstract class SparkBaseEntity extends Entity implements SparkEntity, Man
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compound) {
-		setInvisible(compound.getBoolean(TAG_INVIS));
-		setNetwork(DyeColor.byId(compound.getInt(TAG_NETWORK)));
+	protected void readAdditionalSaveData(ValueInput input) {
+		setInvisible(input.getBooleanOr(TAG_INVIS, false));
+		setNetwork(DyeColor.byId(input.getIntOr(TAG_NETWORK, 0)));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compound) {
-		compound.putBoolean(TAG_INVIS, isInvisible());
-		compound.putInt(TAG_NETWORK, getNetwork().getId());
-	}
+	protected void addAdditionalSaveData(ValueOutput output) {
+		output.putBoolean(TAG_INVIS, isInvisible());
+		output.putInt(TAG_NETWORK, getNetwork().getId());
+		}
 
 }

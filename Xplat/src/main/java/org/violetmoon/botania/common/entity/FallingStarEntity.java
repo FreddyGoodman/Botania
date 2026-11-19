@@ -9,7 +9,6 @@
 package org.violetmoon.botania.common.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -19,6 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -123,14 +124,14 @@ public class FallingStarEntity extends LegallyDistinctThrowableProjectile {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag) {
-		super.addAdditionalSaveData(tag);
-		tag.putBoolean(TAG_HAS_BEEN_IN_AIR, hasBeenInAir);
+	protected void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putBoolean(TAG_HAS_BEEN_IN_AIR, hasBeenInAir);
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag tag) {
-		super.readAdditionalSaveData(tag);
-		this.hasBeenInAir = tag.getBoolean(TAG_HAS_BEEN_IN_AIR);
+	protected void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		this.hasBeenInAir = input.getBooleanOr(TAG_HAS_BEEN_IN_AIR, false);
 	}
 }

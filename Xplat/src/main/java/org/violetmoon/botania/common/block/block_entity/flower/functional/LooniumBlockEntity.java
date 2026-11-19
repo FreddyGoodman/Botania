@@ -26,6 +26,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffects;
@@ -42,6 +43,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -243,7 +245,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		}
 
 		if (pickedMobType.nbt != null) {
-			mob.readAdditionalSaveData(pickedMobType.nbt);
+			mob.readAdditionalSaveData(TagValueInput.create(ProblemReporter.DISCARDING, mob.registryAccess(), pickedMobType.nbt));
 		}
 		if (pickedMobType.spawnAsBaby != null) {
 			mob.setBaby(pickedMobType.spawnAsBaby);

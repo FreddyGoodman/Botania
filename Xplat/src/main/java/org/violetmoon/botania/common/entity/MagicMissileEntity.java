@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,6 +26,8 @@ import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -158,15 +159,15 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag cmp) {
-		super.addAdditionalSaveData(cmp);
-		cmp.putInt(TAG_TIME, time);
+	public void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putInt(TAG_TIME, time);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag cmp) {
-		super.readAdditionalSaveData(cmp);
-		time = cmp.getInt(TAG_TIME);
+	public void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		time = input.getIntOr(TAG_TIME, 0);
 	}
 
 	public boolean findTarget() {

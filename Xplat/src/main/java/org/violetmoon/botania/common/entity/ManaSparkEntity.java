@@ -14,8 +14,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,6 +27,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -376,19 +376,17 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compoundTag) {
-		super.readAdditionalSaveData(compoundTag);
-		if (compoundTag.contains(TAG_UPGRADE, Tag.TAG_COMPOUND)) {
-			setUpgrade(ItemStack.parseOptional(registryAccess(), compoundTag.getCompound(TAG_UPGRADE)));
-		}
+	protected void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		input.read(TAG_UPGRADE, ItemStack.CODEC).ifPresent(this::setUpgrade);
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compoundTag) {
-		super.addAdditionalSaveData(compoundTag);
+	protected void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
 		ItemStack upgrade = getUpgrade();
 		if (!upgrade.isEmpty()) {
-			compoundTag.put(TAG_UPGRADE, upgrade.save(registryAccess()));
+			output.store(TAG_UPGRADE, ItemStack.CODEC, upgrade);
 		}
 	}
 

@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.entity;
 
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -24,6 +23,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.violetmoon.botania.common.item.BotaniaItems;
 
@@ -118,15 +119,15 @@ public class EnderEssenceCloudEntity extends Entity {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag tag) {
-		tickCount = tag.getInt(TAG_AGE);
-		setFromEnderman(tag.getBoolean(TAG_FROM_ENDERMAN));
+	protected void readAdditionalSaveData(ValueInput input) {
+		tickCount = input.getIntOr(TAG_AGE, 0);
+		setFromEnderman(input.getBooleanOr(TAG_FROM_ENDERMAN, false));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag) {
-		tag.putInt(TAG_AGE, tickCount);
-		tag.putBoolean(TAG_FROM_ENDERMAN, isFromEnderman());
+	protected void addAdditionalSaveData(ValueOutput output) {
+		output.putInt(TAG_AGE, tickCount);
+		output.putBoolean(TAG_FROM_ENDERMAN, isFromEnderman());
 	}
 
 	public ItemStack getBottledItem() {

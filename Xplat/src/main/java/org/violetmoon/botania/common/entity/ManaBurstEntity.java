@@ -10,17 +10,13 @@ package org.violetmoon.botania.common.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -36,6 +32,8 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -237,87 +235,71 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag tag) {
-		super.addAdditionalSaveData(tag);
+	public void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
 		if (fake) {
 			var msg = String.format("Fake bursts should never be saved at any time! Source pos %s, owner %s",
 					getBurstSourcePosition(), getOwner());
 			throw new IllegalStateException(msg);
 		}
-		tag.putInt(TAG_TICKS_EXISTED, getTicksExisted());
-		tag.putInt(TAG_COLOR, getColor());
-		tag.putInt(TAG_MANA, getMana());
-		tag.putInt(TAG_STARTING_MANA, getStartingMana());
-		tag.putInt(TAG_MIN_MANA_LOSS, getMinManaLoss());
-		tag.putFloat(TAG_TICK_MANA_LOSS, getManaLossPerTick());
-		tag.putFloat(TAG_GRAVITY, getBurstGravity());
+		output.putInt(TAG_TICKS_EXISTED, getTicksExisted());
+		output.putInt(TAG_COLOR, getColor());
+		output.putInt(TAG_MANA, getMana());
+		output.putInt(TAG_STARTING_MANA, getStartingMana());
+		output.putInt(TAG_MIN_MANA_LOSS, getMinManaLoss());
+		output.putFloat(TAG_TICK_MANA_LOSS, getManaLossPerTick());
+		output.putFloat(TAG_GRAVITY, getBurstGravity());
 
-		ItemStack stack = getSourceLens();
-		Tag lensCmp = new CompoundTag();
-		if (!stack.isEmpty()) {
-			lensCmp = stack.save(level().registryAccess());
-		}
-		tag.put(TAG_LENS_STACK, lensCmp);
+		output.store(TAG_LENS_STACK, ItemStack.OPTIONAL_CODEC, getSourceLens());
 
 		Optional<GlobalPos> sourcePos = getBurstSourcePosition();
 		if (sourcePos.isPresent()) {
 			BlockPos coords = sourcePos.get().pos();
-			tag.put(TAG_SPREADER_POS, NbtUtils.writeBlockPos(coords));
-			tag.putString(TAG_SPREADER_DIM, sourcePos.get().dimension().identifier().toString());
+			output.store(TAG_SPREADER_POS, BlockPos.CODEC, coords);
+			output.store(TAG_SPREADER_DIM, Identifier.CODEC, sourcePos.get().dimension().identifier());
 		}
 
 		if (lastCollision != null) {
-			tag.put(TAG_LAST_COLLISION_POS, NbtUtils.writeBlockPos(lastCollision));
+			output.store(TAG_LAST_COLLISION_POS, BlockPos.CODEC, lastCollision);
 		}
 
 		UUID identity = getShooterUUID();
 		boolean hasShooter = identity != null;
-		tag.putBoolean(TAG_HAS_SHOOTER, hasShooter);
+		output.putBoolean(TAG_HAS_SHOOTER, hasShooter);
 		if (hasShooter) {
-			tag.putUUID(TAG_SHOOTER, identity);
+			output.store(TAG_SHOOTER, UUIDUtil.CODEC, identity);
 		}
-		tag.putBoolean(TAG_WARPED, warped);
-		tag.putInt(TAG_ORBIT_TIME, orbitTime);
-		tag.putBoolean(TAG_TRIPPED, tripped);
+		output.putBoolean(TAG_WARPED, warped);
+		output.putInt(TAG_ORBIT_TIME, orbitTime);
+		output.putBoolean(TAG_TRIPPED, tripped);
 		if (magnetizePos != null) {
-			tag.put(TAG_MAGNETIZE_POS, NbtUtils.writeBlockPos(magnetizePos));
+			output.store(TAG_MAGNETIZE_POS, BlockPos.CODEC, magnetizePos);
 		}
-		tag.putBoolean(TAG_LEFT_SOURCE, hasLeftSource());
+		output.putBoolean(TAG_LEFT_SOURCE, hasLeftSource());
 
-		var alreadyCollidedAt = new ListTag();
-		for (BlockPos pos : this.alreadyCollidedAt) {
-			alreadyCollidedAt.add(NbtUtils.writeBlockPos(pos));
-		}
-		tag.put(TAG_ALREADY_COLLIDED_AT, alreadyCollidedAt);
+		var collisionPositions = output.list(TAG_ALREADY_COLLIDED_AT, BlockPos.CODEC);
+		alreadyCollidedAt.forEach(collisionPositions::add);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag cmp) {
-		super.readAdditionalSaveData(cmp);
-		setTicksExisted(cmp.getInt(TAG_TICKS_EXISTED));
-		setColor(cmp.getInt(TAG_COLOR));
-		setMana(cmp.getInt(TAG_MANA));
-		setStartingMana(cmp.getInt(TAG_STARTING_MANA));
-		setMinManaLoss(cmp.getInt(TAG_MIN_MANA_LOSS));
-		setManaLossPerTick(cmp.getFloat(TAG_TICK_MANA_LOSS));
-		setGravity(cmp.getFloat(TAG_GRAVITY));
+	public void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		setTicksExisted(input.getIntOr(TAG_TICKS_EXISTED, 0));
+		setColor(input.getIntOr(TAG_COLOR, 0));
+		setMana(input.getIntOr(TAG_MANA, 0));
+		setStartingMana(input.getIntOr(TAG_STARTING_MANA, 0));
+		setMinManaLoss(input.getIntOr(TAG_MIN_MANA_LOSS, 0));
+		setManaLossPerTick(input.getFloatOr(TAG_TICK_MANA_LOSS, 0));
+		setGravity(input.getFloatOr(TAG_GRAVITY, 0));
 
-		CompoundTag lensCmp = cmp.getCompound(TAG_LENS_STACK);
-		ItemStack stack = ItemStack.parseOptional(level().registryAccess(), lensCmp);
-		if (!stack.isEmpty()) {
-			setSourceLens(stack);
-		} else {
-			setSourceLens(ItemStack.EMPTY);
-		}
+		setSourceLens(input.read(TAG_LENS_STACK, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
 
-		NbtUtils.readBlockPos(cmp, TAG_SPREADER_POS).ifPresentOrElse(
+		input.read(TAG_SPREADER_POS, BlockPos.CODEC).ifPresentOrElse(
 				sourceCoords -> {
 					if (sourceCoords.getY() == Integer.MIN_VALUE) {
 						setBurstSourcePosition(null);
 					} else {
-						Identifier dim = cmp.contains(TAG_SPREADER_DIM)
-								? Identifier.tryParse(cmp.getString(TAG_SPREADER_DIM))
-								: null;
+						Identifier dim = input.read(TAG_SPREADER_DIM, Identifier.CODEC).orElse(null);
 						setBurstSourcePosition(GlobalPos.of(
 								dim != null
 										? ResourceKey.create(Registries.DIMENSION, dim)
@@ -328,34 +310,27 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 				() -> setBurstSourcePosition(null)
 		);
 
-		NbtUtils.readBlockPos(cmp, TAG_LAST_COLLISION_POS).ifPresent(pos -> lastCollision = pos);
+		input.read(TAG_LAST_COLLISION_POS, BlockPos.CODEC).ifPresent(pos -> lastCollision = pos);
 
 		// Reread Motion because Entity.load clamps it to +/-10
-		ListTag motion = cmp.getList("Motion", Tag.TAG_DOUBLE);
-		setDeltaMovement(motion.getDouble(0), motion.getDouble(1), motion.getDouble(2));
+		input.read("Motion", Vec3.CODEC).ifPresent(this::setDeltaMovement);
 
-		boolean hasShooter = cmp.getBoolean(TAG_HAS_SHOOTER);
+		boolean hasShooter = input.getBooleanOr(TAG_HAS_SHOOTER, false);
 		if (hasShooter) {
-			UUID serializedUuid = cmp.getUUID(TAG_SHOOTER);
+			UUID serializedUuid = input.read(TAG_SHOOTER, UUIDUtil.CODEC).orElse(null);
 			UUID identity = getShooterUUID();
-			if (!serializedUuid.equals(identity)) {
+			if (serializedUuid != null && !serializedUuid.equals(identity)) {
 				setShooterUUID(serializedUuid);
 			}
 		}
-		warped = cmp.getBoolean(TAG_WARPED);
-		orbitTime = cmp.getInt(TAG_ORBIT_TIME);
-		tripped = cmp.getBoolean(TAG_TRIPPED);
-		magnetizePos = NbtUtils.readBlockPos(cmp, TAG_MAGNETIZE_POS).orElse(null);
-		entityData.set(LEFT_SOURCE_POS, cmp.getBoolean(TAG_LEFT_SOURCE));
+		warped = input.getBooleanOr(TAG_WARPED, false);
+		orbitTime = input.getIntOr(TAG_ORBIT_TIME, 0);
+		tripped = input.getBooleanOr(TAG_TRIPPED, false);
+		magnetizePos = input.read(TAG_MAGNETIZE_POS, BlockPos.CODEC).orElse(null);
+		entityData.set(LEFT_SOURCE_POS, input.getBooleanOr(TAG_LEFT_SOURCE, false));
 
 		this.alreadyCollidedAt.clear();
-		for (var tag : cmp.getList(TAG_ALREADY_COLLIDED_AT, Tag.TAG_INT_ARRAY)) {
-			// NbtUtils doesn't help in this case
-			int[] coords = ((IntArrayTag) tag).getAsIntArray();
-			if (coords.length == 3) {
-				this.alreadyCollidedAt.add(new BlockPos(coords[0], coords[1], coords[2]));
-			}
-		}
+		input.listOrEmpty(TAG_ALREADY_COLLIDED_AT, BlockPos.CODEC).forEach(alreadyCollidedAt::add);
 	}
 
 	public void particles() {

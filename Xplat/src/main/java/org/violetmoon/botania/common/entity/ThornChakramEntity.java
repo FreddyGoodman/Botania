@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.entity;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -30,6 +29,8 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -211,21 +212,19 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
+	public void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
 		if (!stack.isEmpty()) {
-			compound.put("fly_stack", stack.save(level().registryAccess()));
+			output.store("fly_stack", ItemStack.CODEC, stack);
 		}
-		compound.putBoolean("flare", isFire());
+		output.putBoolean("flare", isFire());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		if (compound.contains("fly_stack")) {
-			stack = ItemStack.parseOptional(level().registryAccess(), compound.getCompound("fly_stack"));
-		}
-		setFire(compound.getBoolean("flare"));
+	public void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		input.read("fly_stack", ItemStack.CODEC).ifPresent(savedStack -> stack = savedStack);
+		setFire(input.getBooleanOr("flare", false));
 	}
 
 	@Override

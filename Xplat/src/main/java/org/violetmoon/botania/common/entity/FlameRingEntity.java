@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,6 +16,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.violetmoon.botania.client.fx.WispParticleData;
@@ -99,9 +100,9 @@ public class FlameRingEntity extends Entity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag var1) {}
+	protected void readAdditionalSaveData(ValueInput input) {}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag var1) {}
+	protected void addAdditionalSaveData(ValueOutput output) {}
 
 }

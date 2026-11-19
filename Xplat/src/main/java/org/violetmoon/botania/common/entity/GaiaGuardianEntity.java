@@ -20,8 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -29,14 +27,15 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.*;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.BossEvent;
@@ -65,6 +64,9 @@ import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -489,29 +491,29 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag cmp) {
-		super.addAdditionalSaveData(cmp);
-		cmp.putInt(TAG_INVUL_TIME, getInvulTime());
-		cmp.putBoolean(TAG_AGGRO, aggro);
-		cmp.putInt(TAG_MOB_SPAWN_TICKS, mobSpawnTicks);
+	public void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putInt(TAG_INVUL_TIME, getInvulTime());
+		output.putBoolean(TAG_AGGRO, aggro);
+		output.putInt(TAG_MOB_SPAWN_TICKS, mobSpawnTicks);
 
-		cmp.put(TAG_SOURCE, NbtUtils.writeBlockPos(source));
+		output.store(TAG_SOURCE, BlockPos.CODEC, source);
 
-		cmp.putBoolean(TAG_HARD_MODE, hardMode);
-		cmp.putInt(TAG_PLAYER_COUNT, getInitialPlayerCount());
+		output.putBoolean(TAG_HARD_MODE, hardMode);
+		output.putInt(TAG_PLAYER_COUNT, getInitialPlayerCount());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag cmp) {
-		super.readAdditionalSaveData(cmp);
-		setInvulTime(cmp.getInt(TAG_INVUL_TIME));
-		aggro = cmp.getBoolean(TAG_AGGRO);
-		mobSpawnTicks = cmp.getInt(TAG_MOB_SPAWN_TICKS);
+	public void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		setInvulTime(input.getIntOr(TAG_INVUL_TIME, 0));
+		aggro = input.getBooleanOr(TAG_AGGRO, false);
+		mobSpawnTicks = input.getIntOr(TAG_MOB_SPAWN_TICKS, 0);
 
-		setSource(NbtUtils.readBlockPos(cmp, TAG_SOURCE).orElse(Bound.UNBOUND_POS));
+		setSource(input.read(TAG_SOURCE, BlockPos.CODEC).orElse(Bound.UNBOUND_POS));
 
-		setHardMode(cmp.getBoolean(TAG_HARD_MODE));
-		setInitialPlayerCount(cmp.contains(TAG_PLAYER_COUNT) ? cmp.getInt(TAG_PLAYER_COUNT) : 1);
+		setHardMode(input.getBooleanOr(TAG_HARD_MODE, false));
+		setInitialPlayerCount(input.getIntOr(TAG_PLAYER_COUNT, 1));
 
 		if (this.hasCustomName()) {
 			this.bossInfo.setName(this.getDisplayName());
@@ -880,7 +882,7 @@ public class GaiaGuardianEntity extends Mob {
 						}
 
 						if (pickedMobType.nbt != null) {
-							mob.readAdditionalSaveData(pickedMobType.nbt);
+							mob.readAdditionalSaveData(TagValueInput.create(ProblemReporter.DISCARDING, mob.registryAccess(), pickedMobType.nbt));
 						}
 						if (pickedMobType.spawnAsBaby != null) {
 							mob.setBaby(pickedMobType.spawnAsBaby);

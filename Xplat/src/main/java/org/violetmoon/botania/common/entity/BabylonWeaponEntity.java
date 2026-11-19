@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.entity;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -25,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -196,25 +197,25 @@ public class BabylonWeaponEntity extends LegallyDistinctThrowableProjectile {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag cmp) {
-		super.addAdditionalSaveData(cmp);
-		cmp.putBoolean(TAG_CHARGING, isCharging());
-		cmp.putInt(TAG_VARIETY, getVariety());
-		cmp.putInt(TAG_CHARGE_TICKS, getChargeTicks());
-		cmp.putInt(TAG_LIVE_TICKS, getLiveTicks());
-		cmp.putInt(TAG_DELAY, getDelay());
-		cmp.putFloat(TAG_ROTATION, getRotation());
+	public void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putBoolean(TAG_CHARGING, isCharging());
+		output.putInt(TAG_VARIETY, getVariety());
+		output.putInt(TAG_CHARGE_TICKS, getChargeTicks());
+		output.putInt(TAG_LIVE_TICKS, getLiveTicks());
+		output.putInt(TAG_DELAY, getDelay());
+		output.putFloat(TAG_ROTATION, getRotation());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag cmp) {
-		super.readAdditionalSaveData(cmp);
-		setCharging(cmp.getBoolean(TAG_CHARGING));
-		setVariety(cmp.getInt(TAG_VARIETY));
-		setChargeTicks(cmp.getInt(TAG_CHARGE_TICKS));
-		setLiveTicks(cmp.getInt(TAG_LIVE_TICKS));
-		setDelay(cmp.getInt(TAG_DELAY));
-		setRotation(cmp.getFloat(TAG_ROTATION));
+	public void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		setCharging(input.getBooleanOr(TAG_CHARGING, false));
+		setVariety(input.getIntOr(TAG_VARIETY, 0));
+		setChargeTicks(input.getIntOr(TAG_CHARGE_TICKS, 0));
+		setLiveTicks(input.getIntOr(TAG_LIVE_TICKS, 0));
+		setDelay(input.getIntOr(TAG_DELAY, 0));
+		setRotation(input.getFloatOr(TAG_ROTATION, 0));
 	}
 
 	public boolean isCharging() {
