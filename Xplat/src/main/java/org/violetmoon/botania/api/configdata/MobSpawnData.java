@@ -17,10 +17,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.random.Weight;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -29,12 +31,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class MobSpawnData extends WeightedEntry.IntrusiveBase {
+public class MobSpawnData {
 	public static final Codec<MobSpawnData> CODEC = RecordCodecBuilder.create(
 			instance -> instance.group(
 					BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("type").forGetter(msd -> msd.type),
-					Weight.CODEC.fieldOf("weight").forGetter(IntrusiveBase::getWeight),
-					IntProvider.CODEC.optionalFieldOf("count", ConstantInt.of(1))
+					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weight").forGetter(MobSpawnData::getWeight),
+					IntProviders.CODEC.optionalFieldOf("count", ConstantInt.of(1))
 							.forGetter(msd -> msd.count),
 					Codec.BOOL.optionalFieldOf("spawnAsBaby").forGetter(msd -> Optional.ofNullable(msd.spawnAsBaby)),
 					CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(msd -> Optional.ofNullable(msd.nbt)),
@@ -50,6 +52,10 @@ public class MobSpawnData extends WeightedEntry.IntrusiveBase {
 			).apply(instance, MobSpawnData::create)
 	);
 
+	static final Codec<WeightedList<MobSpawnData>> WEIGHTED_LIST_CODEC = CODEC.listOf().xmap(
+			MobSpawnData::weightedList,
+			list -> list.unwrap().stream().map(Weighted::value).toList());
+	private final int weight;
 	public final EntityType<?> type;
 	public final IntProvider count;
 	@Nullable
@@ -64,13 +70,16 @@ public class MobSpawnData extends WeightedEntry.IntrusiveBase {
 	@Nullable
 	public final List<MobAttributeModifier> attributeModifiers;
 
-	private MobSpawnData(EntityType<?> type, Weight weight, IntProvider count, @Nullable Boolean spawnAsBaby,
+	private MobSpawnData(EntityType<?> type, int weight, IntProvider count, @Nullable Boolean spawnAsBaby,
 			@Nullable CompoundTag nbt,
 			boolean allowEquipmentDrops,
 			@Nullable ResourceKey<LootTable> equipmentTable,
 			@Nullable List<MobEffectToApply> effectsToApply,
 			@Nullable List<MobAttributeModifier> attributeModifiers) {
-		super(weight);
+		if (weight < 0) {
+			throw new IllegalArgumentException("Weight should be >= 0");
+		}
+		this.weight = weight;
 		this.type = type;
 		this.count = count;
 		this.spawnAsBaby = spawnAsBaby;
@@ -79,6 +88,14 @@ public class MobSpawnData extends WeightedEntry.IntrusiveBase {
 		this.equipmentTable = equipmentTable;
 		this.effectsToApply = effectsToApply != null ? ImmutableList.copyOf(effectsToApply) : null;
 		this.attributeModifiers = attributeModifiers != null ? ImmutableList.copyOf(attributeModifiers) : null;
+	}
+
+	static WeightedList<MobSpawnData> weightedList(List<MobSpawnData> entries) {
+		return WeightedList.of(entries.stream().map(entry -> new Weighted<>(entry, entry.getWeight())).toList());
+	}
+
+	public int getWeight() {
+		return weight;
 	}
 
 	public static Builder entityWeight(EntityType<?> type, int weight) {
@@ -102,7 +119,7 @@ public class MobSpawnData extends WeightedEntry.IntrusiveBase {
 	// Codecs don't support setting null as intentional default value for optional fields, so we do this.
 	// (blame com.mojang.datafixers.util.Either::getLeft using Optional::of instead Optional.ofNullable)
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	private static MobSpawnData create(EntityType<?> type, Weight weight, IntProvider count,
+	private static MobSpawnData create(EntityType<?> type, int weight, IntProvider count,
 			Optional<Boolean> spawnAsBaby,
 			Optional<CompoundTag> nbt,
 			boolean allowEquipmentDrops,
@@ -203,7 +220,7 @@ public class MobSpawnData extends WeightedEntry.IntrusiveBase {
 		}
 
 		public MobSpawnData build() {
-			return new MobSpawnData(type, Weight.of(weight), count, spawnAsBaby, nbt, allowEquipmentDrops,
+			return new MobSpawnData(type, weight, count, spawnAsBaby, nbt, allowEquipmentDrops,
 					equipmentTable, effectsToApply, attributeModifiers);
 		}
 	}

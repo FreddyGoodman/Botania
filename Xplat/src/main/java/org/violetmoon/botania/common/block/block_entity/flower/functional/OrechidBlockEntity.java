@@ -13,8 +13,7 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.util.random.WeightedRandom;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -96,12 +95,11 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	@Nullable
 	private OrechidRecipe findMatchingRecipe(BlockPos coords) {
 		BlockState input = getLevel().getBlockState(coords);
-		List<WeightedEntry.Wrapper<OrechidRecipe>> values = new ArrayList<>();
+		WeightedList.Builder<OrechidRecipe> values = WeightedList.builder();
 		for (OrechidRecipe recipe : OrechidManager.getMatchingRecipes(getLevel().getRecipeManager(), getRecipeType(), input)) {
-			values.add(WeightedEntry.wrap(recipe, recipe.getWeight(getLevel(), coords)));
+			values.add(recipe, recipe.getWeight(getLevel(), coords));
 		}
-		return WeightedRandom.getRandomItem(getLevel().getRandom(), values)
-				.map(WeightedEntry.Wrapper::data)
+		return values.build().getRandom(getLevel().getRandom())
 				.orElse(null);
 	}
 

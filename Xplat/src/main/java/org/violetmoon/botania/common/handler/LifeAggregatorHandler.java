@@ -11,7 +11,7 @@ package org.violetmoon.botania.common.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
@@ -35,13 +35,13 @@ public class LifeAggregatorHandler {
 	 * @return The {@link EntityType} for the list's first entry, if the list has exactly one entry, otherwise
 	 *         <code>null</code>.
 	 */
-	public static @Nullable EntityType<?> getEntityType(SimpleWeightedRandomList<SpawnData> spawnPotentials) {
+	public static @Nullable EntityType<?> getEntityType(WeightedList<SpawnData> spawnPotentials) {
 		var unwrappedList = spawnPotentials.unwrap();
 		if (unwrappedList.size() != 1) {
 			return null;
 		}
 
-		return EntityType.by(unwrappedList.getFirst().data().entityToSpawn()).orElse(null);
+		return unwrappedList.getFirst().value().getEntityToSpawn().read("id", EntityType.CODEC).orElse(null);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class LifeAggregatorHandler {
 		@Override
 		public @Nullable EntityType<?> getEntityType(@Nullable Level level, RandomSource random, BlockPos pos) {
 			SpawnData data = ((BaseSpawnerAccessor) this.blockEntity.getSpawner()).botania_getOrCreateNextSpawnData(level, random, pos);
-			return EntityType.by(data.entityToSpawn()).orElse(null);
+			return data.getEntityToSpawn().read("id", EntityType.CODEC).orElse(null);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class LifeAggregatorHandler {
 		@Override
 		public @Nullable EntityType<?> getEntityType(@Nullable Level level, RandomSource random, BlockPos pos) {
 			return LifeAggregatorHandler.getEntityType(
-					this.blockEntity.getTrialSpawner().getConfig().spawnPotentialsDefinition());
+					this.blockEntity.getTrialSpawner().activeConfig().spawnPotentialsDefinition());
 		}
 	}
 }

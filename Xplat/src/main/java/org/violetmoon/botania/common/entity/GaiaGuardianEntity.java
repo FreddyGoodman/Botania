@@ -36,7 +36,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.*;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
@@ -877,8 +878,8 @@ public class GaiaGuardianEntity extends Mob {
 		int initialPlayerCount = getInitialPlayerCount();
 		ServerLevel serverLevel = (ServerLevel) level();
 		float range = 6F;
-		WeightedRandomList<MobSpawnData> spawnedMobs = getConfigData(GaiaFightConfiguration::spawnedMobs)
-				.orElseGet(WeightedRandomList::create);
+		WeightedList<MobSpawnData> spawnedMobs = getConfigData(GaiaFightConfiguration::spawnedMobs)
+				.orElseGet(WeightedList::of);
 		for (int pl = 0; pl < initialPlayerCount; pl++) {
 			int numSpawnAttempts = getConfigDataIntSample(GaiaFightConfiguration::mobSpawnsPerPlayer).orElse(1);
 			for (int i = 0; i < numSpawnAttempts; i++) {
@@ -916,7 +917,7 @@ public class GaiaGuardianEntity extends Mob {
 								mob.restrictTo(source, ARENA_RANGE);
 								GaiaFightParticipant.HOLDER.setFor(mob,
 										new GaiaFightParticipant(getUUID(), getSource()));
-								Optional<MobSpawnData> spawnData = spawnedMobs.unwrap().stream()
+								Optional<MobSpawnData> spawnData = spawnedMobs.unwrap().stream().map(Weighted::value)
 										.filter(mobSpawnData -> mobSpawnData.type.tryCast(otherMob) != null)
 										.findFirst();
 								if (spawnData.isPresent() && !spawnData.get().allowEquipmentDrops) {

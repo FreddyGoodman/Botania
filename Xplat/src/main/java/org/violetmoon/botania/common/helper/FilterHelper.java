@@ -12,9 +12,7 @@ package org.violetmoon.botania.common.helper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.util.random.Weight;
-import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.decoration.GlowItemFrame;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.ItemStack;
@@ -65,22 +63,17 @@ public class FilterHelper {
 						: Optional.empty();
 	}
 
-	public static WeightedRandomList<WeightedItemStack> getWeightedFiltersOnBlock(Level level, BlockPos pos,
+	public static WeightedList<ItemStack> getWeightedFiltersOnBlock(Level level, BlockPos pos,
 			BiFunction<ItemFrame, ItemStack, ItemStack> stackTransform,
 			ToIntBiFunction<ItemFrame, ItemStack> weightFunction) {
-		List<FilterHelper.WeightedItemStack> filter = new ArrayList<>();
+		WeightedList.Builder<ItemStack> filter = WeightedList.builder();
 
 		populateFiltersAroundPosition(level, pos, frame -> {
-			List<ItemStack> filterStacks = FilterHelper.getFilterItems(frame);
-			if (!filterStacks.isEmpty()) {
-				filterStacks.stream()
-						.map(s -> FilterHelper.WeightedItemStack.of(stackTransform.apply(frame, s),
-								weightFunction.applyAsInt(frame, s)))
-						.forEach(filter::add);
+			for (ItemStack stack : getFilterItems(frame)) {
+				filter.add(stackTransform.apply(frame, stack), weightFunction.applyAsInt(frame, stack));
 			}
 		});
-
-		return WeightedRandomList.create(filter);
+		return filter.build();
 	}
 
 	private static void populateFiltersAroundPosition(Level level, BlockPos pos, Consumer<ItemFrame> filterConsumer) {
@@ -111,22 +104,11 @@ public class FilterHelper {
 
 		ItemContainerContents containerContents = filterStack.get(DataComponents.CONTAINER);
 		if (containerContents != null) {
-			List<ItemStack> items = containerContents.nonEmptyStream().toList();
+			List<ItemStack> items = containerContents.nonEmptyItemCopyStream().toList();
 			if (!items.isEmpty()) {
 				return items;
 			}
 		}
 		return List.of(filterStack);
-	}
-
-	public record WeightedItemStack(ItemStack stack, Weight weight) implements WeightedEntry {
-		public static WeightedItemStack of(ItemStack stack, int weight) {
-			return new WeightedItemStack(stack, Weight.of(weight));
-		}
-
-		@Override
-		public Weight getWeight() {
-			return weight;
-		}
 	}
 }
