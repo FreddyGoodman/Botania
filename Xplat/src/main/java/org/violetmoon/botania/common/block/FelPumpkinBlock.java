@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -96,7 +97,7 @@ public class FelPumpkinBlock extends Block {
 	private void trySpawnBlaze(Level level, BlockPos pos) {
 		BlockPattern.BlockPatternMatch blockPatternMatch = this.getOrCreateFelBlazeFull().find(level, pos);
 		if (blockPatternMatch != null) {
-			Blaze blaze = EntityType.BLAZE.create(level);
+			Blaze blaze = EntityType.BLAZE.create(level, EntitySpawnReason.TRIGGERED);
 			if (blaze != null) {
 				blaze.setPersistenceRequired();
 				((MobAccessor) blaze).botania_setLootTable(BotaniaLootTables.FEL_BLAZE);

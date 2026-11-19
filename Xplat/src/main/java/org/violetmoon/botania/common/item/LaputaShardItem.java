@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -226,7 +227,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 	}
 
 	public ManaBurstEntity getBurst(Level world, BlockPos pos, ItemStack stack) {
-		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(world);
+		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(world, EntitySpawnReason.SPAWN_ITEM_USE);
 		burst.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 
 		burst.setColor(0x00EAFF);

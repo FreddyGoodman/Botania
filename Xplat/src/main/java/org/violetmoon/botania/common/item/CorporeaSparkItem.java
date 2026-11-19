@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +55,7 @@ public class CorporeaSparkItem extends Item {
 	}
 
 	public static boolean attachSpark(Level world, BlockPos pos, ItemStack stack, ItemStack otherHandStack) {
-		CorporeaSparkEntity spark = BotaniaEntities.CORPOREA_SPARK.create(world);
+		CorporeaSparkEntity spark = BotaniaEntities.CORPOREA_SPARK.create(world, EntitySpawnReason.SPAWN_ITEM_USE);
 		if (stack.is(BotaniaItems.MASTER_CORPOREA_SPARK)) {
 			spark.setMaster(true);
 		}

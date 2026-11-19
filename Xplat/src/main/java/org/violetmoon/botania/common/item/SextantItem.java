@@ -33,7 +33,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
@@ -71,8 +71,8 @@ public class SextantItem extends Item {
 	}
 
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.BOW;
 	}
 
 	@Override
@@ -206,9 +206,9 @@ public class SextantItem extends Item {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level world, LivingEntity living, int time) {
+	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity living, int time) {
 		if (!(living instanceof Player)) {
-			return;
+			return false;
 		}
 
 		double radius = calculateRadius(stack, living);
@@ -222,8 +222,10 @@ public class SextantItem extends Item {
 						.setSymmetrical(true);
 				Proxy.INSTANCE.showMultiblock(sparse, Component.literal("r = " + getRadiusString(radius)),
 						centerPos.pos(), Rotation.NONE);
+						return true;
 			}
 		}
+		return false;
 	}
 
 	private static ShapeCreator defineCircleShapeCreator(Direction axis1, Direction axis2) {

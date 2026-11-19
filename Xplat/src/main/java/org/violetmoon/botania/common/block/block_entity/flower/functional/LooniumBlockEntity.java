@@ -240,7 +240,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			}
 		}
 
-		Entity entity = pickedMobType.type.create(world);
+		Entity entity = pickedMobType.type.create(world, EntitySpawnReason.SPAWNER);
 		if (!(entity instanceof Mob mob)) {
 			return false;
 		}
@@ -261,7 +261,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		SlowDespawn.MARKER.addFor(mob);
 		LooniumDrop.HOLDER.setFor(mob, new LooniumDrop(lootStack));
 
-		mob.finalizeSpawn(world, world.getCurrentDifficultyAt(mob.blockPosition()), MobSpawnType.SPAWNER, null);
+		mob.finalizeSpawn(world, world.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.SPAWNER, null);
 		equipSpawnedMob(world, pickedMobType, mob);
 
 		// in case the mob spawned with a vehicle or passenger(s), ensure those don't drop unexpected loot

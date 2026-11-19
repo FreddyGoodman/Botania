@@ -11,6 +11,7 @@ package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 
@@ -29,7 +30,7 @@ public record ManastormChargeTrigger(Level level, BlockPos pos) implements ManaT
 				&& (!(entity.getOwner() instanceof ServerPlayer player)
 						|| !player.blockActionRestricted(level, pos, player.gameMode.getGameModeForPlayer()))
 				&& level.destroyBlock(pos, false, entity)) {
-			ManaStormEntity storm = BotaniaEntities.MANASTORM_EPICENTER.create(level);
+			ManaStormEntity storm = BotaniaEntities.MANASTORM_EPICENTER.create(level, EntitySpawnReason.TRIGGERED);
 			if (storm == null) {
 				return;
 			}

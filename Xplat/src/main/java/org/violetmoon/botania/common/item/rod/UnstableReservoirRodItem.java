@@ -13,12 +13,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -46,8 +47,8 @@ public class UnstableReservoirRodItem extends Item {
 	}
 
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.BOW;
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class UnstableReservoirRodItem extends Item {
 	public static boolean spawnMissile(Level level, @Nullable LivingEntity thrower, double x, double y, double z) {
 		MagicMissileEntity missile = thrower != null
 				? new MagicMissileEntity(thrower, false)
-				: BotaniaEntities.MAGIC_MISSILE.create(level);
+				: BotaniaEntities.MAGIC_MISSILE.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
 		if (missile == null) {
 			return false;
 		}

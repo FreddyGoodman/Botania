@@ -85,9 +85,9 @@ public class CocoonBlockEntity extends BlockEntity {
 			}
 
 			if (Math.random() < shulkerChance) {
-				entity = EntityType.SHULKER.create(level);
+				entity = EntityType.SHULKER.create(level, EntitySpawnReason.EVENT);
 			} else if (Math.random() < villagerChance) {
-				Villager villager = EntityType.VILLAGER.create(level);
+				Villager villager = EntityType.VILLAGER.create(level, EntitySpawnReason.EVENT);
 				if (villager != null) {
 					VillagerType type = VillagerType.byBiome(level.getBiome(pos));
 					villager.setVillagerData(villager.getVillagerData().setType(type));
@@ -124,7 +124,7 @@ public class CocoonBlockEntity extends BlockEntity {
 				if (entity instanceof AgeableMob ageable) {
 					ageable.setBaby(true);
 				}
-				entity.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(getBlockPos()), MobSpawnType.EVENT, null);
+				entity.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(getBlockPos()), EntitySpawnReason.EVENT, null);
 				entity.setPersistenceRequired();
 				level.addFreshEntity(entity);
 				entity.spawnAnim();
@@ -150,7 +150,7 @@ public class CocoonBlockEntity extends BlockEntity {
 		if (type == EntityType.COW && level.getRandom().nextFloat() < 0.01) {
 			type = EntityType.MOOSHROOM;
 		}
-		Entity entity = type.create(level);
+		Entity entity = type.create(level, EntitySpawnReason.EVENT);
 		return entity instanceof Mob mob ? mob : null;
 	}
 

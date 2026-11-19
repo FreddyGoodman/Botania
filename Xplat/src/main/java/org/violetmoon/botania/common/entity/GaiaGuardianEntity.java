@@ -48,7 +48,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -304,7 +304,7 @@ public class GaiaGuardianEntity extends Mob {
 		if (world.isClientSide()) {
 			return true;
 		}
-		GaiaGuardianEntity e = BotaniaEntities.GAIA_GUARDIAN.create(world);
+		GaiaGuardianEntity e = BotaniaEntities.GAIA_GUARDIAN.create(world, EntitySpawnReason.EVENT);
 		if (e == null) {
 			return false;
 		}
@@ -333,7 +333,7 @@ public class GaiaGuardianEntity extends Mob {
 		}
 
 		e.playSound(BotaniaSounds.GAIA_SUMMON, 1F, 1F);
-		e.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(e.blockPosition()), MobSpawnType.EVENT, null);
+		e.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(e.blockPosition()), EntitySpawnReason.EVENT, null);
 		world.addFreshEntity(e);
 
 		e.updateGaiaFight();
@@ -886,7 +886,7 @@ public class GaiaGuardianEntity extends Mob {
 				int numToSpawn = pickedMobType.count.sample(random);
 				for (int j = 0; j < numToSpawn; j++) {
 					if (pickedMobType.type != BotaniaEntities.PIXIE) {
-						Entity entity = pickedMobType.type.create(serverLevel);
+						Entity entity = pickedMobType.type.create(serverLevel, EntitySpawnReason.MOB_SUMMONED);
 						if (!(entity instanceof Mob mob)) {
 							continue;
 						}
@@ -907,7 +907,7 @@ public class GaiaGuardianEntity extends Mob {
 
 						applyAttributesAndEffects(pickedMobType, mob);
 
-						mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(mob.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
+						mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 						LooniumBlockEntity.equipSpawnedMob(serverLevel, pickedMobType, mob);
 
 						// in case the mob spawned with a vehicle or passenger(s), ensure those don't drop unexpected loot
@@ -948,7 +948,7 @@ public class GaiaGuardianEntity extends Mob {
 						pixie.setProps(players.get(random.nextInt(players.size())), this, 8);
 						pixie.setPos(getRandomX(2), getY() + 2, getRandomZ(2));
 						pixie.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(pixie.blockPosition()),
-								MobSpawnType.MOB_SUMMONED, null);
+								EntitySpawnReason.MOB_SUMMONED, null);
 						serverLevel.addFreshEntity(pixie);
 					}
 				}
@@ -1092,7 +1092,7 @@ public class GaiaGuardianEntity extends Mob {
 								int y = (int) players.get(random.nextInt(players.size())).getY();
 								int z = source.getZ() - 10 + random.nextInt(20);
 
-								GaiaTrapEntity gaiaTrap = BotaniaEntities.GAIA_TRAP.create(level());
+								GaiaTrapEntity gaiaTrap = BotaniaEntities.GAIA_TRAP.create(level(), EntitySpawnReason.MOB_SUMMONED);
 								if (gaiaTrap != null) {
 									gaiaTrap.setPos(x + 0.5, y, z + 0.5);
 									gaiaTrap.summoner = this;
@@ -1113,7 +1113,7 @@ public class GaiaGuardianEntity extends Mob {
 								pixie.setPos(getRandomX(1), getY() + 2, getRandomZ(1));
 								pixie.finalizeSpawn((ServerLevelAccessor) level(),
 										level().getCurrentDifficultyAt(pixie.blockPosition()),
-										MobSpawnType.MOB_SUMMONED, null);
+										EntitySpawnReason.MOB_SUMMONED, null);
 								level().addFreshEntity(pixie);
 							}
 						}

@@ -11,6 +11,7 @@ package org.violetmoon.botania.common.entity;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.item.ItemStack;
@@ -95,7 +96,7 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 	}
 
 	private void spawnBurst() {
-		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(level());
+		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(level(), EntitySpawnReason.TRIGGERED);
 		if (burst == null) {
 			return;
 		}

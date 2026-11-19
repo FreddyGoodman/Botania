@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
@@ -59,7 +60,7 @@ public class EnderEssenceCloudEntity extends Entity {
 		EntityType<EnderEssenceCloudEntity> type = entity.level().dimension() == Level.END
 				? BotaniaEntities.PURE_ENDER_ESSENCE_CLOUD
 				: BotaniaEntities.DILUTED_ENDER_ESSENCE_CLOUD;
-		EnderEssenceCloudEntity cloud = type.create(entity.level());
+		EnderEssenceCloudEntity cloud = type.create(entity.level(), EntitySpawnReason.TRIGGERED);
 		if (cloud != null) {
 			cloud.snapTo(entity.position(), entity.getYRot(), 0);
 			cloud.setFromEnderman(true);
