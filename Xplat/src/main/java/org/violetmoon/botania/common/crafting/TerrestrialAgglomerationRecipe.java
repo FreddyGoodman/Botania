@@ -62,7 +62,7 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 	}
 
 	@Override
-	public ItemStack assemble(ProcessingRecipeInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(ProcessingRecipeInput inv) {
 		return output.copy();
 	}
 

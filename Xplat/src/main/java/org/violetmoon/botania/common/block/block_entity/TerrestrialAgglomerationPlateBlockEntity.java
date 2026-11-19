@@ -132,10 +132,10 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 	private void finishCrafting(Level level, BlockPos pos, BlockState state, List<ItemEntity> itemEntities,
 			ProcessingRecipeInput recipeInput, RecipeHolder<TerrestrialAgglomerationRecipe> recipeHolder) {
 		Player player = getCraftingPlayer(itemEntities);
-		ItemStack result = recipeHolder.value().assemble(recipeInput, level.registryAccess());
+		ItemStack result = recipeHolder.value().assemble(recipeInput);
 		if (player != null) {
 			player.triggerRecipeCrafted(recipeHolder, List.of(result));
-			result.onCraftedBy(level, player, result.getCount());
+			result.onCraftedBy(player, result.getCount());
 		} else {
 			result.onCraftedBySystem(level);
 		}

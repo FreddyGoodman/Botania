@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.crafting;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -66,8 +65,7 @@ public class LexiconElvenTradeRecipe implements ElvenTradeRecipe {
 	}
 
 	@Override
-	public Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input,
-			HolderLookup.Provider registries) {
+	public Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input) {
 		var lexiconIngredient = LEXICON_INGREDIENT.get();
 		for (int slot = 0; slot < input.size(); slot++) {
 			ItemStack inputItem = input.getItem(slot);

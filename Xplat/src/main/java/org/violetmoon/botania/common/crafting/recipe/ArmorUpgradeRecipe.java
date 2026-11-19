@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ArmorItem;
@@ -33,8 +32,8 @@ public class ArmorUpgradeRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
-		ItemStack out = super.assemble(inv, registries);
+	public ItemStack assemble(CraftingInput inv) {
+		ItemStack out = super.assemble(inv);
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() instanceof ArmorItem) {

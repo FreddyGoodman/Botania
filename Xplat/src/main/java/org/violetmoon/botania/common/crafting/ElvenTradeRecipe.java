@@ -21,7 +21,6 @@ import it.unimi.dsi.fastutil.ints.Int2IntSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -89,7 +88,7 @@ public class ElvenTradeRecipe implements org.violetmoon.botania.api.recipe.Elven
 	}
 
 	@Override
-	public Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input, HolderLookup.Provider registries) {
+	public Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input) {
 		if (ingredients.size() == 1) {
 			// single ingredient, map to first matching slot
 			Ingredient ingredient = ingredients.getFirst();

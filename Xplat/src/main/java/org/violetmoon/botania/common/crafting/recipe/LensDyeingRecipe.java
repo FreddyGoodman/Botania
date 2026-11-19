@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 import com.google.common.base.Suppliers;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
@@ -82,7 +81,7 @@ public class LensDyeingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack lens = ItemStack.EMPTY;
 		DyeColor color = null;
 

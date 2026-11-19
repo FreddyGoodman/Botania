@@ -71,7 +71,7 @@ public class TiaraWingsRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput input) {
 		ItemStack tiara = input.items().stream().filter(stack -> stack.is(BotaniaItems.FLUGEL_TIARA))
 				.findFirst().orElseThrow().copy();
 		FlugelTiaraItem.setVariant(tiara, variant);

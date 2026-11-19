@@ -73,7 +73,7 @@ public interface ManaInfusionRecipe extends Recipe<RecipeInput> {
 	// Ignored IRecipe stuff
 
 	@Override
-	default ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
+	default ItemStack assemble(RecipeInput inv) {
 		return ItemStack.EMPTY;
 	}
 

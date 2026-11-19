@@ -191,7 +191,7 @@ public final class RecipeUtils {
 		}
 
 		@Override
-		public ItemStack assemble(T input, HolderLookup.Provider registries) {
+		public ItemStack assemble(T input) {
 			throw new UnsupportedOperationException();
 		}
 

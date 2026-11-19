@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.BlockItem;
@@ -38,7 +37,7 @@ public class WandOfTheForestRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		DyeColor first = null;
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
@@ -55,10 +54,10 @@ public class WandOfTheForestRecipe extends ShapedRecipe {
 			if (first == null) {
 				first = colorId;
 			} else {
-				return WandOfTheForestItem.setColors(getResultItem(registries).copy(), first, colorId);
+				return WandOfTheForestItem.setColors(super.assemble(inv), first, colorId);
 			}
 		}
-		return WandOfTheForestItem.setColors(getResultItem(registries).copy(), first != null ? first : DyeColor.WHITE, DyeColor.WHITE);
+		return WandOfTheForestItem.setColors(super.assemble(inv), first != null ? first : DyeColor.WHITE, DyeColor.WHITE);
 	}
 
 	@Override

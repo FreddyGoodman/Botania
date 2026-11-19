@@ -23,7 +23,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.util.UUIDTypeAdapter;
 
 import net.minecraft.util.Util;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -114,8 +113,8 @@ public class HeadRecipe extends RunicAltarRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(ProcessingRecipeInput inv, HolderLookup.Provider registries) {
-		ItemStack stack = getResultItem(registries).copy();
+	public ItemStack assemble(ProcessingRecipeInput inv) {
+		ItemStack stack = super.assemble(inv);
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack ingr = inv.getItem(i);
 			if (ingr.is(Items.NAME_TAG)) {

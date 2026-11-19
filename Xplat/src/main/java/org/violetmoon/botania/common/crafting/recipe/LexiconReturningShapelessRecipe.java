@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -35,8 +34,8 @@ public class LexiconReturningShapelessRecipe extends ShapelessRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
-		return ManaUpgradeRecipe.output(super.assemble(inv, registries), inv);
+	public ItemStack assemble(CraftingInput inv) {
+		return ManaUpgradeRecipe.output(super.assemble(inv), inv);
 	}
 
 	@Override

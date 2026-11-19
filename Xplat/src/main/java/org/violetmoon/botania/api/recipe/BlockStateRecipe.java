@@ -60,7 +60,7 @@ public interface BlockStateRecipe extends Recipe<RecipeInput> {
 	 */
 	@Override
 	@Deprecated
-	default ItemStack assemble(RecipeInput container, HolderLookup.Provider registryAccess) {
+	default ItemStack assemble(RecipeInput container) {
 		return ItemStack.EMPTY;
 	}
 

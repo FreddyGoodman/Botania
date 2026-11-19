@@ -154,8 +154,8 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 	}
 
 	@Override
-	public ItemStack assemble(ProcessingRecipeInput inv, HolderLookup.Provider registries) {
-		return getResultItem(registries).copy();
+	public ItemStack assemble(ProcessingRecipeInput inv) {
+		return output.copy();
 	}
 
 	@Override

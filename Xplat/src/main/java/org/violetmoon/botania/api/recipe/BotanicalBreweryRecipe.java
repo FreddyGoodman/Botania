@@ -42,7 +42,7 @@ public interface BotanicalBreweryRecipe extends Recipe<ProcessingRecipeInput> {
 	}
 
 	@Override
-	default ItemStack assemble(ProcessingRecipeInput inv, HolderLookup.Provider registries) {
+	default ItemStack assemble(ProcessingRecipeInput inv) {
 		return inv.isEmpty() ? ItemStack.EMPTY : getOutput(inv.getItem(0));
 	}
 

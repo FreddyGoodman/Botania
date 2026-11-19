@@ -293,12 +293,12 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 			if (reagent != null) {
 				int mana = recipe.value().getMana();
 				receiveMana(-mana);
-				ItemStack output = recipe.value().assemble(getRecipeInput(), getLevel().registryAccess());
+				ItemStack output = recipe.value().assemble(getRecipeInput());
 				ItemEntity outputItem = new ItemEntity(level, worldPosition.getX() + 0.5, worldPosition.getY() + 1.5, worldPosition.getZ() + 0.5, output);
 				ItemSource.HOLDER.setFor(outputItem, ItemSources.RUNIC_ALTAR);
 				if (player != null) {
 					player.triggerRecipeCrafted(recipe, List.of(output));
-					output.onCraftedBy(level, player, output.getCount());
+					output.onCraftedBy(player, output.getCount());
 				} else {
 					output.onCraftedBySystem(level);
 				}
@@ -455,7 +455,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 					}
 
 					RenderHelper.renderProgressPie(gui, partialTick, xc + radius + 32, yc - 8, progress,
-							altar.currentRecipe.value().assemble(altar.getRecipeInput(), altar.getLevel().registryAccess())
+							altar.currentRecipe.value().assemble(altar.getRecipeInput())
 					);
 
 					if (progress == 1F) {

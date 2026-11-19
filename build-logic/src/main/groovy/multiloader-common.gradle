@@ -22,7 +22,7 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.compilerArgs << "-Xmaxerrs" << "2000"
+    it.options.compilerArgs << "-Xmaxerrs" << "10000"
 }
 
 tasks.withType(Javadoc).configureEach {

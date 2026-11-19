@@ -160,7 +160,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 		matchingRecipe.ifPresent(recipe -> {
 			CraftingInput.Positioned positioned = CraftingInput.ofPositioned(craft.getWidth(), craft.getHeight(), craft.getItems());
 			CraftingInput input = positioned.input();
-			ItemStack result = recipe.value().assemble(input, this.getLevel().registryAccess());
+			ItemStack result = recipe.value().assemble(input);
 
 			// Given some mods can return air by a bad implementation of their recipe handler,
 			// check for air before continuing on.
@@ -172,7 +172,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 
 			if (player != null) {
 				player.triggerRecipeCrafted(recipe, List.of(result));
-				result.onCraftedBy(level, player, result.getCount());
+				result.onCraftedBy(player, result.getCount());
 			} else {
 				result.onCraftedBySystem(level);
 			}

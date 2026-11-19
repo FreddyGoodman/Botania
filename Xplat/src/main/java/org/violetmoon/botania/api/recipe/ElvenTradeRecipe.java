@@ -46,7 +46,7 @@ public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
 	/**
 	 * Attempt to create the outputs of this recipe. If successful, also return the matched slots in the input.
 	 */
-	Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input, HolderLookup.Provider registries);
+	Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input);
 
 	@Override
 	default RecipeType<?> getType() {
@@ -57,17 +57,17 @@ public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
 
 	@Override
 	default boolean matches(ProcessingRecipeInput input, Level level) {
-		return tryAssemble(input, level.registryAccess()).isPresent();
+		return tryAssemble(input).isPresent();
 	}
 
 	/**
 	 * @deprecated This recipe type can create multiple output items. Use
-	 *             {@link #tryAssemble(ProcessingRecipeInput, HolderLookup.Provider)} to obtain the complete list.
+	 *             {@link #tryAssemble(ProcessingRecipeInput)} to obtain the complete list.
 	 */
 	@Override
 	@Deprecated
-	default ItemStack assemble(ProcessingRecipeInput input, HolderLookup.Provider registries) {
-		Optional<AssemblyResult> potentialResult = tryAssemble(input, registries);
+	default ItemStack assemble(ProcessingRecipeInput input) {
+		Optional<AssemblyResult> potentialResult = tryAssemble(input);
 		return potentialResult.isPresent() && !potentialResult.get().outputs().isEmpty()
 				? potentialResult.get().outputs().getFirst()
 				: ItemStack.EMPTY;
@@ -80,7 +80,7 @@ public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
 
 	/**
 	 * @deprecated This recipe can create multiple output items. Use {@link #getOutputs()} for a preview of the results,
-	 *             or {@link #tryAssemble(ProcessingRecipeInput, HolderLookup.Provider)} to generate an output from an
+	 *             or {@link #tryAssemble(ProcessingRecipeInput)} to generate an output from an
 	 *             input.
 	 */
 	@Deprecated
