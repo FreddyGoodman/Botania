@@ -4,6 +4,7 @@
   "package": "org.violetmoon.botania.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "FireBlockAccessor",
     "AbstractCauldronBlockAccessor",
     "AbstractContainerMenuMixin",
     "AbstractFurnaceBlockEntityAccessor",
