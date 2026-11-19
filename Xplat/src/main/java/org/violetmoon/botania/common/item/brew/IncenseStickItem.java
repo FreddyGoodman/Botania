@@ -63,7 +63,7 @@ public class IncenseStickItem extends Item implements BrewItem, BrewContainer, C
 	@Override
 	public Brew getBrew(ItemStack stack) {
 		Identifier id = stack.get(BotaniaDataComponents.BREW);
-		return BotaniaAPI.instance().getBrewRegistry().get(id);
+		return BotaniaAPI.instance().getBrewRegistry().getValue(id);
 	}
 
 	public static void setBrew(ItemStack stack, Brew brew) {

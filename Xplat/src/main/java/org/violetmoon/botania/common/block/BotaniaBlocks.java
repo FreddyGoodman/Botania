@@ -3470,7 +3470,7 @@ public final class BotaniaBlocks {
 		Identifier referenceId = BuiltInRegistries.BLOCK.getKey(referenceBlock);
 		Identifier targetId = getTargetId(referenceId, referenceColor, targetColor, coloredBlockInfix);
 
-		Block targetBlock = BuiltInRegistries.BLOCK.get(targetId);
+		Block targetBlock = BuiltInRegistries.BLOCK.getValue(targetId);
 		if (!referenceBlock.getClass().isInstance(targetBlock)) {
 			throw new IllegalArgumentException(
 					"No target block for %s in %s (looked for %s, found %s)".formatted(referenceBlock, targetColor, targetId, targetBlock));
@@ -3518,7 +3518,7 @@ public final class BotaniaBlocks {
 		Identifier targetId = referenceId.withPath(path -> path.replaceFirst(
 				"(?<=_|\\b)" + referenceColor.getSerializedName() + "(?=_|\\b)", targetColor.getSerializedName()));
 
-		Block targetBlock = BuiltInRegistries.BLOCK.get(targetId);
+		Block targetBlock = BuiltInRegistries.BLOCK.getValue(targetId);
 		if (!referenceBlock.getClass().isInstance(targetBlock)) {
 			throw new IllegalArgumentException(
 					"No target block for %s in %s (found %s)".formatted(referenceBlock, targetColor, targetBlock));

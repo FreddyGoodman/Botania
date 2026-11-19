@@ -64,7 +64,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	private final Optional<HolderSet.Named<DataComponentType<?>>> RELEVANT_COMPONENTS_TAG =
-			BuiltInRegistries.DATA_COMPONENT_TYPE.getTag(BotaniaTags.DataComponentTypes.GOURMARYLLIS_RELEVANT);
+			BuiltInRegistries.DATA_COMPONENT_TYPE.get(BotaniaTags.DataComponentTypes.GOURMARYLLIS_RELEVANT);
 
 	private int cooldown = 0;
 	private int digestingMana = 0;

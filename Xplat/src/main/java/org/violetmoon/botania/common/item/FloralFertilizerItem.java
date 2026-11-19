@@ -42,9 +42,9 @@ public class FloralFertilizerItem extends Item {
 		BlockPos pos = ctx.getClickedPos();
 		if (!world.isClientSide()) {
 			Optional<HolderSet.Named<Block>> flowersTag =
-					BuiltInRegistries.BLOCK.getTag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
+					BuiltInRegistries.BLOCK.get(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
 			Optional<HolderSet.Named<Block>> mushroomsTag =
-					BuiltInRegistries.BLOCK.getTag(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS);
+					BuiltInRegistries.BLOCK.get(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS);
 			boolean flowersAvailable = flowersTag.map(holders -> holders.size() > 0).orElse(false);
 			boolean mushroomsAvailable = mushroomsTag.map(holders -> holders.size() > 0).orElse(false);
 

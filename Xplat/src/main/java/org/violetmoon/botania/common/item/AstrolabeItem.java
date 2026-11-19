@@ -278,7 +278,7 @@ public class AstrolabeItem extends Item {
 	}
 
 	public static Block getBlock(ItemStack stack, HolderGetter<Block> holderGetter) {
-		return BuiltInRegistries.BLOCK.get(stack.get(BotaniaDataComponents.BLOCK_TYPE));
+		return BuiltInRegistries.BLOCK.getValue(stack.get(BotaniaDataComponents.BLOCK_TYPE));
 	}
 
 	@Override

@@ -389,7 +389,7 @@ public class ShiftingCrustRodItem extends Item implements ClientInventoryTick, W
 	}
 
 	private Item getItemToPlace(ItemStack stack) {
-		return BuiltInRegistries.ITEM.get(stack.get(BotaniaDataComponents.PLACED_ITEM));
+		return BuiltInRegistries.ITEM.getValue(stack.get(BotaniaDataComponents.PLACED_ITEM));
 	}
 
 	private void setHitPos(ItemStack stack, Vec3 vec) {
@@ -452,7 +452,7 @@ public class ShiftingCrustRodItem extends Item implements ClientInventoryTick, W
 
 	public static Block getTargetState(ItemStack stack) {
 		Identifier id = stack.get(BotaniaDataComponents.TARGET_BLOCK);
-		return BuiltInRegistries.BLOCK.get(id);
+		return BuiltInRegistries.BLOCK.getValue(id);
 	}
 
 	@Override

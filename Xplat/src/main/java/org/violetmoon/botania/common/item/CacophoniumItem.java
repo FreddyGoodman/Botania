@@ -151,7 +151,7 @@ public class CacophoniumItem extends Item {
 		if (isDOIT(stack)) {
 			return BotaniaSounds.DOIT;
 		} else {
-			return BuiltInRegistries.SOUND_EVENT.get(stack.get(DataComponents.NOTE_BLOCK_SOUND));
+			return BuiltInRegistries.SOUND_EVENT.getValue(stack.get(DataComponents.NOTE_BLOCK_SOUND));
 		}
 	}
 

@@ -126,7 +126,7 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 	@Override
 	public Brew getBrew(ItemStack stack) {
 		Identifier id = stack.get(BotaniaDataComponents.BREW);
-		return BotaniaAPI.instance().getBrewRegistry().get(id);
+		return BotaniaAPI.instance().getBrewRegistry().getValue(id);
 	}
 
 	public static void setBrew(ItemStack stack, @Nullable Brew brew) {

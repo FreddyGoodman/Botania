@@ -86,7 +86,7 @@ public class LifeAggregatorItem extends Item {
 	private InteractionResult placeSpawner(UseOnContext context) {
 		ItemStack mover = context.getItemInHand();
 		Identifier blockId = mover.get(BotaniaDataComponents.BLOCK_TYPE);
-		Block block = BuiltInRegistries.BLOCK.get(blockId);
+		Block block = BuiltInRegistries.BLOCK.getValue(blockId);
 		if (block == Blocks.AIR || !(block instanceof EntityBlock)) {
 			return InteractionResult.FAIL;
 		}

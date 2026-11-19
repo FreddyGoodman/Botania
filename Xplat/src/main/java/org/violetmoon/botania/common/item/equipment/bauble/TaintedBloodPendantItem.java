@@ -135,7 +135,7 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 
 	@Override
 	public Brew getBrew(ItemStack stack) {
-		return BotaniaAPI.instance().getBrewRegistry().get(stack.get(BotaniaDataComponents.BREW));
+		return BotaniaAPI.instance().getBrewRegistry().getValue(stack.get(BotaniaDataComponents.BREW));
 	}
 
 	public static void setBrew(ItemStack stack, Brew brew) {
