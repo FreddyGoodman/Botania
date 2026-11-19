@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -279,7 +280,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 					placeState = laputaState.blockState();
 				}
 
-				if (entity.level().dimensionType().ultraWarm() && placeState.hasProperty(BlockStateProperties.WATERLOGGED)) {
+				if (entity.level().environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos) && placeState.hasProperty(BlockStateProperties.WATERLOGGED)) {
 					placeState = placeState.setValue(BlockStateProperties.WATERLOGGED, false);
 				}
 

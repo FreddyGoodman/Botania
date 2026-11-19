@@ -13,6 +13,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
@@ -55,25 +56,25 @@ public class FloralFertilizerItem extends Item {
 					continue;
 				}
 				BlockState belowState = world.getBlockState(candidatePos.below());
-				if (flowersAvailable && canPlaceFlower(belowState, world) || mushroomsAvailable && canPlaceMushroom(belowState)) {
+				if (flowersAvailable && canPlaceFlower(belowState, world, candidatePos) || mushroomsAvailable && canPlaceMushroom(belowState)) {
 					validCoords.add(candidatePos.immutable());
 				}
 			}
 
-			int petalCount = world.random.nextIntBetweenInclusive(5, 7);
+			int petalCount = world.getRandom().nextIntBetweenInclusive(5, 7);
 			while (petalCount > 0 && !validCoords.isEmpty()) {
 				petalCount--;
-				BlockPos coords = validCoords.get(world.random.nextInt(validCoords.size()));
+				BlockPos coords = validCoords.get(world.getRandom().nextInt(validCoords.size()));
 				validCoords.remove(coords);
 				BlockState belowState = world.getBlockState(coords.below());
-				boolean tryPlaceFlower = flowersAvailable && canPlaceFlower(belowState, world);
+				boolean tryPlaceFlower = flowersAvailable && canPlaceFlower(belowState, world, coords);
 				boolean tryPlaceMushroom = mushroomsAvailable && canPlaceMushroom(belowState);
 
 				Optional<Holder<Block>> toPlace;
-				if (tryPlaceMushroom && (!tryPlaceFlower || world.random.nextInt(3) == 0)) {
-					toPlace = mushroomsTag.get().getRandomElement(world.random);
+				if (tryPlaceMushroom && (!tryPlaceFlower || world.getRandom().nextInt(3) == 0)) {
+					toPlace = mushroomsTag.get().getRandomElement(world.getRandom());
 				} else if (tryPlaceFlower) {
-					toPlace = flowersTag.get().getRandomElement(world.random);
+					toPlace = flowersTag.get().getRandomElement(world.getRandom());
 					petalCount--;
 				} else {
 					continue;
@@ -86,9 +87,9 @@ public class FloralFertilizerItem extends Item {
 			ctx.getItemInHand().shrink(1);
 		} else {
 			for (int i = 0; i < 15; i++) {
-				double x = pos.getX() - RANGE + world.random.nextInt(RANGE * 2 + 1) + Math.random();
+				double x = pos.getX() - RANGE + world.getRandom().nextInt(RANGE * 2 + 1) + Math.random();
 				double y = pos.getY() + 1;
-				double z = pos.getZ() - RANGE + world.random.nextInt(RANGE * 2 + 1) + Math.random();
+				double z = pos.getZ() - RANGE + world.getRandom().nextInt(RANGE * 2 + 1) + Math.random();
 				float red = (float) Math.random();
 				float green = (float) Math.random();
 				float blue = (float) Math.random();
@@ -104,7 +105,7 @@ public class FloralFertilizerItem extends Item {
 		return belowState.is(BlockTags.OVERRIDES_MUSHROOM_LIGHT_REQUIREMENT);
 	}
 
-	private static boolean canPlaceFlower(BlockState belowState, Level world) {
-		return belowState.is(BlockTags.DIRT) && !world.dimensionType().ultraWarm();
+	private static boolean canPlaceFlower(BlockState belowState, Level world, BlockPos pos) {
+		return belowState.is(BlockTags.DIRT) && !world.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos);
 	}
 }
