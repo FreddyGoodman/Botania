@@ -9,8 +9,6 @@
 package org.violetmoon.botania.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
@@ -18,6 +16,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.UnknownNullability;
 import org.violetmoon.botania.api.mana.ManaReceiver;
@@ -79,13 +79,13 @@ public class LifeImbuerBlockEntity extends BlockEntity implements ManaReceiver {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.putInt(TAG_MANA, mana);
+	protected void saveAdditional(ValueOutput output) {
+		output.putInt(TAG_MANA, mana);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		mana = cmp.getInt(TAG_MANA);
+	protected void loadAdditional(ValueInput input) {
+		mana = input.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override

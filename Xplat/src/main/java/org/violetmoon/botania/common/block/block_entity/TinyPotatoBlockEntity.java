@@ -14,11 +14,12 @@ import it.unimi.dsi.fastutil.objects.ObjectArrays;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,6 +40,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -282,30 +285,22 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 		if (name != null) {
-			cmp.putString(TAG_NAME, Component.Serializer.toJson(name, registries));
+			output.store(TAG_NAME, ComponentSerialization.CODEC, name);
 		}
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		if (cmp.contains(TAG_NAME, Tag.TAG_STRING)) {
-			name = Component.Serializer.fromJson(cmp.getString(TAG_NAME), registries);
-		} else {
-			name = null;
-		}
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		name = input.read(TAG_NAME, ComponentSerialization.CODEC).orElse(null);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		var tag = super.getUpdateTag(registries);
-		if (name != null) {
-			tag.putString(TAG_NAME, Component.Serializer.toJson(name, registries));
-		}
-		return tag;
+		return saveCustomOnly(registries);
 	}
 
 	@Override
@@ -315,14 +310,14 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		super.applyImplicitComponents(componentInput);
 		this.name = componentInput.get(DataComponents.CUSTOM_NAME);
 	}
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(6) {
+		return new Inventory(6) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;

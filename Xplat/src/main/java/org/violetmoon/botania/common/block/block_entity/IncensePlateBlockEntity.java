@@ -27,6 +27,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -157,15 +159,15 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.putInt(TAG_TIME_LEFT, timeLeft);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		output.putInt(TAG_TIME_LEFT, timeLeft);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		timeLeft = tag.getInt(TAG_TIME_LEFT);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		timeLeft = input.getIntOr(TAG_TIME_LEFT, 0);
 	}
 
 	@Override
@@ -181,7 +183,7 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public boolean canPlaceItem(int index, ItemStack stack) {
 				return acceptsItem(stack);

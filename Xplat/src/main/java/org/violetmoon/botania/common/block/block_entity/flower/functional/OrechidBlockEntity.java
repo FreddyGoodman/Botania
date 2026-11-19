@@ -9,9 +9,8 @@
 package org.violetmoon.botania.common.block.block_entity.flower.functional;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.random.WeightedEntry;
@@ -19,6 +18,8 @@ import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.block_entity.FunctionalFlowerBlockEntity;
@@ -147,17 +148,17 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	public void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 
-		cmp.putInt(TAG_COOLDOWN, cooldown);
+		output.putInt(TAG_COOLDOWN, cooldown);
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	public void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
 
-		cooldown = cmp.getInt(TAG_COOLDOWN);
+		cooldown = input.getIntOr(TAG_COOLDOWN, 0);
 	}
 
 	@Override
@@ -196,7 +197,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		cooldown = componentInput.getOrDefault(BotaniaDataComponents.COOLDOWN, 0);
 	}
 }

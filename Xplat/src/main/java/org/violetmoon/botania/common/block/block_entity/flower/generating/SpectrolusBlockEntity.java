@@ -14,6 +14,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,6 +30,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -193,17 +196,17 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
-		cmp.putByte(TAG_NEXT_COLOR, (byte) nextColor.getId());
-		cmp.putByteArray(TAG_COLORS, colors.stream().map(color -> (byte) color.getId()).toList());
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		output.putByte(TAG_NEXT_COLOR, (byte) nextColor.getId());
+		output.putIntArray(TAG_COLORS, colors.stream().mapToInt(DyeColor::getId).toArray());
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		nextColor = DyeColor.byId(cmp.getInt(TAG_NEXT_COLOR));
-		byte[] colorIds = cmp.getByteArray(TAG_COLORS);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		nextColor = DyeColor.byId(input.getIntOr(TAG_NEXT_COLOR, 0));
+		int[] colorIds = input.getIntArray(TAG_COLORS).orElseGet(() -> new int[0]);
 		colors = (colorIds.length == 0
 				? IntStream.range(0, 16)
 				: IntStream.range(0, colorIds.length).map(i -> colorIds[i])).mapToObj(DyeColor::byId).toList();
@@ -232,7 +235,7 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		List<DyeColor> colorSequence = componentInput.get(BotaniaDataComponents.COLOR_SEQUENCE);
 		if (colorSequence != null) {
 			colors = colorSequence;

@@ -22,8 +22,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -42,6 +42,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -509,19 +511,19 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		if (cmp.contains(TAG_LOOT_TABLE)) {
-			lootTableOverride = ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(cmp.getString(TAG_LOOT_TABLE)));
+	public void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		if (input.getString(TAG_LOOT_TABLE).isPresent()) {
+			lootTableOverride = ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(input.getStringOr(TAG_LOOT_TABLE, "")));
 		}
-		if (cmp.contains(TAG_CONFIG_OVERRIDE)) {
-			configOverride = Identifier.parse(cmp.getString(TAG_CONFIG_OVERRIDE));
+		if (input.getString(TAG_CONFIG_OVERRIDE).isPresent()) {
+			configOverride = Identifier.parse(input.getStringOr(TAG_CONFIG_OVERRIDE, ""));
 		}
-		if (cmp.contains(TAG_ATTUNE_DISPLAY_OVERRIDE)) {
-			attuneDisplayOverride = cmp.getString(TAG_ATTUNE_DISPLAY_OVERRIDE);
+		if (input.getString(TAG_ATTUNE_DISPLAY_OVERRIDE).isPresent()) {
+			attuneDisplayOverride = input.getStringOr(TAG_ATTUNE_DISPLAY_OVERRIDE, "");
 		}
-		if (cmp.contains(TAG_RELEVANT_STRUCTURE)) {
-			String rawString = cmp.getString(TAG_RELEVANT_STRUCTURE);
+		if (input.getString(TAG_RELEVANT_STRUCTURE).isPresent()) {
+			String rawString = input.getStringOr(TAG_RELEVANT_STRUCTURE, "");
 			if (rawString.isEmpty()) {
 				relevantStructures = Set.of();
 			} else {
@@ -533,16 +535,16 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	public void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 		if (lootTableOverride != null) {
-			cmp.putString(TAG_LOOT_TABLE, lootTableOverride.location().toString());
+			output.putString(TAG_LOOT_TABLE, lootTableOverride.identifier().toString());
 		}
 		if (configOverride != null) {
-			cmp.putString(TAG_CONFIG_OVERRIDE, configOverride.toString());
+			output.putString(TAG_CONFIG_OVERRIDE, configOverride.toString());
 		}
 		if (attuneDisplayOverride != null) {
-			cmp.putString(TAG_ATTUNE_DISPLAY_OVERRIDE, attuneDisplayOverride);
+			output.putString(TAG_ATTUNE_DISPLAY_OVERRIDE, attuneDisplayOverride);
 		}
 	}
 
@@ -552,7 +554,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		if (attuneDisplayOverride != null) {
 			tag.putString(TAG_ATTUNE_DISPLAY_OVERRIDE, attuneDisplayOverride);
 		} else if (lootTableOverride != null) {
-			tag.putString(TAG_LOOT_TABLE, lootTableOverride.location().toString());
+			tag.putString(TAG_LOOT_TABLE, lootTableOverride.identifier().toString());
 		} else if (!relevantStructures.isEmpty()) {
 			String idsString = relevantStructures.stream()
 					.filter(id -> !LooniumStructureConfiguration.DEFAULT_CONFIG_ID.equals(id))

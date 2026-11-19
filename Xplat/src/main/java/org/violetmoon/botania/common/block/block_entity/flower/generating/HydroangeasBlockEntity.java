@@ -9,14 +9,15 @@
 package org.violetmoon.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.violetmoon.botania.client.fx.WispParticleData;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
@@ -72,15 +73,15 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		passiveDecayTicks = cmp.getInt(TAG_PASSIVE_DECAY_TICKS);
+	public void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		passiveDecayTicks = input.getIntOr(TAG_PASSIVE_DECAY_TICKS, 0);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
-		cmp.putInt(TAG_PASSIVE_DECAY_TICKS, passiveDecayTicks);
+	public void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		output.putInt(TAG_PASSIVE_DECAY_TICKS, passiveDecayTicks);
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		super.applyImplicitComponents(componentInput);
 		passiveDecayTicks = componentInput.getOrDefault(BotaniaDataComponents.DECAY_TICKS, 0);
 	}

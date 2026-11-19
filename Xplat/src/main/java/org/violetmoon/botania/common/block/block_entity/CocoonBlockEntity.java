@@ -12,9 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.*;
@@ -25,6 +23,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.common.lib.BotaniaTags;
@@ -155,18 +155,18 @@ public class CocoonBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.putInt(TAG_TIME_PASSED, timePassed);
-		cmp.putInt(TAG_EMERALDS_GIVEN, emeraldsGiven);
-		cmp.putInt(TAG_CHORUS_FRUIT_GIVEN, chorusFruitGiven);
-		cmp.putBoolean(TAG_GAIA_SPIRIT_GIVEN, gaiaSpiritGiven);
+	protected void saveAdditional(ValueOutput output) {
+		output.putInt(TAG_TIME_PASSED, timePassed);
+		output.putInt(TAG_EMERALDS_GIVEN, emeraldsGiven);
+		output.putInt(TAG_CHORUS_FRUIT_GIVEN, chorusFruitGiven);
+		output.putBoolean(TAG_GAIA_SPIRIT_GIVEN, gaiaSpiritGiven);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		timePassed = cmp.getInt(TAG_TIME_PASSED);
-		emeraldsGiven = cmp.getInt(TAG_EMERALDS_GIVEN);
-		chorusFruitGiven = cmp.getInt(TAG_CHORUS_FRUIT_GIVEN);
-		gaiaSpiritGiven = cmp.getBoolean(TAG_GAIA_SPIRIT_GIVEN);
+	protected void loadAdditional(ValueInput input) {
+		timePassed = input.getIntOr(TAG_TIME_PASSED, 0);
+		emeraldsGiven = input.getIntOr(TAG_EMERALDS_GIVEN, 0);
+		chorusFruitGiven = input.getIntOr(TAG_CHORUS_FRUIT_GIVEN, 0);
+		gaiaSpiritGiven = input.getBooleanOr(TAG_GAIA_SPIRIT_GIVEN, false);
 	}
 }

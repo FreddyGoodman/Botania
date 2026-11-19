@@ -67,7 +67,7 @@ public class ManaPrismBlockEntity extends ExposedSimpleInventoryBlockEntity impl
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public boolean canPlaceItem(int index, ItemStack stack) {
 				return !stack.isEmpty() && stack.getItem() instanceof BasicLensItem;

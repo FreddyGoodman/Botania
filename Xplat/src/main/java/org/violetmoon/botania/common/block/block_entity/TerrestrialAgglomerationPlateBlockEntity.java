@@ -11,9 +11,7 @@ package org.violetmoon.botania.common.block.block_entity;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -28,6 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -292,15 +292,15 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.putInt(TAG_MANA, mana);
-		cmp.putInt(TAG_MANA_TO_GET, manaToGet);
+	protected void saveAdditional(ValueOutput output) {
+		output.putInt(TAG_MANA, mana);
+		output.putInt(TAG_MANA_TO_GET, manaToGet);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		mana = cmp.getInt(TAG_MANA);
-		manaToGet = cmp.getInt(TAG_MANA_TO_GET);
+	protected void loadAdditional(ValueInput input) {
+		mana = input.getIntOr(TAG_MANA, 0);
+		manaToGet = input.getIntOr(TAG_MANA_TO_GET, 0);
 	}
 
 	@Override

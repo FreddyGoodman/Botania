@@ -9,19 +9,18 @@
 package org.violetmoon.botania.api.corporea;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.ServiceUtil;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public interface CorporeaHelper {
 	CorporeaHelper INSTANCE = ServiceUtil.findService(CorporeaHelper.class, () -> new CorporeaHelper() {});
@@ -89,5 +88,5 @@ public interface CorporeaHelper {
 		return 0;
 	}
 
-	default <T extends CorporeaRequestMatcher> void registerRequestMatcher(Identifier id, Class<T> clazz, BiFunction<CompoundTag, HolderLookup.Provider, T> deserializer) {}
+	default <T extends CorporeaRequestMatcher> void registerRequestMatcher(Identifier id, Class<T> clazz, Function<ValueInput, T> deserializer) {}
 }

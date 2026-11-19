@@ -9,8 +9,8 @@
 package org.violetmoon.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
@@ -18,9 +18,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -30,6 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.violetmoon.botania.api.block_entity.GeneratingFlowerBlockEntity;
@@ -212,31 +211,25 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
-		cmp.putInt(TAG_COOLDOWN, cooldown);
-		cmp.putInt(TAG_DIGESTING_MANA, digestingMana);
-		ListTag foodList = new ListTag();
-		for (ItemStack food : lastFoods) {
-			foodList.add(food.save(registries));
-		}
-		cmp.put(TAG_LAST_FOODS, foodList);
-		cmp.putInt(TAG_LAST_FOOD_COUNT, lastFoodCount);
-		cmp.putInt(TAG_STREAK_LENGTH, streakLength);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		output.putInt(TAG_COOLDOWN, cooldown);
+		output.putInt(TAG_DIGESTING_MANA, digestingMana);
+		var foodList = output.list(TAG_LAST_FOODS, ItemStack.OPTIONAL_CODEC);
+		lastFoods.forEach(foodList::add);
+		output.putInt(TAG_LAST_FOOD_COUNT, lastFoodCount);
+		output.putInt(TAG_STREAK_LENGTH, streakLength);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		cooldown = cmp.getInt(TAG_COOLDOWN);
-		digestingMana = cmp.getInt(TAG_DIGESTING_MANA);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		cooldown = input.getIntOr(TAG_COOLDOWN, 0);
+		digestingMana = input.getIntOr(TAG_DIGESTING_MANA, 0);
 		lastFoods.clear();
-		ListTag foodList = cmp.getList(TAG_LAST_FOODS, Tag.TAG_COMPOUND);
-		for (int i = 0; i < foodList.size(); i++) {
-			lastFoods.add(ItemStack.parseOptional(registries, foodList.getCompound(i)));
-		}
-		lastFoodCount = cmp.getInt(TAG_LAST_FOOD_COUNT);
-		streakLength = cmp.getInt(TAG_STREAK_LENGTH);
+		input.listOrEmpty(TAG_LAST_FOODS, ItemStack.OPTIONAL_CODEC).forEach(lastFoods::add);
+		lastFoodCount = input.getIntOr(TAG_LAST_FOOD_COUNT, 0);
+		streakLength = input.getIntOr(TAG_STREAK_LENGTH, 0);
 	}
 
 	@Override
@@ -268,7 +261,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		streakLength = componentInput.getOrDefault(BotaniaDataComponents.STREAK_LENGTH, -1);
 		lastFoodCount = componentInput.getOrDefault(BotaniaDataComponents.LAST_REPEATS, 0);
 		lastFoods.clear();

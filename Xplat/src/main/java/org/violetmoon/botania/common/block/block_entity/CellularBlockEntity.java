@@ -9,12 +9,11 @@
 package org.violetmoon.botania.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
@@ -79,26 +78,26 @@ public class CellularBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.putInt(TAG_GENERATION, generation);
-		cmp.putBoolean(TAG_TICKED, ticked);
+	protected void saveAdditional(ValueOutput output) {
+		output.putInt(TAG_GENERATION, generation);
+		output.putBoolean(TAG_TICKED, ticked);
 		if (ticked) {
 			if (flowerCoords != null) {
-				cmp.put(TAG_FLOWER_COORDS, NbtUtils.writeBlockPos(flowerCoords));
+				output.store(TAG_FLOWER_COORDS, BlockPos.CODEC, flowerCoords);
 			}
 			if (validCoords != null) {
-				cmp.put(TAG_VALID_COORDS, NbtUtils.writeBlockPos(validCoords));
+				output.store(TAG_VALID_COORDS, BlockPos.CODEC, validCoords);
 			}
 		}
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		generation = cmp.getInt(TAG_GENERATION);
-		ticked = cmp.getBoolean(TAG_TICKED);
+	protected void loadAdditional(ValueInput input) {
+		generation = input.getIntOr(TAG_GENERATION, 0);
+		ticked = input.getBooleanOr(TAG_TICKED, false);
 		if (ticked) {
-			flowerCoords = NbtUtils.readBlockPos(cmp, TAG_FLOWER_COORDS).orElse(null);
-			validCoords = NbtUtils.readBlockPos(cmp, TAG_VALID_COORDS).orElse(null);
+			flowerCoords = input.read(TAG_FLOWER_COORDS, BlockPos.CODEC).orElse(null);
+			validCoords = input.read(TAG_VALID_COORDS, BlockPos.CODEC).orElse(null);
 		}
 	}
 

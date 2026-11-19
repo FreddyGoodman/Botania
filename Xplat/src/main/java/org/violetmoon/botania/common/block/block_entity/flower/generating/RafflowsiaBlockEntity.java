@@ -9,13 +9,15 @@
 package org.violetmoon.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.violetmoon.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import org.violetmoon.botania.api.block_entity.RadiusDescriptor;
@@ -115,33 +117,23 @@ public class RafflowsiaBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 
-		ListTag flowerList = new ListTag();
-		for (Identifier flower : lastFlowers) {
-			flowerList.add(StringTag.valueOf(flower.toString()));
-		}
-		cmp.put(TAG_LAST_FLOWERS, flowerList);
-		cmp.putInt(TAG_LAST_FLOWER_TIMES, lastFlowerCount);
-		cmp.putInt(TAG_STREAK_LENGTH, streakLength);
+		var flowerList = output.list(TAG_LAST_FLOWERS, Identifier.CODEC);
+		lastFlowers.forEach(flowerList::add);
+		output.putInt(TAG_LAST_FLOWER_TIMES, lastFlowerCount);
+		output.putInt(TAG_STREAK_LENGTH, streakLength);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
 
 		lastFlowers.clear();
-		ListTag flowerList = cmp.getList(TAG_LAST_FLOWERS, Tag.TAG_STRING);
-		for (int i = 0; i < flowerList.size(); i++) {
-			Identifier blockID = Identifier.tryParse(flowerList.getString(i));
-			if (blockID == null) {
-				continue;
-			}
-			lastFlowers.add(blockID);
-		}
-		lastFlowerCount = cmp.getInt(TAG_LAST_FLOWER_TIMES);
-		streakLength = cmp.getInt(TAG_STREAK_LENGTH);
+		input.listOrEmpty(TAG_LAST_FLOWERS, Identifier.CODEC).forEach(lastFlowers::add);
+		lastFlowerCount = input.getIntOr(TAG_LAST_FLOWER_TIMES, 0);
+		streakLength = input.getIntOr(TAG_STREAK_LENGTH, 0);
 	}
 
 	@Override
@@ -173,7 +165,7 @@ public class RafflowsiaBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		streakLength = componentInput.getOrDefault(BotaniaDataComponents.STREAK_LENGTH, -1);
 		lastFlowerCount = componentInput.getOrDefault(BotaniaDataComponents.LAST_REPEATS, 0);
 		lastFlowers.clear();

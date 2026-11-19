@@ -18,6 +18,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.block_entity.RadiusDescriptor;
@@ -172,28 +174,28 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		positionAt = cmp.getInt(TAG_POSITION);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		positionAt = input.getIntOr(TAG_POSITION, 0);
 
-		if (level != null && level.isClientSide() && cmp.contains(TAG_TICKED_POSITIONS)) {
-			byte tickedPositionBits = cmp.getByte(TAG_TICKED_POSITIONS);
+		if (level != null && level.isClientSide() && input.getInt(TAG_TICKED_POSITIONS).isPresent()) {
+			byte tickedPositionBits = input.getByteOr(TAG_TICKED_POSITIONS, (byte) 0);
 			for (int i = 0; i < 8; i++) {
 				ticksRemaining[i] = (tickedPositionBits >>> i) & 1;
 			}
 		} else {
 			for (int i = 0; i < ticksRemaining.length; i++) {
-				ticksRemaining[i] = cmp.getInt(TAG_TICKS_REMAINING + i);
+				ticksRemaining[i] = input.getIntOr(TAG_TICKS_REMAINING + i, 0);
 			}
 		}
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
-		cmp.putInt(TAG_POSITION, positionAt);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		output.putInt(TAG_POSITION, positionAt);
 		for (int i = 0; i < ticksRemaining.length; i++) {
-			cmp.putInt(TAG_TICKS_REMAINING + i, ticksRemaining[i]);
+			output.putInt(TAG_TICKS_REMAINING + i, ticksRemaining[i]);
 		}
 	}
 

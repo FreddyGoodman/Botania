@@ -8,9 +8,8 @@
  */
 package org.violetmoon.botania.api.block;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface FloatingFlower {
 
@@ -18,8 +17,8 @@ public interface FloatingFlower {
 
 	void setIslandType(IslandType type);
 
-	Tag writeNBT(HolderLookup.Provider registries);
+	void save(ValueOutput output);
 
-	void readNBT(CompoundTag nbt, HolderLookup.Provider registries);
+	void load(ValueInput input);
 
 }

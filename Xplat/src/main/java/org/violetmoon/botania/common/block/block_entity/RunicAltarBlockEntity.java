@@ -34,6 +34,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -334,19 +336,19 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 
-		tag.putInt(TAG_MANA, mana);
-		tag.putInt(TAG_MANA_TO_GET, manaToGet);
+		output.putInt(TAG_MANA, mana);
+		output.putInt(TAG_MANA_TO_GET, manaToGet);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
 
-		mana = tag.getInt(TAG_MANA);
-		manaToGet = tag.getInt(TAG_MANA_TO_GET);
+		mana = input.getIntOr(TAG_MANA, 0);
+		manaToGet = input.getIntOr(TAG_MANA_TO_GET, 0);
 	}
 
 	@Override
@@ -359,7 +361,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(16) {
+		return new Inventory(16) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;

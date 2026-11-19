@@ -26,6 +26,8 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
@@ -130,13 +132,13 @@ public class BellowsBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		tag.putBoolean(TAG_ACTIVE, active);
+	protected void saveAdditional(ValueOutput output) {
+		output.putBoolean(TAG_ACTIVE, active);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		active = tag.getBoolean(TAG_ACTIVE);
+	protected void loadAdditional(ValueInput input) {
+		active = input.getBooleanOr(TAG_ACTIVE, false);
 	}
 
 	public void setActive(boolean active) {

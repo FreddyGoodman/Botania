@@ -9,11 +9,11 @@
 package org.violetmoon.botania.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class BifrostBlockEntity extends BlockEntity {
 	private static final String TAG_TICKS = "ticks";
@@ -34,13 +34,13 @@ public class BifrostBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		tag.putInt(TAG_TICKS, ticks);
+	protected void saveAdditional(ValueOutput output) {
+		output.putInt(TAG_TICKS, ticks);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		ticks = tag.getInt(TAG_TICKS);
+	protected void loadAdditional(ValueInput input) {
+		ticks = input.getIntOr(TAG_TICKS, 0);
 	}
 
 }

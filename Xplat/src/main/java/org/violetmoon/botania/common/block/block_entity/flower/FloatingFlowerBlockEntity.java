@@ -16,6 +16,8 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.violetmoon.botania.api.block.FloatingFlower;
 import org.violetmoon.botania.api.block.FloatingFlowerImpl;
@@ -38,14 +40,14 @@ public class FloatingFlowerBlockEntity extends BlockEntity implements FloatingFl
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.put(TAG_FLOATING_DATA, floatingData.writeNBT(registries));
+	protected void saveAdditional(ValueOutput output) {
+		floatingData.save(output.child(TAG_FLOATING_DATA));
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput input) {
 		IslandType oldType = floatingData.getIslandType();
-		floatingData.readNBT(cmp.getCompound(TAG_FLOATING_DATA), registries);
+		input.child(TAG_FLOATING_DATA).ifPresent(floatingData::load);
 		if (oldType != floatingData.getIslandType() && level != null && level.isClientSide()) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
 		}
@@ -53,9 +55,7 @@ public class FloatingFlowerBlockEntity extends BlockEntity implements FloatingFl
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		var tag = super.getUpdateTag(registries);
-		saveAdditional(tag, registries);
-		return tag;
+		return saveCustomOnly(registries);
 	}
 
 	@Override

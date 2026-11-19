@@ -24,8 +24,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EnchantmentTags;
@@ -45,6 +45,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -396,39 +398,38 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.putInt(TAG_MANA, mana);
-		cmp.putInt(TAG_MANA_REQUIRED, manaRequired);
-		cmp.putInt(TAG_STAGE, stage.ordinal());
-		cmp.putInt(TAG_STAGE_TICKS, stageTicks);
-		cmp.putInt(TAG_STAGE_3_END_TICKS, stage3EndTicks);
+	protected void saveAdditional(ValueOutput output) {
+		output.putInt(TAG_MANA, mana);
+		output.putInt(TAG_MANA_REQUIRED, manaRequired);
+		output.putInt(TAG_STAGE, stage.ordinal());
+		output.putInt(TAG_STAGE_TICKS, stageTicks);
+		output.putInt(TAG_STAGE_3_END_TICKS, stage3EndTicks);
 
 		if (!itemToEnchant.isEmpty()) {
-			cmp.put(TAG_ITEM, itemToEnchant.save(registries));
+			output.store(TAG_ITEM, ItemStack.CODEC, itemToEnchant);
 		}
 
 		if (!enchants.isEmpty()) {
 			String enchStr = enchants.stream()
-					.map(e -> e.enchantment.unwrapKey().map(ResourceKey::location).orElseThrow() + "=" + e.level)
+					.map(e -> e.enchantment.unwrapKey().map(ResourceKey::identifier).orElseThrow() + "=" + e.level)
 					.collect(Collectors.joining(","));
 
-			cmp.putString(TAG_ENCHANTS, enchStr);
+			output.putString(TAG_ENCHANTS, enchStr);
 		}
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		mana = cmp.getInt(TAG_MANA);
-		manaRequired = cmp.getInt(TAG_MANA_REQUIRED);
-		stage = State.values()[cmp.getInt(TAG_STAGE)];
-		stageTicks = cmp.getInt(TAG_STAGE_TICKS);
-		stage3EndTicks = cmp.getInt(TAG_STAGE_3_END_TICKS);
+	protected void loadAdditional(ValueInput input) {
+		mana = input.getIntOr(TAG_MANA, 0);
+		manaRequired = input.getIntOr(TAG_MANA_REQUIRED, 0);
+		stage = State.values()[input.getIntOr(TAG_STAGE, 0)];
+		stageTicks = input.getIntOr(TAG_STAGE_TICKS, 0);
+		stage3EndTicks = input.getIntOr(TAG_STAGE_3_END_TICKS, 0);
 
-		CompoundTag itemCmp = cmp.getCompound(TAG_ITEM);
-		itemToEnchant = itemCmp.isEmpty() ? ItemStack.EMPTY : ItemStack.parseOptional(registries, itemCmp);
+		itemToEnchant = input.read(TAG_ITEM, ItemStack.CODEC).orElse(ItemStack.EMPTY);
 
 		enchants.clear();
-		String enchStr = cmp.getString(TAG_ENCHANTS);
+		String enchStr = input.getStringOr(TAG_ENCHANTS, "");
 		if (!enchStr.isEmpty()) {
 			String[] enchTokens = enchStr.split(",");
 			for (String token : enchTokens) {
@@ -436,7 +437,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 				Identifier enchantmentId = Identifier.parse(entryTokens[0]);
 				ResourceKey<Enchantment> enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchantmentId);
 				int lvl = Integer.parseInt(entryTokens[1]);
-				registries.lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentKey)
+				input.lookup().lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentKey)
 						.ifPresent(ench -> enchants.add(new EnchantmentInstance(ench, lvl)));
 			}
 		}
@@ -444,10 +445,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		var tag = super.getUpdateTag(registries);
-		// TODO: adjust implementation to simplify updates
-		saveAdditional(tag, registries);
-		return tag;
+		return saveCustomOnly(registries);
 	}
 
 	@Nullable

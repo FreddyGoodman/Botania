@@ -9,11 +9,10 @@
 package org.violetmoon.botania.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.common.block.block_entity.flower.functional.BubbellBlockEntity;
@@ -38,16 +37,16 @@ public class FakeAirBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput output) {
 		if (flowerPos != null) {
-			tag.put(TAG_FLOWER_POS, NbtUtils.writeBlockPos(flowerPos));
+			output.store(TAG_FLOWER_POS, BlockPos.CODEC, flowerPos);
 		}
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		flowerPos = NbtUtils.readBlockPos(tag, TAG_FLOWER_POS).orElse(null);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		flowerPos = input.read(TAG_FLOWER_POS, BlockPos.CODEC).orElse(null);
 	}
 
 }

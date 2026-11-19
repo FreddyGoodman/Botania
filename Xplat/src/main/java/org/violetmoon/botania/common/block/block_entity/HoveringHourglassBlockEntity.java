@@ -27,6 +27,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.block.HourglassTrigger;
@@ -194,7 +196,7 @@ public class HoveringHourglassBlockEntity extends ExposedSimpleInventoryBlockEnt
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public boolean canPlaceItem(int slot, ItemStack stack) {
 				return !stack.isEmpty() && HourglassMaterial.LOOKUP.find(stack) != null;
@@ -227,15 +229,15 @@ public class HoveringHourglassBlockEntity extends ExposedSimpleInventoryBlockEnt
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.putInt(TAG_TIME, time);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		output.putInt(TAG_TIME, time);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		time = tag.getInt(TAG_TIME);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		time = input.getIntOr(TAG_TIME, 0);
 	}
 
 	@Override

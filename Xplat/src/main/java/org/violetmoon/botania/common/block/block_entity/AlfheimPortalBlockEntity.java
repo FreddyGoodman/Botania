@@ -20,8 +20,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import java.net.URI;
 
 import net.minecraft.network.chat.ClickEvent;
@@ -411,30 +411,21 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.putInt(TAG_TICKS_OPEN, ticksOpen);
-		cmp.putInt(TAG_TICKS_SINCE_LAST_ITEM, ticksSinceLastItem);
+	public void saveAdditional(ValueOutput output) {
+		output.putInt(TAG_TICKS_OPEN, ticksOpen);
+		output.putInt(TAG_TICKS_SINCE_LAST_ITEM, ticksSinceLastItem);
 
-		ListTag stacksList = new ListTag();
-		for (ItemStack stack : portalStacks) {
-			stacksList.add(stack.save(registries));
-		}
-		cmp.put(TAG_PORTAL_STACKS, stacksList);
+		var stacks = output.list(TAG_PORTAL_STACKS, ItemStack.CODEC);
+		portalStacks.forEach(stacks::add);
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		ticksOpen = cmp.getInt(TAG_TICKS_OPEN);
-		ticksSinceLastItem = cmp.getInt(TAG_TICKS_SINCE_LAST_ITEM);
+	public void loadAdditional(ValueInput input) {
+		ticksOpen = input.getIntOr(TAG_TICKS_OPEN, 0);
+		ticksSinceLastItem = input.getIntOr(TAG_TICKS_SINCE_LAST_ITEM, 0);
 
-		ListTag stacksList = cmp.getList(TAG_PORTAL_STACKS, Tag.TAG_COMPOUND);
 		portalStacks.clear();
-		for (int i = 0; i < stacksList.size(); i++) {
-			ItemStack stack = ItemStack.parse(registries, stacksList.getCompound(i)).orElse(ItemStack.EMPTY);
-			if (!stack.isEmpty()) {
-				portalStacks.add(stack);
-			}
-		}
+		input.listOrEmpty(TAG_PORTAL_STACKS, ItemStack.CODEC).forEach(portalStacks::add);
 	}
 
 	@Override

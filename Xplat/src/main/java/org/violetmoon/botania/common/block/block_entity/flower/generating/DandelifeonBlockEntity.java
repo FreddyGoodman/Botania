@@ -14,6 +14,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.violetmoon.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import org.violetmoon.botania.api.block_entity.RadiusDescriptor;
@@ -260,17 +262,17 @@ public class DandelifeonBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	public void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 		if (radius != RANGE) {
-			cmp.putInt(TAG_RADIUS, radius);
+			output.putInt(TAG_RADIUS, radius);
 		}
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		radius = cmp.contains(TAG_RADIUS) ? cmp.getInt(TAG_RADIUS) : RANGE;
+	public void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		radius = input.getIntOr(TAG_RADIUS, RANGE);
 	}
 
 	@Override

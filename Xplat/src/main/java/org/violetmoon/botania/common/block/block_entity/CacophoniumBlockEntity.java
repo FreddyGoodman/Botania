@@ -21,6 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.violetmoon.botania.common.item.CacophoniumItem;
 
@@ -43,20 +45,18 @@ public class CacophoniumBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.put(TAG_STACK, stack.saveOptional(registries));
+	protected void saveAdditional(ValueOutput output) {
+		output.store(TAG_STACK, ItemStack.OPTIONAL_CODEC, stack);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		stack = ItemStack.parseOptional(registries, cmp.getCompound(TAG_STACK));
+	protected void loadAdditional(ValueInput input) {
+		stack = input.read(TAG_STACK, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		var tag = super.getUpdateTag(registries);
-		tag.put(TAG_STACK, stack.saveOptional(registries));
-		return tag;
+		return saveCustomOnly(registries);
 	}
 
 	@Override

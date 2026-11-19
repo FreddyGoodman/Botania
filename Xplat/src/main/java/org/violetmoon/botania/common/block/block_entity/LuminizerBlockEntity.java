@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -27,6 +26,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -231,24 +232,22 @@ public class LuminizerBlockEntity extends BlockEntity implements WandBindable, B
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		bindPos = NbtUtils.readBlockPos(cmp, TAG_BIND_POS).orElse(null);
-		noParticle = cmp.getBoolean(TAG_NO_PARTICLE);
+	protected void loadAdditional(ValueInput input) {
+		bindPos = input.read(TAG_BIND_POS, BlockPos.CODEC).orElse(null);
+		noParticle = input.getBooleanOr(TAG_NO_PARTICLE, false);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput output) {
 		if (bindPos != null) {
-			cmp.put(TAG_BIND_POS, NbtUtils.writeBlockPos(bindPos));
+			output.store(TAG_BIND_POS, BlockPos.CODEC, bindPos);
 		}
-		cmp.putBoolean(TAG_NO_PARTICLE, noParticle);
+		output.putBoolean(TAG_NO_PARTICLE, noParticle);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		var tag = super.getUpdateTag(registries);
-		saveAdditional(tag, registries);
-		return tag;
+		return saveCustomOnly(registries);
 	}
 
 	@Override

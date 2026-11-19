@@ -16,6 +16,8 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class ManaFlameBlockEntity extends BlockEntity {
 	private static final String TAG_COLOR = "color";
@@ -35,13 +37,13 @@ public class ManaFlameBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.putInt(TAG_COLOR, color);
+	protected void saveAdditional(ValueOutput output) {
+		output.putInt(TAG_COLOR, color);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		color = cmp.getInt(TAG_COLOR);
+	protected void loadAdditional(ValueInput input) {
+		color = input.getIntOr(TAG_COLOR, 0);
 	}
 
 	@Override

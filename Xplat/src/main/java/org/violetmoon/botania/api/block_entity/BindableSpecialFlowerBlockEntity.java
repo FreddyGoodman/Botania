@@ -17,8 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -32,6 +30,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -246,27 +246,32 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 
 		if (bindingPos != null) {
-			cmp.put(TAG_BINDING, NbtUtils.writeBlockPos(bindingPos));
+			output.store(TAG_BINDING, BlockPos.CODEC, bindingPos);
 		}
-		cmp.putBoolean(TAG_AUTO_BINDING, autoBinding);
+		output.putBoolean(TAG_AUTO_BINDING, autoBinding);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
 
-		setBindingPos(NbtUtils.readBlockPos(cmp, TAG_BINDING).orElse(null));
-		autoBinding = !cmp.contains(TAG_AUTO_BINDING) || cmp.getBoolean(TAG_AUTO_BINDING);
+		setBindingPos(input.read(TAG_BINDING, BlockPos.CODEC).orElse(null));
+		autoBinding = input.getBooleanOr(TAG_AUTO_BINDING, true);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
-		tag.put(TAG_BINDING, bindingPos != null ? NbtUtils.writeBlockPos(bindingPos) : new IntArrayTag(List.of()));
+		if (bindingPos != null) {
+			tag.putIntArray(TAG_BINDING, new int[] {bindingPos.getX(), bindingPos.getY(), bindingPos.getZ()});
+		} else if (tag.isEmpty()) {
+			// An empty update tag would not clear the client's previous binding.
+			tag.putByte("-", (byte) 0);
+		}
 		return tag;
 	}
 

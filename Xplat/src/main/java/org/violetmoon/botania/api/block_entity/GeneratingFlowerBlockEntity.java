@@ -16,6 +16,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.mana.ManaCollector;
@@ -97,15 +99,15 @@ public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerB
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		lastMana = mana = cmp.getInt(TAG_MANA);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		lastMana = mana = input.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
-		cmp.putInt(TAG_MANA, mana);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		output.putInt(TAG_MANA, mana);
 	}
 
 	@Override

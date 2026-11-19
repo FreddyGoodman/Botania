@@ -15,8 +15,8 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public final class DefaultCorporeaMatchers {
 	public static void init() {
-		CorporeaHelper.instance().registerRequestMatcher(botaniaRL("string"), CorporeaStringMatcher.class, CorporeaStringMatcher::createFromNBT);
-		CorporeaHelper.instance().registerRequestMatcher(botaniaRL("item_stack"), CorporeaItemStackMatcher.class, CorporeaItemStackMatcher::createFromNBT);
+		CorporeaHelper.instance().registerRequestMatcher(botaniaRL("string"), CorporeaStringMatcher.class, CorporeaStringMatcher::load);
+		CorporeaHelper.instance().registerRequestMatcher(botaniaRL("item_stack"), CorporeaItemStackMatcher.class, CorporeaItemStackMatcher::load);
 	}
 
 	private DefaultCorporeaMatchers() {}

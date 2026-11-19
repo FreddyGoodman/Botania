@@ -73,7 +73,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(9) {
+		return new Inventory(9) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;

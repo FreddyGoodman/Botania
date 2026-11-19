@@ -16,15 +16,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.block.WandHUD;
@@ -36,14 +35,14 @@ import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable {
 	private static final String TAG_REQUEST_POS = "requestPos";
 	private static final String TAG_REQUEST_TYPE = "requestType";
 	private static final String TAG_REQUEST_COUNT = "requestCount";
 
-	private static final Map<Identifier, BiFunction<CompoundTag, HolderLookup.Provider, ? extends CorporeaRequestMatcher>> corporeaMatcherDeserializers = new ConcurrentHashMap<>();
+	private static final Map<Identifier, Function<ValueInput, ? extends CorporeaRequestMatcher>> corporeaMatcherDeserializers = new ConcurrentHashMap<>();
 	private static final Map<Class<? extends CorporeaRequestMatcher>, Identifier> corporeaMatcherSerializers = new ConcurrentHashMap<>();
 
 	@Nullable
@@ -101,32 +100,32 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput output) {
 		if (requestPos != null) {
-			cmp.put(TAG_REQUEST_POS, NbtUtils.writeBlockPos(requestPos));
+			output.store(TAG_REQUEST_POS, BlockPos.CODEC, requestPos);
 		}
 		Identifier reqType = request != null ? corporeaMatcherSerializers.get(request.getClass()) : null;
 
 		if (reqType != null) {
-			cmp.putString(TAG_REQUEST_TYPE, reqType.toString());
-			request.writeToNBT(cmp, registries);
-			cmp.putInt(TAG_REQUEST_COUNT, requestCount);
+			output.putString(TAG_REQUEST_TYPE, reqType.toString());
+			request.save(output);
+			output.putInt(TAG_REQUEST_COUNT, requestCount);
 		}
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		NbtUtils.readBlockPos(cmp, TAG_REQUEST_POS).ifPresent(pos -> requestPos = pos);
-		Identifier reqType = Identifier.tryParse(cmp.getString(TAG_REQUEST_TYPE));
+	protected void loadAdditional(ValueInput input) {
+		input.read(TAG_REQUEST_POS, BlockPos.CODEC).ifPresent(pos -> requestPos = pos);
+		Identifier reqType = Identifier.tryParse(input.getStringOr(TAG_REQUEST_TYPE, ""));
 		if (reqType != null && corporeaMatcherDeserializers.containsKey(reqType)) {
-			request = corporeaMatcherDeserializers.get(reqType).apply(cmp, registries);
+			request = corporeaMatcherDeserializers.get(reqType).apply(input);
 		} else {
 			request = null;
 		}
-		requestCount = cmp.getInt(TAG_REQUEST_COUNT);
+		requestCount = input.getIntOr(TAG_REQUEST_COUNT, 0);
 	}
 
-	public static <T extends CorporeaRequestMatcher> void addCorporeaRequestMatcher(Identifier id, Class<T> clazz, BiFunction<CompoundTag, HolderLookup.Provider, T> deserializer) {
+	public static <T extends CorporeaRequestMatcher> void addCorporeaRequestMatcher(Identifier id, Class<T> clazz, Function<ValueInput, T> deserializer) {
 		corporeaMatcherSerializers.put(clazz, id);
 		corporeaMatcherDeserializers.put(id, deserializer);
 	}

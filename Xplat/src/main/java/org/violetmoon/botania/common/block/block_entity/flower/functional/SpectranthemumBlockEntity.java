@@ -12,12 +12,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -89,24 +90,24 @@ public class SpectranthemumBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	public void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 		if (bindPos != null) {
-			cmp.put(TAG_BIND_POS, NbtUtils.writeBlockPos(bindPos));
+			output.store(TAG_BIND_POS, BlockPos.CODEC, bindPos);
 		}
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		bindPos = NbtUtils.readBlockPos(cmp, TAG_BIND_POS).orElse(null);
+	public void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		bindPos = input.read(TAG_BIND_POS, BlockPos.CODEC).orElse(null);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
 		if (bindPos != null) {
-			tag.put(TAG_BIND_POS, NbtUtils.writeBlockPos(bindPos));
+			tag.putIntArray(TAG_BIND_POS, new int[] {bindPos.getX(), bindPos.getY(), bindPos.getZ()});
 		}
 		return tag;
 	}

@@ -26,6 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -227,17 +229,17 @@ public class BotanicalBreweryBlockEntity extends SimpleInventoryBlockEntity impl
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 
-		tag.putInt(TAG_MANA, mana);
+		output.putInt(TAG_MANA, mana);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
 
-		mana = tag.getInt(TAG_MANA);
+		mana = input.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override
@@ -249,7 +251,7 @@ public class BotanicalBreweryBlockEntity extends SimpleInventoryBlockEntity impl
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(7) {
+		return new Inventory(7) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;

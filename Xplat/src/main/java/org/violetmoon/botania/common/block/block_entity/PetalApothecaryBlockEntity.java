@@ -295,7 +295,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(16) {
+		return new Inventory(16) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;

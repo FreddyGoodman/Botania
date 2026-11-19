@@ -64,7 +64,7 @@ public class SparkTinkererBlockEntity extends ExposedSimpleInventoryBlockEntity 
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;

@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,6 +25,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -149,38 +153,37 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput input) {
 		if (getBlockState().getBlock() instanceof FloatingSpecialFlowerBlock) {
 			setFloating(true);
 		}
 
 		IslandType oldType = floatingData.getIslandType();
-		if (cmp.contains(TAG_FLOATING_DATA)) {
-			floatingData.readNBT(cmp.getCompound(TAG_FLOATING_DATA), registries);
-		}
+		input.child(TAG_FLOATING_DATA).ifPresent(floatingData::load);
 		if (isFloating() && oldType != floatingData.getIslandType() && level != null && level.isClientSide()) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
 		}
 
-		if (cmp.contains("redstoneRecheck")) {
+		if (input.getInt("redstoneRecheck").isPresent()) {
 			redstoneRecheck = true;
 		}
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput output) {
 		if (isFloating()) {
-			cmp.put(TAG_FLOATING_DATA, floatingData.writeNBT(registries));
+			floatingData.save(output.child(TAG_FLOATING_DATA));
 		}
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		var tag = super.getUpdateTag(registries);
-		if (isFloating()) {
-			tag.put(TAG_FLOATING_DATA, floatingData.writeNBT(registries));
+		if (!isFloating()) {
+			return super.getUpdateTag(registries);
 		}
-		return tag;
+		var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+		floatingData.save(output.child(TAG_FLOATING_DATA));
+		return output.buildResult();
 	}
 
 	@Nullable

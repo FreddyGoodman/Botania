@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -47,7 +48,6 @@ public abstract class SimpleInventoryBlockEntity extends BlockEntity implements 
 	protected SimpleInventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, boolean synchronize) {
 		super(type, pos, state);
 		this.synchronize = synchronize;
-		itemHandler.addListener(i -> setChanged());
 	}
 
 	// [VanillaCopy] Containers::dropContentsOnDestroy, except for SimpleInventoryBlockEntity instead of Container
@@ -110,6 +110,17 @@ public abstract class SimpleInventoryBlockEntity extends BlockEntity implements 
 
 	protected abstract SimpleContainer createItemHandler();
 
+	protected class Inventory extends SimpleContainer {
+		protected Inventory(int size) {
+			super(size);
+		}
+
+		@Override
+		public void setChanged() {
+			SimpleInventoryBlockEntity.this.setChanged();
+		}
+	}
+
 	@Override
 	public void clearContent() {
 		getItemHandler().clearContent();
@@ -129,7 +140,7 @@ public abstract class SimpleInventoryBlockEntity extends BlockEntity implements 
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		componentInput.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyInto(itemHandler.getItems());
 	}
 }

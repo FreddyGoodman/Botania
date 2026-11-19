@@ -9,9 +9,7 @@
 package org.violetmoon.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -19,6 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.violetmoon.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import org.violetmoon.botania.api.block_entity.RadiusDescriptor;
@@ -164,19 +164,19 @@ public class EndoflameBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 
-		cmp.putInt(TAG_BURN_TIME, burnTime);
-		cmp.putInt(TAG_COOLDOWN_TIME, cooldownTime);
+		output.putInt(TAG_BURN_TIME, burnTime);
+		output.putInt(TAG_COOLDOWN_TIME, cooldownTime);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
 
-		burnTime = cmp.getInt(TAG_BURN_TIME);
-		cooldownTime = cmp.getInt(TAG_COOLDOWN_TIME);
+		burnTime = input.getIntOr(TAG_BURN_TIME, 0);
+		cooldownTime = input.getIntOr(TAG_COOLDOWN_TIME, 0);
 	}
 
 	private int getBurnTime(ItemStack stack) {

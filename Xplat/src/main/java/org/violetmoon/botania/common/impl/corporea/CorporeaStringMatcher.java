@@ -8,10 +8,10 @@
  */
 package org.violetmoon.botania.common.impl.corporea;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.violetmoon.botania.api.corporea.CorporeaRequestMatcher;
@@ -59,14 +59,14 @@ public class CorporeaStringMatcher implements CorporeaRequestMatcher {
 				|| name.endsWith("y") && matchGlob(name.substring(0, name.length() - 1) + "ies");
 	}
 
-	public static CorporeaStringMatcher createFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-		String expression = tag.getString(TAG_REQUEST_CONTENTS);
+	public static CorporeaStringMatcher load(ValueInput input) {
+		String expression = input.getStringOr(TAG_REQUEST_CONTENTS, "");
 		return new CorporeaStringMatcher(expression);
 	}
 
 	@Override
-	public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
-		tag.putString(TAG_REQUEST_CONTENTS, toString());
+	public void save(ValueOutput output) {
+		output.putString(TAG_REQUEST_CONTENTS, toString());
 	}
 
 	@Override
