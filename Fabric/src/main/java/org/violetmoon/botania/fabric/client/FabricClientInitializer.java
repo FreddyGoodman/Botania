@@ -10,7 +10,6 @@
 package org.violetmoon.botania.fabric.client;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -55,7 +54,6 @@ import org.violetmoon.botania.client.gui.box.TrinketCaseScreen;
 import org.violetmoon.botania.client.gui.enderhand.HandOfEnderScreen;
 import org.violetmoon.botania.client.integration.ears.EarsIntegration;
 import org.violetmoon.botania.client.model.BotaniaLayerDefinitions;
-import org.violetmoon.botania.client.render.BlockRenderLayers;
 import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.client.render.entity.*;
 import org.violetmoon.botania.common.item.BotaniaItems;
@@ -104,7 +102,6 @@ public class FabricClientInitializer implements ClientModInitializer {
 			MiscellaneousModels.INSTANCE.onModelRegister(Minecraft.getInstance().getResourceManager(), pluginContext::addModels);
 			pluginContext.modifyModelAfterBake().register((bakedModel, context) -> MiscellaneousModels.INSTANCE.modifyModelAfterbake(bakedModel, context.resourceId()));
 		});
-		BlockRenderLayers.init(BlockRenderLayerMap.INSTANCE::putBlock);
 		BotaniaItemProperties.init(ItemProperties::register);
 
 		// BE/Entity Renderer

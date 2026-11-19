@@ -1,10 +1,22 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "bottom": "botania:block/mana_prism_top_bottom",
-    "top": "botania:block/mana_prism_top_bottom",
-    "side": "botania:block/mana_prism_side",
-    "particle": "botania:block/mana_prism_side"
+    "bottom": {
+      "force_translucent": true,
+      "sprite": "botania:block/mana_prism_top_bottom"
+    },
+    "top": {
+      "force_translucent": true,
+      "sprite": "botania:block/mana_prism_top_bottom"
+    },
+    "side": {
+      "force_translucent": true,
+      "sprite": "botania:block/mana_prism_side"
+    },
+    "particle": {
+      "force_translucent": true,
+      "sprite": "botania:block/mana_prism_side"
+    }
   },
   "elements": [
     {

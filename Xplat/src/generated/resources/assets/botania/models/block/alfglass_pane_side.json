@@ -1,7 +1,13 @@
 {
   "parent": "minecraft:block/template_glass_pane_side",
   "textures": {
-    "edge": "botania:block/alfglass_pane",
-    "pane": "botania:block/alfglass"
+    "edge": {
+      "force_translucent": true,
+      "sprite": "botania:block/alfglass_pane"
+    },
+    "pane": {
+      "force_translucent": true,
+      "sprite": "botania:block/alfglass"
+    }
   }
 }

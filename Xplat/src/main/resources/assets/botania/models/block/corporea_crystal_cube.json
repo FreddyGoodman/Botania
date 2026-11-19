@@ -1,9 +1,18 @@
 {
 	"comment": "Designed by Wiiv with Cubik Studio - https://cubik.studio",
 	"textures": {
-		"cloth": "botania:block/corporea_crystal_cube_cloth",
-		"base": "botania:block/corporea_crystal_cube_base",
-		"particle": "botania:block/corporea_crystal_cube_cloth"
+		"cloth": {
+			"force_translucent": true,
+			"sprite": "botania:block/corporea_crystal_cube_cloth"
+		},
+		"base": {
+			"force_translucent": true,
+			"sprite": "botania:block/corporea_crystal_cube_base"
+		},
+		"particle": {
+			"force_translucent": true,
+			"sprite": "botania:block/corporea_crystal_cube_cloth"
+		}
 	},
 	"elements": [ 	 
 		{

@@ -146,7 +146,7 @@ public class BlockstateProvider implements DataProvider {
 				BotaniaBlocks.BIFROST_BRIDGE,
 				ModelTemplates.CUBE_ALL.create(
 						getModelLocation(BotaniaBlocks.BIFROST_BRIDGE),
-						TextureMapping.cube(BotaniaBlocks.BIFROST), this.modelOutput));
+						TextureMapping.cube(new Material(getBlockTexture(BotaniaBlocks.BIFROST), true)), this.modelOutput));
 		remainingBlocks.remove(BotaniaBlocks.BIFROST_BRIDGE);
 
 		singleVariantBlockState(
@@ -209,7 +209,7 @@ public class BlockstateProvider implements DataProvider {
 						.mapToObj(i -> {
 							var model = ModelTemplates.CUBE_ALL.create(
 									getModelLocation(BotaniaBlocks.ALFGLASS, "_" + i),
-									TextureMapping.cube(new Material(getBlockTexture(BotaniaBlocks.ALFGLASS, "_" + i))),
+									TextureMapping.cube(new Material(getBlockTexture(BotaniaBlocks.ALFGLASS, "_" + i), true)),
 									this.modelOutput);
 							return plainVariant(model);
 						})
@@ -895,8 +895,8 @@ public class BlockstateProvider implements DataProvider {
 		takeAll(remainingBlocks, block -> block instanceof IronBarsBlock).forEach(block -> {
 			String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
 			var mapping = new TextureMapping()
-					.put(TextureSlot.EDGE, new Material(getBlockTexture(block)))
-					.put(TextureSlot.PANE, new Material(botaniaRL("block/" + name.substring(0, name.length() - "_pane".length()))));
+					.put(TextureSlot.EDGE, new Material(getBlockTexture(block), true))
+					.put(TextureSlot.PANE, new Material(botaniaRL("block/" + name.substring(0, name.length() - "_pane".length())), true));
 			Identifier postModel = ModelTemplates.STAINED_GLASS_PANE_POST.create(block, mapping, this.modelOutput);
 			Identifier sideModel = ModelTemplates.STAINED_GLASS_PANE_SIDE.create(block, mapping, this.modelOutput);
 			Identifier sideAltModel = ModelTemplates.STAINED_GLASS_PANE_SIDE_ALT.create(block, mapping, this.modelOutput);
@@ -1520,7 +1520,8 @@ public class BlockstateProvider implements DataProvider {
 		for (int i = 0; i < length; i++) {
 			String suffix = i == 0 ? "" : "_" + i;
 			Identifier modelId = getModelLocation(block, suffix);
-			models[i] = ModelTemplates.CUBE_ALL.create(modelId, TextureMapping.cube(new Material(textures[i])), this.modelOutput);
+			var material = new Material(textures[i], block == BotaniaBlocks.MANAGLASS || block == BotaniaBlocks.BIFROST);
+			models[i] = ModelTemplates.CUBE_ALL.create(modelId, TextureMapping.cube(material), this.modelOutput);
 		}
 		cubeAllWithModels(blocks, block, models, weights);
 	}

@@ -1,6 +1,9 @@
 {
   "parent": "minecraft:block/template_glass_pane_noside_alt",
   "textures": {
-    "pane": "botania:block/bifrost"
+    "pane": {
+      "force_translucent": true,
+      "sprite": "botania:block/bifrost"
+    }
   }
 }

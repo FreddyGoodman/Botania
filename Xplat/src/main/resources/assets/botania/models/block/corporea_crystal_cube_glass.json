@@ -1,7 +1,13 @@
 {
 	"textures": {
-		"glass": "botania:block/corporea_crystal_cube_glass",
-		"particle": "botania:block/corporea_crystal_cube_glass"
+		"glass": {
+			"force_translucent": true,
+			"sprite": "botania:block/corporea_crystal_cube_glass"
+		},
+		"particle": {
+			"force_translucent": true,
+			"sprite": "botania:block/corporea_crystal_cube_glass"
+		}
 	},
 	"elements": [
 		{

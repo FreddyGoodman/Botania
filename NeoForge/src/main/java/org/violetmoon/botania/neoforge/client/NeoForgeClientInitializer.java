@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -59,7 +58,6 @@ import org.violetmoon.botania.client.gui.enderhand.HandOfEnderScreen;
 import org.violetmoon.botania.client.integration.ears.EarsIntegration;
 import org.violetmoon.botania.client.model.BotaniaLayerDefinitions;
 import org.violetmoon.botania.client.model.armor.ArmorModels;
-import org.violetmoon.botania.client.render.BlockRenderLayers;
 import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.client.render.entity.EntityRenderers;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
@@ -97,8 +95,6 @@ public class NeoForgeClientInitializer {
 		BotaniaAPI.LOGGER.debug("Client API instances: {}",
 				List.of(BotaniaAPIClient.instance(), ClientXplatAbstractions.instance()));
 
-		BlockRenderLayers.skipPlatformBlocks = true; // platforms can use standard rendering on NeoForge
-		BlockRenderLayers.init(ItemBlockRenderTypes::setRenderLayer);
 
 		// Events
 		var bus = NeoForge.EVENT_BUS;

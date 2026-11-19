@@ -1,6 +1,9 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "botania:block/alfglass_0"
+    "all": {
+      "force_translucent": true,
+      "sprite": "botania:block/alfglass_0"
+    }
   }
 }
