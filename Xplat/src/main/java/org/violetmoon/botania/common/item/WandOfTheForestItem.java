@@ -18,11 +18,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
@@ -55,7 +57,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class WandOfTheForestItem extends Item implements CustomCreativeTabContents {
+public class WandOfTheForestItem extends Item implements ClientInventoryTick, CustomCreativeTabContents {
 
 	public final ChatFormatting modeChatFormatting;
 
@@ -175,7 +177,12 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		tickInInventory(stack, world, entity, slot);
+	}
+
+	@Override
+	public void tickInInventory(ItemStack stack, Level world, Entity entity, @Nullable EquipmentSlot slot) {
 		getBindingAttempt(stack).ifPresent(pos -> {
 			if (!pos.dimension().equals(world.dimension())
 					|| WandBindable.LOOKUP.find(world, pos.pos(), getBindingSide(stack).orElse(null)) == null) {

@@ -16,11 +16,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -184,11 +186,17 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 	// This prevents a player from accidentally entering binding mode, then forgetting where the binding center
 	// is and thus being unable to exit binding mode.
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean held) {
-		super.inventoryTick(stack, world, entity, slot, held);
-		// Curios actually calls this method, but with a negative slot, so we can check if we're in the "real" inventory this way
-		if (slot >= 0) {
-			exitBindingMode(stack);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(stack, world, entity, slot);
+		// Accessories may tick worn stacks. Only reset rings that are back in the player's inventory.
+		if (entity instanceof Player player) {
+			var inventory = player.getInventory();
+			for (int i = 0; i < inventory.getContainerSize(); i++) {
+				if (inventory.getItem(i) == stack) {
+					exitBindingMode(stack);
+					return;
+				}
+			}
 		}
 	}
 

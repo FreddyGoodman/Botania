@@ -22,6 +22,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
@@ -32,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.item.SequentialBreaker;
 import org.violetmoon.botania.api.item.SpecialBlockBreakingHandler;
@@ -42,6 +44,7 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.helper.PlayerHelper;
+import org.violetmoon.botania.common.item.ClientInventoryTick;
 import org.violetmoon.botania.common.item.CustomCreativeTabContents;
 import org.violetmoon.botania.common.item.StoneOfTemperanceItem;
 import org.violetmoon.botania.common.item.equipment.tool.ToolCommons;
@@ -55,7 +58,7 @@ import java.util.function.Predicate;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public class TerraShattererItem extends ManasteelPickaxeItem implements SequentialBreaker, CustomCreativeTabContents,
+public class TerraShattererItem extends ManasteelPickaxeItem implements ClientInventoryTick, SequentialBreaker, CustomCreativeTabContents,
 		SpecialBlockBreakingHandler {
 
 	public static final int MAX_MANA = Integer.MAX_VALUE;
@@ -131,8 +134,13 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		super.inventoryTick(stack, world, entity, slot, selected);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(stack, world, entity, slot);
+		tickInInventory(stack, world, entity, slot);
+	}
+
+	@Override
+	public void tickInInventory(ItemStack stack, Level world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (isEnabled(stack)) {
 			int level = getLevel(stack);
 

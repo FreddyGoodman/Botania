@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -21,6 +22,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +47,7 @@ import org.violetmoon.botania.common.proxy.Proxy;
 
 import java.util.List;
 
-public class ManaBlasterItem extends Item {
+public class ManaBlasterItem extends Item implements ClientInventoryTick {
 
 	public static final int CLIP_SLOTS = 6;
 	private static final int COOLDOWN = 30;
@@ -282,7 +284,12 @@ public class ManaBlasterItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		tickInInventory(stack, world, entity, slot);
+	}
+
+	@Override
+	public void tickInInventory(ItemStack stack, Level world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (getCooldown(stack) > 0) {
 			setCooldown(stack, getCooldown(stack) - 1);
 		}

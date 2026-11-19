@@ -28,6 +28,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -41,6 +42,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.client.fx.WispParticleData;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
@@ -62,7 +64,7 @@ import java.util.stream.Stream;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public class SextantItem extends Item {
+public class SextantItem extends Item implements ClientInventoryTick {
 	public static final Identifier MULTIBLOCK_ID = botaniaRL("worldshapers_sextant");
 	private static final int MAX_RADIUS = 256;
 
@@ -112,7 +114,7 @@ public class SextantItem extends Item {
 	 * rendered where it's supposed to be.
 	 */
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+	public void tickInInventory(ItemStack stack, Level level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (!level.isClientSide() || !(entity instanceof LocalPlayer)) {
 			return;
 		}

@@ -12,10 +12,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,6 +38,7 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.helper.MathHelper;
+import org.violetmoon.botania.common.item.ClientInventoryTick;
 import org.violetmoon.botania.network.clientbound.FlugelEyeEffectPacket;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
@@ -43,7 +46,7 @@ import java.util.*;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public class EyeOfTheFlugelItem extends RelicItem {
+public class EyeOfTheFlugelItem extends RelicItem implements ClientInventoryTick {
 
 	public EyeOfTheFlugelItem(Properties properties) {
 		super(properties);
@@ -97,8 +100,13 @@ public class EyeOfTheFlugelItem extends RelicItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-		super.inventoryTick(stack, level, entity, slotId, isSelected);
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(stack, level, entity, slot);
+		tickInInventory(stack, level, entity, slot);
+	}
+
+	@Override
+	public void tickInInventory(ItemStack stack, Level level, Entity entity, @Nullable EquipmentSlot slot) {
 		// we can't access the level while building the tooltip, so the best we can do is figuring it out ahead of time
 		Identifier dimension = level.dimension().identifier();
 		Identifier knownDimension = stack.get(BotaniaDataComponents.LOCAL_DIMENSION);

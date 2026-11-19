@@ -73,7 +73,7 @@ public class StarcallerItem extends Item {
 			world.addFreshEntity(star);
 
 			if (!world.isRaining()
-					&& Math.abs(world.getDayTime() - 18000) < 1800
+					&& Math.abs(world.getOverworldClockTime() - 18000) < 1800
 					&& Math.random() < 0.125) {
 				FallingStarEntity bonusStar = new FallingStarEntity(player, world);
 				bonusStar.setPos(posVec.x, posVec.y, posVec.z);
@@ -82,7 +82,7 @@ public class StarcallerItem extends Item {
 				world.addFreshEntity(bonusStar);
 			}
 
-			stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+			stack.hurtAndBreak(1, player, InteractionHand.MAIN_HAND.asEquipmentSlot());
 			world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.STARCALLER, SoundSource.PLAYERS, 1F, 1F);
 		}
 	}

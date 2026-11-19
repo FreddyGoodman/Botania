@@ -84,7 +84,7 @@ public class IncensePlateBlock extends BotaniaWaterloggedEntityBlock {
 			} else if (XplatAbstractions.INSTANCE.canToolLightFire(stack)) {
 				plate.ignite();
 				level.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
-				stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+				stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
 			} else {
 				player.getInventory().placeItemBackInInventory(plateStack);
 				plate.getItemHandler().setItem(0, ItemStack.EMPTY);

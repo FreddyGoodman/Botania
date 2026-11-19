@@ -119,7 +119,7 @@ public class LifeAggregatorItem extends Item {
 				// must empty stack last, as otherwise components become inaccessible
 				Player player = context.getPlayer();
 				if (mover.consumeAndReturn(1, player).isEmpty() && player != null) {
-					player.onEquippedItemBroken(this, LivingEntity.getSlotForHand(context.getHand()));
+					player.onEquippedItemBroken(this, context.getHand().asEquipmentSlot());
 				}
 			} else {
 				RandomSource random = level.getRandom();
@@ -165,7 +165,7 @@ public class LifeAggregatorItem extends Item {
 					UseItemSuccessTrigger.INSTANCE.trigger(serverPlayer, stack, serverPlayer.serverLevel(),
 							pos.getX(), pos.getY(), pos.getZ());
 				}
-				player.onEquippedItemBroken(this, LivingEntity.getSlotForHand(context.getHand()));
+				player.onEquippedItemBroken(this, context.getHand().asEquipmentSlot());
 			}
 		} else {
 			RandomSource random = level.getRandom();

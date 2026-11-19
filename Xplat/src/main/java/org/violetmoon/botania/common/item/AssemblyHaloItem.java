@@ -27,6 +27,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.*;
 import net.minecraft.world.Container;
@@ -34,6 +35,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -68,7 +70,7 @@ import org.violetmoon.botania.xplat.XplatAbstractions;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AssemblyHaloItem extends Item {
+public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 
 	private static final Identifier glowTexture = Identifier.parse(ResourcesLib.MISC_GLOW_GREEN);
 	private static final ItemStack craftingTable = new ItemStack(Blocks.CRAFTING_TABLE);
@@ -110,16 +112,19 @@ public class AssemblyHaloItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int pos, boolean equipped) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		tickInInventory(stack, world, entity, slot);
+	}
+
+	@Override
+	public void tickInInventory(ItemStack stack, Level world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (!(entity instanceof LivingEntity living)) {
 			return;
 		}
 
 		boolean eqLastTick = wasEquipped(stack);
 
-		if (!equipped && living.getOffhandItem() == stack) {
-			equipped = true;
-		}
+		boolean equipped = slot == EquipmentSlot.MAINHAND || living.getOffhandItem() == stack;
 
 		if (eqLastTick != equipped) {
 			setEquipped(stack, equipped);

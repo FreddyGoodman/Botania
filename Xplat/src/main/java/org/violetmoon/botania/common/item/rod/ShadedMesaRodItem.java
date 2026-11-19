@@ -9,12 +9,14 @@
 package org.violetmoon.botania.common.item.rod;
 
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,13 +37,14 @@ import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.helper.MathHelper;
 import org.violetmoon.botania.common.helper.VecHelper;
 import org.violetmoon.botania.common.item.BotaniaItems;
+import org.violetmoon.botania.common.item.ClientInventoryTick;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ShadedMesaRodItem extends Item {
+public class ShadedMesaRodItem extends Item implements ClientInventoryTick {
 	private static final float RANGE = 3F;
 	private static final int COST = 2;
 	private static final Predicate<Entity> CAN_TARGET = e -> !e.isSpectator() && e.isAlive() && !e.getType().is(
@@ -62,7 +65,12 @@ public class ShadedMesaRodItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean held) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		tickInInventory(stack, world, entity, slot);
+	}
+
+	@Override
+	public void tickInInventory(ItemStack stack, Level world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (!(entity instanceof Player)) {
 			return;
 		}

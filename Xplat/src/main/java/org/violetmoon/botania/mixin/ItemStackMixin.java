@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.violetmoon.botania.common.item.ClientInventoryTick;
 import org.violetmoon.botania.common.item.equipment.tool.elementium.ElementiumAxeItem;
 import org.violetmoon.botania.api.mana.ManaItemHandler;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
@@ -30,14 +31,20 @@ import org.violetmoon.botania.common.component.ManaRepair;
 public class ItemStackMixin {
 
 	/**
-	 * Self-repair for mana-repaired items.
+	 * Tick client item behavior and apply server-side mana repair.
 	 */
 	@Inject(method = "inventoryTick", at = @At("HEAD"))
-	private void tickSelfRepair(Level level, Entity entity, EquipmentSlot slot, CallbackInfo ci) {
+	private void botania_tickInventoryItem(Level level, Entity entity, EquipmentSlot slot, CallbackInfo ci) {
 
 		ItemStack self = (ItemStack) (Object) this;
 
-		if (level.isClientSide() || !(entity instanceof Player player)) {
+		if (level.isClientSide()) {
+			if (self.getItem() instanceof ClientInventoryTick tickingItem) {
+				tickingItem.tickInInventory(self, level, entity, slot);
+			}
+			return;
+		}
+		if (!(entity instanceof Player player)) {
 			return;
 		}
 

@@ -14,10 +14,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -110,7 +112,7 @@ public class BlackHoleTalismanItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack talisman, Level world, Entity entity, int slot, boolean selected) {
+	public void inventoryTick(ItemStack talisman, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (!(entity instanceof Player player) || entity.level().isClientSide()
 				|| !talisman.has(BotaniaDataComponents.ACTIVE)) {
 			return;

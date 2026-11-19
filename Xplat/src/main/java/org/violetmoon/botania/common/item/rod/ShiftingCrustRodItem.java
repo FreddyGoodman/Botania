@@ -25,6 +25,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -42,6 +43,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.item.BlockProvider;
 import org.violetmoon.botania.api.item.WireframeCoordinateListProvider;
@@ -51,13 +53,14 @@ import org.violetmoon.botania.common.CollectingNeighborUpdaterAccess;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.helper.PlayerHelper;
+import org.violetmoon.botania.common.item.ClientInventoryTick;
 import org.violetmoon.botania.common.item.StoneOfTemperanceItem;
 import org.violetmoon.botania.mixin.LevelAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShiftingCrustRodItem extends Item implements WireframeCoordinateListProvider {
+public class ShiftingCrustRodItem extends Item implements ClientInventoryTick, WireframeCoordinateListProvider {
 
 	private static final int RANGE = 3;
 	private static final int COST = 40;
@@ -132,7 +135,12 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean equipped) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		tickInInventory(stack, world, entity, slot);
+	}
+
+	@Override
+	public void tickInInventory(ItemStack stack, Level world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (!canExchange(stack) || !(entity instanceof Player player)) {
 			return;
 		}

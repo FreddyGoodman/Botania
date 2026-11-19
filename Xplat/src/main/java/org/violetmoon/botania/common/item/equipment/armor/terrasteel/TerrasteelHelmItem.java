@@ -10,6 +10,7 @@ package org.violetmoon.botania.common.item.equipment.armor.terrasteel;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -20,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -40,8 +40,8 @@ public class TerrasteelHelmItem extends TerrasteelArmorItem implements ManaDisco
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		super.inventoryTick(stack, world, entity, slot, selected);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(stack, world, entity, slot);
 		if (!world.isClientSide() && entity instanceof Player player
 				&& player.getInventory().armor.contains(stack)
 				&& hasArmorSet(player)) {

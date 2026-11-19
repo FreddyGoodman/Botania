@@ -20,6 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,6 +42,7 @@ import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.helper.MathHelper;
 import org.violetmoon.botania.common.helper.PlayerHelper;
+import org.violetmoon.botania.common.item.ClientInventoryTick;
 import org.violetmoon.botania.network.clientbound.AvatarSkiesRodEffectPacket;
 import org.violetmoon.botania.network.clientbound.AvatarSkiesRodUpdatePacket;
 import org.violetmoon.botania.xplat.XplatAbstractions;
@@ -49,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class SkiesRodItem extends Item {
+public class SkiesRodItem extends Item implements ClientInventoryTick {
 
 	private static final Identifier AVATAR_OVERLAY = Identifier.parse(ResourcesLib.MODEL_AVATAR_TORNADO);
 
@@ -64,7 +66,12 @@ public class SkiesRodItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean active) {
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+		tickInInventory(stack, level, entity, slot);
+	}
+
+	@Override
+	public void tickInInventory(ItemStack stack, Level level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (entity instanceof Player player) {
 			boolean preventingDamage = getFlyCounter(stack) > 0;
 			boolean held = player.getMainHandItem() == stack || player.getOffhandItem() == stack;
