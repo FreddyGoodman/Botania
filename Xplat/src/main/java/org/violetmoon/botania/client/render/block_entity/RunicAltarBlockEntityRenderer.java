@@ -18,7 +18,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.Identifier;
@@ -134,7 +134,7 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 					alpha = (float) curIter / (float) iters * 0.4F;
 				}
 
-				VertexConsumer buffer = buffers.getBuffer(curIter < iters ? RenderType.entityTranslucentCull(cubeTex) : RenderType.entitySolid(cubeTex));
+				VertexConsumer buffer = buffers.getBuffer(curIter < iters ? RenderTypes.entityTranslucentCullItemTarget(cubeTex) : RenderTypes.entitySolid(cubeTex));
 				spinningCube.render(ms, buffer, 0xF000F0, overlay, ARGB.colorFromFloat(alpha, 1, 1, 1));
 
 				ms.popPose();

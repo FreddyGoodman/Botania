@@ -359,7 +359,7 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 
 			if (!noParticles && shouldDoFakeParticles()) {
 				SparkleParticleData data = SparkleParticleData.fake(0.4F * size, r, g, b, 1);
-				level().addParticle(data, true, getX(), getY(), getZ(), 0, 0, 0);
+				level().addParticle(data, true, false, getX(), getY(), getZ(), 0, 0, 0);
 			}
 		} else {
 			Player player = Proxy.INSTANCE.getClientPlayer();

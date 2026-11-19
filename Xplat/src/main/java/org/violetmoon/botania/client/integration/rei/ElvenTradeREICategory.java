@@ -24,7 +24,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -88,7 +88,7 @@ public class ElvenTradeREICategory implements DisplayCategory<ElvenTradeREIDispl
 	void drawPortal(PoseStack matrices, Point point) {
 		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(BotaniaAPI.botaniaRL("block/alfheim_portal_swirl"));
 		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer v = immediate.getBuffer(RenderType.solid());
+		VertexConsumer v = immediate.getBuffer(RenderTypes.solidMovingBlock());
 		int startX = point.x - 43;
 		int startY = point.y - 17;
 		int stopX = startX + 48;

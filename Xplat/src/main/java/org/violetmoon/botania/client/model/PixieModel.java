@@ -17,6 +17,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -34,7 +35,7 @@ public class PixieModel extends EntityModel<PixieEntity> {
 
 	private static RenderType pixieLayer(Identifier texture) {
 		return evil ? RenderHelper.getGaiaNoiseConstantLayer(texture)
-				: RenderType.entityCutoutNoCull(texture);
+				: RenderTypes.entityCutout(texture);
 	}
 
 	public PixieModel(ModelPart root) {

@@ -13,7 +13,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
@@ -70,7 +70,7 @@ public class AvatarBlockEntityRenderer implements BlockEntityRenderer<AvatarBloc
 
 				AvatarWieldable wieldable = AvatarWieldable.LOOKUP.find(stack, avatar);
 				if (wieldable != null) {
-					buffer = buffers.getBuffer(RenderType.entityTranslucent(wieldable.getOverlayResource()));
+					buffer = buffers.getBuffer(RenderTypes.entityTranslucent(wieldable.getOverlayResource()));
 					s = 1.01F;
 
 					ms.pushPose();

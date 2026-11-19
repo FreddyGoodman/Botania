@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.Identifier;
@@ -89,7 +90,7 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 			ms.mulPose(VecHelper.rotateY(worldTime * 1.5F));
 		}
 
-		RenderType layer = RenderType.entityTranslucent(texture);
+		RenderType layer = RenderTypes.entityTranslucent(texture);
 
 		VertexConsumer buffer = buffers.getBuffer(layer);
 		model.renderRing(ms, buffer, light, overlay);

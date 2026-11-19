@@ -24,7 +24,7 @@ import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -65,7 +65,7 @@ public class ElvenTradeRecipeCategory extends BotaniaRecipeCategoryBase<ElvenTra
 		RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(BotaniaAPI.botaniaRL("block/alfheim_portal_swirl"));
 		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer v = immediate.getBuffer(RenderType.solid());
+		VertexConsumer v = immediate.getBuffer(RenderTypes.solidMovingBlock());
 		int startX = 22;
 		int startY = 25;
 		int stopX = 70;

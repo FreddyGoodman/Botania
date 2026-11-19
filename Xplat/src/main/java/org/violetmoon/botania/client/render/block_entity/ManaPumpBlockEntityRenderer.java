@@ -12,7 +12,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -60,7 +60,7 @@ public class ManaPumpBlockEntityRenderer implements BlockEntityRenderer<ManaPump
 		ms.translate(-0.5, 0, -0.5);
 		double diff = Math.max(0F, Math.min(8F, pump.innerRingPos + pump.moving * partialTicks));
 		ms.translate(0, 0, diff / 14);
-		VertexConsumer buffer = buffers.getBuffer(RenderType.solid());
+		VertexConsumer buffer = buffers.getBuffer(RenderTypes.solidMovingBlock());
 		blockRenderDispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, getHeadModel(), 1, 1, 1, light, overlay);
 		ms.popPose();
 	}

@@ -21,7 +21,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -87,7 +87,7 @@ public class ElvenTradeEmiRecipe extends BotaniaEmiRecipe {
 			TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
 					.apply(botaniaRL("block/alfheim_portal_swirl"));
 			MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-			VertexConsumer v = immediate.getBuffer(RenderType.solid());
+			VertexConsumer v = immediate.getBuffer(RenderTypes.solidMovingBlock());
 			int startX = x;
 			int startY = y;
 			int stopX = x + 48;
