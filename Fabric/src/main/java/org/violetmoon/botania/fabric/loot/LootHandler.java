@@ -32,8 +32,8 @@ public final class LootHandler {
 	}
 
 	public static void injectGogLoot(Identifier id, Consumer<LootPool.Builder> addPool) {
-		if (XplatAbstractions.INSTANCE.gogLoaded() && (Blocks.SHORT_GRASS.getLootTable().location().equals(id)
-				|| Blocks.TALL_GRASS.getLootTable().location().equals(id))) {
+		if (XplatAbstractions.INSTANCE.gogLoaded() && (Blocks.SHORT_GRASS.getLootTable().identifier().equals(id)
+				|| Blocks.TALL_GRASS.getLootTable().identifier().equals(id))) {
 			addPool.accept(LootPool.lootPool().add(NestedLootTable.lootTableReference(BotaniaLootTables.GOG_EXTRA_SEEDS)));
 		}
 	}

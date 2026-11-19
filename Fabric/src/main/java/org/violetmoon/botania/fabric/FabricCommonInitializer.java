@@ -303,8 +303,8 @@ public class FabricCommonInitializer implements ModInitializer {
 		EntityTrackingEvents.START_TRACKING.register(ItemLifeTimePacket::onItemTrack);
 		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
 			if (source.isBuiltin()) {
-				LootHandler.injectLoot(key.location(), tableBuilder::withPool);
-				LootHandler.injectGogLoot(key.location(), tableBuilder::withPool);
+				LootHandler.injectLoot(key.identifier(), tableBuilder::withPool);
+				LootHandler.injectGogLoot(key.identifier(), tableBuilder::withPool);
 			}
 		});
 		ManaNetworkCallback.EVENT.register(ManaNetworkHandler.instance::onNetworkEvent);

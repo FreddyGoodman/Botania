@@ -188,7 +188,7 @@ public class BotaniaLootTables {
 	 * Gets the resource key of the loot table to inject into the specified table.
 	 */
 	public static ResourceKey<LootTable> getInjectedLootTable(ResourceKey<LootTable> baseLootTable) {
-		return getInjectedLootTable(baseLootTable.location());
+		return getInjectedLootTable(baseLootTable.identifier());
 	}
 
 	/**
@@ -204,8 +204,8 @@ public class BotaniaLootTables {
 	 */
 	@Nullable
 	public static ResourceKey<LootTable> getInjectionTargetLootTable(ResourceKey<LootTable> injectedLootTable) {
-		Matcher matcher = INJECTED_LOOT_TABLE_PATTERN.matcher(injectedLootTable.location().getPath());
-		if (!injectedLootTable.location().getNamespace().equals(MODID) || !matcher.matches()) {
+		Matcher matcher = INJECTED_LOOT_TABLE_PATTERN.matcher(injectedLootTable.identifier().getPath());
+		if (!injectedLootTable.identifier().getNamespace().equals(MODID) || !matcher.matches()) {
 			return null;
 		}
 

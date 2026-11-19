@@ -245,7 +245,7 @@ public class NeoForgeCommonInitializer {
 						.backgroundTexture(botaniaRL("textures/gui/tab_botania.png"))
 						.withSearchBar()
 						.build(),
-				BotaniaRegistries.BOTANIA_TAB_KEY.location()));
+				BotaniaRegistries.BOTANIA_TAB_KEY.identifier()));
 	}
 
 	@SubscribeEvent

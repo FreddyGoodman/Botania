@@ -53,7 +53,7 @@ public record MobAttributeModifier(Holder<Attribute> attribute, double amount, A
 		for (var modifier : modifiersList) {
 			if (!uniqueAttributes.add(Pair.of(modifier.attribute, modifier.operation))) {
 				return DataResult.error(() -> "Found duplicate %s operation for attribute %s"
-						.formatted(modifier.operation, modifier.attribute.unwrapKey().orElseThrow().location()), modifiersList);
+						.formatted(modifier.operation, modifier.attribute.unwrapKey().orElseThrow().identifier()), modifiersList);
 			}
 		}
 

@@ -52,7 +52,7 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 			.of(VillageLoot.CARTOGRAPHER, VillageLoot.FLETCHER, VillageLoot.TANNERY, VillageLoot.TOOLSMITH, VillageLoot.WEAPONSMITH);
 
 	public static ResourceKey<LootTable> getStructureId(ResourceKey<Structure> structureKey) {
-		return getStructureId(structureKey.location());
+		return getStructureId(structureKey.identifier());
 	}
 
 	public static ResourceKey<LootTable> getStructureId(Identifier structureId) {

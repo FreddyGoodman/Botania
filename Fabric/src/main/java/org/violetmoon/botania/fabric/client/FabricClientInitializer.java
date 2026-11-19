@@ -165,7 +165,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 		Map<Item, ArmorMaterial.Layer> armors = new LinkedHashMap<>();
 		for (var entry : BuiltInRegistries.ITEM.entrySet()) {
 			Item item = entry.getValue();
-			Identifier id = entry.getKey().location();
+			Identifier id = entry.getKey().identifier();
 			if (item instanceof ManasteelArmorItem armor
 					&& id.getNamespace().equals(BotaniaAPI.MODID)) {
 				armors.put(armor, armor.getMaterial().value().layers().getFirst());

@@ -51,8 +51,8 @@ public final class BotaniaBannerPatterns {
 
 	public static void provideData(BiConsumer<ResourceKey<BannerPattern>, BannerPattern> consumer) {
 		for (var resourceKey : ALL) {
-			BannerPattern pattern = new BannerPattern(resourceKey.location(),
-					"block.minecraft.banner." + resourceKey.location().toLanguageKey());
+			BannerPattern pattern = new BannerPattern(resourceKey.identifier(),
+					"block.minecraft.banner." + resourceKey.identifier().toLanguageKey());
 			consumer.accept(resourceKey, pattern);
 		}
 	}

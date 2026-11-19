@@ -89,7 +89,7 @@ public record GaiaFightConfiguration(
 	public static GaiaFightConfiguration.Builder builder(ResourceKey<LootTable> playerLoot, int teleportDelay,
 			IntProvider mineCount, float dyingHealthPercent, int dyingTeleportDelay, IntProvider dyingMineCount,
 			IntProvider pixiesAfterHurtCount) {
-		return new GaiaFightConfiguration.Builder(playerLoot.location(), teleportDelay, mineCount,
+		return new GaiaFightConfiguration.Builder(playerLoot.identifier(), teleportDelay, mineCount,
 				dyingHealthPercent, dyingTeleportDelay, dyingMineCount, pixiesAfterHurtCount);
 	}
 

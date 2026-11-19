@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 public class RegistryHelper {
 	@SuppressWarnings("unchecked")
 	public static <T> Registry<T> getRegistry(ResourceKey<Registry<T>> resourceKey) {
-		return (Registry<T>) BuiltInRegistries.REGISTRY.get(resourceKey.location());
+		return (Registry<T>) BuiltInRegistries.REGISTRY.getValue(resourceKey.identifier());
 	}
 
 	public static <T> HolderProxy<T> lazyHolderProxy(ResourceKey<Registry<T>> registryKey, Identifier id, Supplier<T> valueSupplier) {
@@ -66,7 +66,7 @@ public class RegistryHelper {
 		public void register(Registry<T> registry) {
 			if (!resourceKey.isFor(registry.key())) {
 				throw new IllegalArgumentException("Mismatched registry: expected %s, got %s"
-						.formatted(resourceKey.registry(), registry.key().location()));
+						.formatted(resourceKey.registry(), registry.key().identifier()));
 			}
 			reference = Registry.registerForHolder(registry, resourceKey, value.get());
 		}
@@ -89,7 +89,7 @@ public class RegistryHelper {
 
 		@Override
 		public boolean is(Identifier location) {
-			return reference != null ? reference.is(location) : resourceKey.location().equals(location);
+			return reference != null ? reference.is(location) : resourceKey.identifier().equals(location);
 		}
 
 		@Override

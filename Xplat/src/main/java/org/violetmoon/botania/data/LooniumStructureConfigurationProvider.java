@@ -85,50 +85,50 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 		Identifier defaultConfigId = LooniumStructureConfiguration.DEFAULT_CONFIG_ID;
 		configs.put(defaultConfigId, getDefaultConfig());
 
-		configs.put(BuiltinStructures.ANCIENT_CITY.location(), getConfigAncientCity(defaultConfigId));
-		configs.put(BuiltinStructures.BASTION_REMNANT.location(), getConfigBastionRemnant(defaultConfigId));
-		configs.put(BuiltinStructures.DESERT_PYRAMID.location(), getConfigDesertPyramid(defaultConfigId));
-		configs.put(BuiltinStructures.END_CITY.location(), getConfigEndCity(defaultConfigId));
-		configs.put(BuiltinStructures.FORTRESS.location(), getConfigFortress(defaultConfigId));
-		configs.put(BuiltinStructures.JUNGLE_TEMPLE.location(), getConfigJungleTemple(defaultConfigId));
-		configs.put(BuiltinStructures.OCEAN_MONUMENT.location(), getConfigOceanMonument(defaultConfigId));
+		configs.put(BuiltinStructures.ANCIENT_CITY.identifier(), getConfigAncientCity(defaultConfigId));
+		configs.put(BuiltinStructures.BASTION_REMNANT.identifier(), getConfigBastionRemnant(defaultConfigId));
+		configs.put(BuiltinStructures.DESERT_PYRAMID.identifier(), getConfigDesertPyramid(defaultConfigId));
+		configs.put(BuiltinStructures.END_CITY.identifier(), getConfigEndCity(defaultConfigId));
+		configs.put(BuiltinStructures.FORTRESS.identifier(), getConfigFortress(defaultConfigId));
+		configs.put(BuiltinStructures.JUNGLE_TEMPLE.identifier(), getConfigJungleTemple(defaultConfigId));
+		configs.put(BuiltinStructures.OCEAN_MONUMENT.identifier(), getConfigOceanMonument(defaultConfigId));
 
 		Identifier oceanRuinId = botaniaRL("ocean_ruins");
 		configs.put(oceanRuinId,
 				LooniumStructureConfiguration.forParent(defaultConfigId)
 						.boundingBoxType(StructureSpawnOverride.BoundingBoxType.STRUCTURE).build()
 		);
-		configs.put(BuiltinStructures.OCEAN_RUIN_COLD.location(), getConfigOceanRuinCold(oceanRuinId));
-		configs.put(BuiltinStructures.OCEAN_RUIN_WARM.location(), getConfigOceanRuinWarm(oceanRuinId));
+		configs.put(BuiltinStructures.OCEAN_RUIN_COLD.identifier(), getConfigOceanRuinCold(oceanRuinId));
+		configs.put(BuiltinStructures.OCEAN_RUIN_WARM.identifier(), getConfigOceanRuinWarm(oceanRuinId));
 
-		configs.put(BuiltinStructures.PILLAGER_OUTPOST.location(), getConfigPillagerOutpost(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_DESERT.location(), getConfigRuinedPortalDesert(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_JUNGLE.location(), getConfigRuinedPortalJungle(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_MOUNTAIN.location(), getConfigRuinedPortalMountain(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_NETHER.location(), getConfigRuinedPortalNether(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_OCEAN.location(), getConfigRuinedPortalOcean(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_STANDARD.location(), getConfigRuinedPortalStandard(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_SWAMP.location(), getConfigRuinedPortalSwamp(defaultConfigId));
+		configs.put(BuiltinStructures.PILLAGER_OUTPOST.identifier(), getConfigPillagerOutpost(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_DESERT.identifier(), getConfigRuinedPortalDesert(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_JUNGLE.identifier(), getConfigRuinedPortalJungle(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_MOUNTAIN.identifier(), getConfigRuinedPortalMountain(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_NETHER.identifier(), getConfigRuinedPortalNether(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_OCEAN.identifier(), getConfigRuinedPortalOcean(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_STANDARD.identifier(), getConfigRuinedPortalStandard(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_SWAMP.identifier(), getConfigRuinedPortalSwamp(defaultConfigId));
 
-		configs.put(BuiltinStructures.SHIPWRECK.location(), getConfigShipwreck(defaultConfigId));
-		configs.put(BuiltinStructures.SHIPWRECK_BEACHED.location(),
-				LooniumStructureConfiguration.forParent(BuiltinStructures.SHIPWRECK.location()).build());
+		configs.put(BuiltinStructures.SHIPWRECK.identifier(), getConfigShipwreck(defaultConfigId));
+		configs.put(BuiltinStructures.SHIPWRECK_BEACHED.identifier(),
+				LooniumStructureConfiguration.forParent(BuiltinStructures.SHIPWRECK.identifier()).build());
 
-		configs.put(BuiltinStructures.STRONGHOLD.location(), getConfigStronghold(defaultConfigId));
-		configs.put(BuiltinStructures.TRAIL_RUINS.location(), getConfigTrailRuins(defaultConfigId));
-		configs.put(BuiltinStructures.TRIAL_CHAMBERS.location(), getConfigTrialChamber(defaultConfigId));
+		configs.put(BuiltinStructures.STRONGHOLD.identifier(), getConfigStronghold(defaultConfigId));
+		configs.put(BuiltinStructures.TRAIL_RUINS.identifier(), getConfigTrailRuins(defaultConfigId));
+		configs.put(BuiltinStructures.TRIAL_CHAMBERS.identifier(), getConfigTrialChamber(defaultConfigId));
 
 		Identifier villageId = botaniaRL("village");
 		configs.put(villageId, LooniumStructureConfiguration.forParent(defaultConfigId)
 				.boundingBoxType(StructureSpawnOverride.BoundingBoxType.STRUCTURE).build()
 		);
-		configs.put(BuiltinStructures.VILLAGE_DESERT.location(), getConfigVillageDesert(villageId));
-		configs.put(BuiltinStructures.VILLAGE_PLAINS.location(), getConfigVillagePlains(villageId));
-		configs.put(BuiltinStructures.VILLAGE_SAVANNA.location(), getConfigVillageSavanna(villageId));
-		configs.put(BuiltinStructures.VILLAGE_SNOWY.location(), getConfigVillageSnowy(villageId));
-		configs.put(BuiltinStructures.VILLAGE_TAIGA.location(), getConfigVillageTaiga(villageId));
+		configs.put(BuiltinStructures.VILLAGE_DESERT.identifier(), getConfigVillageDesert(villageId));
+		configs.put(BuiltinStructures.VILLAGE_PLAINS.identifier(), getConfigVillagePlains(villageId));
+		configs.put(BuiltinStructures.VILLAGE_SAVANNA.identifier(), getConfigVillageSavanna(villageId));
+		configs.put(BuiltinStructures.VILLAGE_SNOWY.identifier(), getConfigVillageSnowy(villageId));
+		configs.put(BuiltinStructures.VILLAGE_TAIGA.identifier(), getConfigVillageTaiga(villageId));
 
-		configs.put(BuiltinStructures.WOODLAND_MANSION.location(), getConfigWoodlandMansion(defaultConfigId));
+		configs.put(BuiltinStructures.WOODLAND_MANSION.identifier(), getConfigWoodlandMansion(defaultConfigId));
 	}
 
 	public static LooniumStructureConfiguration getDefaultConfig() {

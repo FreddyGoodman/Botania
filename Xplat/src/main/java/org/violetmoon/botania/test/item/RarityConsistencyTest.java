@@ -68,7 +68,7 @@ public class RarityConsistencyTest {
 			for (ItemStack resultItem : resultItems) {
 				craftableItems.add(resultItem.getItem());
 
-				if (!resultItem.getItemHolder().unwrapKey().orElseThrow().location().getNamespace()
+				if (!resultItem.getItemHolder().unwrapKey().orElseThrow().identifier().getNamespace()
 						.equals(BotaniaAPI.MODID)) {
 					// only check recipes that make Botania items
 					continue;

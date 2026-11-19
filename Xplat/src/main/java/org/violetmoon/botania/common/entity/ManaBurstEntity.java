@@ -263,7 +263,7 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 		if (sourcePos.isPresent()) {
 			BlockPos coords = sourcePos.get().pos();
 			tag.put(TAG_SPREADER_POS, NbtUtils.writeBlockPos(coords));
-			tag.putString(TAG_SPREADER_DIM, sourcePos.get().dimension().location().toString());
+			tag.putString(TAG_SPREADER_DIM, sourcePos.get().dimension().identifier().toString());
 		}
 
 		if (lastCollision != null) {

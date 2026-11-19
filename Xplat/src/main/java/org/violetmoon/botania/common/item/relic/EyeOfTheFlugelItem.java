@@ -69,7 +69,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 				ItemStack stack = context.getItemInHand();
 				Map<Identifier, BlockPos> boundPositions = new HashMap<>(stack.getOrDefault(
 						BotaniaDataComponents.BOUND_POSITIONS, Collections.emptyMap()));
-				boundPositions.put(world.dimension().location(), pos);
+				boundPositions.put(world.dimension().identifier(), pos);
 				stack.set(BotaniaDataComponents.BOUND_POSITIONS, boundPositions);
 				world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.EYE_OF_THE_FLUGEL_BIND, SoundSource.PLAYERS, 1F, 1F);
 			}
@@ -94,14 +94,14 @@ public class EyeOfTheFlugelItem extends RelicItem {
 	@Nullable
 	public static BlockPos getBoundPosInDimension(ItemStack stack, Level level) {
 		return stack.getOrDefault(BotaniaDataComponents.BOUND_POSITIONS, Map.<Identifier, BlockPos>of())
-				.get(level.dimension().location());
+				.get(level.dimension().identifier());
 	}
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
 		super.inventoryTick(stack, level, entity, slotId, isSelected);
 		// we can't access the level while building the tooltip, so the best we can do is figuring it out ahead of time
-		Identifier dimension = level.dimension().location();
+		Identifier dimension = level.dimension().identifier();
 		Identifier knownDimension = stack.get(BotaniaDataComponents.LOCAL_DIMENSION);
 		if (!Objects.equals(dimension, knownDimension)) {
 			stack.set(BotaniaDataComponents.LOCAL_DIMENSION, dimension);

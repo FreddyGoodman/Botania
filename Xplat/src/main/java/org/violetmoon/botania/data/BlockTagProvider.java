@@ -84,7 +84,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 		);
 		tag(BlockTags.WALLS).add(getModBlocks(block -> block instanceof WallBlock));
 		tag(BotaniaTags.Blocks.WOODEN_WALLS).add(getModBlocks(block -> block instanceof WallBlock
-				&& block.builtInRegistryHolder().key().location().getPath().contains("wood")));
+				&& block.builtInRegistryHolder().key().identifier().getPath().contains("wood")));
 		tag(BlockTags.WOODEN_FENCES).add(
 				BotaniaBlocks.LIVINGWOOD_FENCE, BotaniaBlocks.DREAMWOOD_FENCE, BotaniaBlocks.SHIMMERWOOD_FENCE);
 		tag(BlockTags.FENCE_GATES).add(getModBlocks(b -> b instanceof FenceGateBlock));
