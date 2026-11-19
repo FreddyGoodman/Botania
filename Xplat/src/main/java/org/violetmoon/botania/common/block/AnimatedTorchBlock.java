@@ -32,6 +32,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -86,8 +88,9 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedEntityBlock {
 	protected void updateNeighborsInFront(final Level level, final BlockPos pos, final BlockState state) {
 		Direction direction = state.getValue(FACING);
 		BlockPos poweredPos = pos.relative(direction);
-		level.neighborChanged(poweredPos, this, pos);
-		level.updateNeighborsAtExceptFromFacing(poweredPos, this, direction.getOpposite());
+		Orientation orientation = ExperimentalRedstoneUtils.initialOrientation(level, direction, Direction.UP);
+		level.neighborChanged(poweredPos, this, orientation);
+		level.updateNeighborsAtExceptFromFacing(poweredPos, this, direction.getOpposite(), orientation);
 	}
 
 	@Override

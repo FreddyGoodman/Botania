@@ -14,7 +14,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.redstone.Orientation;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.common.block.BotaniaEntityBlock;
 import org.violetmoon.botania.common.block.block_entity.corporea.BaseCorporeaBlockEntity;
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaFunnelBlockEntity;
@@ -32,7 +34,7 @@ public class CorporeaFunnelBlock extends BotaniaEntityBlock {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
 		boolean power = level.getBestNeighborSignal(pos) > 0;
 		boolean powered = state.getValue(BlockStateProperties.POWERED);
 

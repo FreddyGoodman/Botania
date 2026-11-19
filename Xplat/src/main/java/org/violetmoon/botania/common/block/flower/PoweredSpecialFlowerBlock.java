@@ -20,7 +20,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.redstone.Orientation;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.block.RedstoneSensitiveBlock;
 import org.violetmoon.botania.api.block_entity.SpecialFlowerBlockEntity;
 
@@ -45,7 +47,7 @@ public class PoweredSpecialFlowerBlock extends SpecialFlowerBlock implements Red
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
 		RedstoneSensitiveBlock.updateRedstonePower(state, world, pos);
 	}
 

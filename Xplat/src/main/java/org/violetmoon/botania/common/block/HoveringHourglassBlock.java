@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -181,7 +182,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 		if (!level.isClientSide() && !state.is(oldState.getBlock()) && state.getValue(POWERED)
 				&& !level.getBlockTicks().hasScheduledTick(pos, this)) {
 			level.setBlock(pos, state.setValue(POWERED, false), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
-			level.updateNeighborsAt(pos, state.getBlock());
+			level.updateNeighborsAt(pos, state.getBlock(), ExperimentalRedstoneUtils.initialOrientation(level, null, Direction.UP));
 		}
 	}
 
