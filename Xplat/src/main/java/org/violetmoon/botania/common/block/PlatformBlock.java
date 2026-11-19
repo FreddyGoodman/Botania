@@ -114,7 +114,7 @@ public abstract class PlatformBlock extends BotaniaEntityBlock implements ManaCo
 					&& (changeState.isSolidRender(level, pos) || changeState.getRenderShape() == RenderShape.MODEL)
 					&& !(changeState.getBlock() instanceof PlatformBlock)
 					&& !changeState.isAir()) {
-				if (!level.isClientSide) {
+				if (!level.isClientSide()) {
 					camo.setCamoState(changeState);
 				}
 

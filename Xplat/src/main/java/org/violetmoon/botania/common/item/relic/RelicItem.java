@@ -27,7 +27,7 @@ public class RelicItem extends Item {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-		if (!level.isClientSide && entity instanceof Player player) {
+		if (!level.isClientSide() && entity instanceof Player player) {
 			var relic = Relic.LOOKUP.find(stack);
 			if (relic != null) {
 				relic.tickBinding(player);

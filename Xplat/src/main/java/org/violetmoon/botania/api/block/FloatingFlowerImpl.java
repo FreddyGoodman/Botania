@@ -11,7 +11,7 @@ package org.violetmoon.botania.api.block;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.common.block.block_entity.flower.BotaniaIslandTypes;
@@ -38,7 +38,7 @@ public class FloatingFlowerImpl implements FloatingFlower {
 
 	@Override
 	public void readNBT(CompoundTag nbt, HolderLookup.Provider registries) {
-		ResourceLocation islandTypeId = ResourceLocation.tryParse(nbt.getString("islandType"));
+		Identifier islandTypeId = Identifier.tryParse(nbt.getString("islandType"));
 		if (islandTypeId != null) {
 			setIslandType(BotaniaAPI.instance().getIslandTypeRegistry().get(islandTypeId));
 		}

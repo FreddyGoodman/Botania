@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,7 +34,7 @@ import vazkii.patchouli.client.book.gui.button.GuiButtonEntry;
 @Mixin(GuiButtonEntry.class)
 public abstract class GuiButtonEntryMixin extends Button implements DogEnabler {
 	@Unique
-	private static final ResourceLocation BOTANIA_DOG_TEXTURE = ResourceLocation.parse(ResourcesLib.GUI_DOG);
+	private static final Identifier BOTANIA_DOG_TEXTURE = Identifier.parse(ResourcesLib.GUI_DOG);
 
 	@Unique
 	private float botania_dogPos;

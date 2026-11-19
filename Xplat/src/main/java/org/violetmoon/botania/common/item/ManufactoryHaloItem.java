@@ -9,7 +9,7 @@
 package org.violetmoon.botania.common.item;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -33,7 +33,7 @@ import java.util.List;
 
 public class ManufactoryHaloItem extends AssemblyHaloItem {
 
-	private static final ResourceLocation glowTexture = ResourceLocation.parse(ResourcesLib.MISC_GLOW_CYAN);
+	private static final Identifier glowTexture = Identifier.parse(ResourcesLib.MISC_GLOW_CYAN);
 
 	public ManufactoryHaloItem(Item.Properties props) {
 		super(props);
@@ -43,7 +43,7 @@ public class ManufactoryHaloItem extends AssemblyHaloItem {
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int pos, boolean equipped) {
 		super.inventoryTick(stack, world, entity, pos, equipped);
 
-		if (!world.isClientSide && entity instanceof Player player && !equipped && isActive(stack)) {
+		if (!world.isClientSide() && entity instanceof Player player && !equipped && isActive(stack)) {
 
 			for (int i = 1; i < SEGMENTS; i++) {
 				tryCraft(player, stack, i, false);
@@ -52,7 +52,7 @@ public class ManufactoryHaloItem extends AssemblyHaloItem {
 	}
 
 	@Override
-	public ResourceLocation getGlowResource(ItemStack stack) {
+	public Identifier getGlowResource(ItemStack stack) {
 		return isActive(stack) ? glowTexture : super.getGlowResource(stack);
 	}
 

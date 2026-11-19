@@ -9,7 +9,6 @@
 
 package org.violetmoon.botania.fabric.xplat;
 
-import com.redlimerl.speedrunigt.timer.InGameTimer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -45,7 +44,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
@@ -60,7 +59,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -113,7 +112,6 @@ import org.violetmoon.botania.common.handler.EquipmentHandler;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 import org.violetmoon.botania.common.proxy.Proxy;
 import org.violetmoon.botania.fabric.block_entity.FabricRedStringContainerBlockEntity;
-import org.violetmoon.botania.fabric.integration.speedrunigt.BotaniaSpeedrunIGTPlugin;
 import org.violetmoon.botania.fabric.integration.tr_energy.FluxfieldTRStorage;
 import org.violetmoon.botania.fabric.integration.trinkets.TrinketsIntegration;
 import org.violetmoon.botania.fabric.internal_caps.FabricInternalEntityAttachments;
@@ -436,7 +434,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 	}
 
 	@Override
-	public void registerReloadListener(PackType type, ResourceLocation id, PreparableReloadListener listener) {
+	public void registerReloadListener(PackType type, Identifier id, PreparableReloadListener listener) {
 		ResourceManagerHelper.get(type).registerReloadListener(new IdentifiableResourceReloadListener() {
 			@Override
 			public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager, ProfilerFiller prepProfiler,
@@ -445,7 +443,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 			}
 
 			@Override
-			public ResourceLocation getFabricId() {
+			public Identifier getFabricId() {
 				return id;
 			}
 		});
@@ -619,7 +617,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 	public RecipeOutput createRecipeOutput(RecipeAcceptor recipeAcceptor, Supplier<Advancement.Builder> advancementBuilder) {
 		return new RecipeOutput() {
 			@Override
-			public void accept(ResourceLocation location, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
+			public void accept(Identifier location, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
 				recipeAcceptor.accept(location, recipe, advancement);
 			}
 
@@ -635,15 +633,13 @@ public class FabricXplatImpl implements XplatAbstractions {
 		return Proxy.INSTANCE.hasShiftDown();
 	}
 
-	private final boolean speedrunIGTLoaded = isModLoaded("speedrunigt");
-
 	@Override
 	public boolean isRunningCategory(BotaniaSpeedrunCategory category) {
-		return speedrunIGTLoaded && BotaniaSpeedrunIGTPlugin.isRunningBotaniaCategory(category);
+		return false;
 	}
 
 	@Override
 	public void completeSpeedrunTimer() {
-		InGameTimer.complete();
+		throw new IllegalStateException("SpeedRunIGT integration is unavailable");
 	}
 }

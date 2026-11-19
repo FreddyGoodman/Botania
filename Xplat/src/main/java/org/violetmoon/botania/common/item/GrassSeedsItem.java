@@ -13,7 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -70,7 +70,7 @@ public class GrassSeedsItem extends Item {
 		BlockState state = world.getBlockState(pos);
 
 		if (state.is(BotaniaTags.Blocks.PASTURE_SEED_REPLACEABLE) && !state.is(grassBlock)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				BlockSwapper swapper = addBlockSwapper(world, pos, grassBlock);
 				world.setBlockAndUpdate(pos, swapper.stateToSet);
 				stack.shrink(1);
@@ -86,9 +86,9 @@ public class GrassSeedsItem extends Item {
 
 	public static void spawnParticles(Level world, BlockPos pos, int color) {
 		float velMul = -0.025F;
-		float r = FastColor.ARGB32.red(color) / 255f;
-		float g = FastColor.ARGB32.green(color) / 255f;
-		float b = FastColor.ARGB32.blue(color) / 255f;
+		float r = ARGB.red(color) / 255f;
+		float g = ARGB.green(color) / 255f;
+		float b = ARGB.blue(color) / 255f;
 		RandomSource rng = world.getRandom();
 		Vec3 posVec = pos.getCenter();
 		for (int i = 0; i < 50; i++) {

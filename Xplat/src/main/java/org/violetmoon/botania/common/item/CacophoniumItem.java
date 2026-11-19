@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -104,7 +104,7 @@ public class CacophoniumItem extends Item {
 		if (isDOIT(stack)) {
 			infoList.add(Component.translatable("botaniamisc.justDoIt").withStyle(ChatFormatting.GRAY));
 		} else if (getSound(stack) != null) {
-			ResourceLocation id = stack.get(BotaniaDataComponents.MOB_TYPE);
+			Identifier id = stack.get(BotaniaDataComponents.MOB_TYPE);
 			if (id != null) {
 				BuiltInRegistries.ENTITY_TYPE.getOptional(id).ifPresent(
 						type -> infoList.add(type.getDescription().copy().withStyle(ChatFormatting.GRAY)));
@@ -128,7 +128,7 @@ public class CacophoniumItem extends Item {
 
 	@Override
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int count) {
-		if (!world.isClientSide && count % (isDOIT(stack) ? 20 : 6) == 0) {
+		if (!world.isClientSide() && count % (isDOIT(stack) ? 20 : 6) == 0) {
 			playSound(living.level(), stack, living.getX(), living.getY(), living.getZ(), living.getSoundSource(), 0.9F);
 			living.gameEvent(GameEvent.INSTRUMENT_PLAY);
 		}

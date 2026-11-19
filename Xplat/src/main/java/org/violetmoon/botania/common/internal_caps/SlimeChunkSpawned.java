@@ -10,7 +10,7 @@
 package org.violetmoon.botania.common.internal_caps;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Slime;
@@ -28,7 +28,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  */
 public final class SlimeChunkSpawned {
 
-	public static final ResourceLocation ID = botaniaRL("slime_chunk_spawned");
+	public static final Identifier ID = botaniaRL("slime_chunk_spawned");
 	public static final DataMarkerId MARKER = new DataMarkerId(ID);
 
 	public static boolean isSlimeChunk(Level world, BlockPos pos) {

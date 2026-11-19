@@ -64,7 +64,7 @@ public class ManaMirrorItem extends Item {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			return;
 		}
 
@@ -90,7 +90,7 @@ public class ManaMirrorItem extends Item {
 		if (player != null && player.isSecondaryUseActive()) {
 			var receiver = ManaReceiver.LOOKUP.find(world, ctx.getClickedPos(), null);
 			if (receiver instanceof ManaPool pool) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					bindPool(ctx.getItemInHand(), pool);
 					world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.DING, SoundSource.PLAYERS, 1F, 1F);
 				}

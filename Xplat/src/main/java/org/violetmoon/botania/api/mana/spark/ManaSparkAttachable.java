@@ -8,7 +8,7 @@
  */
 package org.violetmoon.botania.api.mana.spark;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.api.capability.BlockApiNoContext;
 import org.violetmoon.botania.api.capability.SparkAttachable;
@@ -21,7 +21,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface ManaSparkAttachable extends SparkAttachable<ManaSpark> {
 
-	ResourceLocation ID = botaniaRL("mana_spark_attachable");
+	Identifier ID = botaniaRL("mana_spark_attachable");
 	BlockApiNoContext<ManaSparkAttachable> LOOKUP = new BlockApiNoContext<>(ID, ManaSparkAttachable.class);
 
 	/**

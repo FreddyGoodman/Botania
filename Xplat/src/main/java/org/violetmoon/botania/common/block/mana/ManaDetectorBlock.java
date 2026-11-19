@@ -65,7 +65,7 @@ public class ManaDetectorBlock extends Block implements ManaCollisionGhost {
 
 		@Override
 		public void onBurstCollision(ManaBurst burst) {
-			if (!world.isClientSide && !burst.isFake()
+			if (!world.isClientSide() && !burst.isFake()
 					&& (!(burst.entity().getOwner() instanceof ServerPlayer player)
 							|| !player.blockActionRestricted(world, pos, player.gameMode.getGameModeForPlayer()))) {
 				if (!state.getValue(BlockStateProperties.POWERED) && !world.getBlockTicks().hasScheduledTick(pos, state.getBlock())) {

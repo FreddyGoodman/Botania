@@ -30,7 +30,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
@@ -192,16 +192,16 @@ public class GaiaGuardianEntity extends Mob {
 			new BlockPos(-PYLON_OFFSET, 1, -PYLON_OFFSET)
 	);
 
-	private static final List<ResourceLocation> CHEATY_BLOCKS = Arrays.asList(
-			ResourceLocation.fromNamespaceAndPath("openblocks", "beartrap"),
-			ResourceLocation.fromNamespaceAndPath("thaumictinkerer", "magnet")
+	private static final List<Identifier> CHEATY_BLOCKS = Arrays.asList(
+			Identifier.fromNamespaceAndPath("openblocks", "beartrap"),
+			Identifier.fromNamespaceAndPath("thaumictinkerer", "magnet")
 	);
 
 	private static final WeakHashMap<GaiaGuardianEntity, GaiaFightData> SERVER_GAIA_FIGHTS = new WeakHashMap<>();
 	private static final WeakHashMap<GaiaGuardianEntity, GaiaFightData> CLIENT_GAIA_FIGHTS = new WeakHashMap<>();
 	private static final Supplier<MobSpawnData> FALLBACK_MOB_SPAWN_DATA = Suppliers.memoize(
 			() -> MobSpawnData.entityWeight(BotaniaEntities.PIXIE, 1).build());
-	private static final ResourceLocation ATTRIBUTE_MODIFIER_ID = botaniaRL("gaia_fight_modifier");
+	private static final Identifier ATTRIBUTE_MODIFIER_ID = botaniaRL("gaia_fight_modifier");
 
 	// this should never collide with the /team command, since space is not allowed in scoreboard team names
 	public static final String GAIA_FIGHT_TEAM_NAME = "Gaia-spawned Monsters";
@@ -232,7 +232,7 @@ public class GaiaGuardianEntity extends Mob {
 		super(type, world);
 		xpReward = 825;
 		entityData.set(DATA_BOSS_INFO_UUID, Optional.of(bossInfoUUID));
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			Proxy.INSTANCE.addBoss(this);
 		}
 	}
@@ -258,7 +258,7 @@ public class GaiaGuardianEntity extends Mob {
 
 		//check difficulty
 		if (world.getDifficulty() == Difficulty.PEACEFUL) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				player.sendSystemMessage(Component.translatable("botaniamisc.peacefulNoob").withStyle(ChatFormatting.RED));
 			}
 			return false;
@@ -267,7 +267,7 @@ public class GaiaGuardianEntity extends Mob {
 		//check pylons
 		List<BlockPos> invalidPylonBlocks = checkPylons(world, pos);
 		if (!invalidPylonBlocks.isEmpty()) {
-			if (world.isClientSide) {
+			if (world.isClientSide()) {
 				warnInvalidBlocks(world, invalidPylonBlocks);
 			} else {
 				player.sendSystemMessage(Component.translatable("botaniamisc.needsCatalysts").withStyle(ChatFormatting.RED));
@@ -279,7 +279,7 @@ public class GaiaGuardianEntity extends Mob {
 		//check arena shape
 		List<BlockPos> invalidArenaBlocks = checkArena(world, pos);
 		if (!invalidArenaBlocks.isEmpty()) {
-			if (world.isClientSide) {
+			if (world.isClientSide()) {
 				warnInvalidBlocks(world, invalidArenaBlocks);
 			} else {
 				XplatAbstractions.instance().sendToPlayer(player, new ArenaIndicatorEffectPacket(pos));
@@ -298,7 +298,7 @@ public class GaiaGuardianEntity extends Mob {
 		}
 
 		//all checks ok, spawn the boss
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			return true;
 		}
 		GaiaGuardianEntity e = BotaniaEntities.GAIA_GUARDIAN.create(world);
@@ -347,14 +347,14 @@ public class GaiaGuardianEntity extends Mob {
 	private void updateGaiaFight() {
 		if (isAlive()) {
 			getGaiaFightMap(level()).put(this, new GaiaFightData(source, hardMode));
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				level().getEntities(this, MathHelper.inflateBoxAround(source, ARENA_MOB_RANGE),
 						this::isGaiaFightParticipant)
 						.forEach(mob -> ((Mob) mob).restrictTo(source, ARENA_RANGE));
 			}
 		} else {
 			getGaiaFightMap(level()).remove(this);
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				level().getEntities(this, MathHelper.inflateBoxAround(source, ARENA_MOB_RANGE),
 						this::isGaiaFightParticipant)
 						.forEach(mob -> {

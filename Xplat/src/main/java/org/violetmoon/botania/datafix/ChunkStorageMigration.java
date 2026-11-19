@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.IdMap;
 import net.minecraft.nbt.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
@@ -35,7 +35,7 @@ public class ChunkStorageMigration {
 								? ((StringTag) oldBlockState.properties.get("color").getValue()).getAsString()
 								: "white"
 						);
-						ResourceLocation newId = oldBlockState.block.withPath(old -> color.equals("none")
+						Identifier newId = oldBlockState.block.withPath(old -> color.equals("none")
 								? old
 								: color + "_" + old
 						);
@@ -60,7 +60,7 @@ public class ChunkStorageMigration {
 					be.putFloat("rotationX", xRot);
 
 					return oldBlockState -> {
-						ResourceLocation newId = oldBlockState.block.withPath(old -> color.map(dyeColor -> dyeColor.getSerializedName() + "_covered_").orElse("") + old
+						Identifier newId = oldBlockState.block.withPath(old -> color.map(dyeColor -> dyeColor.getSerializedName() + "_covered_").orElse("") + old
 						);
 						return new FakeBlockstate(newId, oldBlockState.properties);
 					};
@@ -438,7 +438,7 @@ public class ChunkStorageMigration {
 			new OnDemandIdProvider<>(),
 			FakeBlockstate.CODEC,
 			PalettedContainer.Strategy.SECTION_STATES,
-			new FakeBlockstate(ResourceLocation.parse("minecraft:air"), ImmutableMap.of())
+			new FakeBlockstate(Identifier.parse("minecraft:air"), ImmutableMap.of())
 	);
 
 	public static class OnDemandIdProvider<T> implements IdMap<T> {
@@ -480,9 +480,9 @@ public class ChunkStorageMigration {
 		}
 	}
 
-	public record FakeBlockstate(ResourceLocation block, Map<String, Dynamic<?>> properties) {
+	public record FakeBlockstate(Identifier block, Map<String, Dynamic<?>> properties) {
 		public static Codec<FakeBlockstate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				ResourceLocation.CODEC.fieldOf("Name").forGetter(FakeBlockstate::block),
+				Identifier.CODEC.fieldOf("Name").forGetter(FakeBlockstate::block),
 				ExtraCodecs.strictUnboundedMap(Codec.STRING, Codec.PASSTHROUGH)
 						.fieldOf("Properties").orElse(ImmutableMap.of())
 						.forGetter(FakeBlockstate::properties)

@@ -55,7 +55,7 @@ public class CocoonBlock extends BotaniaWaterloggedEntityBlock {
 
 	@Override
 	public void entityInside(BlockState state, Level level, BlockPos pos, Entity e) {
-		if (!level.isClientSide && e instanceof ItemEntity item) {
+		if (!level.isClientSide() && e instanceof ItemEntity item) {
 			ItemStack stack = item.getItem();
 			addStack(level, pos, stack, false);
 
@@ -75,7 +75,7 @@ public class CocoonBlock extends BotaniaWaterloggedEntityBlock {
 			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
 		if (stack.is(Items.EMERALD) || stack.is(Items.CHORUS_FRUIT) || stack.is(BotaniaItems.GAIA_SPIRIT)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				if (stack.is(Items.EMERALD) && cocoon.emeraldsGiven < CocoonBlockEntity.MAX_EMERALDS) {
 					if (!creative) {
 						stack.shrink(1);

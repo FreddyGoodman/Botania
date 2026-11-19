@@ -27,7 +27,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.BlockItem;
@@ -260,7 +260,7 @@ public class BotaniaEmiPlugin implements EmiPlugin {
 				BotaniaTags.Items.DYED_CREATIVE_MANA_POOLS, BotaniaBlocks.CREATIVE_MANA_POOL
 		).entrySet()) {
 			ManaPoolBlock poolBlock = e.getValue();
-			ResourceLocation poolBlockId = BuiltInRegistries.BLOCK.getKey(poolBlock);
+			Identifier poolBlockId = BuiltInRegistries.BLOCK.getKey(poolBlock);
 			EmiIngredient inputPool = EmiIngredient.of(e.getKey());
 			EmiStack undyedPool = EmiStack.of(poolBlock);
 			registry.addRecipe(EmiWorldInteractionRecipe.builder()
@@ -281,7 +281,7 @@ public class BotaniaEmiPlugin implements EmiPlugin {
 			ColorHelper.supportedColors().forEach(color -> {
 				Item petalItem = BotaniaItems.getPetal(color);
 				ManaPoolBlock dyedPoolBlock = BotaniaBlocks.findOptionallyDyedBlock(poolBlock, color);
-				ResourceLocation dyedPoolBlockId = BuiltInRegistries.BLOCK.getKey(dyedPoolBlock);
+				Identifier dyedPoolBlockId = BuiltInRegistries.BLOCK.getKey(dyedPoolBlock);
 				registry.addRecipe(EmiWorldInteractionRecipe.builder()
 						.id(dyedPoolBlockId.withPrefix("/world/pool_dyeing/"))
 						.leftInput(EmiIngredient.of(List.of(inputPool, undyedPool)))
@@ -325,7 +325,7 @@ public class BotaniaEmiPlugin implements EmiPlugin {
 		EmiIngredient moltenCoreRod = EmiStack.of(BotaniaItems.ROD_OF_THE_MOLTEN_CORE);
 		for (RecipeHolder<SmeltingRecipe> recipeHolder : registry.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
 			SmeltingRecipe recipe = recipeHolder.value();
-			ResourceLocation id = recipeHolder.id();
+			Identifier id = recipeHolder.id();
 			Level level = Minecraft.getInstance().level;
 			ItemStack output = recipe.getResultItem(level.registryAccess());
 			if (output.isEmpty() || !(output.getItem() instanceof BlockItem)) {
@@ -385,7 +385,7 @@ public class BotaniaEmiPlugin implements EmiPlugin {
 		});
 		BuiltInRegistries.BLOCK.getTag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS).orElseThrow()
 				.stream().map(Holder::value).forEach(mysticalFlower -> {
-					ResourceLocation flowerId = BuiltInRegistries.BLOCK.getKey(mysticalFlower);
+					Identifier flowerId = BuiltInRegistries.BLOCK.getKey(mysticalFlower);
 					registry.addRecipe(EmiWorldInteractionRecipe.builder()
 							.leftInput(EmiStack.EMPTY)
 							.rightInput(EmiStack.of(BotaniaBlocks.JADED_AMARANTHUS), true)
@@ -401,7 +401,7 @@ public class BotaniaEmiPlugin implements EmiPlugin {
 				});
 		BuiltInRegistries.BLOCK.getTag(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS).orElseThrow()
 				.stream().map(Holder::value).forEach(shimmeringMushroom -> {
-					ResourceLocation mushroomId = BuiltInRegistries.BLOCK.getKey(shimmeringMushroom);
+					Identifier mushroomId = BuiltInRegistries.BLOCK.getKey(shimmeringMushroom);
 					registry.addRecipe(EmiWorldInteractionRecipe.builder()
 							.leftInput(EmiStack.of(BotaniaItems.FLORAL_FERTILIZER))
 							.rightInput(EmiIngredient.of(BlockTags.MUSHROOM_GROW_BLOCK), true)

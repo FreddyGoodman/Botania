@@ -12,7 +12,7 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.api.capability.BlockApiNoContext;
 import org.violetmoon.botania.api.capability.EntityApiNoContext;
@@ -25,7 +25,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface WandHUD {
 
-	ResourceLocation ID = botaniaRL("wand_hud");
+	Identifier ID = botaniaRL("wand_hud");
 	BlockApiNoContext<WandHUD> BLOCK_LOOKUP = new BlockApiNoContext<>(ID, WandHUD.class);
 	EntityApiNoContext<WandHUD> ENTITY_LOOKUP = new EntityApiNoContext<>(ID, WandHUD.class);
 

@@ -33,7 +33,7 @@ public class GaiaFightParticipant {
 					BlockPos.CODEC.fieldOf("sourcePos").forGetter(GaiaFightParticipant::getSourcePos)
 			).apply(instance, GaiaFightParticipant::new)
 	);
-	public static final net.minecraft.resources.ResourceLocation ID = botaniaRL("gaia_fight_participant");
+	public static final net.minecraft.resources.Identifier ID = botaniaRL("gaia_fight_participant");
 	public static final DataHolderId<GaiaFightParticipant> HOLDER = new DataHolderId<>(ID, CODEC);
 
 	private final UUID uuid;

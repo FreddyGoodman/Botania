@@ -25,8 +25,7 @@
     "PowderSnowBlockMixin",
     "PrimedTntMixin",
     "RepairItemRecipeFabricMixin",
-    "ResultSlotFabricMixin",
-    "ServerPlayerContainerListenerFabricMixin"
+    "ResultSlotFabricMixin"
   ],
   "client": [
     "client.AbstractTextureFabricMixin",

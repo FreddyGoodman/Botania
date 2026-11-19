@@ -9,7 +9,7 @@
 package org.violetmoon.botania.api.mana;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.api.capability.BlockApiNoContext;
@@ -22,18 +22,18 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  * and catalysts.
  */
 public interface PoolOverlayProvider {
-	ResourceLocation ID = botaniaRL("pool_overlay");
+	Identifier ID = botaniaRL("pool_overlay");
 	BlockApiNoContext<PoolOverlayProvider> LOOKUP = new BlockApiNoContext<>(ID, PoolOverlayProvider.class);
 
 	/**
 	 * @return A sprite to render. Must be stitched to the main block/item atlas.
 	 */
-	ResourceLocation getIcon(Level level, BlockPos pos);
+	Identifier getIcon(Level level, BlockPos pos);
 
 	/**
 	 * Defines a PoolOverlayProvider for a static icon.
 	 */
-	static PoolOverlayProvider simple(ResourceLocation icon) {
+	static PoolOverlayProvider simple(Identifier icon) {
 		return (level, pos) -> icon;
 	}
 }

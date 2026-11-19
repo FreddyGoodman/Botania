@@ -10,7 +10,7 @@ package org.violetmoon.botania.api.mana;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.UnknownNullability;
@@ -22,7 +22,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  * Any Block or Block Entity with this capability can hold and receive mana from mana bursts.
  */
 public interface ManaReceiver {
-	ResourceLocation ID = botaniaRL("mana_receiver");
+	Identifier ID = botaniaRL("mana_receiver");
 	BlockApiWithContext<ManaReceiver, Direction> LOOKUP =
 			new BlockApiWithContext<>(ID, ManaReceiver.class, Direction.class);
 

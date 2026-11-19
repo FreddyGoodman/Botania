@@ -10,7 +10,7 @@ package org.violetmoon.botania.common.item.rod;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -38,7 +38,7 @@ import java.util.Random;
 
 public class PlentifulMantleRodItem extends Item {
 
-	private static final ResourceLocation AVATAR_OVERLAY = ResourceLocation.parse(ResourcesLib.MODEL_AVATAR_DIVINING);
+	private static final Identifier AVATAR_OVERLAY = Identifier.parse(ResourcesLib.MODEL_AVATAR_DIVINING);
 
 	public static final int COST = 3000;
 	public static final byte RANGE_PROFICIENCY = 20;
@@ -103,7 +103,7 @@ public class PlentifulMantleRodItem extends Item {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource() {
+		public Identifier getOverlayResource() {
 			return AVATAR_OVERLAY;
 		}
 	}

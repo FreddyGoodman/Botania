@@ -9,7 +9,7 @@
 
 package org.violetmoon.botania.api.block;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.ItemLike;
 
@@ -17,9 +17,9 @@ import org.violetmoon.botania.api.BotaniaAPI;
 
 public record IslandType(ItemLike item, int modulatedDelay, SoundEvent changeSound) {
 
-	public static final ResourceLocation DEFAULT_ID = BotaniaAPI.botaniaRL("grass");
+	public static final Identifier DEFAULT_ID = BotaniaAPI.botaniaRL("grass");
 
-	public ResourceLocation islandModel() {
+	public Identifier islandModel() {
 		return BotaniaAPI.instance().getIslandTypeRegistry().getKey(this).withPrefix("block/islands/");
 	}
 }

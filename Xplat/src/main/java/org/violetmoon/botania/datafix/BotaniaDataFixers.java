@@ -3,7 +3,7 @@ package org.violetmoon.botania.datafix;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 
 import java.util.Map;
@@ -159,12 +159,12 @@ public class BotaniaDataFixers {
 
 		blocks.putAll(FLOWER_RENAMES);
 		blocks.putAll(FLOWER_RENAMES.entrySet().stream().map(flower -> Map.entry(
-				ResourceLocation.parse(flower.getKey()).withPrefix("floating_").toString(),
-				ResourceLocation.parse(flower.getValue()).withPrefix("floating_").toString()
+				Identifier.parse(flower.getKey()).withPrefix("floating_").toString(),
+				Identifier.parse(flower.getValue()).withPrefix("floating_").toString()
 		)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 		blocks.putAll(FLOWER_RENAMES.entrySet().stream().map(flower -> Map.entry(
-				ResourceLocation.parse(flower.getKey()).withPrefix("potted_").toString(),
-				ResourceLocation.parse(flower.getValue()).withPrefix("potted_").toString()
+				Identifier.parse(flower.getKey()).withPrefix("potted_").toString(),
+				Identifier.parse(flower.getValue()).withPrefix("potted_").toString()
 		)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
 		blocks.put("botania:redstone_spreader", "botania:pulse_mana_spreader");

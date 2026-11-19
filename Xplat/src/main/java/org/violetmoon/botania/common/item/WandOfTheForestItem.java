@@ -17,7 +17,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -112,7 +112,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 						setBindingAttempt(stack, globalPos, side, state.getBlock());
 					}
 
-					if (world.isClientSide) {
+					if (world.isClientSide()) {
 						player.playSound(BotaniaSounds.DING, 0.11F, 1F);
 					}
 
@@ -151,7 +151,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 	}
 
 	public static void doParticleBeam(Level world, Vec3 orig, Vec3 end) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			return;
 		}
 
@@ -189,7 +189,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (player.isSecondaryUseActive()) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				setBindMode(stack, !getBindMode(stack));
 			} else {
 				player.playSound(BotaniaSounds.DING, 0.1F, 1F);
@@ -264,7 +264,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 	}
 
 	public static Optional<Block> getBindingBlock(ItemStack stack) {
-		ResourceLocation resourceLocation = stack.get(BotaniaDataComponents.BLOCK_TYPE);
+		Identifier resourceLocation = stack.get(BotaniaDataComponents.BLOCK_TYPE);
 		return resourceLocation != null ? BuiltInRegistries.BLOCK.getOptional(resourceLocation) : Optional.empty();
 	}
 

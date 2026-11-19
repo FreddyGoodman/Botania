@@ -9,7 +9,7 @@
 package org.violetmoon.botania.common.item.rod;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +30,7 @@ import org.violetmoon.botania.common.handler.BotaniaSounds;
 
 public class HellsRodItem extends Item {
 
-	private static final ResourceLocation AVATAR_OVERLAY = ResourceLocation.parse(ResourcesLib.MODEL_AVATAR_FIRE);
+	private static final Identifier AVATAR_OVERLAY = Identifier.parse(ResourcesLib.MODEL_AVATAR_FIRE);
 
 	private static final int COST = 900;
 	private static final int COOLDOWN = 1200;
@@ -85,7 +85,7 @@ public class HellsRodItem extends Item {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource() {
+		public Identifier getOverlayResource() {
 			return AVATAR_OVERLAY;
 		}
 	}

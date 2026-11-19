@@ -16,14 +16,14 @@ import dev.emi.emi.api.stack.EmiStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 
 public abstract class BotaniaEmiRecipe implements EmiRecipe {
 	private final EmiRecipeCategory category;
-	private final ResourceLocation id;
+	private final Identifier id;
 	protected List<EmiIngredient> input = List.of();
 	protected List<EmiStack> output = List.of();
 	private final String group;
@@ -40,7 +40,7 @@ public abstract class BotaniaEmiRecipe implements EmiRecipe {
 	}
 
 	@Override
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return id;
 	}
 

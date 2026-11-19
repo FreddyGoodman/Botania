@@ -12,8 +12,8 @@ import com.google.common.base.Suppliers;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.models.model.ModelLocationUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -97,13 +97,13 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedEntityBlock
 	@Nullable
 	private final DyeColor coverColor;
 	@SuppressWarnings("ThisEscapedInObjectConstruction")
-	private final Supplier<ResourceLocation> spreaderModelIdSupplier = Suppliers.memoize(
+	private final Supplier<Identifier> spreaderModelIdSupplier = Suppliers.memoize(
 			() -> ModelLocationUtils.getModelLocation(getBaseBlock(this)));
 	@SuppressWarnings("ThisEscapedInObjectConstruction")
-	private final Supplier<ResourceLocation> coreModelIdSupplier = Suppliers.memoize(
+	private final Supplier<Identifier> coreModelIdSupplier = Suppliers.memoize(
 			() -> ModelLocationUtils.getModelLocation(getBaseBlock(this), "_core"));
 	@SuppressWarnings("ThisEscapedInObjectConstruction")
-	private final Supplier<ResourceLocation> scaffoldingModelIdSupplier = Suppliers.memoize(
+	private final Supplier<Identifier> scaffoldingModelIdSupplier = Suppliers.memoize(
 			() -> ModelLocationUtils.getModelLocation(getBaseBlock(this), "_scaffolding"));
 
 	public ManaSpreaderBlock(SpreaderParameters spreaderParameters, @Nullable DyeColor coverColor, Properties properties) {
@@ -164,15 +164,15 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedEntityBlock
 		return spreaderParameters.hudColor;
 	}
 
-	public ResourceLocation getSpreaderModelId() {
+	public Identifier getSpreaderModelId() {
 		return spreaderModelIdSupplier.get();
 	}
 
-	public ResourceLocation getCoreModelId() {
+	public Identifier getCoreModelId() {
 		return coreModelIdSupplier.get();
 	}
 
-	public ResourceLocation getScaffoldingModelId() {
+	public Identifier getScaffoldingModelId() {
 		return scaffoldingModelIdSupplier.get();
 	}
 

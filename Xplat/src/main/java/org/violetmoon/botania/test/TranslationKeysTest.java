@@ -19,7 +19,7 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
@@ -150,7 +150,7 @@ public class TranslationKeysTest {
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_BLOCK_TAGS.contains(tag))
 				.forEach(tag -> {
-					ResourceLocation tagId = tag.location();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.block.%s.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -174,7 +174,7 @@ public class TranslationKeysTest {
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_ENTITY_TAGS.contains(tag))
 				.forEach(tag -> {
-					ResourceLocation tagId = tag.location();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.entity_type.%s.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -198,7 +198,7 @@ public class TranslationKeysTest {
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_FLUID_TAGS.contains(tag))
 				.forEach(tag -> {
-					ResourceLocation tagId = tag.location();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.fluid.%s.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -222,7 +222,7 @@ public class TranslationKeysTest {
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_ITEM_TAGS.contains(tag))
 				.forEach(tag -> {
-					ResourceLocation tagId = tag.location();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.item.%s.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -247,7 +247,7 @@ public class TranslationKeysTest {
 				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_BIOME_TAGS.contains(tag))
 				.forEach(tag -> {
-					ResourceLocation tagId = tag.location();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.worldgen.%s.biome.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -269,7 +269,7 @@ public class TranslationKeysTest {
 		Registry<Structure> structureRegistry = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
 		structureRegistry.stream()
 				.forEach(structure -> {
-					ResourceLocation structureId = structureRegistry.getKey(structure);
+					Identifier structureId = structureRegistry.getKey(structure);
 					String translationKey = "structure.%s.%s".formatted(
 							structureId.getNamespace(),
 							structureId.getPath().replace('/', '.'));
@@ -286,7 +286,7 @@ public class TranslationKeysTest {
 		}
 	}
 
-	private void validateComponent(ResourceLocation id, String type, Component component, MutableInt missing) {
+	private void validateComponent(Identifier id, String type, Component component, MutableInt missing) {
 		ComponentContents contents = component.getContents();
 		if (contents instanceof TranslatableContents translatableContents
 				&& !Language.getInstance().has(translatableContents.getKey())) {

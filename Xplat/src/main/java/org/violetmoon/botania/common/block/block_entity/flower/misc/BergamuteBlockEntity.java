@@ -11,7 +11,7 @@ package org.violetmoon.botania.common.block.block_entity.flower.misc;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -119,9 +119,9 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 
 	public static void particle(BergamuteBlockEntity berg) {
 		int color = ManaPoolBlockEntity.PARTICLE_COLOR;
-		float red = FastColor.ARGB32.red(color) / 255f;
-		float green = FastColor.ARGB32.green(color) / 255f;
-		float blue = FastColor.ARGB32.blue(color) / 255f;
+		float red = ARGB.red(color) / 255f;
+		float green = ARGB.green(color) / 255f;
+		float blue = ARGB.blue(color) / 255f;
 		SparkleParticleData data = SparkleParticleData.sparkle((float) Math.random() * 0.8f + 0.2f, red, green, blue, 5);
 		berg.emitParticle(data, 0.3 + Math.random() * 0.5, 0.5 + Math.random() * 0.5, 0.3 + Math.random() * 0.5, 0, 0, 0);
 	}

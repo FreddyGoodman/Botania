@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -81,7 +81,7 @@ public class BlackHoleTalismanItem extends Item {
 			}
 
 			if (world.getBlockEntity(pos) instanceof Container container) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					ItemStack toAdd = new ItemStack(bBlock);
 					int maxSize = toAdd.getMaxStackSize();
 					toAdd.setCount(remove(stack, maxSize));
@@ -97,7 +97,7 @@ public class BlackHoleTalismanItem extends Item {
 					InteractionResult result = PlayerHelper.substituteUse(ctx, toUse);
 
 					if (result.consumesAction()) {
-						if (!world.isClientSide) {
+						if (!world.isClientSide()) {
 							remove(stack, 1);
 							ItemsRemainingRenderHandler.send(player, toUse, getBlockCount(stack));
 						}
@@ -202,7 +202,7 @@ public class BlackHoleTalismanItem extends Item {
 
 	@Nullable
 	public static Block getBlock(ItemStack stack) {
-		ResourceLocation id = stack.get(BotaniaDataComponents.BLOCK_TYPE);
+		Identifier id = stack.get(BotaniaDataComponents.BLOCK_TYPE);
 		if (id != null) {
 			return BuiltInRegistries.BLOCK.getOptional(id).orElse(null);
 		}

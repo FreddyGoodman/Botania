@@ -51,7 +51,7 @@ public class BaubleBoxItem extends Item {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			ItemStack stack = player.getItemInHand(hand);
 			stack.set(BotaniaDataComponents.ACTIVE_TRANSIENT, Unit.INSTANCE);
 			XplatAbstractions.INSTANCE.openMenu((ServerPlayer) player, new MenuProvider() {

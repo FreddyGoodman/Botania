@@ -10,7 +10,7 @@ package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BannerPattern;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public final class BotaniaBannerPatterns {
 	}
 
 	@Deprecated(forRemoval = true)
-	public static void submitRegistrations(BiConsumer<BannerPattern, ResourceLocation> consumer) {
+	public static void submitRegistrations(BiConsumer<BannerPattern, Identifier> consumer) {
 		// obsolete
 	}
 

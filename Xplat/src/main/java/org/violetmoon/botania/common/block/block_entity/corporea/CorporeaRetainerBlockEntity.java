@@ -19,7 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -43,8 +43,8 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 	private static final String TAG_REQUEST_TYPE = "requestType";
 	private static final String TAG_REQUEST_COUNT = "requestCount";
 
-	private static final Map<ResourceLocation, BiFunction<CompoundTag, HolderLookup.Provider, ? extends CorporeaRequestMatcher>> corporeaMatcherDeserializers = new ConcurrentHashMap<>();
-	private static final Map<Class<? extends CorporeaRequestMatcher>, ResourceLocation> corporeaMatcherSerializers = new ConcurrentHashMap<>();
+	private static final Map<Identifier, BiFunction<CompoundTag, HolderLookup.Provider, ? extends CorporeaRequestMatcher>> corporeaMatcherDeserializers = new ConcurrentHashMap<>();
+	private static final Map<Class<? extends CorporeaRequestMatcher>, Identifier> corporeaMatcherSerializers = new ConcurrentHashMap<>();
 
 	@Nullable
 	private BlockPos requestPos;
@@ -105,7 +105,7 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 		if (requestPos != null) {
 			cmp.put(TAG_REQUEST_POS, NbtUtils.writeBlockPos(requestPos));
 		}
-		ResourceLocation reqType = request != null ? corporeaMatcherSerializers.get(request.getClass()) : null;
+		Identifier reqType = request != null ? corporeaMatcherSerializers.get(request.getClass()) : null;
 
 		if (reqType != null) {
 			cmp.putString(TAG_REQUEST_TYPE, reqType.toString());
@@ -117,7 +117,7 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		NbtUtils.readBlockPos(cmp, TAG_REQUEST_POS).ifPresent(pos -> requestPos = pos);
-		ResourceLocation reqType = ResourceLocation.tryParse(cmp.getString(TAG_REQUEST_TYPE));
+		Identifier reqType = Identifier.tryParse(cmp.getString(TAG_REQUEST_TYPE));
 		if (reqType != null && corporeaMatcherDeserializers.containsKey(reqType)) {
 			request = corporeaMatcherDeserializers.get(reqType).apply(cmp, registries);
 		} else {
@@ -126,7 +126,7 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 		requestCount = cmp.getInt(TAG_REQUEST_COUNT);
 	}
 
-	public static <T extends CorporeaRequestMatcher> void addCorporeaRequestMatcher(ResourceLocation id, Class<T> clazz, BiFunction<CompoundTag, HolderLookup.Provider, T> deserializer) {
+	public static <T extends CorporeaRequestMatcher> void addCorporeaRequestMatcher(Identifier id, Class<T> clazz, BiFunction<CompoundTag, HolderLookup.Provider, T> deserializer) {
 		corporeaMatcherSerializers.put(clazz, id);
 		corporeaMatcherDeserializers.put(id, deserializer);
 	}

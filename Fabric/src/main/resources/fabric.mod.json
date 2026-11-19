@@ -66,17 +66,11 @@
     "fabric-datagen": [
       "org.violetmoon.botania.fabric.data.FabricDatagenInitializer"
     ],
-    "emi": [
-      "org.violetmoon.botania.client.integration.emi.BotaniaEmiPlugin"
-    ],
     "rei_client": [
       "org.violetmoon.botania.client.integration.rei.BotaniaREIPlugin"
     ],
     "jei_mod_plugin": [
       "org.violetmoon.botania.client.integration.jei.JEIBotaniaPlugin"
-    ],
-    "speedrunigt": [
-      "org.violetmoon.botania.fabric.integration.speedrunigt.BotaniaSpeedrunIGTPlugin"
     ]
   },
   "mixins": [

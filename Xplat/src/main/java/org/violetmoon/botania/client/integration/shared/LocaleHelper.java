@@ -9,7 +9,7 @@
 
 package org.violetmoon.botania.client.integration.shared;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 import org.violetmoon.botania.common.proxy.Proxy;
 

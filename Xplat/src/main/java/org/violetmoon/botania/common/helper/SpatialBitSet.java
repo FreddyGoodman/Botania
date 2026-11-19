@@ -11,7 +11,7 @@ package org.violetmoon.botania.common.helper;
 
 import it.unimi.dsi.fastutil.shorts.Short2LongOpenHashMap;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 
 /**

@@ -9,7 +9,7 @@
 
 package org.violetmoon.botania.common.internal_caps;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.api.attachment.DataMarkerId;
 
@@ -19,7 +19,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  * Added to creepers to prevent them from exploding.
  */
 public final class TigerseyePacified {
-	public static final ResourceLocation ID = botaniaRL("tigerseye_pacified");
+	public static final Identifier ID = botaniaRL("tigerseye_pacified");
 	public static final DataMarkerId MARKER = new DataMarkerId(ID);
 
 	private TigerseyePacified() {}

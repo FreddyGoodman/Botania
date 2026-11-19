@@ -15,7 +15,7 @@ import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
 import org.jetbrains.annotations.Nullable;
@@ -31,11 +31,11 @@ public class RegistryHelper {
 		return (Registry<T>) BuiltInRegistries.REGISTRY.get(resourceKey.location());
 	}
 
-	public static <T> HolderProxy<T> lazyHolderProxy(ResourceKey<Registry<T>> registryKey, ResourceLocation id, Supplier<T> valueSupplier) {
+	public static <T> HolderProxy<T> lazyHolderProxy(ResourceKey<Registry<T>> registryKey, Identifier id, Supplier<T> valueSupplier) {
 		return new HolderProxy<>(ResourceKey.create(registryKey, id), valueSupplier);
 	}
 
-	public static <T> HolderProxy<T> holderProxy(ResourceKey<Registry<T>> registryKey, ResourceLocation id, T value) {
+	public static <T> HolderProxy<T> holderProxy(ResourceKey<Registry<T>> registryKey, Identifier id, T value) {
 		return new HolderProxy<>(ResourceKey.create(registryKey, id), value);
 	}
 
@@ -88,7 +88,7 @@ public class RegistryHelper {
 		}
 
 		@Override
-		public boolean is(ResourceLocation location) {
+		public boolean is(Identifier location) {
 			return reference != null ? reference.is(location) : resourceKey.location().equals(location);
 		}
 

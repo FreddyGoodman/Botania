@@ -10,7 +10,7 @@ package org.violetmoon.botania.common.item.brew;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -66,7 +66,7 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 
 	@Override
 	public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity living) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			for (MobEffectInstance effect : getBrew(stack).getPotionEffects(stack)) {
 				MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), effect.getDuration(), effect.getAmplifier(), true, true);
 				if (effect.getEffect().value().isInstantenous()) {
@@ -124,12 +124,12 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 
 	@Override
 	public Brew getBrew(ItemStack stack) {
-		ResourceLocation id = stack.get(BotaniaDataComponents.BREW);
+		Identifier id = stack.get(BotaniaDataComponents.BREW);
 		return BotaniaAPI.instance().getBrewRegistry().get(id);
 	}
 
 	public static void setBrew(ItemStack stack, @Nullable Brew brew) {
-		ResourceLocation id;
+		Identifier id;
 		if (brew != null) {
 			id = BotaniaAPI.instance().getBrewRegistry().getKey(brew);
 		} else {
@@ -138,12 +138,12 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 		setBrew(stack, id);
 	}
 
-	public static void setBrew(ItemStack stack, @Nullable ResourceLocation brew) {
+	public static void setBrew(ItemStack stack, @Nullable Identifier brew) {
 		DataComponentHelper.setOptional(stack, BotaniaDataComponents.BREW, brew);
 	}
 
 	public static String getSubtype(ItemStack stack) {
-		return Optional.ofNullable(stack.get(BotaniaDataComponents.BREW)).map(ResourceLocation::toString).orElse("none");
+		return Optional.ofNullable(stack.get(BotaniaDataComponents.BREW)).map(Identifier::toString).orElse("none");
 	}
 
 	public int getSwigs(ItemStack stack) {

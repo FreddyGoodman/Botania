@@ -16,7 +16,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
@@ -35,7 +35,7 @@ public record MobAttributeModifier(Holder<Attribute> attribute, double amount, A
 			).apply(instance, MobAttributeModifier::new)
 	);
 
-	public AttributeModifier createAttributeModifier(ResourceLocation id) {
+	public AttributeModifier createAttributeModifier(Identifier id) {
 		return new AttributeModifier(id.withSuffix("_" + operation.getSerializedName()), amount, operation);
 	}
 

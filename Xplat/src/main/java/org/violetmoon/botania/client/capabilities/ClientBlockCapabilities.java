@@ -9,7 +9,7 @@
 
 package org.violetmoon.botania.client.capabilities;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 
 import org.violetmoon.botania.api.block.MonocleHud;
@@ -48,8 +48,8 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 import static org.violetmoon.botania.common.capabilities.BlockCapabilities.*;
 
 public final class ClientBlockCapabilities {
-	private static final ResourceLocation ALCHEMY_CATALYST_OVERLAY = botaniaRL("block/alchemy_catalyst_overlay");
-	private static final ResourceLocation CONJURATION_CATALYST_OVERLAY = botaniaRL("block/conjuration_catalyst_overlay");
+	private static final Identifier ALCHEMY_CATALYST_OVERLAY = botaniaRL("block/alchemy_catalyst_overlay");
+	private static final Identifier CONJURATION_CATALYST_OVERLAY = botaniaRL("block/conjuration_catalyst_overlay");
 
 	public static void registerCapabilityTypes(ApiIdRegistration registration) {
 		registration.register(MonocleHud.BLOCK_LOOKUP);

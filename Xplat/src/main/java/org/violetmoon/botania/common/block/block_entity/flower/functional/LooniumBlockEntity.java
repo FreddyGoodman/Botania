@@ -23,7 +23,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -80,7 +80,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	private static final String TAG_RELEVANT_STRUCTURE = "relevantStructure";
 	private static final String TAG_CONFIG_OVERRIDE = "configOverride";
 	private static final String TAG_ATTUNE_DISPLAY_OVERRIDE = "attuneDisplayOverride";
-	private static final ResourceLocation ATTRIBUTE_MODIFIER_ID = botaniaRL("loonium_modifier");
+	private static final Identifier ATTRIBUTE_MODIFIER_ID = botaniaRL("loonium_modifier");
 	private static final Supplier<LooniumStructureConfiguration> FALLBACK_CONFIG =
 			Suppliers.memoize(() -> LooniumStructureConfiguration.builder()
 					.manaCost(LooniumStructureConfiguration.DEFAULT_COST)
@@ -113,14 +113,14 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	 * Intentionally not persisted so a reload or moving the flower causes reevaluation.
 	 */
 	@Nullable
-	private Object2BooleanMap<ResourceLocation> detectedStructures;
+	private Object2BooleanMap<Identifier> detectedStructures;
 	/**
 	 * Serverside tracking of actually relevant structure IDs. Changes trigger a data resend.
 	 * Clientside this is filtered to not contain the default ID used for forced or default structure config.
 	 */
-	private Set<ResourceLocation> relevantStructures = Set.of();
+	private Set<Identifier> relevantStructures = Set.of();
 	@Nullable
-	private ResourceLocation configOverride;
+	private Identifier configOverride;
 	@Nullable
 	private String attuneDisplayOverride;
 
@@ -148,16 +148,16 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			return;
 		}
 
-		Map<ResourceLocation, LooniumStructureConfiguration> structureConfigs =
+		Map<Identifier, LooniumStructureConfiguration> structureConfigs =
 				determineStructureConfigs(detectedStructures);
 		updateRelevantStructures(structureConfigs);
-		List<Pair<ResourceLocation, LootTable>> lootTables = determineLootTables(world, structureConfigs.keySet());
+		List<Pair<Identifier, LootTable>> lootTables = determineLootTables(world, structureConfigs.keySet());
 
 		if (lootTables.isEmpty()) {
 			return;
 		}
 
-		Pair<ResourceLocation, LootTable> randomPick = lootTables.get(world.random.nextInt(lootTables.size()));
+		Pair<Identifier, LootTable> randomPick = lootTables.get(world.random.nextInt(lootTables.size()));
 		LooniumStructureConfiguration pickedConfig = structureConfigs.getOrDefault(randomPick.key(),
 				structureConfigs.get(LooniumStructureConfiguration.DEFAULT_CONFIG_ID));
 		LootTable pickedLootTable = randomPick.value();
@@ -189,8 +189,8 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		}
 	}
 
-	private void updateRelevantStructures(Map<ResourceLocation, LooniumStructureConfiguration> structureConfigs) {
-		Set<ResourceLocation> structureIds = structureConfigs.keySet();
+	private void updateRelevantStructures(Map<Identifier, LooniumStructureConfiguration> structureConfigs) {
+		Set<Identifier> structureIds = structureConfigs.keySet();
 		if (relevantStructures.equals(structureIds)) {
 			return;
 		}
@@ -201,7 +201,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			case 1 -> relevantStructures = Set.of(structureIds.stream().findFirst().get());
 			default -> {
 				// multiple structures are a rare case, but require special handling for consistency
-				ResourceLocation[] ids = structureIds.toArray(ResourceLocation[]::new);
+				Identifier[] ids = structureIds.toArray(Identifier[]::new);
 				Arrays.sort(ids);
 				relevantStructures = new ObjectArraySet<>(ids);
 			}
@@ -341,7 +341,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 
 	public static void applyAttributesAndEffects(MobSpawnData mobSpawnData, Mob mob,
 			@Nullable List<MobAttributeModifier> fallbackAttributeModifiers,
-			@Nullable List<MobEffectToApply> fallbackEffectsToApply, ResourceLocation modifierId) {
+			@Nullable List<MobEffectToApply> fallbackEffectsToApply, Identifier modifierId) {
 		List<MobAttributeModifier> attributeModifiers = mobSpawnData.attributeModifiers != null
 				? mobSpawnData.attributeModifiers
 				: fallbackAttributeModifiers;
@@ -385,9 +385,9 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		}
 	}
 
-	private List<Pair<ResourceLocation, LootTable>> determineLootTables(ServerLevel world,
-			Set<ResourceLocation> structureIds) {
-		var lootTables = new ArrayList<Pair<ResourceLocation, LootTable>>();
+	private List<Pair<Identifier, LootTable>> determineLootTables(ServerLevel world,
+			Set<Identifier> structureIds) {
+		var lootTables = new ArrayList<Pair<Identifier, LootTable>>();
 		ReloadableServerRegistries.Holder lootData = world.getServer().reloadableRegistries();
 		Supplier<LootTable> defaultLootTableSupplier = Suppliers.memoize(() -> lootData.getLootTable(
 				BotaniaLootTables.LOONIUM_DEFAULT_LOOT));
@@ -397,7 +397,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 				lootTables.add(Pair.of(LooniumStructureConfiguration.DEFAULT_CONFIG_ID, lootTable));
 			}
 		} else {
-			for (ResourceLocation structureId : structureIds) {
+			for (Identifier structureId : structureIds) {
 				if (structureId.equals(LooniumStructureConfiguration.DEFAULT_CONFIG_ID)) {
 					continue;
 				}
@@ -429,8 +429,8 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	 * @param structures Detected structures to work with.
 	 * @return The map, which is guaranteed to not be empty.
 	 */
-	private Map<ResourceLocation, LooniumStructureConfiguration> determineStructureConfigs(
-			Object2BooleanMap<ResourceLocation> structures) {
+	private Map<Identifier, LooniumStructureConfiguration> determineStructureConfigs(
+			Object2BooleanMap<Identifier> structures) {
 		ConfigDataManager configData = BotaniaAPI.instance().getConfigData();
 		if (configOverride != null) {
 			LooniumStructureConfiguration overrideConfig =
@@ -440,8 +440,8 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		}
 
 		LooniumStructureConfiguration defaultConfig = getDefaultConfig(configData);
-		var structureConfigs = new HashMap<ResourceLocation, LooniumStructureConfiguration>();
-		for (Object2BooleanMap.Entry<ResourceLocation> structureEntry : structures.object2BooleanEntrySet()) {
+		var structureConfigs = new HashMap<Identifier, LooniumStructureConfiguration>();
+		for (Object2BooleanMap.Entry<Identifier> structureEntry : structures.object2BooleanEntrySet()) {
 			LooniumStructureConfiguration structureSpecificConfig =
 					configData.getEffectiveLooniumStructureConfiguration(structureEntry.getKey());
 			LooniumStructureConfiguration structureConfig = structureSpecificConfig != null ? structureSpecificConfig : defaultConfig;
@@ -463,7 +463,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 
 	private void detectStructure(ServerLevel world) {
 		// structure ID and whether the position is inside a structure piece (false = only overall bounding box)
-		var structureMap = new Object2BooleanRBTreeMap<ResourceLocation>();
+		var structureMap = new Object2BooleanRBTreeMap<Identifier>();
 		StructureManager structureManager = world.structureManager();
 		BlockPos pos = getBlockPos();
 		Map<Structure, LongSet> structures = structureManager.getAllStructuresAt(pos);
@@ -471,7 +471,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			Structure structure = entry.getKey();
 			StructureStart start = structureManager.getStructureAt(pos, structure);
 			if (start.isValid()) {
-				ResourceLocation structureId =
+				Identifier structureId =
 						world.registryAccess().registryOrThrow(Registries.STRUCTURE).getKey(structure);
 				boolean insidePiece = structureManager.structureHasPieceAt(pos, start);
 				if (insidePiece || !structureMap.getBoolean(structureId)) {
@@ -483,7 +483,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		detectedStructures = new Object2BooleanArrayMap<>(structureMap);
 
 		// flower might not naturally check this any time soon, so do it manually right now already:
-		Map<ResourceLocation, LooniumStructureConfiguration> structureConfigs =
+		Map<Identifier, LooniumStructureConfiguration> structureConfigs =
 				determineStructureConfigs(detectedStructures);
 		updateRelevantStructures(structureConfigs);
 	}
@@ -512,10 +512,10 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
 		if (cmp.contains(TAG_LOOT_TABLE)) {
-			lootTableOverride = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.parse(cmp.getString(TAG_LOOT_TABLE)));
+			lootTableOverride = ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(cmp.getString(TAG_LOOT_TABLE)));
 		}
 		if (cmp.contains(TAG_CONFIG_OVERRIDE)) {
-			configOverride = ResourceLocation.parse(cmp.getString(TAG_CONFIG_OVERRIDE));
+			configOverride = Identifier.parse(cmp.getString(TAG_CONFIG_OVERRIDE));
 		}
 		if (cmp.contains(TAG_ATTUNE_DISPLAY_OVERRIDE)) {
 			attuneDisplayOverride = cmp.getString(TAG_ATTUNE_DISPLAY_OVERRIDE);
@@ -525,7 +525,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			if (rawString.isEmpty()) {
 				relevantStructures = Set.of();
 			} else {
-				List<ResourceLocation> structureList = Arrays.stream(rawString.split(",")).map(ResourceLocation::parse).toList();
+				List<Identifier> structureList = Arrays.stream(rawString.split(",")).map(Identifier::parse).toList();
 				// list should never contain more than a few entries, so array is fine and retains entry order
 				relevantStructures = new ObjectArraySet<>(structureList);
 			}
@@ -556,7 +556,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		} else if (!relevantStructures.isEmpty()) {
 			String idsString = relevantStructures.stream()
 					.filter(id -> !LooniumStructureConfiguration.DEFAULT_CONFIG_ID.equals(id))
-					.map(ResourceLocation::toString)
+					.map(Identifier::toString)
 					.collect(Collectors.joining(","));
 			if (!idsString.isEmpty()) {
 				tag.putString(TAG_RELEVANT_STRUCTURE, idsString);

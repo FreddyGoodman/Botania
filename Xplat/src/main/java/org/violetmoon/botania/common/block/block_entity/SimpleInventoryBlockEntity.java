@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -30,6 +31,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.recipe.ProcessingRecipeInput;
@@ -72,24 +76,25 @@ public abstract class SimpleInventoryBlockEntity extends BlockEntity implements 
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput input) {
 		NonNullList<ItemStack> tmp = NonNullList.withSize(inventorySize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(tag, tmp, registries);
+		ContainerHelper.loadAllItems(input, tmp);
 		copyToInv(tmp, itemHandler);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		ContainerHelper.saveAllItems(tag, copyFromInv(itemHandler), registries);
+	protected void saveAdditional(ValueOutput output) {
+		ContainerHelper.saveAllItems(output, copyFromInv(itemHandler));
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		var tag = super.getUpdateTag(registries);
-		if (synchronize) {
-			ContainerHelper.saveAllItems(tag, copyFromInv(itemHandler), registries);
+		if (!synchronize) {
+			return super.getUpdateTag(registries);
 		}
-		return tag;
+		var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+		ContainerHelper.saveAllItems(output, copyFromInv(itemHandler));
+		return output.buildResult();
 	}
 
 	@Nullable

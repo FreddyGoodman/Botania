@@ -18,11 +18,6 @@ neoForge {
         accessTransformers.from(at.absolutePath)
     }
 
-    parchment {
-        minecraftVersion = minecraft_version
-        mappingsVersion = parchment_version
-    }
-
     runs {
         configureEach {
             systemProperty("neoforge.enabledGameTestNamespaces", mod_id)
@@ -68,7 +63,6 @@ dependencies {
     implementation(libs.patchouli.neoforge)
     compileOnly(variantOf(libs.curios) { classifier("api") })
 
-    compileOnly(variantOf(libs.emi.neoforge) { classifier("api") })
     compileOnly(libs.jei.neoforge.api)
     compileOnly(libs.rei.neoforge)
 
@@ -78,9 +72,7 @@ dependencies {
 
     runtimeOnly(libs.curios)
 
-    if (rootProject.hasProperty("load_override_emi")) {
-        runtimeOnly(libs.emi.neoforge)
-    } else if (rootProject.hasProperty("load_override_rei")) {
+    if (rootProject.hasProperty("load_override_rei")) {
         runtimeOnly(libs.rei.neoforge)
     } else {
         runtimeOnly(libs.jei.neoforge.full)

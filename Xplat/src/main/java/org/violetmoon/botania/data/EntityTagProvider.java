@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 
 import org.violetmoon.botania.common.entity.BotaniaEntities;
@@ -40,7 +40,7 @@ public class EntityTagProvider extends IntrinsicHolderTagsProvider<EntityType<?>
 
 		tag(BotaniaTags.Entities.COCOON_COMMON_AQUATIC)
 				.add(EntityType.COD, EntityType.SALMON, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SQUID, EntityType.FROG)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "crab"));
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "crab"));
 		tag(BotaniaTags.Entities.COCOON_RARE_AQUATIC).add(EntityType.DOLPHIN, EntityType.GLOW_SQUID, EntityType.AXOLOTL);
 
 		tag(BotaniaTags.Entities.DRUM_MILKABLE).add(EntityType.COW, EntityType.MOOSHROOM, EntityType.GOAT);

@@ -13,7 +13,7 @@ import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.common.crafting.recipe.TiaraWingsRecipe;
 import org.violetmoon.botania.common.item.BotaniaItems;
@@ -21,7 +21,7 @@ import org.violetmoon.botania.common.item.BotaniaItems;
 import java.util.List;
 
 public class TiaraWingsEmiRecipe extends EmiCraftingRecipe {
-	public TiaraWingsEmiRecipe(TiaraWingsRecipe recipe, ResourceLocation id) {
+	public TiaraWingsEmiRecipe(TiaraWingsRecipe recipe, Identifier id) {
 		super(List.of(EmiStack.of(BotaniaItems.FLUGEL_TIARA), EmiIngredient.of(recipe.material())),
 				EmiStack.of(recipe.getResultItem(BotaniaEmiRecipe.getRegistryAccess())),
 				id);

@@ -24,7 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -63,7 +63,7 @@ import java.util.stream.Stream;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class SextantItem extends Item {
-	public static final ResourceLocation MULTIBLOCK_ID = botaniaRL("worldshapers_sextant");
+	public static final Identifier MULTIBLOCK_ID = botaniaRL("worldshapers_sextant");
 	private static final int MAX_RADIUS = 256;
 
 	public SextantItem(Properties builder) {
@@ -84,7 +84,7 @@ public class SextantItem extends Item {
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int count) {
 		if (getUseDuration(stack, living) - count < 10
 				|| !(living instanceof Player)
-				|| !world.isClientSide) {
+				|| !world.isClientSide()) {
 			return;
 		}
 
@@ -262,7 +262,7 @@ public class SextantItem extends Item {
 
 	private void reset(Level world, Player player, ItemStack stack) {
 		if (!stack.has(BotaniaDataComponents.BINDING_POS)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				SextantMode currentMode = getMode(stack);
 				int numModes = SextantMode.values().length;
 				int nextMode = currentMode.ordinal() + 1;
@@ -273,7 +273,7 @@ public class SextantItem extends Item {
 		} else {
 			stack.remove(BotaniaDataComponents.BINDING_POS);
 		}
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			Proxy.INSTANCE.clearSextantMultiblock();
 		}
 	}
@@ -288,7 +288,7 @@ public class SextantItem extends Item {
 		if (!player.isSecondaryUseActive()) {
 			BlockHitResult rtr = ToolCommons.raytraceFromEntity(player, 128, false);
 			if (rtr.getType() == HitResult.Type.BLOCK) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					BlockPos pos = rtr.getBlockPos();
 					stack.set(BotaniaDataComponents.BINDING_POS, GlobalPos.of(world.dimension(), pos));
 				}

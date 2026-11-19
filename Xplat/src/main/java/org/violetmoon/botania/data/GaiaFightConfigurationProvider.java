@@ -16,7 +16,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.valueproviders.BiasedToBottomInt;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -52,11 +52,11 @@ public class GaiaFightConfigurationProvider implements DataProvider {
 	}
 
 	private CompletableFuture<?> run(CachedOutput cache, HolderLookup.Provider registries) {
-		Map<ResourceLocation, GaiaFightConfiguration> configs = new HashMap<>();
+		Map<Identifier, GaiaFightConfiguration> configs = new HashMap<>();
 		addConfigs(configs);
 
 		var output = new ArrayList<CompletableFuture<?>>(configs.size());
-		for (Map.Entry<ResourceLocation, GaiaFightConfiguration> e : configs.entrySet()) {
+		for (Map.Entry<Identifier, GaiaFightConfiguration> e : configs.entrySet()) {
 			Path path = pathProvider.json(e.getKey());
 			GaiaFightConfiguration config = e.getValue();
 			JsonElement jsonTree = GaiaFightConfiguration.CODEC.encodeStart(JsonOps.INSTANCE, config)
@@ -66,7 +66,7 @@ public class GaiaFightConfigurationProvider implements DataProvider {
 		return CompletableFuture.allOf(output.toArray(CompletableFuture<?>[]::new));
 	}
 
-	private void addConfigs(Map<ResourceLocation, GaiaFightConfiguration> configs) {
+	private void addConfigs(Map<Identifier, GaiaFightConfiguration> configs) {
 		configs.put(GaiaFightConfiguration.NORMAL, GaiaFightConfiguration
 				.builder(BotaniaLootTables.GAIA_GUARDIAN_REWARD, 60, ConstantInt.of(6),
 						0.2f, 40, ConstantInt.of(6),

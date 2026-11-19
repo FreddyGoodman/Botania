@@ -49,7 +49,7 @@ public class ForceRelayBlock extends Block {
 
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			var data = WorldData.get(level);
 
 			Direction movementContextDirection = ForcePushHelper.getMovementContextDirection();

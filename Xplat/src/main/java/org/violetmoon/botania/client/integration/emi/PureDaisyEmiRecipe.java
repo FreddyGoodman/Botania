@@ -14,7 +14,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import org.violetmoon.botania.api.recipe.PureDaisyRecipe;
@@ -25,7 +25,7 @@ import java.util.List;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class PureDaisyEmiRecipe extends BotaniaEmiRecipe {
-	private static final ResourceLocation TEXTURE = botaniaRL("textures/gui/pure_daisy_overlay.png");
+	private static final Identifier TEXTURE = botaniaRL("textures/gui/pure_daisy_overlay.png");
 	private static final EmiStack PURE_DAISY = EmiStack.of(BotaniaBlocks.PURE_DAISY);
 
 	public PureDaisyEmiRecipe(RecipeHolder<? extends PureDaisyRecipe> recipe) {

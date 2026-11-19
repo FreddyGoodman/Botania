@@ -19,7 +19,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -155,7 +155,7 @@ public class NeoForgeCommonInitializer {
 
 		evt.enqueueWork(BotaniaBlocks::addDispenserBehaviours);
 		evt.enqueueWork(() -> {
-			BiConsumer<ResourceLocation, Supplier<? extends Block>> consumer = (resourceLocation, blockSupplier) -> ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(resourceLocation, blockSupplier);
+			BiConsumer<Identifier, Supplier<? extends Block>> consumer = (resourceLocation, blockSupplier) -> ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(resourceLocation, blockSupplier);
 			BotaniaBlocks.registerFlowerPotPlants(consumer);
 		});
 		BotaniaItems.registerCauldronInteractions();
@@ -260,7 +260,7 @@ public class NeoForgeCommonInitializer {
 		}
 	}
 
-	private static <T> void bind(RegisterEvent event, ResourceKey<Registry<T>> registryKey, Consumer<BiConsumer<T, ResourceLocation>> source) {
+	private static <T> void bind(RegisterEvent event, ResourceKey<Registry<T>> registryKey, Consumer<BiConsumer<T, Identifier>> source) {
 		Registry<T> registry = event.getRegistry(registryKey);
 		if (registry != null) {
 			source.accept((t, rl) -> Registry.register(registry, rl, t));
@@ -269,7 +269,7 @@ public class NeoForgeCommonInitializer {
 
 	private final Set<Item> itemsToAddToCreativeTab = new LinkedHashSet<>();
 
-	private void bindForItems(RegisterEvent event, Consumer<BiConsumer<Item, ResourceLocation>> source) {
+	private void bindForItems(RegisterEvent event, Consumer<BiConsumer<Item, Identifier>> source) {
 		Registry<Item> registry = event.getRegistry(Registries.ITEM);
 		if (registry != null) {
 			source.accept((t, rl) -> {

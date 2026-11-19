@@ -25,7 +25,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -158,7 +158,7 @@ public class TrinketsIntegration extends EquipmentHandler {
 		}
 
 		@Override
-		public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, ResourceLocation slotIdentifier) {
+		public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, Identifier slotIdentifier) {
 			var ret = Trinket.super.getModifiers(stack, slot, entity, slotIdentifier);
 			if (!stack.isEmpty()) {
 				ret.putAll(getItem(stack).getEquippedAttributeModifiers(stack, slotIdentifier));

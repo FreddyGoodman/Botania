@@ -86,7 +86,7 @@ public abstract class PlayerFabricMixin extends LivingEntity {
 	@Inject(at = @At("HEAD"), method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;")
 	public void onDrop(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
 		Level world = this.level();
-		if (!stack.isEmpty() && !world.isClientSide) {
+		if (!stack.isEmpty() && !world.isClientSide()) {
 			RingOfMagnetizationItem.onTossItem((Player) (Object) this);
 		}
 	}

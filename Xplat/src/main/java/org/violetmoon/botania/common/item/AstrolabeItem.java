@@ -84,7 +84,7 @@ public class AstrolabeItem extends Item {
 		ItemStack stack = playerIn.getItemInHand(hand);
 		if (playerIn.isSecondaryUseActive()) {
 			playerIn.playSound(BotaniaSounds.WORLDSHAPERS_ASTROLABE_CONFIGURE, 1F, 1F);
-			if (!worldIn.isClientSide) {
+			if (!worldIn.isClientSide()) {
 				int size = getSize(stack);
 				int newSize = size == 11 ? 3 : size + 2;
 				setSize(stack, newSize);

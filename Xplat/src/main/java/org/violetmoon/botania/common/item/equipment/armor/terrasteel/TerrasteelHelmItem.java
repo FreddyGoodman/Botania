@@ -18,7 +18,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -42,7 +42,7 @@ public class TerrasteelHelmItem extends TerrasteelArmorItem implements ManaDisco
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		super.inventoryTick(stack, world, entity, slot, selected);
-		if (!world.isClientSide && entity instanceof Player player
+		if (!world.isClientSide() && entity instanceof Player player
 				&& player.getInventory().armor.contains(stack)
 				&& hasArmorSet(player)) {
 			int food = player.getFoodData().getFoodLevel();

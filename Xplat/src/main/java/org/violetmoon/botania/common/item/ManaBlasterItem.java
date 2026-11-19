@@ -66,16 +66,16 @@ public class ManaBlasterItem extends Item {
 		if (player.isSecondaryUseActive() && hasClip(stack)) {
 			rotatePos(stack);
 			world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.MANA_BLASTER_CYCLE, SoundSource.PLAYERS, 0.6F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				ItemStack lens = getLens(stack);
 				ItemsRemainingRenderHandler.send(player, lens, -2);
 				setCooldown(stack, effCd);
 			}
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
 		} else if (getCooldown(stack) <= 0) {
 			ManaBurstEntity burst = getBurst(player, stack, true, hand);
 			if (burst != null && ManaItemHandler.instance().requestManaExact(stack, player, burst.getMana(), true)) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.MANA_BLASTER, SoundSource.PLAYERS, 1F, 1);
 					world.addFreshEntity(burst);
 					ManaBlasterTrigger.INSTANCE.trigger((ServerPlayer) player, stack);
@@ -86,7 +86,7 @@ public class ManaBlasterItem extends Item {
 			} else {
 				player.playSound(BotaniaSounds.MANA_BLASTER_MISFIRE, 0.6F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
 			}
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
 		}
 
 		return InteractionResultHolder.pass(stack);

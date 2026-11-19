@@ -9,7 +9,7 @@
 package org.violetmoon.botania.api.item;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,7 +27,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface AvatarWieldable {
 
-	ResourceLocation ID = botaniaRL("avatar_wieldable");
+	Identifier ID = botaniaRL("avatar_wieldable");
 	ItemApiWithContext<AvatarWieldable, Avatar> LOOKUP = new ItemApiWithContext<>(ID, AvatarWieldable.class, Avatar.class);
 
 	/**
@@ -38,7 +38,7 @@ public interface AvatarWieldable {
 	/**
 	 * Gets the overlay resource to render on top of the avatar tile.
 	 */
-	ResourceLocation getOverlayResource();
+	Identifier getOverlayResource();
 
 	/**
 	 * Sets the current game time as the last time this item was activated by the avatar.

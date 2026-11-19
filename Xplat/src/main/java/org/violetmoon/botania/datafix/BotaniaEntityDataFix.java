@@ -4,7 +4,7 @@ import com.mojang.datafixers.Typed;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.util.datafix.fixes.EntityRenameFix;
 import net.minecraft.util.datafix.fixes.References;
 

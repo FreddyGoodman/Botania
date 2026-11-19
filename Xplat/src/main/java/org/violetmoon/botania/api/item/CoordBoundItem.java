@@ -9,7 +9,7 @@
 package org.violetmoon.botania.api.item;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface CoordBoundItem {
 
-	ResourceLocation ID = botaniaRL("coord_bound_item");
+	Identifier ID = botaniaRL("coord_bound_item");
 	ItemApiWithContext<CoordBoundItem, Level> LOOKUP = new ItemApiWithContext<>(ID, CoordBoundItem.class, Level.class);
 
 	@Nullable

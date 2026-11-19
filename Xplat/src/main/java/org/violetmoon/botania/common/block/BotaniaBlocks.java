@@ -11,7 +11,7 @@ package org.violetmoon.botania.common.block;
 import net.minecraft.core.*;
 import net.minecraft.core.dispenser.*;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -2351,7 +2351,7 @@ public final class BotaniaBlocks {
 		return orig + "_petite";
 	}
 
-	public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
+	public static void registerBlocks(BiConsumer<Block, Identifier> r) {
 		for (var e : ALL.entrySet()) {
 			r.accept(e.getValue(), botaniaRL(e.getKey()));
 		}
@@ -2361,7 +2361,7 @@ public final class BotaniaBlocks {
 		return ignored -> value;
 	}
 
-	public static void registerItemBlocks(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
 		Item.Properties props = BotaniaItems.defaultBuilder();
 		Item.Properties uncommonProps = BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON);
 		Item.Properties rareProps = BotaniaItems.defaultBuilder().rarity(Rarity.RARE);
@@ -3126,16 +3126,16 @@ public final class BotaniaBlocks {
 	}
 
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(
-			BiConsumer<Item, ResourceLocation> r, T baseBlock, Item.Properties properties) {
+			BiConsumer<Item, Identifier> r, T baseBlock, Item.Properties properties) {
 		registerBlockItemWithColoredVariants(r, baseBlock, properties, "_");
 	}
 
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(
-			BiConsumer<Item, ResourceLocation> r, T baseBlock, Item.Properties properties, String coloredBlockInfix) {
-		ResourceLocation baseId = BuiltInRegistries.BLOCK.getKey(baseBlock);
+			BiConsumer<Item, Identifier> r, T baseBlock, Item.Properties properties, String coloredBlockInfix) {
+		Identifier baseId = BuiltInRegistries.BLOCK.getKey(baseBlock);
 		r.accept(new BlockItem(baseBlock, properties), baseId);
 		ColorHelper.supportedColors().forEach(color -> {
-			ResourceLocation coloredId = baseId.withPrefix(color.getSerializedName() + coloredBlockInfix);
+			Identifier coloredId = baseId.withPrefix(color.getSerializedName() + coloredBlockInfix);
 			Block coloredBlock = ALL.get(coloredId.getPath());
 			r.accept(new BlockItem(coloredBlock, properties), coloredId);
 		});
@@ -3562,11 +3562,11 @@ public final class BotaniaBlocks {
 		};
 	}
 
-	public static void registerFlowerPotPlants(BiConsumer<ResourceLocation, Supplier<? extends Block>> consumer) {
+	public static void registerFlowerPotPlants(BiConsumer<Identifier, Supplier<? extends Block>> consumer) {
 		registerBlocks((block, resourceLocation) -> {
 			if (block instanceof FlowerPotBlock) {
 				var id = BuiltInRegistries.BLOCK.getKey(block);
-				consumer.accept(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().substring(LibBlockNames.POTTED_PREFIX.length())), () -> block);
+				consumer.accept(Identifier.fromNamespaceAndPath(id.getNamespace(), id.getPath().substring(LibBlockNames.POTTED_PREFIX.length())), () -> block);
 			}
 		});
 	}
@@ -3596,8 +3596,8 @@ public final class BotaniaBlocks {
 		}
 		// at most one of reference color and target color is empty
 
-		ResourceLocation referenceId = BuiltInRegistries.BLOCK.getKey(referenceBlock);
-		ResourceLocation targetId = getTargetId(referenceId, referenceColor, targetColor, coloredBlockInfix);
+		Identifier referenceId = BuiltInRegistries.BLOCK.getKey(referenceBlock);
+		Identifier targetId = getTargetId(referenceId, referenceColor, targetColor, coloredBlockInfix);
 
 		Block targetBlock = BuiltInRegistries.BLOCK.get(targetId);
 		if (!referenceBlock.getClass().isInstance(targetBlock)) {
@@ -3608,7 +3608,7 @@ public final class BotaniaBlocks {
 		return (T) targetBlock;
 	}
 
-	private static String getUndyedReferencePath(ResourceLocation referenceId, @Nullable DyeColor referenceColor, String coloredBlockInfix) {
+	private static String getUndyedReferencePath(Identifier referenceId, @Nullable DyeColor referenceColor, String coloredBlockInfix) {
 		if (referenceColor == null) {
 			return referenceId.getPath();
 		}
@@ -3620,7 +3620,7 @@ public final class BotaniaBlocks {
 		return referenceId.getPath().substring(referenceColorPrefix.length());
 	}
 
-	private static ResourceLocation getTargetId(ResourceLocation referenceId,
+	private static Identifier getTargetId(Identifier referenceId,
 			@Nullable DyeColor referenceColor, @Nullable DyeColor targetColor, String coloredBlockInfix) {
 		if (targetColor == null) {
 			return referenceId.withPath(getUndyedReferencePath(referenceId, referenceColor, coloredBlockInfix));
@@ -3643,8 +3643,8 @@ public final class BotaniaBlocks {
 			return referenceBlock;
 		}
 
-		ResourceLocation referenceId = BuiltInRegistries.BLOCK.getKey(referenceBlock);
-		ResourceLocation targetId = referenceId.withPath(path -> path.replaceFirst(
+		Identifier referenceId = BuiltInRegistries.BLOCK.getKey(referenceBlock);
+		Identifier targetId = referenceId.withPath(path -> path.replaceFirst(
 				"(?<=_|\\b)" + referenceColor.getSerializedName() + "(?=_|\\b)", targetColor.getSerializedName()));
 
 		Block targetBlock = BuiltInRegistries.BLOCK.get(targetId);

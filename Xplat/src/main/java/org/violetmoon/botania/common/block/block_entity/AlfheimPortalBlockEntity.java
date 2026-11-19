@@ -22,6 +22,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import java.net.URI;
+
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -133,8 +135,8 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 	private static final ExplosionDamageCalculator EXPLOSION_DAMAGE_CALCULATOR = new BotaniaExplosionDamageCalculator(true, BotaniaTags.Entities.PORTAL_BREAD_IMMUNE);
 	private static final float EXPLOSION_RADIUS = 3f;
 	public static final Style PORTAL_EXPLOSION_EXPLAINER_STYLE = Style.EMPTY
-			.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/VazkiiMods/Botania/issues/2403"))
-			.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("VazkiiMods/Botania#2403")));
+			.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://github.com/VazkiiMods/Botania/issues/2403")))
+			.withHoverEvent(new HoverEvent.ShowText(Component.literal("VazkiiMods/Botania#2403")));
 
 	public static final int MANA_COST = 500;
 	public static final int MANA_COST_OPENING = 200000;

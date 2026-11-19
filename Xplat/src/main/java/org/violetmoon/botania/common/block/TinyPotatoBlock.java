@@ -83,7 +83,7 @@ public class TinyPotatoBlock extends BotaniaWaterloggedEntityBlock {
 		BlockEntity tile = level.getBlockEntity(pos);
 		if (tile instanceof TinyPotatoBlockEntity tater) {
 			tater.interact(player, hand, player.getItemInHand(hand), hitResult.getDirection());
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				spawnHearts((ServerLevel) level, pos);
 			}
 		}

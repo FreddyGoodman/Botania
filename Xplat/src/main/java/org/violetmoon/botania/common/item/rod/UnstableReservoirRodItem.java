@@ -9,7 +9,7 @@
 package org.violetmoon.botania.common.item.rod;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -36,7 +36,7 @@ import org.violetmoon.botania.xplat.XplatAbstractions;
 
 public class UnstableReservoirRodItem extends Item {
 
-	private static final ResourceLocation AVATAR_OVERLAY = ResourceLocation.parse(ResourcesLib.MODEL_AVATAR_MISSILE);
+	private static final Identifier AVATAR_OVERLAY = Identifier.parse(ResourcesLib.MODEL_AVATAR_MISSILE);
 
 	private static final int COST_PER = 120;
 	private static final int COST_AVATAR = 40;
@@ -57,7 +57,7 @@ public class UnstableReservoirRodItem extends Item {
 
 	@Override
 	public void onUseTick(Level level, LivingEntity living, ItemStack stack, int remainingUseDuration) {
-		if (level.isClientSide || !(living instanceof Player player)
+		if (level.isClientSide() || !(living instanceof Player player)
 				|| remainingUseDuration == getUseDuration(stack, living)
 				|| remainingUseDuration % (ManaItemHandler.instance().hasProficiency(player, stack) ? 1 : 2) != 0
 				|| !ManaItemHandler.instance().requestManaExactForTool(stack, player, COST_PER, false)) {
@@ -85,7 +85,7 @@ public class UnstableReservoirRodItem extends Item {
 		}
 		missile.setPos(x, y, z);
 		if (missile.findTarget()) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				missile.playSound(level.random.nextInt(100) == 0 ? BotaniaSounds.MISSILE_FUNNY : BotaniaSounds.MISSILE,
 						1, 0.8f + level.getRandom().nextFloat() * 0.2f);
 				level.addFreshEntity(missile);
@@ -119,7 +119,7 @@ public class UnstableReservoirRodItem extends Item {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource() {
+		public Identifier getOverlayResource() {
 			return AVATAR_OVERLAY;
 		}
 	}

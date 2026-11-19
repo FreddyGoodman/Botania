@@ -54,7 +54,7 @@ public class CorporeaCrystalCubeBlock extends BotaniaWaterloggedEntityBlock {
 
 	@Override
 	public void attack(BlockState state, Level level, BlockPos pos, Player player) {
-		if (!level.isClientSide && level.getBlockEntity(pos) instanceof CorporeaCrystalCubeBlockEntity cube) {
+		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof CorporeaCrystalCubeBlockEntity cube) {
 			cube.doRequest(player);
 		}
 	}

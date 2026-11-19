@@ -17,7 +17,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -45,7 +45,7 @@ public class BoreLens extends Lens {
 		Projectile entity = burst.entity();
 		Level level = entity.level();
 
-		if (level.isClientSide || rtr.getType() != HitResult.Type.BLOCK) {
+		if (level.isClientSide() || rtr.getType() != HitResult.Type.BLOCK) {
 			return false;
 		}
 

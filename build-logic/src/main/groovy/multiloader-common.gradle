@@ -218,3 +218,14 @@ spotless {
         importOrderFile rootProject.file("spotless/eclipse.importorder")
     }
 }
+
+// Deferred integrations need 26.1.2 releases of their upstream mods.
+def deferredIntegrationSources = [
+    '**/client/integration/emi/**',
+    '**/fabric/integration/speedrunigt/**',
+    '**/ServerPlayerContainerListenerFabricMixin.java'
+]
+sourceSets.main.java.exclude(deferredIntegrationSources)
+tasks.withType(JavaCompile).configureEach {
+    exclude(deferredIntegrationSources)
+}

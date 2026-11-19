@@ -15,9 +15,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
@@ -32,6 +31,8 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -283,70 +284,69 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 
-		cmp.putUUID(TAG_UUID, getIdentifier());
+		output.store(TAG_UUID, UUIDUtil.CODEC, getIdentifier());
 
-		cmp.putInt(TAG_MANA, mana);
-		cmp.putFloat(TAG_ROTATION_Y, yRot);
-		cmp.putFloat(TAG_ROTATION_X, xRot);
-		cmp.putBoolean(TAG_REQUEST_UPDATE, requestsClientUpdate);
-		cmp.putBoolean(TAG_CAN_SHOOT_BURST, canShootBurst);
+		output.putInt(TAG_MANA, mana);
+		output.putFloat(TAG_ROTATION_Y, yRot);
+		output.putFloat(TAG_ROTATION_X, xRot);
+		output.putBoolean(TAG_REQUEST_UPDATE, requestsClientUpdate);
+		output.putBoolean(TAG_CAN_SHOOT_BURST, canShootBurst);
 
-		cmp.putInt(TAG_PINGBACK_TICKS, pingbackTicks);
-		cmp.putDouble(TAG_LAST_PINGBACK_X, lastPingbackX);
-		cmp.putDouble(TAG_LAST_PINGBACK_Y, lastPingbackY);
-		cmp.putDouble(TAG_LAST_PINGBACK_Z, lastPingbackZ);
+		output.putInt(TAG_PINGBACK_TICKS, pingbackTicks);
+		output.putDouble(TAG_LAST_PINGBACK_X, lastPingbackX);
+		output.putDouble(TAG_LAST_PINGBACK_Y, lastPingbackY);
+		output.putDouble(TAG_LAST_PINGBACK_Z, lastPingbackZ);
 
-		cmp.putString(TAG_INPUT_KEY, inputKey);
-		cmp.putString(TAG_OUTPUT_KEY, outputKey);
+		output.putString(TAG_INPUT_KEY, inputKey);
+		output.putString(TAG_OUTPUT_KEY, outputKey);
 
-		cmp.put(TAG_FORCE_CLIENT_BINDING_POS,
-				receiver == null ? new IntArrayTag(new int[0]) : NbtUtils.writeBlockPos(receiver.getManaReceiverPos()));
+		if (receiver != null) {
+			output.store(TAG_FORCE_CLIENT_BINDING_POS, BlockPos.CODEC, receiver.getManaReceiverPos());
+		}
 
-		cmp.putBoolean(TAG_MAPMAKER_OVERRIDE, mapmakerOverride);
-		cmp.putInt(TAG_FORCED_COLOR, mmForcedColor);
-		cmp.putInt(TAG_FORCED_MANA_PAYLOAD, mmForcedManaPayload);
-		cmp.putInt(TAG_FORCED_TICKS_BEFORE_MANA_LOSS, mmForcedTicksBeforeManaLoss);
-		cmp.putFloat(TAG_FORCED_MANA_LOSS_PER_TICK, mmForcedManaLossPerTick);
-		cmp.putFloat(TAG_FORCED_GRAVITY, mmForcedGravity);
-		cmp.putFloat(TAG_FORCED_VELOCITY_MULTIPLIER, mmForcedVelocityMultiplier);
+		output.putBoolean(TAG_MAPMAKER_OVERRIDE, mapmakerOverride);
+		output.putInt(TAG_FORCED_COLOR, mmForcedColor);
+		output.putInt(TAG_FORCED_MANA_PAYLOAD, mmForcedManaPayload);
+		output.putInt(TAG_FORCED_TICKS_BEFORE_MANA_LOSS, mmForcedTicksBeforeManaLoss);
+		output.putFloat(TAG_FORCED_MANA_LOSS_PER_TICK, mmForcedManaLossPerTick);
+		output.putFloat(TAG_FORCED_GRAVITY, mmForcedGravity);
+		output.putFloat(TAG_FORCED_VELOCITY_MULTIPLIER, mmForcedVelocityMultiplier);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
 
-		if (cmp.hasUUID(TAG_UUID)) {
-			identity = cmp.getUUID(TAG_UUID);
-		}
+		input.read(TAG_UUID, UUIDUtil.CODEC).ifPresent(uuid -> identity = uuid);
 
-		mana = cmp.getInt(TAG_MANA);
-		yRot = cmp.getFloat(TAG_ROTATION_Y);
-		xRot = cmp.getFloat(TAG_ROTATION_X);
-		requestsClientUpdate = cmp.getBoolean(TAG_REQUEST_UPDATE);
+		mana = input.getIntOr(TAG_MANA, 0);
+		yRot = input.getFloatOr(TAG_ROTATION_Y, 0);
+		xRot = input.getFloatOr(TAG_ROTATION_X, 0);
+		requestsClientUpdate = input.getBooleanOr(TAG_REQUEST_UPDATE, false);
 
-		inputKey = cmp.getString(TAG_INPUT_KEY);
-		outputKey = cmp.getString(TAG_OUTPUT_KEY);
+		inputKey = input.getStringOr(TAG_INPUT_KEY, "");
+		outputKey = input.getStringOr(TAG_OUTPUT_KEY, "");
 
-		mapmakerOverride = cmp.getBoolean(TAG_MAPMAKER_OVERRIDE);
-		mmForcedColor = cmp.getInt(TAG_FORCED_COLOR);
-		mmForcedManaPayload = cmp.getInt(TAG_FORCED_MANA_PAYLOAD);
-		mmForcedTicksBeforeManaLoss = cmp.getInt(TAG_FORCED_TICKS_BEFORE_MANA_LOSS);
-		mmForcedManaLossPerTick = cmp.getFloat(TAG_FORCED_MANA_LOSS_PER_TICK);
-		mmForcedGravity = cmp.getFloat(TAG_FORCED_GRAVITY);
-		mmForcedVelocityMultiplier = cmp.getFloat(TAG_FORCED_VELOCITY_MULTIPLIER);
+		mapmakerOverride = input.getBooleanOr(TAG_MAPMAKER_OVERRIDE, false);
+		mmForcedColor = input.getIntOr(TAG_FORCED_COLOR, 0);
+		mmForcedManaPayload = input.getIntOr(TAG_FORCED_MANA_PAYLOAD, 0);
+		mmForcedTicksBeforeManaLoss = input.getIntOr(TAG_FORCED_TICKS_BEFORE_MANA_LOSS, 0);
+		mmForcedManaLossPerTick = input.getFloatOr(TAG_FORCED_MANA_LOSS_PER_TICK, 0);
+		mmForcedGravity = input.getFloatOr(TAG_FORCED_GRAVITY, 0);
+		mmForcedVelocityMultiplier = input.getFloatOr(TAG_FORCED_VELOCITY_MULTIPLIER, 0);
 
-		canShootBurst = !cmp.contains(TAG_CAN_SHOOT_BURST) || cmp.getBoolean(TAG_CAN_SHOOT_BURST);
+		canShootBurst = input.getBooleanOr(TAG_CAN_SHOOT_BURST, true);
 
-		pingbackTicks = cmp.getInt(TAG_PINGBACK_TICKS);
-		lastPingbackX = cmp.getDouble(TAG_LAST_PINGBACK_X);
-		lastPingbackY = cmp.getDouble(TAG_LAST_PINGBACK_Y);
-		lastPingbackZ = cmp.getDouble(TAG_LAST_PINGBACK_Z);
+		pingbackTicks = input.getIntOr(TAG_PINGBACK_TICKS, 0);
+		lastPingbackX = input.getDoubleOr(TAG_LAST_PINGBACK_X, 0);
+		lastPingbackY = input.getDoubleOr(TAG_LAST_PINGBACK_Y, 0);
+		lastPingbackZ = input.getDoubleOr(TAG_LAST_PINGBACK_Z, 0);
 
 		if (requestsClientUpdate && level != null) {
-			NbtUtils.readBlockPos(cmp, TAG_FORCE_CLIENT_BINDING_POS).ifPresentOrElse(
+			input.read(TAG_FORCE_CLIENT_BINDING_POS, BlockPos.CODEC).ifPresentOrElse(
 					pos -> ManaReceiver.LOOKUP.find(level, pos, null),
 					() -> receiver = null
 			);
@@ -356,16 +356,14 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 			hasReceivedInitialPacket = true;
 		}
 
-		if (cmp.contains("redstoneRecheck")) {
+		if (input.getInt("redstoneRecheck").isPresent()) {
 			redstoneRecheck = true;
 		}
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		var tag = new CompoundTag();
-		// FIXME: figure this out separately
-		saveAdditional(tag, registries);
+		var tag = saveCustomOnly(registries);
 
 		requestsClientUpdate = false;
 		return tag;

@@ -14,7 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -75,7 +75,7 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 			'P', BotaniaBlocks.TERRESTRIAL_AGGLOMERATION_PLATE,
 			'R', PatchouliAPI.get().tagMatcher(BotaniaTags.Blocks.TERRA_PLATE_BASE),
 			'0', PatchouliAPI.get().tagMatcher(BotaniaTags.Blocks.TERRA_PLATE_BASE),
-			'L', PatchouliAPI.get().tagMatcher(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/lapis")))
+			'L', PatchouliAPI.get().tagMatcher(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "storage_blocks/lapis")))
 	));
 	public static final int BLOCK_EVENT_PROGRESS_UPDATE = 0;
 	public static final int BLOCK_EVENT_CRAFTING_EFFECT = 1;

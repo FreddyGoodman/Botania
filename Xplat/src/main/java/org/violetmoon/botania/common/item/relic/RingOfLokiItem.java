@@ -82,7 +82,7 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 		BlockPos hit = lookPos.getBlockPos();
 		if (stack.isEmpty() && hand == InteractionHand.MAIN_HAND) {
 			GlobalPos originCoords = getBindingCenter(lokiRing);
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				if (originCoords == null || originCoords.dimension() != world.dimension()) {
 					// Initiate a new pending list of positions
 					setBindingCenter(lokiRing, GlobalPos.of(world.dimension(), hit));

@@ -13,7 +13,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -51,7 +51,7 @@ import java.util.UUID;
 
 public class SkiesRodItem extends Item {
 
-	private static final ResourceLocation AVATAR_OVERLAY = ResourceLocation.parse(ResourcesLib.MODEL_AVATAR_TORNADO);
+	private static final Identifier AVATAR_OVERLAY = Identifier.parse(ResourcesLib.MODEL_AVATAR_TORNADO);
 
 	private static final int FLY_TIME = 20;
 	private static final int FALL_MULTIPLIER = 3;
@@ -203,7 +203,7 @@ public class SkiesRodItem extends Item {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource() {
+		public Identifier getOverlayResource() {
 			return AVATAR_OVERLAY;
 		}
 

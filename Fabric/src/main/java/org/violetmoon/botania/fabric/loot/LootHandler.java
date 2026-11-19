@@ -9,7 +9,7 @@
 package org.violetmoon.botania.fabric.loot;
 
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -24,14 +24,14 @@ import java.util.function.Consumer;
  * Fabric-specific loot table injection. Neoforge has global loot modifiers for this.
  */
 public final class LootHandler {
-	public static void injectLoot(ResourceLocation id, Consumer<LootPool.Builder> addPool) {
+	public static void injectLoot(Identifier id, Consumer<LootPool.Builder> addPool) {
 		ResourceKey<LootTable> injectedLootTable = BotaniaLootTables.getInjectedLootTable(id);
 		if (BotaniaLootTables.all().contains(injectedLootTable)) {
 			addPool.accept(LootPool.lootPool().add(NestedLootTable.lootTableReference(injectedLootTable)));
 		}
 	}
 
-	public static void injectGogLoot(ResourceLocation id, Consumer<LootPool.Builder> addPool) {
+	public static void injectGogLoot(Identifier id, Consumer<LootPool.Builder> addPool) {
 		if (XplatAbstractions.INSTANCE.gogLoaded() && (Blocks.SHORT_GRASS.getLootTable().location().equals(id)
 				|| Blocks.TALL_GRASS.getLootTable().location().equals(id))) {
 			addPool.accept(LootPool.lootPool().add(NestedLootTable.lootTableReference(BotaniaLootTables.GOG_EXTRA_SEEDS)));

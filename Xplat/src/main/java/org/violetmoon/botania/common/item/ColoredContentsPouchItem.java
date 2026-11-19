@@ -99,7 +99,7 @@ public abstract class ColoredContentsPouchItem extends Item {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			ItemStack stack = player.getItemInHand(hand);
 			XplatAbstractions.INSTANCE.openMenu((ServerPlayer) player, new MenuProvider() {
 				@Override
@@ -124,7 +124,7 @@ public abstract class ColoredContentsPouchItem extends Item {
 
 		if ((ctx.getPlayer() == null || ctx.getPlayer().isSecondaryUseActive())
 				&& XplatAbstractions.INSTANCE.hasInventory(world, pos, side)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				Container bagInv = getInventory(ctx.getItemInHand());
 				for (int i = 0; i < bagInv.getContainerSize(); i++) {
 					ItemStack flower = bagInv.getItem(i);

@@ -24,10 +24,10 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
@@ -41,7 +41,7 @@ import java.util.List;
 
 public class ElvenTradeREICategory implements DisplayCategory<ElvenTradeREIDisplay> {
 	private final EntryStack<ItemStack> gateway = EntryStacks.of(new ItemStack(BotaniaBlocks.ELVEN_GATEWAY_CORE));
-	private final ResourceLocation TRADE_OVERLAY = BotaniaAPI.botaniaRL("textures/gui/elven_trade_overlay.png");
+	private final Identifier TRADE_OVERLAY = BotaniaAPI.botaniaRL("textures/gui/elven_trade_overlay.png");
 
 	@Override
 	public CategoryIdentifier<ElvenTradeREIDisplay> getCategoryIdentifier() {

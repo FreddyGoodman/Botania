@@ -13,7 +13,7 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -194,7 +194,7 @@ public class BotaniaLootTables {
 	/**
 	 * Gets the resource key of the loot table to inject into the specified table.
 	 */
-	public static ResourceKey<LootTable> getInjectedLootTable(ResourceLocation baseId) {
+	public static ResourceKey<LootTable> getInjectedLootTable(Identifier baseId) {
 		return ResourceKey.create(Registries.LOOT_TABLE,
 				botaniaRL("injected/%s/%s".formatted(baseId.getNamespace(), baseId.getPath())));
 	}
@@ -210,6 +210,6 @@ public class BotaniaLootTables {
 		}
 
 		return ResourceKey.create(injectedLootTable.registryKey(),
-				ResourceLocation.fromNamespaceAndPath(matcher.group("namespace"), matcher.group("path")));
+				Identifier.fromNamespaceAndPath(matcher.group("namespace"), matcher.group("path")));
 	}
 }

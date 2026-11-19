@@ -11,7 +11,7 @@ package org.violetmoon.botania.common.internal_caps;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.api.attachment.DataHolderId;
 
@@ -24,7 +24,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  */
 public final class SpectralFloatTicks {
 
-	public static final ResourceLocation ID = botaniaRL("spectral_float_ticks");
+	public static final Identifier ID = botaniaRL("spectral_float_ticks");
 	public static final DataHolderId<Integer> HOLDER = new DataHolderId<>(ID, Codec.INT);
 
 	private SpectralFloatTicks() {}

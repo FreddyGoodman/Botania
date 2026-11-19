@@ -11,7 +11,7 @@ package org.violetmoon.botania.common.internal_caps;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.api.attachment.DataHolderId;
 
@@ -26,6 +26,6 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  */
 public class EnderEssenceCaptured {
 
-	public static final ResourceLocation ID = botaniaRL("ender_essence_captured");
+	public static final Identifier ID = botaniaRL("ender_essence_captured");
 	public static final DataHolderId<Boolean> HOLDER = new DataHolderId<>(ID, Codec.BOOL);
 }

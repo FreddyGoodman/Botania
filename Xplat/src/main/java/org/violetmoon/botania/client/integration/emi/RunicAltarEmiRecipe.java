@@ -14,7 +14,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import org.violetmoon.botania.api.recipe.RunicAltarRecipe;
@@ -27,7 +27,7 @@ import java.util.List;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class RunicAltarEmiRecipe extends BotaniaEmiRecipe {
-	private static final ResourceLocation TEXTURE = botaniaRL("textures/gui/petal_overlay.png");
+	private static final Identifier TEXTURE = botaniaRL("textures/gui/petal_overlay.png");
 	private static final EmiStack ALTAR = EmiStack.of(BotaniaBlocks.RUNIC_ALTAR);
 	public static final int CENTER_X = 44;
 	public static final int CENTER_Y = 40;

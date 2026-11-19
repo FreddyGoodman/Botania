@@ -8,7 +8,7 @@
  */
 package org.violetmoon.botania.api.mana;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.api.capability.BlockApiNoContext;
 import org.violetmoon.botania.api.internal.ManaBurst;
@@ -21,7 +21,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface ManaTrigger {
 
-	ResourceLocation ID = botaniaRL("mana_trigger");
+	Identifier ID = botaniaRL("mana_trigger");
 	BlockApiNoContext<ManaTrigger> LOOKUP = new BlockApiNoContext<>(ID, ManaTrigger.class);
 
 	void onBurstCollision(ManaBurst burst);

@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -985,13 +985,13 @@ public final class BotaniaItems {
 		return defaultBuilder().stacksTo(1);
 	}
 
-	public static void registerItems(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItems(BiConsumer<Item, Identifier> r) {
 		for (var e : ALL.entrySet()) {
 			r.accept(e.getValue(), botaniaRL(e.getKey()));
 		}
 	}
 
-	public static void registerMenuTypes(BiConsumer<MenuType<?>, ResourceLocation> consumer) {
+	public static void registerMenuTypes(BiConsumer<MenuType<?>, Identifier> consumer) {
 		consumer.accept(TRINKET_CASE_MENU_TYPE, botaniaRL(LibItemNames.TRINKET_CASE));
 		consumer.accept(COLORED_CONTENTS_POUCH_MENU_TYPE, botaniaRL(LibItemNames.FLOWER_POUCH));
 		consumer.accept(HAND_OF_ENDER_MENU_TYPE, botaniaRL(LibItemNames.HAND_OF_ENDER));

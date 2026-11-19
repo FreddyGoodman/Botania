@@ -54,7 +54,7 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -320,12 +320,12 @@ public class FabricCommonInitializer implements ModInitializer {
 		UseBlockCallback.EVENT.register(RingOfLokiItem::onPlayerInteract);
 	}
 
-	private static <T> BiConsumer<T, ResourceLocation> bind(Registry<? super T> registry) {
+	private static <T> BiConsumer<T, Identifier> bind(Registry<? super T> registry) {
 		return (t, id) -> Registry.register(registry, id, t);
 	}
 
 	private final Set<Item> itemsToAddToCreativeTab = new LinkedHashSet<>();
-	private final BiConsumer<Item, ResourceLocation> boundForItem =
+	private final BiConsumer<Item, Identifier> boundForItem =
 			(t, id) -> {
 				this.itemsToAddToCreativeTab.add(t);
 				Registry.register(BuiltInRegistries.ITEM, id, t);

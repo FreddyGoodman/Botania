@@ -9,16 +9,16 @@
 
 package org.violetmoon.botania.data.util;
 
-import net.minecraft.data.models.model.ModelTemplate;
-import net.minecraft.data.models.model.TextureMapping;
-import net.minecraft.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.world.level.block.Block;
 
 import org.violetmoon.botania.mixin.TextureSlotAccessor;
 
 import java.util.Optional;
 
-import static net.minecraft.data.models.model.TextureMapping.getBlockTexture;
+import static net.minecraft.client.data.models.model.TextureMapping.getBlockTexture;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class BotaniaModelTemplates {

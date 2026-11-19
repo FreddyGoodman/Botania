@@ -87,7 +87,7 @@ public class PetalApothecaryBlock extends BotaniaEntityBlock {
 
 	@Override
 	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-		if (!level.isClientSide && entity instanceof ItemEntity itemEntity
+		if (!level.isClientSide() && entity instanceof ItemEntity itemEntity
 				&& level.getBlockEntity(pos) instanceof PetalApothecaryBlockEntity apothecary
 				&& apothecary.collideEntityItem(itemEntity)) {
 			level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
