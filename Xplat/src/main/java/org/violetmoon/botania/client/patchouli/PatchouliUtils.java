@@ -72,9 +72,9 @@ public class PatchouliUtils {
 	 */
 	public static <T extends Recipe<C>, C extends RecipeInput> List<T> getRecipeGroup(RecipeType<T> type, String group) {
 		List<T> list = new ArrayList<>();
-		for (RecipeHolder<T> holder : Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(type)) {
+		for (RecipeHolder<T> holder : BotaniaRecipeTypes.recipes(Minecraft.getInstance().level).byType(type)) {
 			T recipe = holder.value();
-			if (group.equals(recipe.getGroup())) {
+			if (group.equals(recipe.group())) {
 				list.add(recipe);
 			}
 		}

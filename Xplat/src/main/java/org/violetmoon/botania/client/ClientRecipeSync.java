@@ -1,0 +1,22 @@
+/*
+ * This class is distributed as part of the Botania Mod.
+ * Get the Source Code in github:
+ * https://github.com/Vazkii/Botania
+ *
+ * Botania is Open Source and distributed under the
+ * Botania License: http://botaniamod.net/license.php
+ */
+package org.violetmoon.botania.client;
+
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
+
+import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes.RecipeView;
+
+import java.util.List;
+
+public interface ClientRecipeSync extends RecipeView {
+	void botania$setRecipes(RecipeMap recipes);
+
+	void botania$acceptRecipes(boolean first, boolean last, List<RecipeHolder<?>> recipes);
+}

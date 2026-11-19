@@ -124,6 +124,7 @@ import org.violetmoon.botania.fabric.internal_caps.FabricInternalEntityAttachmen
 import org.violetmoon.botania.fabric.internal_caps.RedStringContainerStorage;
 import org.violetmoon.botania.fabric.loot.LootHandler;
 import org.violetmoon.botania.fabric.network.FabricPacketHandler;
+import org.violetmoon.botania.fabric.network.RecipeSyncPayload;
 import org.violetmoon.botania.network.clientbound.ItemLifeTimePacket;
 import org.violetmoon.botania.test.BoreHarvestLevelTestEnvironment;
 import org.violetmoon.botania.test.PortParityTests;
@@ -314,6 +315,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		});
 		ManaNetworkCallback.EVENT.register(ManaNetworkHandler.instance::onNetworkEvent);
 		ServerEntityEvents.ENTITY_LOAD.register(TigerseyeBlockEntity::pacifyAfterLoad);
+		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> RecipeSyncPayload.sendRecipes(player));
 		ServerLifecycleEvents.SERVER_STARTED.register(this::serverAboutToStart);
 		ServerLifecycleEvents.SERVER_STOPPING.register(this::serverStopping);
 		ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> FlugelTiaraItem.playerLoggedOut(handler.player)));

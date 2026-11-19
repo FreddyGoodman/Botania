@@ -11,15 +11,12 @@ package org.violetmoon.botania.fabric.mixin.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
-import org.violetmoon.botania.common.handler.BotaniaRecipeIngredientsCache;
 
 @Mixin(ClientPacketListener.class)
 public class ClientPacketListenerMixin {
@@ -29,19 +26,5 @@ public class ClientPacketListenerMixin {
 		if (CorporeaIndexBlockEntity.ClientHandler.onChat(player, message)) {
 			ci.cancel();
 		}
-	}
-
-	@Inject(
-		method = "handleUpdateRecipes",
-		at = @At(value = "RETURN"),
-		slice = @Slice(
-			from = @At(
-				value = "INVOKE",
-				target = "Lnet/minecraft/client/multiplayer/SessionSearchTrees;updateRecipes(Lnet/minecraft/client/ClientRecipeBook;Lnet/minecraft/core/RegistryAccess$Frozen;)V"
-			)
-		)
-	)
-	private void onRecipesUpdated(ClientboundUpdateRecipesPacket packet, CallbackInfo ci) {
-		BotaniaRecipeIngredientsCache.clearClientCache();
 	}
 }

@@ -93,6 +93,8 @@
     "client.BookEntryMixin",
     "client.ClientAdvancementsAccessor",
     "client.ClientLevelDataMixin",
+    "client.ClientLevelRecipesMixin",
+    "client.ClientPacketRecipeSyncMixin",
     "client.GuiBookEntryListMixin",
     "client.EquipmentLayerRendererMixin",
     "client.GuiButtonEntryMixin",

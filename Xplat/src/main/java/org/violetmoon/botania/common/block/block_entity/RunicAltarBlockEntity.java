@@ -224,7 +224,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 		if (currentRecipe != null && currentRecipe.value().matches(getRecipeInput(), level)) {
 			this.manaToGet = currentRecipe.value().getMana();
 		} else {
-			level.getRecipeManager().getRecipeFor(BotaniaRecipeTypes.RUNIC_ALTAR_TYPE, getRecipeInput(), level).ifPresentOrElse(
+			BotaniaRecipeTypes.findRecipe(level, BotaniaRecipeTypes.RUNIC_ALTAR_TYPE, getRecipeInput()).ifPresentOrElse(
 					holder -> {
 						currentRecipe = holder;
 						manaToGet = currentRecipe.value().getMana();

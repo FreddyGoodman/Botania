@@ -8,15 +8,20 @@
  */
 package org.violetmoon.botania.common.crafting;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.common.crafting.recipe.*;
+import org.violetmoon.botania.mixin.RecipeManagerAccessor;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -108,11 +113,40 @@ public class BotaniaRecipeTypes {
 		r.accept(WaterBottleMatchingRecipe.SERIALIZER.serializer(), botaniaRL("crafting_shaped_water_bottle_matching"));
 	}
 
+	public static List<RecipeType<?>> synchronizedTypes() {
+		List<RecipeType<?>> types = new ArrayList<>(TYPES.values());
+		types.add(RecipeType.CRAFTING);
+		types.add(RecipeType.SMELTING);
+		return types;
+	}
+
+	public static RecipeMap recipes(Level level) {
+		if (level instanceof ServerLevel server) {
+			return ((RecipeManagerAccessor) server.recipeAccess()).botania_getRecipes();
+		}
+		if (level instanceof RecipeView client) {
+			return client.botania$getRecipes();
+		}
+		return RecipeMap.EMPTY;
+	}
+
+	public static <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> findRecipe(
+			Level level, RecipeType<T> type, C input) {
+		if (level instanceof ServerLevel server) {
+			return server.recipeAccess().getRecipeFor(type, input, level);
+		}
+		return recipes(level).getRecipesFor(type, input, level).findFirst();
+	}
+
 	@SuppressWarnings("unchecked")
-	public static <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getRecipe(Level world, Identifier id, RecipeType<T> expectedType) {
-		var holder = world.getRecipeManager().byKey(id);
-		return holder.isPresent() && holder.get().value().getType() == expectedType
-				? holder.map(h -> (RecipeHolder<T>) h)
+	public static <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getRecipe(Level level, Identifier id, RecipeType<T> expectedType) {
+		RecipeHolder<?> holder = recipes(level).byKey(ResourceKey.create(Registries.RECIPE, id));
+		return holder != null && holder.value().getType() == expectedType
+				? Optional.of((RecipeHolder<T>) holder)
 				: Optional.empty();
+	}
+
+	public interface RecipeView {
+		RecipeMap botania$getRecipes();
 	}
 }

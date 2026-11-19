@@ -343,8 +343,8 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			if (amt > 0) {
 				float anglePer = 360F / amt;
 
-				Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = altar.level.getRecipeManager()
-						.getRecipeFor(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, altar.getRecipeInput(), altar.level);
+				Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = BotaniaRecipeTypes.findRecipe(
+						altar.level, BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, altar.getRecipeInput());
 				maybeRecipe.ifPresent(recipe -> {
 					RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 					RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, xc + radius + 9, yc - 8, 0, 8, 22, 15);

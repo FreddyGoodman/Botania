@@ -27,6 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import org.violetmoon.botania.api.mana.ManaItemHandler;
+import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
 import org.violetmoon.botania.client.fx.WispParticleData;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.common.item.equipment.tool.ToolCommons;
@@ -77,7 +78,7 @@ public class MoltenCoreRodItem extends Item {
 			BlockState state = world.getBlockState(pos.getBlockPos());
 
 			SingleRecipeInput input = new SingleRecipeInput(new ItemStack(state.getBlock()));
-			world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, input, p.level())
+			BotaniaRecipeTypes.findRecipe(world, RecipeType.SMELTING, input)
 					.map(r -> r.value().assemble(input))
 					.filter(r -> !r.isEmpty() && r.getItem() instanceof BlockItem)
 					.ifPresent(result -> {

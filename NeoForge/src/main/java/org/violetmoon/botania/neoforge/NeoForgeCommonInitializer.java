@@ -48,6 +48,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.*;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
@@ -286,6 +287,7 @@ public class NeoForgeCommonInitializer {
 
 	private void registerEvents() {
 		IEventBus bus = NeoForge.EVENT_BUS;
+		bus.addListener((OnDatapackSyncEvent event) -> event.sendRecipes(BotaniaRecipeTypes.synchronizedTypes()));
 
 		if (XplatAbstractions.INSTANCE.gogLoaded()) {
 			bus.addListener((PlayerInteractEvent.RightClickBlock e) -> {

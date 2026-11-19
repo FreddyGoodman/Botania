@@ -38,7 +38,7 @@ public abstract class ReagentRecipeProcessor<T extends RecipeWithReagent<?>> imp
 			return null;
 		}
 		return switch (key) {
-			case "recipe" -> IVariable.wrap(recipe.id().toString(), level.registryAccess());
+			case "recipe" -> IVariable.wrap(recipe.id().identifier().toString(), level.registryAccess());
 			case "reagent" -> PatchouliUtils.interweaveIngredients(List.of(recipe.value().getReagent()), level);
 			case "output" -> IVariable.from(recipe.value().getResultItem(level.registryAccess()), level.registryAccess());
 			case "heading" -> IVariable.from(recipe.value().getResultItem(level.registryAccess()).getHoverName(), level.registryAccess());

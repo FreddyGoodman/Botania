@@ -64,7 +64,7 @@ import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.client.render.entity.EntityRenderers;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
-import org.violetmoon.botania.common.handler.BotaniaRecipeIngredientsCache;
+import org.violetmoon.botania.client.ClientRecipeSync;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import org.violetmoon.botania.common.item.equipment.bauble.RingOfDexterousMotionItem;
@@ -118,7 +118,11 @@ public class NeoForgeClientInitializer {
 				e.setCanceled(true);
 			}
 		});
-		bus.addListener((RecipesUpdatedEvent e) -> BotaniaRecipeIngredientsCache.clearClientCache());
+		bus.addListener((RecipesReceivedEvent e) -> {
+			if (Minecraft.getInstance().getConnection() instanceof ClientRecipeSync recipes) {
+				recipes.botania$setRecipes(e.getRecipeMap());
+			}
+		});
 		bus.addListener((CustomizeGuiOverlayEvent.BossEventProgress e) -> {
 			var result = BossBarHandler.onBarRender(e.getGuiGraphics(), e.getX(), e.getY(),
 					e.getBossEvent(), true);

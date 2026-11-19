@@ -18,13 +18,14 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.recipe.OrechidRecipe;
+import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.*;
@@ -33,9 +34,17 @@ import java.util.function.ToIntFunction;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class OrechidManager implements ResourceManagerReloadListener {
-	private static final Map<RecipeType<? extends OrechidRecipe>, Map<BlockState, List<? extends OrechidRecipe>>> BY_TYPE = new IdentityHashMap<>();
-	private static final Map<RecipeType<? extends OrechidRecipe>, Object2IntOpenHashMap<BlockState>> TOTAL_WEIGHTS_WITHOUT_POSITION = new IdentityHashMap<>();
-	private static final Map<RecipeType<? extends OrechidRecipe>, IntIntPair> MANA_COST_RANGES = new IdentityHashMap<>();
+	private static final Map<RecipeMap, Cache> CACHE = Collections.synchronizedMap(new WeakHashMap<>());
+
+	private static class Cache {
+		final Map<RecipeType<? extends OrechidRecipe>, Map<BlockState, List<? extends OrechidRecipe>>> byType = new IdentityHashMap<>();
+		final Map<RecipeType<? extends OrechidRecipe>, Object2IntOpenHashMap<BlockState>> displayWeights = new IdentityHashMap<>();
+		final Map<RecipeType<? extends OrechidRecipe>, IntIntPair> manaCostRanges = new IdentityHashMap<>();
+	}
+
+	private static Cache cache(RecipeMap recipes) {
+		return CACHE.computeIfAbsent(recipes, _ -> new Cache());
+	}
 
 	public static void registerListener() {
 		XplatAbstractions.INSTANCE.registerReloadListener(PackType.SERVER_DATA, botaniaRL("orechid"), new OrechidManager());
@@ -43,19 +52,18 @@ public class OrechidManager implements ResourceManagerReloadListener {
 
 	@Override
 	public void onResourceManagerReload(ResourceManager manager) {
-		BY_TYPE.clear();
-		TOTAL_WEIGHTS_WITHOUT_POSITION.clear();
-		MANA_COST_RANGES.clear();
+		CACHE.clear();
 	}
 
 	public static <T extends OrechidRecipe> Collection<T> getMatchingRecipes(
-			RecipeManager manager,
+			Level level,
 			RecipeType<T> type,
 			BlockState state) {
-		final var byState = BY_TYPE.computeIfAbsent(type, t -> new IdentityHashMap<>());
+		var recipes = BotaniaRecipeTypes.recipes(level);
+		final var byState = cache(recipes).byType.computeIfAbsent(type, t -> new IdentityHashMap<>());
 		final var list = byState.computeIfAbsent(state, s -> {
 			var builder = ImmutableList.<T>builder();
-			for (var recipe : manager.getAllRecipesFor(type)) {
+			for (var recipe : recipes.byType(type)) {
 				if (recipe.value().getInput().test(state)) {
 					builder.add(recipe.value());
 				}
@@ -75,20 +83,20 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	public static int getMinManaCost(Level level, RecipeType<? extends OrechidRecipe> type) {
-		return MANA_COST_RANGES.computeIfAbsent(type, t -> calculateManaCostRange(level, t)).firstInt();
+		return cache(BotaniaRecipeTypes.recipes(level)).manaCostRanges.computeIfAbsent(type, t -> calculateManaCostRange(level, t)).firstInt();
 	}
 
 	public static int getMaxManaCost(Level level, RecipeType<? extends OrechidRecipe> type) {
-		return MANA_COST_RANGES.computeIfAbsent(type, t -> calculateManaCostRange(level, t)).secondInt();
+		return cache(BotaniaRecipeTypes.recipes(level)).manaCostRanges.computeIfAbsent(type, t -> calculateManaCostRange(level, t)).secondInt();
 	}
 
 	private static int getCachedTotalDisplayWeightWithoutPosition(Level level, RecipeType<? extends OrechidRecipe> type, BlockState state) {
-		final var byState = TOTAL_WEIGHTS_WITHOUT_POSITION.computeIfAbsent(type, t -> new Object2IntOpenHashMap<>());
+		final var byState = cache(BotaniaRecipeTypes.recipes(level)).displayWeights.computeIfAbsent(type, t -> new Object2IntOpenHashMap<>());
 		return byState.computeIfAbsent(state, s -> calculateTotalDisplayWeightAtPosition(level, type, state, null));
 	}
 
 	private static int calculateTotalDisplayWeightAtPosition(Level level, RecipeType<? extends OrechidRecipe> type, BlockState state, @Nullable BlockPos pos) {
-		final var recipeList = getMatchingRecipes(level.getRecipeManager(), type, state);
+		final var recipeList = getMatchingRecipes(level, type, state);
 		if (recipeList.isEmpty()) {
 			return 0;
 		}
@@ -100,7 +108,7 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	private static IntIntPair calculateManaCostRange(Level level, RecipeType<? extends OrechidRecipe> type) {
-		final var recipes = level.getRecipeManager().getAllRecipesFor(type);
+		final var recipes = BotaniaRecipeTypes.recipes(level).byType(type);
 		return IntIntPair.of(
 				recipes.stream().map(RecipeHolder::value).mapToInt(OrechidRecipe::getManaCost).min().orElse(0),
 				recipes.stream().map(RecipeHolder::value).mapToInt(OrechidRecipe::getManaCost).max().orElse(0));
