@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -45,15 +46,11 @@ public class DiceOfFateItem extends RelicItem {
 		super(props);
 	}
 
-	public static final Supplier<List<ItemStack>> RELIC_STACKS = Suppliers.memoize(() -> List.of(
-			new ItemStack(BotaniaItems.FRUIT_OF_GRISAIA),
-			new ItemStack(BotaniaItems.KEY_OF_THE_KINGS_LAW),
-			new ItemStack(BotaniaItems.EYE_OF_THE_FLUGEL),
-			new ItemStack(BotaniaItems.RING_OF_THOR),
-			new ItemStack(BotaniaItems.RING_OF_ODIN),
-			new ItemStack(BotaniaItems.RING_OF_LOKI)
-	)
-	);
+	public static final Supplier<List<Item>> RELIC_ITEMS = Suppliers.memoize(() -> List.of(
+			BotaniaItems.FRUIT_OF_GRISAIA, BotaniaItems.KEY_OF_THE_KINGS_LAW, BotaniaItems.EYE_OF_THE_FLUGEL,
+			BotaniaItems.RING_OF_THOR, BotaniaItems.RING_OF_ODIN, BotaniaItems.RING_OF_LOKI));
+	public static final Supplier<List<ItemStack>> RELIC_STACKS = Suppliers.memoize(
+			() -> RELIC_ITEMS.get().stream().map(ItemStack::new).toList());
 
 	@Override
 	public InteractionResult use(Level world, Player player, InteractionHand hand) {

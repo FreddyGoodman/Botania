@@ -17,7 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -205,24 +205,24 @@ public class ManaInfusionProvider extends BotaniaFabricRecipeProvider {
 	}
 
 	private static void normal(RecipeOutput consumer, Identifier id, @Nullable String group, ItemLike output, Ingredient input, int mana) {
-		consumer.accept(recipeKey(id), new ManaInfusionRecipe(new ItemStack(output), input, mana, group, null), null);
+		consumer.accept(recipeKey(id), new ManaInfusionRecipe(new ItemStackTemplate(output.asItem()), input, mana, group, null), null);
 	}
 
-	private static void alchemy(RecipeOutput consumer, String id, ItemStack output, Ingredient input, int mana, @Nullable String group) {
+	private static void alchemy(RecipeOutput consumer, String id, ItemStackTemplate output, Ingredient input, int mana, @Nullable String group) {
 		consumer.accept(recipeKey(id("alchemy/" + id)), new ManaInfusionRecipe(output, input, mana, group, ALCHEMY), null);
 	}
 
 	private static void alchemy(RecipeOutput consumer, ItemLike output, ItemLike input, int mana) {
-		alchemy(consumer, getItemName(output), new ItemStack(output), Ingredient.of(input), mana, null);
+		alchemy(consumer, getItemName(output), new ItemStackTemplate(output.asItem()), Ingredient.of(input), mana, null);
 	}
 
 	private void alchemy(RecipeOutput consumer, ItemLike output, TagKey<Item> input, int mana) {
-		alchemy(consumer, getItemName(output), new ItemStack(output), tag(input), mana, null);
+		alchemy(consumer, getItemName(output), new ItemStackTemplate(output.asItem()), tag(input), mana, null);
 	}
 
 	private static void conjuration(RecipeOutput consumer, ItemLike itemLike, int mana) {
 		consumer.accept(recipeKey(id("conjuration/" + getItemName(itemLike))),
-				new ManaInfusionRecipe(new ItemStack(itemLike, 2), Ingredient.of(itemLike), mana, null, CONJURATION),
+				new ManaInfusionRecipe(new ItemStackTemplate(itemLike.asItem(), 2), Ingredient.of(itemLike), mana, null, CONJURATION),
 				null);
 	}
 
@@ -231,12 +231,12 @@ public class ManaInfusionProvider extends BotaniaFabricRecipeProvider {
 			ItemLike inItem = items[i];
 			ItemLike outItem = i == items.length - 1 ? items[0] : items[i + 1];
 			alchemy(consumer, "%s/%s".formatted(cycleName, getConversionRecipeName(outItem, inItem)),
-					new ItemStack(outItem), Ingredient.of(inItem), cost, "botania:%s_cycle".formatted(cycleName));
+					new ItemStackTemplate(outItem.asItem()), Ingredient.of(inItem), cost, "botania:%s_cycle".formatted(cycleName));
 		}
 	}
 
 	protected void mini(RecipeOutput consumer, ItemLike mini, ItemLike full) {
-		alchemy(consumer, getItemName(mini), new ItemStack(mini), Ingredient.of(full), 2500, "botania:flower_shrinking");
+		alchemy(consumer, getItemName(mini), new ItemStackTemplate(mini.asItem()), Ingredient.of(full), 2500, "botania:flower_shrinking");
 	}
 
 	protected void deconstructLossless(RecipeOutput consumer, ItemLike items, ItemLike block) {
@@ -265,7 +265,7 @@ public class ManaInfusionProvider extends BotaniaFabricRecipeProvider {
 
 	private static void deconstruct(RecipeOutput consumer, String id, ItemLike output, int count, Ingredient input,
 			int baseMana, @Nullable String group) {
-		alchemy(consumer, id + "_deconstruct", new ItemStack(output, count), input,
+		alchemy(consumer, id + "_deconstruct", new ItemStackTemplate(output.asItem(), count), input,
 				(int) Math.round(Math.sqrt(count) * baseMana), group);
 	}
 

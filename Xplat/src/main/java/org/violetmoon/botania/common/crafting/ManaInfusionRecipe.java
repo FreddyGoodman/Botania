@@ -40,7 +40,7 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 		this(ItemStackTemplate.fromNonEmptyStack(output), input, mana, group, catalyst);
 	}
 
-	private ManaInfusionRecipe(ItemStackTemplate output, Ingredient input, int mana, @Nullable String group, @Nullable StateIngredient catalyst) {
+	public ManaInfusionRecipe(ItemStackTemplate output, Ingredient input, int mana, @Nullable String group, @Nullable StateIngredient catalyst) {
 		this.output = output;
 		this.input = input;
 		this.mana = mana;

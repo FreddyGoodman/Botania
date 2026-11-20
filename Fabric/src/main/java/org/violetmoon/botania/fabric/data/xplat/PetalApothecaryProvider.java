@@ -10,9 +10,10 @@
 package org.violetmoon.botania.fabric.data.xplat;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -129,9 +130,10 @@ public class PetalApothecaryProvider extends BotaniaFabricRecipeProvider {
 		make(consumer, BotaniaBlocks.DAYBLOOM_MOTIF, yellow, yellow, orange, lightBlue);
 		make(consumer, BotaniaBlocks.NIGHTSHADE_MOTIF, black, black, purple, gray);
 
-		ItemStack vazkiiHead = new ItemStack(Items.PLAYER_HEAD);
-		vazkiiHead.set(DataComponents.PROFILE,
-				ResolvableProfile.createUnresolved("Vazkii"));
+		var profile = DataComponentPatch.builder()
+				.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved("Vazkii"))
+				.build();
+		var vazkiiHead = new ItemStackTemplate(Items.PLAYER_HEAD, profile);
 		Ingredient[] inputs = new Ingredient[16];
 		Arrays.fill(inputs, pink);
 		consumer.accept(recipeKey(BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, "vazkii_head")),
@@ -140,7 +142,7 @@ public class PetalApothecaryProvider extends BotaniaFabricRecipeProvider {
 
 	private void make(RecipeOutput consumer, ItemLike output, Ingredient... ingredients) {
 		consumer.accept(recipeKey(BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, output)),
-				new PetalApothecaryRecipe(new ItemStack(output), tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT), ingredients), null);
+				new PetalApothecaryRecipe(new ItemStackTemplate(output.asItem()), tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT), ingredients), null);
 	}
 
 }

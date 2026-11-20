@@ -46,6 +46,10 @@ public class ElvenTradeRecipe implements org.violetmoon.botania.api.recipe.Elven
 		this(Arrays.asList(outputs), Arrays.asList(ingredients));
 	}
 
+	public ElvenTradeRecipe(ItemStackTemplate[] outputs, Ingredient... ingredients) {
+		this(List.of(outputs), List.of(ingredients));
+	}
+
 	public ElvenTradeRecipe(List<ItemStack> outputs, List<Ingredient> ingredients) {
 		this(outputs.stream().map(ItemStackTemplate::fromNonEmptyStack).toList(), ingredients);
 	}

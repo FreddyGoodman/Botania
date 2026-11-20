@@ -56,7 +56,7 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 		this(ItemStackTemplate.fromNonEmptyStack(output), reagent, mana, ingredients, catalysts);
 	}
 
-	protected RunicAltarRecipe(ItemStackTemplate output, Ingredient reagent, int mana, Ingredient[] ingredients, Ingredient[] catalysts) {
+	public RunicAltarRecipe(ItemStackTemplate output, Ingredient reagent, int mana, Ingredient[] ingredients, Ingredient[] catalysts) {
 		int numIngredients = ingredients.length;
 		int numCatalysts = catalysts.length;
 		Preconditions.checkArgument(numIngredients + numCatalysts > 0, "Must have at least one ingredient or catalyst");

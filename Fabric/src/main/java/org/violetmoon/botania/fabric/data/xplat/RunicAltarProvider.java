@@ -14,7 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -104,7 +104,7 @@ public class RunicAltarProvider extends BotaniaFabricRecipeProvider {
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_PRIDE, costTier3, tier3Ingredients, summer, fire);
 
 		consumer.accept(recipeKey(idFor(Items.PLAYER_HEAD)),
-				new HeadRecipe(new ItemStack(Items.PLAYER_HEAD), DEFAULT_REAGENT, 22500,
+				new HeadRecipe(new ItemStackTemplate(Items.PLAYER_HEAD), DEFAULT_REAGENT, 22500,
 						Ingredient.of(Items.SKELETON_SKULL), tag(ConventionalBotaniaTags.Items.PIXIE_DUSTS),
 						tag(ConventionalItemTags.PRISMARINE_GEMS),
 						Ingredient.of(Items.NAME_TAG, Items.WRITTEN_BOOK), Ingredient.of(Items.GOLDEN_APPLE)),
@@ -118,7 +118,7 @@ public class RunicAltarProvider extends BotaniaFabricRecipeProvider {
 	protected void defaultReagent(RecipeOutput consumer, ItemLike output, int count, int mana,
 			Ingredient[] ingredients, Ingredient[] catalysts) {
 		consumer.accept(recipeKey(idFor(output)),
-				new RunicAltarRecipe(new ItemStack(output, count), DEFAULT_REAGENT, mana, ingredients, catalysts),
+				new RunicAltarRecipe(new ItemStackTemplate(output.asItem(), count), DEFAULT_REAGENT, mana, ingredients, catalysts),
 				null);
 	}
 

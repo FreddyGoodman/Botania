@@ -17,7 +17,6 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import org.violetmoon.botania.common.block.BotaniaBlocks;
@@ -118,7 +117,7 @@ public class FabricItemTagProvider extends ItemTagProvider {
 
 	private void generateCompatTags() {
 		this.tag(itemTag(Identifier.fromNamespaceAndPath("modern_industrialization", "replicator_blacklist")))
-				.add(DiceOfFateItem.RELIC_STACKS.get().stream().map(ItemStack::getItem).toArray(Item[]::new))
+				.add(DiceOfFateItem.RELIC_ITEMS.get().toArray(Item[]::new))
 				.add(
 						BotaniaItems.DICE_OF_FATE, BotaniaItems.MANA_TABLET, BotaniaItems.BAND_OF_MANA,
 						BotaniaItems.GREATER_BAND_OF_MANA, BotaniaItems.BLACKER_LOTUS, BotaniaItems.BLACK_HOLE_TALISMAN,

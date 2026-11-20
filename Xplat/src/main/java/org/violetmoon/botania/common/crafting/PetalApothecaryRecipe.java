@@ -41,7 +41,7 @@ public class PetalApothecaryRecipe implements org.violetmoon.botania.api.recipe.
 		this(ItemStackTemplate.fromNonEmptyStack(output), reagent, ingredients);
 	}
 
-	private PetalApothecaryRecipe(ItemStackTemplate output, Ingredient reagent, Ingredient... ingredients) {
+	public PetalApothecaryRecipe(ItemStackTemplate output, Ingredient reagent, Ingredient... ingredients) {
 		this.output = output;
 		this.reagent = reagent;
 		this.ingredients = NonNullList.of(null, ingredients);

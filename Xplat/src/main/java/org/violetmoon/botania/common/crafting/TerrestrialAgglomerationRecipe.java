@@ -41,7 +41,7 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 		this(mana, ItemStackTemplate.fromNonEmptyStack(output), ingredients);
 	}
 
-	private TerrestrialAgglomerationRecipe(int mana, ItemStackTemplate output, Ingredient... ingredients) {
+	public TerrestrialAgglomerationRecipe(int mana, ItemStackTemplate output, Ingredient... ingredients) {
 		this.mana = mana;
 		this.ingredients = NonNullList.of(null, ingredients);
 		this.output = output;

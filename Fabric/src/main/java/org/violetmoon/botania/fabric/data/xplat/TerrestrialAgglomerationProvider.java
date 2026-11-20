@@ -11,7 +11,7 @@ package org.violetmoon.botania.fabric.data.xplat;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import org.violetmoon.botania.common.block.mana.ManaPoolBlock;
 import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
@@ -33,7 +33,7 @@ public class TerrestrialAgglomerationProvider extends BotaniaFabricRecipeProvide
 				BotaniaItems.TERRASTEEL_INGOT)),
 				new TerrestrialAgglomerationRecipe(
 						ManaPoolBlock.MAX_MANA / 2,
-						new ItemStack(BotaniaItems.TERRASTEEL_INGOT),
+						new ItemStackTemplate(BotaniaItems.TERRASTEEL_INGOT),
 						tag(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS),
 						tag(ConventionalBotaniaTags.Items.MANA_PEARL_GEMS),
 						tag(ConventionalBotaniaTags.Items.MANA_DIAMOND_GEMS)
