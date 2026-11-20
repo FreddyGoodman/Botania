@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:corporea_block",
   "result": {
-    "count": 1,
     "id": "botania:corporea_wall"
   }
 }

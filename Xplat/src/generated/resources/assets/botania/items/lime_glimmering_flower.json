@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/lime_glimmering_flower",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/lime_glimmering_flower"
   }
 }

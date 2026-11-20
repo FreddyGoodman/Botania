@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/spreader_turntable",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/spreader_turntable"
   }
 }

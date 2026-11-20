@@ -1,20 +1,20 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
-          "model": "botania:item/manufactory_halo_active",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/manufactory_halo_active"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
-      "model": "botania:item/manufactory_halo",
-      "type": "minecraft:model"
+      "type": "minecraft:model",
+      "model": "botania:item/manufactory_halo"
     },
     "predicate": "botania:active",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

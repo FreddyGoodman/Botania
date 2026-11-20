@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/terrasteel_nugget",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/terrasteel_nugget"
   }
 }

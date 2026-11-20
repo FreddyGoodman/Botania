@@ -1,4 +1,4 @@
-// 1.21.1	2025-08-31T09:41:00.630342192	Global Loot Modifiers : botania
+// 26.1.2	2026-11-20T14:27:08.752703925	Global Loot Modifiers : botania
 860571439c49ff1c4bdc38daf36deb48fbfd2045 data/botania/loot_modifiers/injected/minecraft/chests/abandoned_mineshaft.json
 16d3aa9806d8aa49d5593cc992e736b70cb8aaed data/botania/loot_modifiers/injected/minecraft/chests/desert_pyramid.json
 2bc7de4d947f263dc0a80bb04125ed4e0d7138dc data/botania/loot_modifiers/injected/minecraft/chests/jungle_temple.json
@@ -15,4 +15,3 @@ f4db003f0ed7c4a6d22fa1bd606b4327e9733d9f data/botania/loot_modifiers/injected/mi
 fa138ea31e3dd18d3d0398dd69aa394b9b1451a1 data/botania/loot_modifiers/injected/minecraft/entities/skeleton.json
 8279c519d6267b00fb1eca889caf27de85f173b8 data/botania/loot_modifiers/injected/minecraft/entities/wither_skeleton.json
 0286f96dbfd571fe242f162f122607e124584d57 data/botania/loot_modifiers/injected/minecraft/entities/zombie.json
-087020f4d8fe3bb6abffba4797eeabe25cb1df1a data/neoforge/loot_modifiers/global_loot_modifiers.json

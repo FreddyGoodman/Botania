@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/pure_daisy",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/pure_daisy"
   }
 }

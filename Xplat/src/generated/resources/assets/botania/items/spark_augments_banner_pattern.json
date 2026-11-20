@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/spark_augments_banner_pattern",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/spark_augments_banner_pattern"
   }
 }

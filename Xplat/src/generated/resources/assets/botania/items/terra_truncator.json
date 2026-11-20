@@ -1,20 +1,20 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
-          "model": "botania:item/terra_truncator_active",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/terra_truncator_active"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
-      "model": "botania:item/terra_truncator",
-      "type": "minecraft:model"
+      "type": "minecraft:model",
+      "model": "botania:item/terra_truncator"
     },
     "predicate": "botania:active",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

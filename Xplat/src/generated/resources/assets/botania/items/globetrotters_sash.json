@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/globetrotters_sash",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/globetrotters_sash"
   }
 }

@@ -363,6 +363,10 @@
   "tag.item.botania.tall_mystical_flowers": "高神秘花",
   "tag.item.botania.dominant_spark_pull_source": "聚集火花魔力拉取源",
   "tag.item.botania.dreamwood_logs": "梦之木原木",
+
+
+
+
   "tag.item.botania.dyed_creative_mana_pools": "染色创造魔力池",
   "tag.item.botania.dyed_diluted_mana_pools": "染色稀释魔力池",
   "tag.item.botania.dyed_fabulous_mana_pools": "染色神话魔力池",
@@ -1051,6 +1055,22 @@
   "block.botania.red_mana_pool": "红色魔力池",
   "block.botania.black_mana_pool": "黑色魔力池",
   "block.botania.creative_mana_pool": "永恒魔力池",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "稀释魔力池",
   "block.botania.white_diluted_mana_pool": "白色稀释魔力池",
   "block.botania.orange_diluted_mana_pool": "橙色稀释魔力池",
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "绿色葡萄牙台阶",
   "block.botania.cellular_block": "细胞方块",
   "block.botania.gaia_head": "盖亚守护者的头",
+
   "block.botania.corporea_block": "多媒体块",
   "block.botania.corporea_slab": "多媒体台阶",
   "block.botania.corporea_stairs": "多媒体楼梯",

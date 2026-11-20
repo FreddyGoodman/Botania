@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/yellow_covered_pulse_mana_spreader",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/yellow_covered_pulse_mana_spreader"
   }
 }

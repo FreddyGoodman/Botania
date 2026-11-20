@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/elven_quartz_bricks",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/elven_quartz_bricks"
   }
 }

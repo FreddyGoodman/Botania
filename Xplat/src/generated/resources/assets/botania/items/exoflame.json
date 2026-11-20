@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/exoflame",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/exoflame"
   }
 }

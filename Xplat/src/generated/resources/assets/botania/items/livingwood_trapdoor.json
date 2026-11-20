@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/livingwood_trapdoor",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/livingwood_trapdoor"
   }
 }

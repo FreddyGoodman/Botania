@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/stripped_dreamwood",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/stripped_dreamwood"
   }
 }

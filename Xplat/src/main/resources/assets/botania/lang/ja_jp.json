@@ -369,6 +369,10 @@
 
 
 
+
+
+
+
   "tag.item.botania.floating_flowers": "浮遊している花",
   "tag.item.botania.functional_special_flowers": "機能を持つ特別な花",
 
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "永遠のギルティプール",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "弱いマナプール",
 
 
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "緑色のポルトガル式歩道のハーフブロック",
   "block.botania.cellular_block": "細胞ブロック",
   "block.botania.gaia_head": "ガイアの守護者の頭",
+
   "block.botania.corporea_block": "コーポリアブロック",
   "block.botania.corporea_slab": "コーポリアのハーフブロック",
   "block.botania.corporea_stairs": "コーポリアの階段",

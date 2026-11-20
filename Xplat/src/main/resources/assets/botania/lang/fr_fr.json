@@ -369,6 +369,10 @@
 
 
 
+
+
+
+
   "tag.item.botania.floating_flowers": "Fleurs flottantes",
   "tag.item.botania.functional_special_flowers": "Flore fonctionnelle",
 
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "Bassin de mana créatif",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "Bassin de mana dilué",
 
 
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "Dalle en pavés portugais vert",
   "block.botania.cellular_block": "Bloc cellulaire",
   "block.botania.gaia_head": "Tête de gardien",
+
   "block.botania.corporea_block": "Bloc de Corporea",
   "block.botania.corporea_slab": "Dalle de Corporea",
   "block.botania.corporea_stairs": "Escalier en Corporea",

@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/red_stringed_interceptor",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/red_stringed_interceptor"
   }
 }

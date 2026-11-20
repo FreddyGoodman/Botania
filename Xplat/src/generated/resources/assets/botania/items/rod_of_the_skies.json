@@ -1,20 +1,20 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
-          "model": "botania:item/rod_of_the_skies_active",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/rod_of_the_skies_active"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
-      "model": "botania:item/rod_of_the_skies",
-      "type": "minecraft:model"
+      "type": "minecraft:model",
+      "model": "botania:item/rod_of_the_skies"
     },
     "predicate": "botania:active",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

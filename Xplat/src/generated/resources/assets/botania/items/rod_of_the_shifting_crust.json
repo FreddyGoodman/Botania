@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/rod_of_the_shifting_crust",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/rod_of_the_shifting_crust"
   }
 }

@@ -10,15 +10,6 @@
       }
     }
   ],
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:mod_loaded",
-        "modid": "gardenofglass"
-      }
-    }
-  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_any_dye": {
@@ -48,6 +39,15 @@
       "trigger": "minecraft:recipe_unlocked"
     }
   },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "gardenofglass"
+      }
+    }
+  ],
   "requirements": [
     [
       "has_the_recipe",

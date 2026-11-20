@@ -10,15 +10,6 @@
       }
     }
   ],
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:mod_loaded",
-        "modid": "gardenofglass"
-      }
-    }
-  ],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
@@ -28,8 +19,16 @@
     "#c:dyes",
     "#c:dyes"
   ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "gardenofglass"
+      }
+    }
+  ],
   "result": {
-    "count": 1,
     "id": "botania:floral_fertilizer"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/eye_of_the_ancients",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/eye_of_the_ancients"
   }
 }

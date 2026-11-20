@@ -547,6 +547,10 @@
 
 
 
+
+
+
+
   "botania.color.rainbow": "Arco Iris",
 
 
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "La Pileta de Culpa Eterna",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "Pileta de Maná Diluido",
 
 
@@ -1103,6 +1123,7 @@
   "block.botania.manasteel_block": "Bloque de Acero de Maná",
   "block.botania.terrasteel_block": "Bloque de Acero de la Tierra",
   "block.botania.elementium_block": "Bloque de Elementium"
+
 
 
 

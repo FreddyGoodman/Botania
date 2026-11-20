@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/rosy_talc_bricks",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/rosy_talc_bricks"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/cocoon_of_caprice",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/cocoon_of_caprice"
   }
 }

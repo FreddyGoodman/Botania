@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-14T18:12:55.375689867	Botania/Tags for minecraft:item
+// 26.1.2	-999999999-01-01T00:00:00	Botania/Tags for minecraft:item
 665aee3cc41d8f1e66408e198692f4ebec572aba data/botania/tags/item/all_mana_pools.json
 2b5505ddf6b15ea500a714fd10bc4ec05fa3eef5 data/botania/tags/item/ancient_wills.json
 9c05adc2a63d8b6a2636d766d8858160e1308c25 data/botania/tags/item/burst_viewers.json
@@ -58,6 +58,10 @@ e51fab8358421c8502b0d945a000b5f6639d7d8f data/botania/tags/item/petite_flowers.j
 19f439b3d61f5bf64da75a1784848d7edb78e976 data/botania/tags/item/pickable_block_providers.json
 292ab940fc5daac7fe88d0a04fcf26a7c58cf255 data/botania/tags/item/quartz_blocks.json
 602d90124eb0d09e42cd1e04d6ac11ec1c454ac2 data/botania/tags/item/recessive_spark_push_target.json
+e84673de5e99b6e1a9b6b474b30c755a5815a4ef data/botania/tags/item/repairs_elementium.json
+5a11c97bcbfa5c7974f4a2feb4b9ec4389d084f2 data/botania/tags/item/repairs_manasteel.json
+2147348340853c673be347ccd39e19a78e819d30 data/botania/tags/item/repairs_manaweave.json
+7a11bd85a16d2a2d2df94cc9f27d6f1c4e108b03 data/botania/tags/item/repairs_terrasteel.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/botania/tags/item/ring_of_magnetization_ignored.json
 52133f14f7716b040dc43cd944d0829359906466 data/botania/tags/item/rods.json
 057646247e883c12f6682f096113a5e98e4281ae data/botania/tags/item/runes.json
@@ -80,6 +84,7 @@ c23ad2f264eacf9d5cf691d47aef8e4c5f2b0be3 data/botania/tags/item/undims_floating_
 fed357581238ed8428552a38e518e90d6d6aed4d data/minecraft/tags/item/enchantable/durability.json
 61ae96e93e2303b4ea5e262006efa92df0fdc516 data/minecraft/tags/item/enchantable/mining.json
 5e3d052fd880c72e6cf251feb7baf0f1cc4b92e5 data/minecraft/tags/item/fence_gates.json
+94016922e9f663e07cfa56aff0251da0445f4cf0 data/minecraft/tags/item/flowers.json
 a1cc6f7061a825b4d500aa250d6d6ec1c46fbb81 data/minecraft/tags/item/foot_armor.json
 061693f600e5d5f1b5e93dad62ff2dd07e80036d data/minecraft/tags/item/freeze_immune_wearables.json
 b2234cf7c7af048555dd21babd3321b908ed6686 data/minecraft/tags/item/hanging_signs.json
@@ -99,7 +104,6 @@ a8ffb522bfb10b082441fbd1d3cb96cfe42f59b0 data/minecraft/tags/item/small_flowers.
 daacc2cda06894509ba8f549dabeeaa5f45c023c data/minecraft/tags/item/stairs.json
 39afab18356fbfdcaf9cd34ed9931df0912ba56a data/minecraft/tags/item/stone_buttons.json
 ec0601e664cc52d9ed6c1ae669a17f223bb8eeb2 data/minecraft/tags/item/swords.json
-94016922e9f663e07cfa56aff0251da0445f4cf0 data/minecraft/tags/item/tall_flowers.json
 2a465b980c148916fbabe21713331a5b4ee75592 data/minecraft/tags/item/walls.json
 6dcc7700270a14747d530dd9b1985485968f21d9 data/minecraft/tags/item/wooden_buttons.json
 27093fae65c697d379a2a0c3b7e86b05af90ee38 data/minecraft/tags/item/wooden_doors.json

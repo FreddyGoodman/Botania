@@ -1,20 +1,20 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
-          "model": "botania:item/life_aggregator_full",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/life_aggregator_full"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
-      "model": "botania:item/life_aggregator",
-      "type": "minecraft:model"
+      "type": "minecraft:model",
+      "model": "botania:item/life_aggregator"
     },
     "predicate": "botania:full",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

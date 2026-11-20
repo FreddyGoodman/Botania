@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/corporea_bricks",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/corporea_bricks"
   }
 }

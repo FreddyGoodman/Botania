@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/red_nether_brick_petal_apothecary",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/red_nether_brick_petal_apothecary"
   }
 }

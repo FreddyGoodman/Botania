@@ -369,6 +369,10 @@
 
 
 
+
+
+
+
   "tag.item.botania.floating_flowers": "Flores Flutuantes",
   "tag.item.botania.functional_special_flowers": "Flores Funcionais Especiais",
 
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "O Eterno Poço da Culpa",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "Poço de Mana Diluído",
 
 
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "Laje de Calçada Portuguesa Verde",
   "block.botania.cellular_block": "Bloco Celular",
   "block.botania.gaia_head": "Cabeça de Guardião de Gaia",
+
   "block.botania.corporea_block": "Bloco de Corporea",
   "block.botania.corporea_slab": "Laje de Corporea",
   "block.botania.corporea_stairs": "Escadas de Corporea",

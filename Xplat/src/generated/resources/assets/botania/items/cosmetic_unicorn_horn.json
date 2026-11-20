@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/cosmetic_unicorn_horn",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/cosmetic_unicorn_horn"
   }
 }

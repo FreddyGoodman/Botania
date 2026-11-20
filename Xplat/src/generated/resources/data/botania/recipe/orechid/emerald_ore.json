@@ -10,15 +10,6 @@
       }
     }
   ],
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:mod_loaded",
-        "modid": "gardenofglass"
-      }
-    }
-  ],
   "type": "botania:orechid",
   "biome_bonus_tag": "botania:orechid_stone_emerald_bonus",
   "biome_bonus_weight": 111,
@@ -28,6 +19,15 @@
     "block": "minecraft:stone"
   },
   "mana": 17500,
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "gardenofglass"
+      }
+    }
+  ],
   "output": {
     "type": "botania:block",
     "block": "minecraft:emerald_ore"

@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/mana_detector",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/mana_detector"
   }
 }

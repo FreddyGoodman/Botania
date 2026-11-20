@@ -541,6 +541,10 @@
 
 
 
+
+
+
+
   "botania.triggers.manaEmpty": "Mana Leeg",
   "botania.triggers.manaSpace": "Ruimte voor Mana",
   "botania.triggers.manaContains": "Bevat Mana",
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "De Eeuwige Schuld Voorraad",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "Verdunde Mana Voorraad",
 
 
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "Groene Portugese Stoeptegel",
   "block.botania.cellular_block": "Cellulair Blok",
   "block.botania.gaia_head": "Beschermer van Gaia's Hoofd",
+
 
 
 

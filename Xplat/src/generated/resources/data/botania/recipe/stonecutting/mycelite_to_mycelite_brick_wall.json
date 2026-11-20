@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:mycelite",
   "result": {
-    "count": 1,
     "id": "botania:mycelite_brick_wall"
   }
 }

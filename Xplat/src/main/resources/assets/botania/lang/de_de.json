@@ -363,6 +363,10 @@
   "tag.item.botania.tall_mystical_flowers": "Große mystische Blumen",
   "tag.item.botania.dominant_spark_pull_source": "Quellen für Transfers dominanter Funken",
   "tag.item.botania.dreamwood_logs": "Traumholzstämme",
+
+
+
+
   "tag.item.botania.dyed_creative_mana_pools": "Gefärbte kreative Manabecken",
   "tag.item.botania.dyed_diluted_mana_pools": "Gefärbte verdünnte Manabecken",
   "tag.item.botania.dyed_fabulous_mana_pools": "Gefärbte fabelhafte Manabecken",
@@ -1051,6 +1055,22 @@
   "block.botania.red_mana_pool": "Rotes Manabecken",
   "block.botania.black_mana_pool": "Schwarzes Manabecken",
   "block.botania.creative_mana_pool": "Das immerwährende Becken der Schuld",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "Verdünntes Manabecken",
   "block.botania.white_diluted_mana_pool": "Weißes Verdünntes Manabecken",
   "block.botania.orange_diluted_mana_pool": "Oranges Verdünntes Manabecken",
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "Grüne Portugiesische Pflasterstufe",
   "block.botania.cellular_block": "Zellblock",
   "block.botania.gaia_head": "Kopf des Gaia-Wächters",
+
   "block.botania.corporea_block": "Corporea-Block",
   "block.botania.corporea_slab": "Corporea-Stufe",
   "block.botania.corporea_stairs": "Corporea-Treppe",

@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/crafting_placeholder",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/crafting_placeholder"
   }
 }

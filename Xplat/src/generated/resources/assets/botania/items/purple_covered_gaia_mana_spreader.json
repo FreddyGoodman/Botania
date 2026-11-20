@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/purple_covered_gaia_mana_spreader",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/purple_covered_gaia_mana_spreader"
   }
 }

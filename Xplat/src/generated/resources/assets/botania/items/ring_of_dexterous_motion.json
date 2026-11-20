@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/ring_of_dexterous_motion",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/ring_of_dexterous_motion"
   }
 }

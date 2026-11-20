@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/glimmering_dreamwood",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/glimmering_dreamwood"
   }
 }

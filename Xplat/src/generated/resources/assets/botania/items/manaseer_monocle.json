@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/manaseer_monocle",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/manaseer_monocle"
   }
 }

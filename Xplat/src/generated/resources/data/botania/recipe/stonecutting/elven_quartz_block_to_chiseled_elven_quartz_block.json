@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:elven_quartz_block",
   "result": {
-    "count": 1,
     "id": "botania:chiseled_elven_quartz_block"
   }
 }

@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:solite",
   "result": {
-    "count": 1,
     "id": "botania:chiseled_solite_bricks"
   }
 }

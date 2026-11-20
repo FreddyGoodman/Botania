@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/cosmetic_devil_tail",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/cosmetic_devil_tail"
   }
 }

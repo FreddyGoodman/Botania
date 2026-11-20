@@ -369,6 +369,10 @@
 
 
 
+
+
+
+
   "tag.item.botania.floating_flowers": "Парящие цветы",
   "tag.item.botania.functional_special_flowers": "Функциональные особые цветы",
 
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "Неиссякаемый бассейн порочного удовольствия",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "Бассейн разбавленной маны",
 
 
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "Плита из зелёной португальской плитки",
   "block.botania.cellular_block": "Клеточный блок",
   "block.botania.gaia_head": "Голова стража Гайи",
+
   "block.botania.corporea_block": "Эфир",
   "block.botania.corporea_slab": "Эфирная плита",
   "block.botania.corporea_stairs": "Эфирные ступеньки",

@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/third_eye",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/third_eye"
   }
 }

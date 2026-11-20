@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/key_of_the_kings_law",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/key_of_the_kings_law"
   }
 }

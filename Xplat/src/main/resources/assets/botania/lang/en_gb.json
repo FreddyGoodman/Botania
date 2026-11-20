@@ -382,6 +382,10 @@
 
 
 
+
+
+
+
   "tag.item.botania.ring_of_magnetization_ignored": "Ignored by Ring of Magnetisation",
 
 
@@ -1059,6 +1063,22 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.gray_diluted_mana_pool": "Grey Diluted Mana Pool",
   "block.botania.light_gray_diluted_mana_pool": "Light Grey Diluted Mana Pool",
 
@@ -1532,6 +1552,7 @@
 
   "block.botania.gray_buried_petal": "Buried Grey Petal",
   "block.botania.light_gray_buried_petal": "Buried Light Grey Petal",
+
 
 
 

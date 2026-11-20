@@ -1,9 +1,9 @@
-// 1.21.1	Botania/Loonium structure configuration
-72e03cee194653af68f01f48ea9d2b3bbca0dc72 data/botania/config/loonium/default.json
+// 26.1.2	-999999999-01-01T00:00:00	Botania/Loonium structure configuration
+638c07baf997378c95e7c43e7d4524579fff678a data/botania/config/loonium/default.json
 8957828d1e1f4fb2748cb4db623d290b89ab3f79 data/botania/config/loonium/ocean_ruins.json
 8957828d1e1f4fb2748cb4db623d290b89ab3f79 data/botania/config/loonium/village.json
 75bf87a57518a4c5db53130e3c8cd723eb3cd4a6 data/minecraft/config/loonium/ancient_city.json
-553c96b52d3c0f9f43f79d3c20d6e5d14ed69e92 data/minecraft/config/loonium/bastion_remnant.json
+81d7be8ad10814e5294a6130c6a4b970668f1869 data/minecraft/config/loonium/bastion_remnant.json
 80b2e51b7d57879bf73aad1b23264032080e8e22 data/minecraft/config/loonium/desert_pyramid.json
 0cabae7ec03b982c21a592f0924beb7a3700c59d data/minecraft/config/loonium/end_city.json
 81aa1d20a8a656b5110984587367368c7206cfb7 data/minecraft/config/loonium/fortress.json

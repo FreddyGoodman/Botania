@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:cobbled_lunite",
   "result": {
-    "count": 1,
     "id": "botania:cobbled_lunite_stairs"
   }
 }

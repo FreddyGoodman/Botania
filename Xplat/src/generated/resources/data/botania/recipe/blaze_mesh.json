@@ -10,6 +10,11 @@
       }
     }
   ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": "minecraft:blaze_rod"
+  },
   "neoforge:conditions": [
     {
       "type": "neoforge:not",
@@ -19,18 +24,12 @@
       }
     }
   ],
-  "type": "minecraft:crafting_shaped",
-  "category": "building",
-  "key": {
-    "#": "minecraft:blaze_rod"
-  },
   "pattern": [
     "###",
     "###",
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "botania:blaze_mesh"
   }
 }

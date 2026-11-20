@@ -18,7 +18,6 @@
       "translate": "botania.desc"
     },
     "icon": {
-      "count": 1,
       "id": "botania:lexica_botania"
     },
     "show_toast": false,

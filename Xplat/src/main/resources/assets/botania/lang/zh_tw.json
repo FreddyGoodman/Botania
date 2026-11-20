@@ -369,6 +369,10 @@
 
 
 
+
+
+
+
   "tag.item.botania.floating_flowers": "浮空花",
   "tag.item.botania.functional_special_flowers": "功能花",
 
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "永恆瑪那池",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "稀釋瑪那池",
 
 
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "綠色葡萄牙半磚",
   "block.botania.cellular_block": "細胞方塊",
   "block.botania.gaia_head": "蓋亞守護者的頭",
+
   "block.botania.corporea_block": "多媒體方塊",
   "block.botania.corporea_slab": "多媒體半磚",
   "block.botania.corporea_stairs": "多媒體階梯",

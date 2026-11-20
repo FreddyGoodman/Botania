@@ -10,6 +10,13 @@
       }
     }
   ],
+  "type": "botania:orechid",
+  "cooldown": 100,
+  "input": {
+    "type": "botania:block",
+    "block": "minecraft:stone"
+  },
+  "mana": 17500,
   "neoforge:conditions": [
     {
       "type": "neoforge:not",
@@ -19,13 +26,6 @@
       }
     }
   ],
-  "type": "botania:orechid",
-  "cooldown": 100,
-  "input": {
-    "type": "botania:block",
-    "block": "minecraft:stone"
-  },
-  "mana": 17500,
   "output": {
     "type": "botania:block",
     "block": "minecraft:lapis_ore"

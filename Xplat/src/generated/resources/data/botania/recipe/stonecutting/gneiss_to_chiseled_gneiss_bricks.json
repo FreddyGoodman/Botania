@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:gneiss",
   "result": {
-    "count": 1,
     "id": "botania:chiseled_gneiss_bricks"
   }
 }

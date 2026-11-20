@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:sunny_quartz_block",
   "result": {
-    "count": 1,
     "id": "botania:chiseled_sunny_quartz_block"
   }
 }

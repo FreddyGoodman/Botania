@@ -1,12 +1,12 @@
 {
   "model": {
+    "type": "minecraft:model",
     "model": "botania:item/light_gray_fabulous_mana_pool",
     "tints": [
       {
-        "layer": 0,
-        "type": "botania:item_tint"
+        "type": "botania:item_tint",
+        "layer": 0
       }
-    ],
-    "type": "minecraft:model"
+    ]
   }
 }

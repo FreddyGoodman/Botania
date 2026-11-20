@@ -369,6 +369,10 @@
 
 
 
+
+
+
+
   "tag.item.botania.floating_flowers": "Yüzen Çiçekler",
   "tag.item.botania.functional_special_flowers": "Fonksiyonel Özel Çiçekler",
 
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "Ebedi Suçlu Havuz",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "Seyreltilmiş Mana Havuzu",
 
 
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "Yeşil Portekiz Kaldırımı Basamağı",
   "block.botania.cellular_block": "Hücresel Blok",
   "block.botania.gaia_head": "Gaia Muhafızının Kafası",
+
   "block.botania.corporea_block": "Corporea Bloğu",
   "block.botania.corporea_slab": "Corporea Basamağı",
   "block.botania.corporea_stairs": "Corporea Merdiven",

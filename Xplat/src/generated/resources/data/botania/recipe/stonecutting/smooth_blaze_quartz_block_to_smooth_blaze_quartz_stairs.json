@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:smooth_blaze_quartz_block",
   "result": {
-    "count": 1,
     "id": "botania:smooth_blaze_quartz_stairs"
   }
 }

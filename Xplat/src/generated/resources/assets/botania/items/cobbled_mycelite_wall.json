@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/cobbled_mycelite_wall",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/cobbled_mycelite_wall"
   }
 }

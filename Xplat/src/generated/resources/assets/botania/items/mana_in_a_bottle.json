@@ -1,48 +1,48 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
-          "model": "botania:item/mana_in_a_bottle_1",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/mana_in_a_bottle_1"
         },
         "threshold": 0.2
       },
       {
         "model": {
-          "model": "botania:item/mana_in_a_bottle_2",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/mana_in_a_bottle_2"
         },
         "threshold": 0.4
       },
       {
         "model": {
-          "model": "botania:item/mana_in_a_bottle_3",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/mana_in_a_bottle_3"
         },
         "threshold": 0.6
       },
       {
         "model": {
-          "model": "botania:item/mana_in_a_bottle_4",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/mana_in_a_bottle_4"
         },
         "threshold": 0.8
       },
       {
         "model": {
-          "model": "botania:item/mana_in_a_bottle_5",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/mana_in_a_bottle_5"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
-      "model": "botania:item/mana_in_a_bottle",
-      "type": "minecraft:model"
+      "type": "minecraft:model",
+      "model": "botania:item/mana_in_a_bottle"
     },
     "predicate": "botania:swigs_taken",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

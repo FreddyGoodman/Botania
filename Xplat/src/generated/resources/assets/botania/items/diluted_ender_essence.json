@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/diluted_ender_essence",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/diluted_ender_essence"
   }
 }

@@ -1,4 +1,4 @@
-// 1.21.1	Botania/minecraft:equipment Loot Table
+// 26.1.2	-999999999-01-01T00:00:00	Botania/minecraft:equipment Loot Table
 4c823c9b79fb0c42c4f055e45198bb07ce3ee7ff data/botania/loot_table/equipment/gaia/hard/wither_skeleton.json
 4f87733f7e91ad56382412a91f6e272721127073 data/botania/loot_table/equipment/loonium/armor_ancient_city.json
 2567b7a05a910cff9fb1f292005b54fad8e10695 data/botania/loot_table/equipment/loonium/armor_bastion_remnant.json
@@ -6,12 +6,12 @@ f932b618b741073e6c05bde91fd5f265d2b9f6bb data/botania/loot_table/equipment/looni
 4b3698eef4dda02656bf9edba2d0cbecec076c69 data/botania/loot_table/equipment/loonium/armor_end_city.json
 3ba80fa5acd8996b4d9e7450fbdbd596556667db data/botania/loot_table/equipment/loonium/armor_fortress.json
 0c3b72e7eab5a6fa9e3cc12b3df4b215e818fdca data/botania/loot_table/equipment/loonium/armor_jungle_temple.json
-54b7fbcb5d077dc095c8de6e9e7c55f2dfc852be data/botania/loot_table/equipment/loonium/armor_mansion.json
-47051be22385fc7523e9a1802c755f0dd9fe1797 data/botania/loot_table/equipment/loonium/armor_monument.json
+da246039b2f0fcdedddf186c89b1e0043007f20c data/botania/loot_table/equipment/loonium/armor_mansion.json
+84b22d1aa1b26c2612069208466647f853a2dec2 data/botania/loot_table/equipment/loonium/armor_monument.json
 a30f7b61048f26631733e3ed1ab1f771e6d15083 data/botania/loot_table/equipment/loonium/armor_outpost.json
 7cc8297f0d632c9af0248dc1ca922dc5efee62bc data/botania/loot_table/equipment/loonium/armor_portal.json
 adda342ebf9810bc97b3630212c071365d414dc9 data/botania/loot_table/equipment/loonium/armor_shipwreck.json
-7debcccd40c16fdc8adc1c1d6c0c77a981a27265 data/botania/loot_table/equipment/loonium/armor_stronghold.json
+83973c29560cc3407349fcc068c51880e71754ba data/botania/loot_table/equipment/loonium/armor_stronghold.json
 4ddcdc1b7b8f0136cf5b68a8289328ba70b280a9 data/botania/loot_table/equipment/loonium/armor_trail_ruins.json
 c4326469afac2d2d2915401f56480d84a399d97f data/botania/loot_table/equipment/loonium/armor_trial_chamber.json
 1f04f04cbc92f478c54e1e5eca3e5df54da6cbd3 data/botania/loot_table/equipment/loonium/drowned.json

@@ -1,20 +1,20 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
-          "model": "botania:item/stone_of_temperance_active",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/stone_of_temperance_active"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
-      "model": "botania:item/stone_of_temperance",
-      "type": "minecraft:model"
+      "type": "minecraft:model",
+      "model": "botania:item/stone_of_temperance"
     },
     "predicate": "botania:active",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

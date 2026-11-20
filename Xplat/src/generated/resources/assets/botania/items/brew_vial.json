@@ -1,74 +1,74 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/brew_vial_1",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
-        "threshold": 0.3333333333333333
+        "threshold": 0.33333334
       },
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/brew_vial_2",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
-        "threshold": 0.6666666666666666
+        "threshold": 0.6666667
       },
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/brew_vial_3",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
+      "type": "minecraft:model",
       "model": "botania:item/brew_vial",
       "tints": [
         {
-          "layer": 0,
-          "type": "botania:item_tint"
+          "type": "botania:item_tint",
+          "layer": 0
         },
         {
-          "layer": 1,
-          "type": "botania:item_tint"
+          "type": "botania:item_tint",
+          "layer": 1
         }
-      ],
-      "type": "minecraft:model"
+      ]
     },
     "predicate": "botania:swigs_taken",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

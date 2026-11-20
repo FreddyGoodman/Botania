@@ -363,6 +363,10 @@
   "tag.item.botania.tall_mystical_flowers": "키 큰 신비로운 꽃",
   "tag.item.botania.dominant_spark_pull_source": "지배 스파크의 흡수 대상",
   "tag.item.botania.dreamwood_logs": "꿈의 나무 원목",
+
+
+
+
   "tag.item.botania.dyed_creative_mana_pools": "염색된 크리에이티브 마나 웅덩이",
   "tag.item.botania.dyed_diluted_mana_pools": "염색된 희박한 마나 웅덩이",
   "tag.item.botania.dyed_fabulous_mana_pools": "염색된 환상적인 마나 웅덩이",
@@ -1051,6 +1055,22 @@
   "block.botania.red_mana_pool": "빨간색 마나 웅덩이",
   "block.botania.black_mana_pool": "검은색 마나 웅덩이",
   "block.botania.creative_mana_pool": "영원한 속죄의 웅덩이",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "희박한 마나 웅덩이",
   "block.botania.white_diluted_mana_pool": "하얀색 희박한 마나 웅덩이",
   "block.botania.orange_diluted_mana_pool": "주황색 희박한 마나 웅덩이",
@@ -1563,6 +1583,7 @@
   "block.botania.green_pavement_slab": "초록색 포르투갈식 포장도로 반 블록",
   "block.botania.cellular_block": "세포 블록",
   "block.botania.gaia_head": "가이아의 수호자 머리",
+
   "block.botania.corporea_block": "코포레아 블록",
   "block.botania.corporea_slab": "코포레아 반 블록",
   "block.botania.corporea_stairs": "코포레아 계단",

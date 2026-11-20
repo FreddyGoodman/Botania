@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/flare_chakram",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/flare_chakram"
   }
 }

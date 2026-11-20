@@ -10,6 +10,14 @@
       }
     }
   ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "botania:spreader",
+  "key": {
+    "C": "#c:ingots/copper",
+    "P": "#botania:petals",
+    "W": "#botania:livingwood_logs"
+  },
   "neoforge:conditions": [
     {
       "type": "neoforge:not",
@@ -19,21 +27,12 @@
       }
     }
   ],
-  "type": "minecraft:crafting_shaped",
-  "category": "redstone",
-  "group": "botania:spreader",
-  "key": {
-    "C": "#c:ingots/copper",
-    "P": "#botania:petals",
-    "W": "#botania:livingwood_logs"
-  },
   "pattern": [
     "WWW",
     "CP ",
     "WWW"
   ],
   "result": {
-    "count": 1,
     "id": "botania:mana_spreader"
   }
 }

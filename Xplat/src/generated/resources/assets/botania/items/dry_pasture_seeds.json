@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/dry_pasture_seeds",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/dry_pasture_seeds"
   }
 }

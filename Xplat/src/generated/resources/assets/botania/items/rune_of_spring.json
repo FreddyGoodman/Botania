@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/rune_of_spring",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/rune_of_spring"
   }
 }

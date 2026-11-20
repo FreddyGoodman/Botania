@@ -1,20 +1,20 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
-          "model": "botania:item/totalbiscuit",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/totalbiscuit"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
-      "model": "botania:item/biscuit_of_totality",
-      "type": "minecraft:model"
+      "type": "minecraft:model",
+      "model": "botania:item/biscuit_of_totality"
     },
     "predicate": "botania:totalbiscuit",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

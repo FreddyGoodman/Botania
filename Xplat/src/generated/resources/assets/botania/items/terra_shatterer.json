@@ -1,88 +1,88 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
+          "type": "minecraft:range_dispatch",
           "entries": [
             {
               "model": {
+                "type": "minecraft:model",
                 "model": "botania:item/terra_shatterer_tipped_active",
                 "tints": [
                   {
-                    "layer": 0,
-                    "type": "botania:item_tint"
+                    "type": "botania:item_tint",
+                    "layer": 0
                   },
                   {
-                    "layer": 1,
-                    "type": "botania:item_tint"
+                    "type": "botania:item_tint",
+                    "layer": 1
                   }
-                ],
-                "type": "minecraft:model"
+                ]
               },
               "threshold": 1.0
             }
           ],
           "fallback": {
-            "model": "botania:item/terra_shatterer_active",
+            "type": "minecraft:model",
+            "model": "botania:item/terra_shatterer_tipped",
             "tints": [
               {
-                "layer": 0,
-                "type": "botania:item_tint"
+                "type": "botania:item_tint",
+                "layer": 0
               },
               {
-                "layer": 1,
-                "type": "botania:item_tint"
+                "type": "botania:item_tint",
+                "layer": 1
               }
-            ],
-            "type": "minecraft:model"
+            ]
           },
-          "predicate": "botania:tipped",
-          "property": "botania:item_property",
-          "type": "minecraft:range_dispatch"
+          "predicate": "botania:active",
+          "property": "botania:item_property"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
+      "type": "minecraft:range_dispatch",
       "entries": [
         {
           "model": {
-            "model": "botania:item/terra_shatterer_tipped",
+            "type": "minecraft:model",
+            "model": "botania:item/terra_shatterer_active",
             "tints": [
               {
-                "layer": 0,
-                "type": "botania:item_tint"
+                "type": "botania:item_tint",
+                "layer": 0
               },
               {
-                "layer": 1,
-                "type": "botania:item_tint"
+                "type": "botania:item_tint",
+                "layer": 1
               }
-            ],
-            "type": "minecraft:model"
+            ]
           },
           "threshold": 1.0
         }
       ],
       "fallback": {
+        "type": "minecraft:model",
         "model": "botania:item/terra_shatterer",
         "tints": [
           {
-            "layer": 0,
-            "type": "botania:item_tint"
+            "type": "botania:item_tint",
+            "layer": 0
           },
           {
-            "layer": 1,
-            "type": "botania:item_tint"
+            "type": "botania:item_tint",
+            "layer": 1
           }
-        ],
-        "type": "minecraft:model"
+        ]
       },
-      "predicate": "botania:tipped",
-      "property": "botania:item_property",
-      "type": "minecraft:range_dispatch"
+      "predicate": "botania:active",
+      "property": "botania:item_property"
     },
-    "predicate": "botania:active",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "predicate": "botania:tipped",
+    "property": "botania:item_property"
   }
 }

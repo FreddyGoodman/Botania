@@ -540,6 +540,10 @@
 
 
 
+
+
+
+
   "botania.triggers.manaDetector": "Pulso de maná",
   "botania.triggers.manaEmpty": "Vacío de maná",
   "botania.triggers.manaSpace": "Espacio para maná",
@@ -1051,6 +1055,22 @@
 
 
   "block.botania.creative_mana_pool": "Pila de culpa perpetua",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "block.botania.diluted_mana_pool": "Pila de maná diluida",
 
 
@@ -1539,6 +1559,7 @@
   "block.botania.green_buried_petal": "Pétalo verde enterrado",
   "block.botania.red_buried_petal": "Pétalo rojo enterrado",
   "block.botania.black_buried_petal": "Pétalo negro enterrado",
+
 
 
 

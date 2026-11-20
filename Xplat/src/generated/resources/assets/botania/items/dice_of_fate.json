@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/dice_of_fate",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/dice_of_fate"
   }
 }

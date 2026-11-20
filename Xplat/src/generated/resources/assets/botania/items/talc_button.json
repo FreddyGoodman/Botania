@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/talc_button",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/talc_button"
   }
 }

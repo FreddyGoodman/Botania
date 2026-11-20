@@ -1,20 +1,20 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
-          "model": "botania:item/dammitreddit",
-          "type": "minecraft:model"
+          "type": "minecraft:model",
+          "model": "botania:item/dammitreddit"
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
-      "model": "botania:item/elementium_shears",
-      "type": "minecraft:model"
+      "type": "minecraft:model",
+      "model": "botania:item/elementium_shears"
     },
     "predicate": "botania:reddit",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

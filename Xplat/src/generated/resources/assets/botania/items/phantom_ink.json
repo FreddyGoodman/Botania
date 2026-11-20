@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/phantom_ink",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/phantom_ink"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/orechid_ignem",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/orechid_ignem"
   }
 }

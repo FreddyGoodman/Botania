@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/animated_torch",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/animated_torch"
   }
 }

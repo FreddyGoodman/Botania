@@ -1,108 +1,108 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/brew_flask_1",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
         "threshold": 0.2
       },
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/brew_flask_2",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
         "threshold": 0.4
       },
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/brew_flask_3",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
         "threshold": 0.6
       },
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/brew_flask_4",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
         "threshold": 0.8
       },
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/brew_flask_5",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
+      "type": "minecraft:model",
       "model": "botania:item/brew_flask",
       "tints": [
         {
-          "layer": 0,
-          "type": "botania:item_tint"
+          "type": "botania:item_tint",
+          "layer": 0
         },
         {
-          "layer": 1,
-          "type": "botania:item_tint"
+          "type": "botania:item_tint",
+          "layer": 1
         }
-      ],
-      "type": "minecraft:model"
+      ]
     },
     "predicate": "botania:swigs_taken",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

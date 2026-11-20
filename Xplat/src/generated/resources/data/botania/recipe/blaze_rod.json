@@ -10,6 +10,11 @@
       }
     }
   ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "botania:blaze_mesh"
+  ],
   "neoforge:conditions": [
     {
       "type": "neoforge:not",
@@ -18,11 +23,6 @@
         "modid": "gardenofglass"
       }
     }
-  ],
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
-    "botania:blaze_mesh"
   ],
   "result": {
     "count": 9,

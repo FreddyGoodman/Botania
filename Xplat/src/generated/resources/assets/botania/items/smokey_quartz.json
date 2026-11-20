@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/smokey_quartz",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/smokey_quartz"
   }
 }

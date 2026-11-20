@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/master_corporea_spark",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/master_corporea_spark"
   }
 }

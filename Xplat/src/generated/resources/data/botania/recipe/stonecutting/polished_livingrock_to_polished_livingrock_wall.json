@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:polished_livingrock",
   "result": {
-    "count": 1,
     "id": "botania:polished_livingrock_wall"
   }
 }

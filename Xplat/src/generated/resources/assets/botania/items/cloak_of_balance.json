@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/cloak_of_balance",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/cloak_of_balance"
   }
 }

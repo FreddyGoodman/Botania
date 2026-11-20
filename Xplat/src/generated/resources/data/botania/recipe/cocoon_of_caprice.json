@@ -10,6 +10,14 @@
       }
     }
   ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "botania:manaweave_cloth",
+    "D": "#c:dusts/pixie",
+    "P": "botania:fel_pumpkin",
+    "S": "minecraft:string"
+  },
   "neoforge:conditions": [
     {
       "type": "neoforge:not",
@@ -19,21 +27,12 @@
       }
     }
   ],
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "C": "botania:manaweave_cloth",
-    "D": "#c:dusts/pixie",
-    "P": "botania:fel_pumpkin",
-    "S": "minecraft:string"
-  },
   "pattern": [
     "SSS",
     "CPC",
     "SDS"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cocoon_of_caprice"
   }
 }

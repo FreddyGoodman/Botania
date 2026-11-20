@@ -1,48 +1,48 @@
 {
   "model": {
+    "type": "minecraft:range_dispatch",
     "entries": [
       {
         "model": {
+          "type": "minecraft:model",
           "model": "botania:item/wand_of_the_forest_bind",
           "tints": [
             {
-              "layer": 0,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 0
             },
             {
-              "layer": 1,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 1
             },
             {
-              "layer": 2,
-              "type": "botania:item_tint"
+              "type": "botania:item_tint",
+              "layer": 2
             }
-          ],
-          "type": "minecraft:model"
+          ]
         },
         "threshold": 1.0
       }
     ],
     "fallback": {
+      "type": "minecraft:model",
       "model": "botania:item/wand_of_the_forest",
       "tints": [
         {
-          "layer": 0,
-          "type": "botania:item_tint"
+          "type": "botania:item_tint",
+          "layer": 0
         },
         {
-          "layer": 1,
-          "type": "botania:item_tint"
+          "type": "botania:item_tint",
+          "layer": 1
         },
         {
-          "layer": 2,
-          "type": "botania:item_tint"
+          "type": "botania:item_tint",
+          "layer": 2
         }
-      ],
-      "type": "minecraft:model"
+      ]
     },
     "predicate": "botania:bindmode",
-    "property": "botania:item_property",
-    "type": "minecraft:range_dispatch"
+    "property": "botania:item_property"
   }
 }

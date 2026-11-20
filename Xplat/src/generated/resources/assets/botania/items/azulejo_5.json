@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/azulejo_5",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/azulejo_5"
   }
 }

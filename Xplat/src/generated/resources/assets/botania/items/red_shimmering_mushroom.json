@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/red_shimmering_mushroom",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/red_shimmering_mushroom"
   }
 }

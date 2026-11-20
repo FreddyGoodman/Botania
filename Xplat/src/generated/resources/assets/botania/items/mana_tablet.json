@@ -1,16 +1,16 @@
 {
   "model": {
+    "type": "minecraft:model",
     "model": "botania:item/mana_tablet",
     "tints": [
       {
-        "layer": 0,
-        "type": "botania:item_tint"
+        "type": "botania:item_tint",
+        "layer": 0
       },
       {
-        "layer": 1,
-        "type": "botania:item_tint"
+        "type": "botania:item_tint",
+        "layer": 1
       }
-    ],
-    "type": "minecraft:model"
+    ]
   }
 }

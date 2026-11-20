@@ -10,15 +10,6 @@
       }
     }
   ],
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:mod_loaded",
-        "modid": "gardenofglass"
-      }
-    }
-  ],
   "type": "botania:petal_apothecary",
   "ingredients": [
     "#botania:petals/gray",
@@ -31,8 +22,16 @@
     "botania:redstone_root",
     "#c:dusts/pixie"
   ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "gardenofglass"
+      }
+    }
+  ],
   "output": {
-    "count": 1,
     "id": "botania:orechid"
   },
   "reagent": "#botania:seed_apothecary_reagent"

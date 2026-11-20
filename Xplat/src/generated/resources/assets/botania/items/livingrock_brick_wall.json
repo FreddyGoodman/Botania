@@ -1,6 +1,6 @@
 {
   "model": {
-    "model": "botania:item/livingrock_brick_wall",
-    "type": "minecraft:model"
+    "type": "minecraft:model",
+    "model": "botania:item/livingrock_brick_wall"
   }
 }

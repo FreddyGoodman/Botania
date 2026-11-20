@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "botania:cobbled_talc",
   "result": {
-    "count": 1,
     "id": "botania:cobbled_talc_wall"
   }
 }
