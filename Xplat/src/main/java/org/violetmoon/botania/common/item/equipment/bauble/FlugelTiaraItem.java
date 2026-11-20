@@ -465,7 +465,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			ms.mulPose(VecHelper.rotateY(tickTime));
 
 			ms.scale(0.75F, -0.75F, -0.75F);
-			VertexConsumer buffer = buffers.getBuffer(RenderHelper.HALO);
+			VertexConsumer buffer = buffers.getBuffer(RenderHelper.getTiaraHaloLayer());
 			Matrix4f mat = ms.last().pose();
 			buffer.addVertex(mat, -1F, 0, -1F).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0, 0);
 			buffer.addVertex(mat, 1F, 0, -1F).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(1, 0);

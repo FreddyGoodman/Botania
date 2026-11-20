@@ -8,24 +8,33 @@
  */
 package org.violetmoon.botania.client.core.handler;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import org.violetmoon.botania.client.core.helper.CoreShaders;
-import org.violetmoon.botania.client.core.helper.GuiGraphicsAddon;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.common.entity.GaiaGuardianEntity;
+import org.violetmoon.botania.xplat.BotaniaConfig;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public final class BossBarHandler {
 
@@ -35,69 +44,48 @@ public final class BossBarHandler {
 	public static final Set<GaiaGuardianEntity> bosses = Collections.newSetFromMap(new WeakHashMap<>());
 	private static final Identifier BAR_TEXTURE = Identifier.parse(ResourcesLib.GUI_BOSS_BAR);
 
-	public static OptionalInt onBarRender(GuiGraphics gui, int x, int y, BossEvent bossEvent, boolean drawName) {
-		for (GaiaGuardianEntity currentBoss : bosses) {
-			if (currentBoss.getBossInfoUuid().equals(bossEvent.getId())) {
-				Minecraft mc = Minecraft.getInstance();
-				// todo boss_bar.png has textures for different colors, respect bossEvent's getColor()?
-				int frameU = 0, frameV = 0;
-				int frameWidth = 185, frameHeight = 15;
-				int healthU = 0, healthV = frameV + frameHeight;
-				int healthWidth = 181, healthHeight = 7;
-				int healthX = x + (frameWidth - healthWidth) / 2;
-				int healthY = y + (frameHeight - healthHeight) / 2;
+	private static final RenderPipeline BOSS_BAR_PIPELINE = RenderPipeline.builder()
+			.withLocation(botaniaRL("pipeline/gaia_boss_bar"))
+			.withVertexShader("core/position_tex_color")
+			.withFragmentShader(botaniaRL("core/gaia_boss_bar"))
+			.withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+			.withUniform("Projection", UniformType.UNIFORM_BUFFER)
+			.withUniform("Globals", UniformType.UNIFORM_BUFFER)
+			.withSampler("Sampler0")
+			.withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+			.build();
 
-				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-				int playerCountHeight = drawInitialPlayerCount(currentBoss.getInitialPlayerCount(), gui, x, y);
-				RenderHelper.drawTexturedModalRect(gui, BAR_TEXTURE, x, y, frameU, frameV,
-						frameWidth, frameHeight);
-				drawHealthBar(gui, currentBoss, healthX, healthY, healthU, healthV,
-						healthWidth, healthHeight,
-						bossEvent.getProgress());
-
-				if (drawName) {
-					Component name = bossEvent.getName();
-					int centerX = mc.getWindow().getGuiScaledWidth() / 2;
-					gui.drawCenteredString(mc.font, name, centerX, y - 10, 0xA2018C);
-				}
-
-				return OptionalInt.of(frameHeight + playerCountHeight + (drawName ? mc.font.lineHeight : 0));
+	public static boolean renderBar(GuiGraphicsExtractor gui, int x, int y, BossEvent bossEvent) {
+		for (GaiaGuardianEntity boss : bosses) {
+			if (boss.getBossInfoUuid().equals(bossEvent.getId())) {
+				int playerX = x + 160;
+				int playerY = y + 12;
+				gui.item(new ItemStack(Items.PLAYER_HEAD), playerX, playerY);
+				gui.text(Minecraft.getInstance().font, Integer.toString(boss.getInitialPlayerCount()),
+						playerX + 15, playerY + 4, 0xFFFFFFFF);
+				RenderHelper.drawTexturedModalRect(gui, BAR_TEXTURE, x, y, 0, 0, 185, 15);
+				drawHealthBar(gui, boss, x + 2, y + 4, bossEvent.getProgress());
+				return true;
 			}
 		}
-
-		return OptionalInt.empty();
+		return false;
 	}
 
-	private static int drawInitialPlayerCount(int playerCount, GuiGraphics gui, int x, int y) {
-		PoseStack ps = gui.pose();
-		ps.pushPose();
-		int px = x + 160;
-		int py = y + 12;
+	private static void drawHealthBar(GuiGraphicsExtractor gui, GaiaGuardianEntity boss, int x, int y, float progress) {
+		progress = Mth.clamp(progress, 0F, 1F);
+		int width = (int) (181 * progress);
+		if (width <= 0) {
+			return;
+		}
 
-		Minecraft mc = Minecraft.getInstance();
-		ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-		gui.renderItem(stack, px, py);
-
-		gui.drawString(mc.font, Integer.toString(playerCount), px + 15, py + 4, 0xFFFFFF);
-		ps.popPose();
-
-		return 5;
-	}
-
-	private static void drawHealthBar(GuiGraphics gui, GaiaGuardianEntity currentBoss, int x, int y, int u, int v, int w, int h, float progress) {
-		var shader = CoreShaders.gaiaBossBar();
-		if (shader != null) {
-			float time = currentBoss.getInvulTime();
-			float grainIntensity = time > 20 ? 1F : Math.max(currentBoss.isHardMode() ? 0.5F : 0F, time / 20F);
-			shader.safeGetUniform("BotaniaGrainIntensity").set(grainIntensity);
-			shader.safeGetUniform("BotaniaHpFract").set(progress);
-
-			RenderSystem.setShader(CoreShaders::gaiaBossBar);
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-
-			int barW = (int) (w * progress);
-			((GuiGraphicsAddon) gui).botania_blitWithoutShader(BAR_TEXTURE, x, y, u, v, barW, h, 256, 256);
+		if (BotaniaConfig.client().useShaders()) {
+			float grain = Mth.clamp(Math.max(boss.isHardMode() ? 0.5F : 0F, boss.getInvulTime() / 20F), 0F, 1F);
+			int encodedProgress = Math.round(progress * 65535);
+			int shaderColor = ARGB.color(255, ARGB.as8BitChannel(grain), encodedProgress >> 8, encodedProgress & 0xFF);
+			gui.blit(BOSS_BAR_PIPELINE, BAR_TEXTURE, x, y, 0, 15, width, 7, 256, 256, shaderColor);
+		} else {
+			gui.blit(RenderPipelines.GUI_TEXTURED, BAR_TEXTURE, x, y, 0, 15, width, 7, 256, 256);
 		}
 	}
-
 }

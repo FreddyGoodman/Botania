@@ -60,19 +60,15 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 		Block type = renderingItem ? forceVariant : pylon.getBlockState().getBlock();
 		PylonModel model;
 		Identifier texture;
-		RenderType shaderLayer;
 		if (BotaniaBlocks.NATURA_PYLON.equals(type)) {
 			model = naturaModel;
 			texture = NATURA_TEXTURE;
-			shaderLayer = direct ? RenderHelper.NATURA_PYLON_GLOW_DIRECT : RenderHelper.NATURA_PYLON_GLOW;
 		} else if (BotaniaBlocks.GAIA_PYLON.equals(type)) {
 			model = gaiaModel;
 			texture = GAIA_TEXTURE;
-			shaderLayer = direct ? RenderHelper.GAIA_PYLON_GLOW_DIRECT : RenderHelper.GAIA_PYLON_GLOW;
 		} else {
 			model = manaModel;
 			texture = MANA_TEXTURE;
-			shaderLayer = direct ? RenderHelper.MANA_PYLON_GLOW_DIRECT : RenderHelper.MANA_PYLON_GLOW;
 		}
 
 		ms.pushPose();
@@ -109,7 +105,7 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 			ms.mulPose(VecHelper.rotateY(-worldTime));
 		}
 
-		buffer = buffers.getBuffer(shaderLayer);
+		buffer = buffers.getBuffer(RenderHelper.getPylonGlow(texture, direct));
 		model.renderCrystal(ms, buffer, light, overlay);
 
 		ms.popPose();

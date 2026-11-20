@@ -69,7 +69,7 @@ public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
 
 		ms.mulPose(VecHelper.rotateY(charge * 9F + (weapon.tickCount + partialTicks) * 0.5F + rand.nextFloat() * 360F));
 
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.BABYLON_ICON);
+		VertexConsumer buffer = buffers.getBuffer(RenderHelper.getBabylonIconLayer());
 		Matrix4f mat = ms.last().pose();
 		buffer.addVertex(mat, -1, 0, -1).setColor(1, 1, 1, chargeMul).setUv(0, 0);
 		buffer.addVertex(mat, -1, 0, 1).setColor(1, 1, 1, chargeMul).setUv(0, 1);

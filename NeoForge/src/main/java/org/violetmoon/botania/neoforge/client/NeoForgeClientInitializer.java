@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -46,7 +45,6 @@ import org.violetmoon.botania.api.neoforge.BotaniaNeoForgeCapabilities;
 import org.violetmoon.botania.client.BotaniaClientCapabilities;
 import org.violetmoon.botania.client.BotaniaItemProperties;
 import org.violetmoon.botania.client.core.handler.*;
-import org.violetmoon.botania.client.core.helper.CoreShaders;
 import org.violetmoon.botania.client.core.proxy.ClientProxy;
 import org.violetmoon.botania.client.fx.BotaniaParticles;
 import org.violetmoon.botania.client.gui.HUDHandler;
@@ -71,8 +69,6 @@ import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import vazkii.patchouli.api.BookDrawScreenEvent;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -118,14 +114,6 @@ public class NeoForgeClientInitializer {
 			if (Minecraft.getInstance().getConnection() instanceof ClientRecipeSync recipes) {
 				recipes.botania$setRecipes(e.getRecipeMap());
 			}
-		});
-		bus.addListener((CustomizeGuiOverlayEvent.BossEventProgress e) -> {
-			var result = BossBarHandler.onBarRender(e.getGuiGraphics(), e.getX(), e.getY(),
-					e.getBossEvent(), true);
-			result.ifPresent(increment -> {
-				e.setCanceled(true);
-				e.setIncrement(increment);
-			});
 		});
 		bus.addListener((CustomizeGuiOverlayEvent.DebugText e) -> DebugHandler.onDrawDebugText(e.getLeft()));
 		bus.addListener((InputEvent.Key e) -> {
@@ -255,20 +243,6 @@ public class NeoForgeClientInitializer {
 				EntityRenderers.addAuxiliaryPlayerRenders(renderer, renderer::addLayer);
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public static void registerShaders(RegisterShadersEvent evt) {
-		CoreShaders.init((id, vertexFormat, onLoaded) -> {
-			try {
-				evt.registerShader(
-						new ShaderInstance(evt.getResourceProvider(), id, vertexFormat),
-						onLoaded
-				);
-			} catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		});
 	}
 
 	@SubscribeEvent

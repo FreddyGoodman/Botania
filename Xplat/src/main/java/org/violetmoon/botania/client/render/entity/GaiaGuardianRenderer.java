@@ -11,104 +11,120 @@ package org.violetmoon.botania.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.renderer.entity.layers.WingsLayer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.PlayerModelPart;
+import net.minecraft.world.entity.player.PlayerModelType;
 
 import org.jetbrains.annotations.Nullable;
-import org.violetmoon.botania.client.core.helper.CoreShaders;
 import org.violetmoon.botania.client.model.GaiaGuardianModel;
 import org.violetmoon.botania.client.model.armor.ArmorModels;
 import org.violetmoon.botania.common.entity.GaiaGuardianEntity;
+import org.violetmoon.botania.xplat.BotaniaConfig;
 
-public class GaiaGuardianRenderer extends HumanoidMobRenderer<GaiaGuardianEntity, GaiaGuardianModel> {
-
-	public static final float DEFAULT_GRAIN_INTENSITY = 0.05F;
-	public static final float DEFAULT_DISFIGURATION = 0.025F;
-
+public class GaiaGuardianRenderer extends MobRenderer<GaiaGuardianEntity, GaiaGuardianRenderer.State, GaiaGuardianModel> {
 	private final GaiaGuardianModel normalModel;
 	private final GaiaGuardianModel slimModel;
 
 	public GaiaGuardianRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx, new GaiaGuardianModel(ctx.bakeLayer(ModelLayers.PLAYER), false), 0F);
-		this.normalModel = this.getModel();
-		this.slimModel = new GaiaGuardianModel(ctx.bakeLayer(ModelLayers.PLAYER_SLIM), true);
-		// Call this here bc no other place with access to Context
+		normalModel = getModel();
+		slimModel = new GaiaGuardianModel(ctx.bakeLayer(ModelLayers.PLAYER_SLIM), true);
+		addLayer(new CustomHeadLayer<>(this, ctx.getModelSet(), ctx.getPlayerSkinRenderCache()));
+		addLayer(new WingsLayer<>(this, ctx.getModelSet(), ctx.getEquipmentRenderer()));
+		addLayer(new ItemInHandLayer<>(this));
 		ArmorModels.init(ctx);
 	}
 
 	@Override
-	public void render(GaiaGuardianEntity gaiaGuardian, float yaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
-		int invulTime = gaiaGuardian.getInvulTime();
-		ShaderInstance shader = CoreShaders.gaiaNoiseDynamic();
-		if (shader != null) {
-			float grainIntensity, disfiguration;
-			if (invulTime > 0) {
-				grainIntensity = invulTime > 20 ? 1F : invulTime * 0.05F;
-				disfiguration = grainIntensity * 0.3F;
-			} else {
-				disfiguration = (0.025F + gaiaGuardian.hurtTime * ((1F - 0.15F) / 20F)) / 2F;
-				grainIntensity = 0.05F + gaiaGuardian.hurtTime * ((1F - 0.15F) / 10F);
-			}
-			shader.safeGetUniform("BotaniaGrainIntensity").set(grainIntensity);
-			shader.safeGetUniform("BotaniaDisfiguration").set(disfiguration);
-		}
+	public State createRenderState() {
+		return new State();
+	}
+
+	@Override
+	public void extractRenderState(GaiaGuardianEntity guardian, State state, float partialTick) {
+		super.extractRenderState(guardian, state, partialTick);
+		HumanoidMobRenderer.extractHumanoidRenderState(guardian, state, partialTick, itemModelResolver);
+		state.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+		state.rightArmPose = HumanoidModel.ArmPose.EMPTY;
 
 		AbstractClientPlayer player = getViewingPlayer();
-		if (player != null && DefaultPlayerSkin.get(player.getUUID()).model().id().equals("slim")) {
-			this.model = slimModel;
-		} else {
-			this.model = normalModel;
-		}
-		this.setModelProperties(player);
+		var skin = player == null ? DefaultPlayerSkin.get(guardian.getUUID()) : player.getSkin();
+		state.texture = skin.body().texturePath();
+		state.slim = player != null && DefaultPlayerSkin.get(player.getUUID()).model() == PlayerModelType.SLIM;
+		state.showHat = player != null && player.isModelPartShown(PlayerModelPart.HAT);
+		state.showJacket = player != null && player.isModelPartShown(PlayerModelPart.JACKET);
+		state.showLeftPants = player != null && player.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);
+		state.showRightPants = player != null && player.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
+		state.showLeftSleeve = player != null && player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
+		state.showRightSleeve = player != null && player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
 
-		super.render(gaiaGuardian, yaw, partialTicks, ms, buffers, light);
+		int invulTime = guardian.getInvulTime();
+		float grainIntensity;
+		float disfiguration;
+		if (invulTime > 0) {
+			grainIntensity = Math.min(1F, invulTime * 0.05F);
+			disfiguration = grainIntensity * 0.3F;
+		} else {
+			disfiguration = (0.025F + guardian.hurtTime * ((1F - 0.15F) / 20F)) / 2F;
+			grainIntensity = 0.05F + guardian.hurtTime * ((1F - 0.15F) / 10F);
+		}
+
+		// The noise pipeline decodes the model tint as grain and positional distortion.
+		int grain = ARGB.as8BitChannel(Math.clamp(grainIntensity, 0F, 1F));
+		int distortion = Math.round(Math.clamp(disfiguration, 0F, 1F) * 65535);
+		state.shaderTint = 0xFF000000 | grain << 16 | distortion;
+	}
+
+	@Override
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		model = state.slim ? slimModel : normalModel;
+		super.submit(state, pose, collector, camera);
 	}
 
 	@Nullable
 	public static AbstractClientPlayer getViewingPlayer() {
 		Minecraft minecraft = Minecraft.getInstance();
-		return minecraft.getCameraEntity() instanceof AbstractClientPlayer clientPlayer
-				? clientPlayer
-				: minecraft.player;
-	}
-
-	private void setModelProperties(@Nullable AbstractClientPlayer clientPlayer) {
-		GaiaGuardianModel gaiaGuardianModel = this.getModel();
-		gaiaGuardianModel.setAllVisible(true);
-		if (clientPlayer == null) {
-			gaiaGuardianModel.hat.visible = false;
-			gaiaGuardianModel.jacket.visible = false;
-			gaiaGuardianModel.leftPants.visible = false;
-			gaiaGuardianModel.rightPants.visible = false;
-			gaiaGuardianModel.leftSleeve.visible = false;
-			gaiaGuardianModel.rightSleeve.visible = false;
-		} else {
-			gaiaGuardianModel.hat.visible = clientPlayer.isModelPartShown(PlayerModelPart.HAT);
-			gaiaGuardianModel.jacket.visible = clientPlayer.isModelPartShown(PlayerModelPart.JACKET);
-			gaiaGuardianModel.leftPants.visible = clientPlayer.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);
-			gaiaGuardianModel.rightPants.visible = clientPlayer.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
-			gaiaGuardianModel.leftSleeve.visible = clientPlayer.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
-			gaiaGuardianModel.rightSleeve.visible = clientPlayer.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
-		}
+		return minecraft.getCameraEntity() instanceof AbstractClientPlayer clientPlayer ? clientPlayer : minecraft.player;
 	}
 
 	@Override
-	public Identifier getTextureLocation(GaiaGuardianEntity entity) {
-		return getViewingPlayer() instanceof AbstractClientPlayer clientPlayer
-				? clientPlayer.getSkin().texture()
-				: DefaultPlayerSkin.get(entity.getUUID()).texture();
+	public Identifier getTextureLocation(State state) {
+		return state.texture;
 	}
 
 	@Override
-	protected boolean isBodyVisible(GaiaGuardianEntity gaiaGuardian) {
+	protected boolean isBodyVisible(State state) {
 		return true;
 	}
 
+	@Override
+	protected int getModelTint(State state) {
+		return BotaniaConfig.client().useShaders() ? state.shaderTint : 0xFFFFFFFF;
+	}
+
+	public static class State extends HumanoidRenderState {
+		private Identifier texture = DefaultPlayerSkin.getDefaultTexture();
+		private boolean slim;
+		private int shaderTint;
+		public boolean showHat;
+		public boolean showJacket;
+		public boolean showLeftPants;
+		public boolean showRightPants;
+		public boolean showLeftSleeve;
+		public boolean showRightSleeve;
+	}
 }

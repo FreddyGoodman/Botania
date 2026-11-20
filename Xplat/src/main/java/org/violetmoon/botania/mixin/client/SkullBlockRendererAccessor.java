@@ -1,0 +1,26 @@
+/*
+ * This class is distributed as part of the Botania Mod.
+ * Get the Source Code in github:
+ * https://github.com/Vazkii/Botania
+ *
+ * Botania is Open Source and distributed under the
+ * Botania License: http://botaniamod.net/license.php
+ */
+package org.violetmoon.botania.mixin.client;
+
+import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.SkullBlock;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import java.util.Map;
+
+@Mixin(SkullBlockRenderer.class)
+public interface SkullBlockRendererAccessor {
+	@Accessor("SKIN_BY_TYPE")
+	static Map<SkullBlock.Type, Identifier> botania_getSkinByType() {
+		throw new IllegalStateException();
+	}
+}

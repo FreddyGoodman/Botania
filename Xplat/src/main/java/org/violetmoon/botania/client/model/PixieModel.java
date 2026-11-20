@@ -8,40 +8,24 @@
  */
 package org.violetmoon.botania.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-import org.violetmoon.botania.client.core.helper.RenderHelper;
-import org.violetmoon.botania.common.entity.PixieEntity;
+import org.violetmoon.botania.client.render.entity.PixieRenderer;
 
-public class PixieModel extends EntityModel<PixieEntity> {
-	private final ModelPart body;
+public class PixieModel extends EntityModel<PixieRenderer.State> {
 	private final ModelPart leftWingT;
 	private final ModelPart leftWingB;
 	private final ModelPart rightWingT;
 	private final ModelPart rightWingB;
 
-	private static boolean evil = false;
-
-	private static RenderType pixieLayer(Identifier texture) {
-		return evil ? RenderHelper.getGaiaNoiseConstantLayer(texture)
-				: RenderTypes.entityCutout(texture);
-	}
-
 	public PixieModel(ModelPart root) {
-		super(PixieModel::pixieLayer);
-
-		body = root.getChild("body");
+		super(root, RenderTypes::entityCutout);
 		leftWingT = root.getChild("leftWingT");
 		leftWingB = root.getChild("leftWingB");
 		rightWingT = root.getChild("rightWingT");
@@ -68,22 +52,13 @@ public class PixieModel extends EntityModel<PixieEntity> {
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		body.render(ms, buffer, light, overlay);
-
-		leftWingT.render(ms, buffer, light, overlay);
-		leftWingB.render(ms, buffer, light, overlay);
-		rightWingT.render(ms, buffer, light, overlay);
-		rightWingB.render(ms, buffer, light, overlay);
-	}
-
-	@Override
-	public void setupAnim(PixieEntity entity, float f, float f1, float f2, float f3, float f4) {
-		evil = entity.isGaia();
-		rightWingT.yRot = -(Mth.cos(f2 * 1.7F) * (float) Math.PI * 0.5F);
-		leftWingT.yRot = Mth.cos(f2 * 1.7F) * (float) Math.PI * 0.5F;
-		rightWingB.yRot = -(Mth.cos(f2 * 1.7F) * (float) Math.PI * 0.25F);
-		leftWingB.yRot = Mth.cos(f2 * 1.7F) * (float) Math.PI * 0.25F;
+	public void setupAnim(PixieRenderer.State state) {
+		super.setupAnim(state);
+		float age = state.ageInTicks;
+		rightWingT.yRot = -(Mth.cos(age * 1.7F) * (float) Math.PI * 0.5F);
+		leftWingT.yRot = Mth.cos(age * 1.7F) * (float) Math.PI * 0.5F;
+		rightWingB.yRot = -(Mth.cos(age * 1.7F) * (float) Math.PI * 0.25F);
+		leftWingB.yRot = Mth.cos(age * 1.7F) * (float) Math.PI * 0.25F;
 	}
 
 }

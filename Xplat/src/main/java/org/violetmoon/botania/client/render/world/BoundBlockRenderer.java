@@ -8,23 +8,25 @@
  */
 package org.violetmoon.botania.client.render.world;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 
-import net.minecraft.util.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -32,10 +34,8 @@ import org.violetmoon.botania.api.item.CoordBoundItem;
 import org.violetmoon.botania.api.item.WireframeCoordinateListProvider;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
-import org.violetmoon.botania.mixin.client.LevelRendererAccessor;
 import org.violetmoon.botania.xplat.BotaniaConfig;
 
-import java.util.List;
 import java.util.SequencedMap;
 
 public final class BoundBlockRenderer {
@@ -86,7 +86,6 @@ public final class BoundBlockRenderer {
 		renderWireframeProviders(camera, BotaniaAPI.instance().getAccessoriesInventory(player), player, ms, color);
 
 		ms.popPose();
-		RenderSystem.disableDepthTest();
 		LINE_BUFFERS.endBatch();
 	}
 
@@ -117,30 +116,15 @@ public final class BoundBlockRenderer {
 		VoxelShape shape = level.getBlockState(pos).getShape(level, pos);
 
 		if (!shape.isEmpty()) {
-			double renderPosX = camera.getPosition().x();
-			double renderPosY = camera.getPosition().y();
-			double renderPosZ = camera.getPosition().z();
+			Vec3 cameraPosition = camera.position();
 
 			ms.pushPose();
-			ms.translate(pos.getX() - renderPosX, pos.getY() - renderPosY, pos.getZ() - renderPosZ);
-
-			VertexConsumer buffer = buffers.getBuffer(thick ? RenderHelper.LINE_5_NO_DEPTH : RenderHelper.LINE_1_NO_DEPTH);
-			renderBlockOutline(ms, buffer, shape, color);
-
-			buffer = buffers.getBuffer(thick ? RenderHelper.LINE_8_NO_DEPTH : RenderHelper.LINE_4_NO_DEPTH);
-			int alpha = 64;
-			color = ARGB.color(alpha, color);
-			renderBlockOutline(ms, buffer, shape, color);
-
+			ms.translate(pos.getX() - cameraPosition.x, pos.getY() - cameraPosition.y, pos.getZ() - cameraPosition.z);
+			var outline = thick ? RenderHelper.LINE_5_NO_DEPTH : RenderHelper.LINE_1_NO_DEPTH;
+			var glow = thick ? RenderHelper.LINE_8_NO_DEPTH : RenderHelper.LINE_4_NO_DEPTH;
+			ShapeRenderer.renderShape(ms, buffers.getBuffer(outline), shape, 0, 0, 0, color, thick ? 5 : 1);
+			ShapeRenderer.renderShape(ms, buffers.getBuffer(glow), shape, 0, 0, 0, ARGB.color(64, color), thick ? 8 : 4);
 			ms.popPose();
 		}
-	}
-
-	private static void renderBlockOutline(PoseStack pose, VertexConsumer buffer, VoxelShape shape, int color) {
-		float a = ((color >> 24) & 0xFF) / 255.0F;
-		float r = ((color >> 16) & 0xFF) / 255.0F;
-		float g = ((color >> 8) & 0xFF) / 255.0F;
-		float b = (color & 0xFF) / 255.F;
-		LevelRendererAccessor.botania_renderShape(pose, buffer, shape, 0.0, 0.0, 0.0, r, g, b, a);
 	}
 }

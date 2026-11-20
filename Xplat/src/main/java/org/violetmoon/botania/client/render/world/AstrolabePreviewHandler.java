@@ -9,17 +9,22 @@
 package org.violetmoon.botania.client.render.world;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -34,12 +39,13 @@ import net.minecraft.world.phys.Vec3;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.item.AstrolabeItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class AstrolabePreviewHandler {
-	public static void onWorldRenderLast(PoseStack ms, RenderBuffers buffers, Level level) {
+	public static void onWorldRenderLast(Camera camera, PoseStack ms, RenderBuffers buffers, Level level) {
 		MultiBufferSource.BufferSource bufferSource = buffers.bufferSource();
-		VertexConsumer buffer = bufferSource.getBuffer(RenderHelper.ASTROLABE_PREVIEW);
+		VertexConsumer buffer = bufferSource.getBuffer(RenderHelper.TRANSLUCENT);
 
 		for (Player player : level.players()) {
 			ItemStack currentStack = player.getMainHandItem();
@@ -52,15 +58,15 @@ public final class AstrolabePreviewHandler {
 			if (!currentStack.isEmpty() && currentStack.getItem() instanceof AstrolabeItem) {
 				Block block = AstrolabeItem.getBlock(currentStack, level.holderLookup(Registries.BLOCK));
 				if (block != Blocks.AIR) {
-					renderPlayerLook(ms, buffer, player, currentStack, hand);
+					renderPlayerLook(ms, buffer, camera.position(), player, currentStack, hand);
 				}
 			}
 		}
 
-		bufferSource.endBatch(RenderHelper.ASTROLABE_PREVIEW);
+		bufferSource.endBatch(RenderHelper.TRANSLUCENT);
 	}
 
-	private static void renderPlayerLook(PoseStack ms, VertexConsumer buffer, Player player, ItemStack stack, InteractionHand hand) {
+	private static void renderPlayerLook(PoseStack ms, VertexConsumer buffer, Vec3 camera, Player player, ItemStack stack, InteractionHand hand) {
 		Block blockToPlace = AstrolabeItem.getBlock(stack, player.level().holderLookup(Registries.BLOCK));
 		int size = AstrolabeItem.getSize(stack);
 		BlockPlaceContext ctx = AstrolabeItem.getBlockPlaceContext(player, hand, blockToPlace);
@@ -70,7 +76,7 @@ public final class AstrolabePreviewHandler {
 				BlockPlaceContext placeContext = getPlaceContext(player, ctx, pos);
 				BlockState state = blockToPlace.getStateForPlacement(placeContext);
 				if (state != null && placeContext.canPlace() && state.canSurvive(player.level(), pos)) {
-					renderBlockAt(ms, buffer, state, pos);
+					renderBlockAt(ms, buffer, state, pos, camera);
 				}
 			}
 		}
@@ -84,25 +90,39 @@ public final class AstrolabePreviewHandler {
 		return new BlockPlaceContext(player, ctx.getHand(), ctx.getItemInHand(), newHit);
 	}
 
-	private static void renderBlockAt(PoseStack ms, VertexConsumer buffer, BlockState state, BlockPos pos) {
-		double renderPosX = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().x();
-		double renderPosY = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().y();
-		double renderPosZ = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().z();
+	private static void renderBlockAt(PoseStack pose, VertexConsumer buffer, BlockState state, BlockPos pos, Vec3 camera) {
+		Minecraft minecraft = Minecraft.getInstance();
+		var model = minecraft.getModelManager().getBlockStateModelSet().get(state);
+		List<BlockStateModelPart> parts = new ArrayList<>();
+		model.collectParts(RandomSource.create(42), parts);
 
-		ms.pushPose();
-		ms.translate(-renderPosX, -renderPosY, -renderPosZ);
-
-		BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
-		ms.translate(pos.getX(), pos.getY(), pos.getZ());
-		BakedModel model = brd.getBlockModel(state);
-		int color = Minecraft.getInstance().getBlockColors().getColor(state, null, null, 0);
-		float r = (float) (color >> 16 & 255) / 255.0F;
-		float g = (float) (color >> 8 & 255) / 255.0F;
-		float b = (float) (color & 255) / 255.0F;
-		// always use entity translucent layer so blending is turned on
-		brd.getModelRenderer().renderModel(ms.last(), buffer, state, model, r, g, b, 0xF000F0, OverlayTexture.NO_OVERLAY);
-
-		ms.popPose();
+		pose.pushPose();
+		pose.translate(pos.getX() - camera.x, pos.getY() - camera.y, pos.getZ() - camera.z);
+		var quadInstance = new QuadInstance();
+		quadInstance.setLightCoords(0xF000F0);
+		quadInstance.setOverlayCoords(OverlayTexture.NO_OVERLAY);
+		for (BlockStateModelPart part : parts) {
+			for (Direction direction : Direction.values()) {
+				renderQuads(pose.last(), buffer, state, part.getQuads(direction), quadInstance);
+			}
+			renderQuads(pose.last(), buffer, state, part.getQuads(null), quadInstance);
+		}
+		pose.popPose();
 	}
 
+	private static void renderQuads(PoseStack.Pose pose, VertexConsumer buffer, BlockState state,
+			List<BakedQuad> quads, QuadInstance quadInstance) {
+		var colors = Minecraft.getInstance().getBlockColors();
+		for (BakedQuad quad : quads) {
+			int color = 0xFFFFFF;
+			if (quad.materialInfo().isTinted()) {
+				var source = colors.getTintSource(state, quad.materialInfo().tintIndex());
+				if (source != null) {
+					color = source.color(state);
+				}
+			}
+			quadInstance.setColor(ARGB.color(102, color));
+			buffer.putBakedQuad(pose, quad, quadInstance);
+		}
+	}
 }

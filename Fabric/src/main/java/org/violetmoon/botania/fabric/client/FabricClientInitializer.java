@@ -43,7 +43,6 @@ import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.handler.CorporeaInputHandler;
 import org.violetmoon.botania.client.core.handler.KonamiHandler;
 import org.violetmoon.botania.client.core.handler.MiscellaneousModels;
-import org.violetmoon.botania.client.core.helper.CoreShaders;
 import org.violetmoon.botania.client.core.proxy.ClientProxy;
 import org.violetmoon.botania.client.fx.BotaniaParticles;
 import org.violetmoon.botania.client.gui.HUDHandler;
@@ -63,8 +62,6 @@ import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import vazkii.patchouli.api.BookDrawScreenCallback;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.function.Function;
 
@@ -82,14 +79,6 @@ public class FabricClientInitializer implements ClientModInitializer {
 		BotaniaAPI.LOGGER.debug("Client API instances: {}",
 				List.of(BotaniaAPIClient.instance(), ClientXplatAbstractions.instance()));
 
-		CoreShaderRegistrationCallback.EVENT.register(ctx -> CoreShaders.init((id, vertexFormat, onLoaded) -> {
-			try {
-				ctx.register(id, vertexFormat, onLoaded);
-			} catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		}
-		));
 		FabricPacketHandler.initClient();
 
 		// Guis

@@ -140,7 +140,7 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 			ms.translate(0, Mth.clampedMap(manaLevel, 0, 1, poolBottom, poolTop), 0);
 			ms.mulPose(VecHelper.rotateX(90F));
 
-			VertexConsumer buffer = buffers.getBuffer(RenderHelper.MANA_POOL_WATER);
+			VertexConsumer buffer = buffers.getBuffer(RenderHelper.getManaPoolWaterLayer());
 			RenderHelper.renderIconCropped(
 					ms, buffer,
 					uvStartX, uvStartY, uvEndX, uvEndY,

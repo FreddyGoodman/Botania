@@ -9,8 +9,6 @@
 
 package org.violetmoon.botania.client.model;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.HumanoidModel;
@@ -18,10 +16,10 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.HumanoidArm;
 
 import org.violetmoon.botania.client.core.helper.RenderHelper;
-import org.violetmoon.botania.common.entity.GaiaGuardianEntity;
+import org.violetmoon.botania.client.render.entity.GaiaGuardianRenderer;
 
 // [VanillaCopy] PlayerModel, only the parts relevant to the Gaia Guardian
-public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianEntity> {
+public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderer.State> {
 	public final ModelPart leftSleeve;
 	public final ModelPart rightSleeve;
 	public final ModelPart leftPants;
@@ -40,32 +38,24 @@ public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianEntity> {
 	}
 
 	@Override
-	protected Iterable<ModelPart> bodyParts() {
-		return Iterables.concat(super.bodyParts(), ImmutableList.of(this.leftPants, this.rightPants, this.leftSleeve, this.rightSleeve, this.jacket));
+	public void setupAnim(GaiaGuardianRenderer.State state) {
+		super.setupAnim(state);
+		hat.visible = state.showHat;
+		jacket.visible = state.showJacket;
+		leftPants.visible = state.showLeftPants;
+		rightPants.visible = state.showRightPants;
+		leftSleeve.visible = state.showLeftSleeve;
+		rightSleeve.visible = state.showRightSleeve;
+
+		leftPants.loadPose(leftLeg.storePose());
+		rightPants.loadPose(rightLeg.storePose());
+		leftSleeve.loadPose(leftArm.storePose());
+		rightSleeve.loadPose(rightArm.storePose());
+		jacket.loadPose(body.storePose());
 	}
 
 	@Override
-	public void setupAnim(GaiaGuardianEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		this.leftPants.copyFrom(this.leftLeg);
-		this.rightPants.copyFrom(this.rightLeg);
-		this.leftSleeve.copyFrom(this.leftArm);
-		this.rightSleeve.copyFrom(this.rightArm);
-		this.jacket.copyFrom(this.body);
-	}
-
-	@Override
-	public void setAllVisible(boolean visible) {
-		super.setAllVisible(visible);
-		this.leftSleeve.visible = visible;
-		this.rightSleeve.visible = visible;
-		this.leftPants.visible = visible;
-		this.rightPants.visible = visible;
-		this.jacket.visible = visible;
-	}
-
-	@Override
-	public void translateToHand(HumanoidArm side, PoseStack poseStack) {
+	public void translateToHand(GaiaGuardianRenderer.State state, HumanoidArm side, PoseStack poseStack) {
 		ModelPart modelpart = this.getArm(side);
 		if (this.slim) {
 			float f = 0.5F * (float) (side == HumanoidArm.RIGHT ? 1 : -1);

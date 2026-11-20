@@ -1,0 +1,13 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "botania:item/gaia_head",
+    "model": {
+      "type": "botania:gaia_head"
+    },
+    "transformation": {
+      "left_rotation": [1.0, 0.0, 0.0, 0.0],
+      "translation": [0.5, 0.0, 0.5]
+    }
+  }
+}

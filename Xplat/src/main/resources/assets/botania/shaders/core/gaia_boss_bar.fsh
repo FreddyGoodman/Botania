@@ -1,14 +1,12 @@
-#version 150
+#version 330
+
+#moj_import <minecraft:dynamictransforms.glsl>
+#moj_import <minecraft:globals.glsl>
 
 uniform sampler2D Sampler0;
-uniform float GameTime;
-
-uniform vec4 ColorModulator;
-
-uniform float BotaniaGrainIntensity;
-uniform float BotaniaHpFract;
 
 in vec2 texCoord0;
+in vec4 vertexColor;
 
 out vec4 fragColor;
 
@@ -26,6 +24,9 @@ float rand(vec2 co, float seed)
 }
 
 void main() {
+    float grainIntensity = vertexColor.r;
+    vec2 encodedProgress = round(vertexColor.gb * 255.0);
+    float progress = (encodedProgress.x * 256.0 + encodedProgress.y) / 65535.0;
     vec4 color = texture(Sampler0, texCoord0);
     if (color.a == 0.0) {
         discard;
@@ -34,7 +35,7 @@ void main() {
     // GameTime is in [0, 1) over course of the day, turn it back into ticks
     float time = GameTime * 24000;
 
-    float s = sin((texCoord0.y + 0.0375) * 100.0 + sin(texCoord0.x * 90.0 - time / 2.0) * BotaniaHpFract) * 0.5 + 0.5;
+    float s = sin((texCoord0.y + 0.0375) * 100.0 + sin(texCoord0.x * 90.0 - time / 2.0) * progress) * 0.5 + 0.5;
     s = 1.0 - s;
     if(s <= 0.98)
     s = 0;
@@ -46,7 +47,7 @@ void main() {
         min(1, color.b + s)
     );
 
-    if(BotaniaHpFract <= 0.2) {
+    if(progress <= 0.2) {
         float flash = (sin(time * 2.0) - 0.8) * 5;
         if(flash > 0) {
             newColor.g = max(0, newColor.g - flash);
@@ -54,9 +55,9 @@ void main() {
         }
     }
 
-    if(BotaniaGrainIntensity > 0) {
+    if(grainIntensity > 0) {
         float gs = rand(texCoord0, time);
-        newColor = mix(newColor, vec3(gs), BotaniaGrainIntensity);
+        newColor = mix(newColor, vec3(gs), grainIntensity);
     }
 
     fragColor = vec4(newColor, color.a) * ColorModulator;

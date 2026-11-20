@@ -88,11 +88,11 @@ public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<Man
 				ms.translate(-2.5F, -2.5F, 0F);
 			}
 
-			VertexConsumer buffer = buffers.getBuffer(RenderHelper.ENCHANTER);
+			VertexConsumer buffer = buffers.getBuffer(RenderHelper.getEnchanterLayer());
 			RenderHelper.renderIconFullBright(
 					ms, buffer,
 					0, 0, 5, 5,
-					0, 0, 1, 1,
+					0, 0, 16, 16,
 					this.overlaySprite, 0xFFFFFF, alpha, light
 			);
 		}

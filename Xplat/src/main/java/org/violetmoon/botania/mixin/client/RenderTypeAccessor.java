@@ -8,8 +8,6 @@
  */
 package org.violetmoon.botania.mixin.client;
 
-import com.mojang.blaze3d.vertex.VertexFormat;
-
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
@@ -20,13 +18,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface RenderTypeAccessor {
 	@Invoker("create")
 	static RenderType botania_create(String name, RenderSetup setup) {
-		throw new IllegalStateException();
-	}
-
-	@Invoker("create")
-	static RenderType.CompositeRenderType botania_create(String string, VertexFormat vertexFormat,
-			VertexFormat.Mode mode, int bufSize, boolean hasCrumbling, boolean sortOnUpload,
-			RenderType.CompositeState compositeState) {
 		throw new IllegalStateException();
 	}
 }
