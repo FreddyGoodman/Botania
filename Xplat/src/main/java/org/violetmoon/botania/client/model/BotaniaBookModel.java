@@ -1,8 +1,5 @@
 package org.violetmoon.botania.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -14,7 +11,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
 
 // [VanillaCopy] BookModel, with z-fighting fixes
-public class BotaniaBookModel extends Model<Void> {
+public class BotaniaBookModel extends Model<BotaniaBookModel.Animation> {
 	private static final String LEFT_PAGES = "left_pages";
 	private static final String RIGHT_PAGES = "right_pages";
 	private static final String FLIP_PAGE_1 = "flip_page1";
@@ -66,18 +63,18 @@ public class BotaniaBookModel extends Model<Void> {
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
-	public void render(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-		this.root.render(poseStack, buffer, packedLight, packedOverlay, color);
-	}
+	public record Animation(float time, float rightPageFlipAmount, float leftPageFlipAmount, float bookOpenAmount) {}
 
-	public void setupAnim(float time, float rightPageFlipAmount, float leftPageFlipAmount, float bookOpenAmount) {
-		float f = (Mth.sin(time * 0.02F) * 0.1F + 1.25F) * bookOpenAmount;
+	@Override
+	public void setupAnim(Animation animation) {
+		super.setupAnim(animation);
+		float f = (Mth.sin(animation.time() * 0.02F) * 0.1F + 1.25F) * animation.bookOpenAmount();
 		this.leftLid.yRot = (float) Math.PI + f;
 		this.rightLid.yRot = -f;
 		this.leftPages.yRot = f;
 		this.rightPages.yRot = -f;
-		this.flipPage1.yRot = f - f * 2.0F * rightPageFlipAmount;
-		this.flipPage2.yRot = f - f * 2.0F * leftPageFlipAmount;
+		this.flipPage1.yRot = f - f * 2.0F * animation.rightPageFlipAmount();
+		this.flipPage2.yRot = f - f * 2.0F * animation.leftPageFlipAmount();
 		this.leftPages.x = Mth.sin(f);
 		this.rightPages.x = Mth.sin(f);
 		this.flipPage1.x = Mth.sin(f);

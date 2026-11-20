@@ -97,7 +97,11 @@ public class NeoForgeClientInitializer {
 			KonamiHandler.clientTick(Minecraft.getInstance());
 		});
 		bus.addListener((ItemTooltipEvent e) -> TooltipHandler.onTooltipEvent(e.getItemStack(), e.getContext(), e.getFlags(), e.getToolTip()));
-		bus.addListener((ScreenEvent.KeyPressed.Post e) -> CorporeaInputHandler.buttonPressed(e.getKeyCode(), e.getScanCode()));
+		bus.addListener((ScreenEvent.KeyPressed.Post e) -> {
+			if (CorporeaInputHandler.buttonPressed(e.getKeyEvent())) {
+				e.setCanceled(true);
+			}
+		});
 
 		// NeoForge bus events done with Mixins on Fabric
 		bus.addListener(EventPriority.HIGH, (ClientChatEvent e) -> {

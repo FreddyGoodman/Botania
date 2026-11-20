@@ -8,9 +8,6 @@
  */
 package org.violetmoon.botania.client.core.handler;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -61,21 +58,20 @@ public class KonamiHandler {
 	}
 
 	public static void renderBook(Identifier book, Screen gui, int mouseX, int mouseY, float partialTicks, GuiGraphicsExtractor guiGraphics) {
-		PoseStack ms = guiGraphics.pose();
 		if (konamiTime > 0) {
 			String meme = I18n.get("botania.subtitle.way");
-			RenderSystem.disableDepthTest();
-			ms.pushPose();
+			guiGraphics.nextStratum();
+			var pose = guiGraphics.pose();
+			pose.pushMatrix();
 			int fullWidth = Minecraft.getInstance().font.width(meme);
 			int left = gui.width;
 			double widthPerTick = (double) (fullWidth + gui.width) / TOTAL_KONAMI_TIME;
 			double currWidth = left - widthPerTick * (TOTAL_KONAMI_TIME - (konamiTime - partialTicks)) * 3.2;
 
-			ms.translate(currWidth, gui.height / 2 - 10, 0);
-			ms.scale(4, 4, 4);
-			guiGraphics.text(Minecraft.getInstance().font, meme, 0, 0, 0xFFFFFF);
-			ms.popPose();
-			RenderSystem.enableDepthTest();
+			pose.translate((float) currWidth, gui.height / 2 - 10);
+			pose.scale(4, 4);
+			guiGraphics.text(Minecraft.getInstance().font, meme, 0, 0, 0xFFFFFFFF);
+			pose.popMatrix();
 		}
 	}
 }

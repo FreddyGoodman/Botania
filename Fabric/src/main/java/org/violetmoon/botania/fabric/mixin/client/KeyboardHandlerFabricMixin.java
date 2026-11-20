@@ -10,6 +10,7 @@ package org.violetmoon.botania.fabric.mixin.client;
 
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,10 +22,10 @@ import org.violetmoon.botania.common.item.equipment.bauble.RingOfDexterousMotion
 @Mixin(KeyboardHandler.class)
 public class KeyboardHandlerFabricMixin {
 	@Inject(at = @At("HEAD"), method = "keyPress")
-	private void keyEvent(long window, int key, int scancode, int action, int modifiers, CallbackInfo ci) {
+	private void keyEvent(long window, int action, KeyEvent key, CallbackInfo ci) {
 		if (window == Minecraft.getInstance().getWindow().getWindow()) {
 			RingOfDexterousMotionItem.ClientLogic.onKeyDown();
-			KonamiHandler.handleInput(key, action, modifiers);
+			KonamiHandler.handleInput(key.key(), action, key.modifiers());
 		}
 	}
 }

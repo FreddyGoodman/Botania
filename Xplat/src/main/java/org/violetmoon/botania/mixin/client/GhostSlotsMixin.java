@@ -8,18 +8,21 @@
  */
 package org.violetmoon.botania.mixin.client;
 
-import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+
+import net.minecraft.client.gui.screens.recipebook.GhostSlots;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.violetmoon.botania.client.core.RecipeBookAccess;
 
-@Mixin(RecipeBookComponent.class)
-public class RecipeBookComponentMixin implements RecipeBookAccess {
+@Mixin(GhostSlots.class)
+public class GhostSlotsMixin implements RecipeBookAccess {
 	@Unique
 	@Nullable
 	private ItemStack botania_hoveredGhostRecipeStack;
@@ -30,9 +33,14 @@ public class RecipeBookComponentMixin implements RecipeBookAccess {
 		return botania_hoveredGhostRecipeStack;
 	}
 
-	// Captures the stack that had its tooltip drawn.
-	@ModifyVariable(method = "renderGhostRecipeTooltip", at = @At("RETURN"), ordinal = 0, require = 0)
-	private ItemStack captureHoveredGhostStack(ItemStack stack) {
+	@Inject(method = {"extractTooltip", "clear"}, at = @At("HEAD"))
+	private void botania$clearHoveredStack(CallbackInfo ci) {
+		botania_hoveredGhostRecipeStack = null;
+	}
+
+	@ModifyExpressionValue(method = "extractTooltip", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/gui/screens/recipebook/GhostSlots$GhostSlot;getItem(I)Lnet/minecraft/world/item/ItemStack;"))
+	private ItemStack botania$captureHoveredStack(ItemStack stack) {
 		botania_hoveredGhostRecipeStack = stack;
 		return stack;
 	}

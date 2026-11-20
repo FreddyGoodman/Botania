@@ -23,7 +23,6 @@ import org.violetmoon.botania.xplat.XplatAbstractions;
 import vazkii.patchouli.api.IVariable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PatchouliUtils {
 	private static boolean crafttweakerInfoNote = false;

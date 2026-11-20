@@ -9,24 +9,20 @@
 package org.violetmoon.botania.client.core.handler;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.client.model.BotaniaBookModel;
 import org.violetmoon.botania.client.model.BotaniaModelLayers;
@@ -45,8 +41,8 @@ public class RenderLexicon {
 	@Nullable
 	private static BotaniaBookModel model = null;
 	private static final boolean SHOULD_MISSPELL = Math.random() < 0.004;
-	public static final Material TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, botaniaRL("item/lexica_botania_3d"));
-	public static final Material ELVEN_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, botaniaRL("item/lexica_botania_elven_3d"));
+	private static final Identifier TEXTURE = botaniaRL("textures/item/lexica_botania_3d.png");
+	private static final Identifier ELVEN_TEXTURE = botaniaRL("textures/item/lexica_botania_elven_3d.png");
 
 	private static final String[] QUOTES = new String[] {
 			"\"Neat!\" - Direwolf20",
@@ -74,7 +70,7 @@ public class RenderLexicon {
 	}
 
 	public static boolean renderHand(ItemStack stack, ItemDisplayContext type,
-			boolean leftHanded, PoseStack ms, MultiBufferSource buffers, int light) {
+			PoseStack ms, SubmitNodeCollector collector, int light) {
 		if (!BotaniaConfig.client().lexicon3dModel()
 				|| !type.firstPerson()
 				|| stack.isEmpty()
@@ -82,7 +78,7 @@ public class RenderLexicon {
 			return false;
 		}
 		try {
-			doRender(stack, leftHanded, ms, buffers, light);
+			doRender(stack, type.leftHand(), ms, collector, light);
 			return true;
 		} catch (Throwable throwable) {
 			BotaniaAPI.LOGGER.warn("Failed to render lexicon", throwable);
@@ -90,7 +86,7 @@ public class RenderLexicon {
 		}
 	}
 
-	private static void doRender(ItemStack stack, boolean leftHanded, PoseStack ms, MultiBufferSource buffers, int light) {
+	private static void doRender(ItemStack stack, boolean leftHanded, PoseStack ms, SubmitNodeCollector collector, int light) {
 		Minecraft mc = Minecraft.getInstance();
 
 		ms.pushPose();
@@ -113,13 +109,10 @@ public class RenderLexicon {
 
 		float leftPageAngle = Mth.frac(pageFlip + 0.25F) * 1.6F - 0.3F;
 		float rightPageAngle = Mth.frac(pageFlip + 0.75F) * 1.6F - 0.3F;
-		var model = getModel();
-		model.setupAnim(ClientTickHandler.getPlayerTicksInGame() + ClientTickHandler.getPartialPlayerTick(),
+		var animation = new BotaniaBookModel.Animation(ClientTickHandler.getPlayerTicksInGame() + ClientTickHandler.getPartialPlayerTick(),
 				Math.clamp(leftPageAngle, 0.0F, 1.0F), Math.clamp(rightPageAngle, 0.0F, 1.0F), opening);
-
-		Material mat = LexicaBotaniaItem.isElven(stack) ? ELVEN_TEXTURE : TEXTURE;
-		VertexConsumer buffer = mat.buffer(buffers, RenderType::entitySolid);
-		model.renderToBuffer(ms, buffer, light, OverlayTexture.NO_OVERLAY, 0xffffff);
+		Identifier texture = LexicaBotaniaItem.isElven(stack) ? ELVEN_TEXTURE : TEXTURE;
+		collector.submitModel(getModel(), animation, ms, texture, light, OverlayTexture.NO_OVERLAY, 0, null);
 
 		if (ticks < 3) {
 			Font font = Minecraft.getInstance().font;
@@ -135,12 +128,12 @@ public class RenderLexicon {
 			if (SHOULD_MISSPELL) {
 				title = title.replaceAll("Botania", MISSPELLINGS[misspelling]);
 			}
-			font.drawInBatch(font.plainSubstrByWidth(title, 80), 0, 0, 0xD69700, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
+			collector.submitText(ms, 0, 0, Component.literal(font.plainSubstrByWidth(title, 80)).getVisualOrderText(), false, Font.DisplayMode.NORMAL, light, 0xFFD69700, 0, 0);
 
 			ms.translate(0F, 10F, 0F);
 			ms.scale(0.6F, 0.6F, 0.6F);
 			Component edition = LexicaBotaniaItem.getEdition().copy().withStyle(ChatFormatting.ITALIC, ChatFormatting.BOLD);
-			font.drawInBatch(edition, 0, 0, 0xA07100, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
+			collector.submitText(ms, 0, 0, edition.getVisualOrderText(), false, Font.DisplayMode.NORMAL, light, 0xFFA07100, 0, 0);
 
 			if (quote == -1 && mc.level != null) {
 				quote = mc.level.getRandom().nextInt(QUOTES.length);
@@ -149,28 +142,28 @@ public class RenderLexicon {
 			String quoteStr = QUOTES[quote];
 
 			ms.translate(-5F, 15F, 0F);
-			renderText(0, 0, 140, 0, 0x79ff92, quoteStr, ms.last().pose(), buffers, light);
+			renderText(0, 0, 140, 0, 0xFF79FF92, quoteStr, ms, collector, light);
 
 			ms.translate(8F, 110F, 0F);
 			String blurb = I18n.get("botaniamisc.lexiconcover0");
-			font.drawInBatch(blurb, 0, 0, 0x79ff92, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
+			collector.submitText(ms, 0, 0, Component.literal(blurb).getVisualOrderText(), false, Font.DisplayMode.NORMAL, light, 0xFF79FF92, 0, 0);
 
 			ms.translate(0F, 10F, 0F);
 			String blurb2 = ChatFormatting.UNDERLINE + "" + ChatFormatting.ITALIC + I18n.get("botaniamisc.lexiconcover1");
-			font.drawInBatch(blurb2, 0, 0, 0x79ff92, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
+			collector.submitText(ms, 0, 0, Component.literal(blurb2).getVisualOrderText(), false, Font.DisplayMode.NORMAL, light, 0xFF79FF92, 0, 0);
 
 			ms.translate(0F, -30F, 0F);
 
 			String authorTitle = I18n.get("botaniamisc.lexiconcover2");
 			int len = font.width(authorTitle);
-			font.drawInBatch(authorTitle, 58 - len / 2F, -8, 0xD69700, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
+			collector.submitText(ms, 58 - len / 2F, -8, Component.literal(authorTitle).getVisualOrderText(), false, Font.DisplayMode.NORMAL, light, 0xFFD69700, 0, 0);
 		}
 
 		ms.popPose();
 	}
 
 	@SuppressWarnings("SameParameterValue")
-	private static void renderText(int x, int y, int width, int paragraphSize, int color, String unlocalizedText, Matrix4f matrix, MultiBufferSource buffers, int light) {
+	private static void renderText(int x, int y, int width, int paragraphSize, int color, String unlocalizedText, PoseStack pose, SubmitNodeCollector collector, int light) {
 		x += 2;
 		y += 10;
 		width -= 4;
@@ -213,7 +206,7 @@ public class RenderLexicon {
 
 			for (String s : words) {
 				int extra = 0;
-				font.drawInBatch(s, xi, y, color, false, matrix, buffers, Font.DisplayMode.NORMAL, 0, light);
+				collector.submitText(pose, xi, y, Component.literal(s).getVisualOrderText(), false, Font.DisplayMode.NORMAL, light, color, 0, 0);
 				xi += font.width(s) + spacing + extra;
 			}
 

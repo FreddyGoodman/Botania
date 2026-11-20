@@ -130,8 +130,8 @@ public class FabricClientInitializer implements ClientModInitializer {
 		HudRenderCallback.EVENT.register(HUDHandler::onDrawExperienceBarPost);
 		HudRenderCallback.EVENT.register(HUDHandler::onDrawAirLevelPost);
 		ItemTooltipCallback.EVENT.register(TooltipHandler::onTooltipEvent);
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ScreenKeyboardEvents.beforeKeyPress(screen)
-				.register((screen2, key, scancode, modifiers) -> CorporeaInputHandler.buttonPressed(key, scancode)));
+		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ScreenKeyboardEvents.allowKeyPress(screen)
+				.register((ignored, key) -> !CorporeaInputHandler.buttonPressed(key)));
 		TooltipComponentCallback.EVENT.register(ManaBarTooltipComponent::tryConvert);
 
 		// Etc

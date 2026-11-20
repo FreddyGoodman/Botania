@@ -8,6 +8,7 @@
  */
 package org.violetmoon.botania.mixin.client;
 
+import net.minecraft.client.gui.screens.recipebook.GhostSlots;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 
@@ -18,4 +19,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface RecipeBookComponentAccessor {
 	@Accessor("recipeBookPage")
 	RecipeBookPage botania_getRecipeBookPage();
+
+	@Accessor("ghostSlots")
+	GhostSlots botania_getGhostSlots();
 }

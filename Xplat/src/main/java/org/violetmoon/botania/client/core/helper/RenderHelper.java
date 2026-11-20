@@ -8,13 +8,11 @@
  */
 package org.violetmoon.botania.client.core.helper;
 
-import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -55,7 +53,6 @@ import net.minecraft.world.item.Items;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.common.helper.VecHelper;
@@ -597,66 +594,6 @@ public final class RenderHelper {
 		renderIconFullBright(ms, buffer, icon, 0xFFFFFF, alpha);
 	}
 
-	public static void renderGuiItemAlpha(ItemStack stack, int x, int y, int alpha, ItemRenderer renderer) {
-		renderGuiItemAlpha(stack, x, y, alpha, renderer.getModel(stack, null, null, 0), renderer);
-	}
-
-	/**
-	 * Like
-	 * {@link ItemRenderer#render(ItemStack, ItemDisplayContext, boolean, PoseStack, MultiBufferSource, int, int, BakedModel)}
-	 * but with alpha
-	 */
-	// [VanillaCopy] with a small change
-	public static void renderGuiItemAlpha(ItemStack stack, int x, int y, int alpha, BakedModel model, ItemRenderer renderer) {
-		Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setFilter(false, false);
-
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-		Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
-		modelViewStack.pushMatrix();
-		modelViewStack.translate(x, y, 100.0F);
-		modelViewStack.translate(8.0F, 8.0F, 0.0F);
-		modelViewStack.scale(1.0F, -1.0F, 1.0F);
-		modelViewStack.scale(16.0F, 16.0F, 16.0F);
-		RenderSystem.applyModelViewMatrix();
-
-		boolean flatLight = !model.usesBlockLight();
-		if (flatLight) {
-			Lighting.setupForFlatItems();
-		}
-
-		MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-		renderer.render(
-				stack,
-				ItemDisplayContext.GUI,
-				false,
-				new PoseStack(),
-				// This part differs from vanilla. We wrap the buffer to allow drawing translucently
-				wrapBuffer(buffer, alpha, alpha < 255),
-				LightCoordsUtil.FULL_BRIGHT,
-				OverlayTexture.NO_OVERLAY,
-				model
-		);
-		buffer.endBatch();
-
-		RenderSystem.enableDepthTest();
-
-		if (flatLight) {
-			Lighting.setupFor3DItems();
-		}
-
-		modelViewStack.popMatrix();
-		RenderSystem.applyModelViewMatrix();
-	}
-
-	private static MultiBufferSource wrapBuffer(MultiBufferSource buffer, int alpha, boolean forceTranslucent) {
-		return renderType -> new GhostVertexConsumer(buffer.getBuffer(forceTranslucent ? TRANSLUCENT : renderType), alpha);
-	}
-
 	/*
 	* Renders a transparent black box with a soft border. The parameters describe the inner box, there will also be drawn
 	* another box that is 2px bigger in each direction
@@ -690,37 +627,4 @@ public final class RenderHelper {
 		return ITEM_AND_PADDING_WIDTH + font.width(itemStack.getHoverName());
 	}
 
-	// Borrowed with permission from https://github.com/XFactHD/FramedBlocks/blob/14f468810fc416b39447512810f0aa86e1012335/src/main/java/xfacthd/framedblocks/client/util/GhostVertexConsumer.java
-	// TODO: is this even still relevant? it doesn't exist anymore where it was borrowed from
-	public record GhostVertexConsumer(VertexConsumer wrapped, int alpha) implements VertexConsumer {
-		@Override
-		public VertexConsumer addVertex(float x, float y, float z) {
-			return wrapped.addVertex(x, y, z);
-		}
-
-		@Override
-		public VertexConsumer setColor(int red, int green, int blue, int alpha) {
-			return wrapped.setColor(red, green, blue, (alpha * this.alpha) / 0xFF);
-		}
-
-		@Override
-		public VertexConsumer setUv(float u, float v) {
-			return wrapped.setUv(u, v);
-		}
-
-		@Override
-		public VertexConsumer setUv1(int u, int v) {
-			return wrapped.setUv1(u, v);
-		}
-
-		@Override
-		public VertexConsumer setUv2(int u, int v) {
-			return wrapped.setUv2(u, v);
-		}
-
-		@Override
-		public VertexConsumer setNormal(float x, float y, float z) {
-			return wrapped.setNormal(x, y, z);
-		}
-	}
 }
