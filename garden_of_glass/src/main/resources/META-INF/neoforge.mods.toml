@@ -16,7 +16,7 @@ itemIcon = "botania:cosmetic_botanist_emblem" # custom icon for Catalogue's mod 
 
 [[dependencies.gardenofglass]]
 modId = "minecraft"
-versionRange = "[1.21,)"
+versionRange = "[26.1.2]"
 type = "required"
 
 [[dependencies.gardenofglass]]
