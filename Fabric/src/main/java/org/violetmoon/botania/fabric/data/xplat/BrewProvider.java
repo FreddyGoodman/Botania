@@ -9,8 +9,6 @@
  */
 package org.violetmoon.botania.fabric.data.xplat;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
@@ -27,22 +25,18 @@ import org.violetmoon.botania.common.crafting.BotanicalBreweryRecipe;
 import org.violetmoon.botania.common.item.BotaniaItems;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
+import static org.violetmoon.botania.data.util.BotaniaRecipeHelper.recipeKey;
 
-public class BrewProvider extends FabricRecipeProvider {
-	public BrewProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		super(output, registriesFuture);
+public class BrewProvider extends BotaniaFabricRecipeProvider {
+	public BrewProvider(HolderLookup.Provider registries, RecipeOutput output, ConditionalOutput conditionalOutput) {
+		super(registries, output, conditionalOutput);
 	}
 
 	@Override
-	public String getName() {
-		return "Botania Brew recipes";
-	}
-
-	@Override
-	public void buildRecipes(RecipeOutput recipeOutput) {
+	public void buildRecipes() {
+		RecipeOutput recipeOutput = output;
 		make(recipeOutput, BotaniaBrews.FLEETFEET,
 				Items.NETHER_WART, Items.SUGAR, Items.REDSTONE);
 		make(recipeOutput, BotaniaBrews.VIGOR,
@@ -77,7 +71,7 @@ public class BrewProvider extends FabricRecipeProvider {
 				Items.NETHER_WART, Blocks.SOUL_SAND, Items.PAPER, Items.APPLE, Items.BONE);
 		make(recipeOutput, BotaniaBrews.FEATHER_FEET,
 				Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.FEATHER),
-				Ingredient.of(Items.LEATHER), Ingredient.of(ItemTags.WOOL));
+				Ingredient.of(Items.LEATHER), tag(ItemTags.WOOL));
 		make(recipeOutput, BotaniaBrews.VANITYS_EMPTINESS,
 				Items.NETHER_WART, Items.GUNPOWDER, Items.ROTTEN_FLESH, Items.BONE, Items.STRING, Items.ENDER_PEARL);
 		make(recipeOutput, BotaniaBrews.CRIMSON_SHADE,
@@ -93,7 +87,7 @@ public class BrewProvider extends FabricRecipeProvider {
 	}
 
 	private void make(RecipeOutput recipeOutput, Brew brew, Ingredient... inputs) {
-		recipeOutput.accept(idFor(BotaniaAPI.instance().getBrewRegistry().getKey(brew).getPath()),
+		recipeOutput.accept(recipeKey(idFor(BotaniaAPI.instance().getBrewRegistry().getKey(brew).getPath())),
 				new BotanicalBreweryRecipe(brew, inputs),
 				null);
 	}

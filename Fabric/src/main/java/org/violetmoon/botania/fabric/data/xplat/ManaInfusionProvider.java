@@ -9,8 +9,6 @@
  */
 package org.violetmoon.botania.fabric.data.xplat;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,11 +31,10 @@ import org.violetmoon.botania.common.crafting.StateIngredients;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
-import java.util.concurrent.CompletableFuture;
-
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
+import static org.violetmoon.botania.data.util.BotaniaRecipeHelper.recipeKey;
 
-public class ManaInfusionProvider extends FabricRecipeProvider {
+public class ManaInfusionProvider extends BotaniaFabricRecipeProvider {
 	public static final int BLOCK_COST_MULTIPLIER = 9;
 	public static final int COST_MANASTEEL = 3000;
 	public static final int COST_MANA_DIAMOND = 10000;
@@ -48,17 +45,13 @@ public class ManaInfusionProvider extends FabricRecipeProvider {
 
 	public static final int COST_LEAVES_DUPLICATION = 2000;
 
-	public ManaInfusionProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider);
+	public ManaInfusionProvider(HolderLookup.Provider registries, RecipeOutput output, ConditionalOutput conditionalOutput) {
+		super(registries, output, conditionalOutput);
 	}
 
 	@Override
-	public String getName() {
-		return "Botania mana pool recipes";
-	}
-
-	@Override
-	public void buildRecipes(RecipeOutput consumer) {
+	public void buildRecipes() {
+		RecipeOutput consumer = output;
 		normal(consumer, BotaniaItems.MANASTEEL_INGOT, ConventionalItemTags.IRON_INGOTS, COST_MANASTEEL);
 		normal(consumer, BotaniaBlocks.MANASTEEL_BLOCK, ConventionalItemTags.STORAGE_BLOCKS_IRON,
 				BLOCK_COST_MULTIPLIER * COST_MANASTEEL);
@@ -67,9 +60,9 @@ public class ManaInfusionProvider extends FabricRecipeProvider {
 		normal(consumer, BotaniaBlocks.MANA_DIAMOND_BLOCK, ConventionalItemTags.STORAGE_BLOCKS_DIAMOND,
 				BLOCK_COST_MULTIPLIER * COST_MANA_DIAMOND);
 
-		normalWithGroup(consumer, BotaniaItems.MANA_POWDER, Ingredient.of(BotaniaTags.Items.MANA_POWDER_SOURCE_DUSTS),
+		normalWithGroup(consumer, BotaniaItems.MANA_POWDER, tag(BotaniaTags.Items.MANA_POWDER_SOURCE_DUSTS),
 				500, "_from_dust");
-		normalWithGroup(consumer, BotaniaItems.MANA_POWDER, Ingredient.of(ConventionalItemTags.DYES),
+		normalWithGroup(consumer, BotaniaItems.MANA_POWDER, tag(ConventionalItemTags.DYES),
 				400, "_from_dye");
 
 		normal(consumer, BotaniaItems.BISCUIT_OF_TOTALITY, Items.COOKIE, 20000);
@@ -197,8 +190,8 @@ public class ManaInfusionProvider extends FabricRecipeProvider {
 		normal(consumer, output, Ingredient.of(input), mana);
 	}
 
-	private static void normal(RecipeOutput consumer, ItemLike output, TagKey<Item> input, int mana) {
-		normal(consumer, output, Ingredient.of(input), mana);
+	private void normal(RecipeOutput consumer, ItemLike output, TagKey<Item> input, int mana) {
+		normal(consumer, output, tag(input), mana);
 	}
 
 	private static void normal(RecipeOutput consumer, ItemLike output, Ingredient input, int mana) {
@@ -212,23 +205,23 @@ public class ManaInfusionProvider extends FabricRecipeProvider {
 	}
 
 	private static void normal(RecipeOutput consumer, Identifier id, @Nullable String group, ItemLike output, Ingredient input, int mana) {
-		consumer.accept(id, new ManaInfusionRecipe(new ItemStack(output), input, mana, group, null), null);
+		consumer.accept(recipeKey(id), new ManaInfusionRecipe(new ItemStack(output), input, mana, group, null), null);
 	}
 
 	private static void alchemy(RecipeOutput consumer, String id, ItemStack output, Ingredient input, int mana, @Nullable String group) {
-		consumer.accept(id("alchemy/" + id), new ManaInfusionRecipe(output, input, mana, group, ALCHEMY), null);
+		consumer.accept(recipeKey(id("alchemy/" + id)), new ManaInfusionRecipe(output, input, mana, group, ALCHEMY), null);
 	}
 
 	private static void alchemy(RecipeOutput consumer, ItemLike output, ItemLike input, int mana) {
 		alchemy(consumer, getItemName(output), new ItemStack(output), Ingredient.of(input), mana, null);
 	}
 
-	private static void alchemy(RecipeOutput consumer, ItemLike output, TagKey<Item> input, int mana) {
-		alchemy(consumer, getItemName(output), new ItemStack(output), Ingredient.of(input), mana, null);
+	private void alchemy(RecipeOutput consumer, ItemLike output, TagKey<Item> input, int mana) {
+		alchemy(consumer, getItemName(output), new ItemStack(output), tag(input), mana, null);
 	}
 
 	private static void conjuration(RecipeOutput consumer, ItemLike itemLike, int mana) {
-		consumer.accept(id("conjuration/" + getItemName(itemLike)),
+		consumer.accept(recipeKey(id("conjuration/" + getItemName(itemLike))),
 				new ManaInfusionRecipe(new ItemStack(itemLike, 2), Ingredient.of(itemLike), mana, null, CONJURATION),
 				null);
 	}
@@ -259,7 +252,7 @@ public class ManaInfusionProvider extends FabricRecipeProvider {
 	}
 
 	protected void deconstructLossy(RecipeOutput consumer, ItemLike output, TagKey<Item> input) {
-		deconstructLossy(consumer, input.location().getPath(), output, 3, Ingredient.of(input));
+		deconstructLossy(consumer, input.location().getPath(), output, 3, tag(input));
 	}
 
 	protected void deconstructLossy(RecipeOutput consumer, ItemLike output, int count, ItemLike input) {

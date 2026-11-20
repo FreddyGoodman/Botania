@@ -11,8 +11,6 @@ package org.violetmoon.botania.client.integration.rei;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import me.shedaniel.math.Point;
-import me.shedaniel.math.impl.PointHelper;
 import me.shedaniel.rei.api.client.REIRuntime;
 import me.shedaniel.rei.api.client.gui.screen.DisplayScreen;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
@@ -247,10 +245,13 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 					return stack;
 				}
 			}
-			if (Minecraft.getInstance().screen instanceof DisplayScreen) {
-				Point point = PointHelper.ofMouse();
-				for (var child : Minecraft.getInstance().screen.children()) {
-					if (child.isMouseOver(point.x, point.y) && child instanceof Slot slot) {
+			Minecraft minecraft = Minecraft.getInstance();
+			var screen = minecraft.screen;
+			if (screen instanceof DisplayScreen) {
+				double mouseX = minecraft.mouseHandler.getScaledXPos(minecraft.getWindow());
+				double mouseY = minecraft.mouseHandler.getScaledYPos(minecraft.getWindow());
+				for (var child : screen.children()) {
+					if (child.isMouseOver(mouseX, mouseY) && child instanceof Slot slot) {
 						stack = unwrapEntry(slot.getCurrentEntry());
 						if (!stack.isEmpty()) {
 							return stack;

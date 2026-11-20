@@ -22,7 +22,11 @@ import org.violetmoon.botania.common.item.equipment.armor.terrasteel.TerrasteelA
 public class PiglinAiFabricMixin {
 	@Inject(at = @At("HEAD"), method = "isWearingGold", cancellable = true)
 	private static void terrasteelNeutral(LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
-		for (ItemStack stack : entity.getArmorSlots()) {
+		for (var slot : net.minecraft.world.entity.EquipmentSlot.VALUES) {
+			if (!slot.isArmor()) {
+				continue;
+			}
+			ItemStack stack = entity.getItemBySlot(slot);
 			if (stack.getItem() instanceof TerrasteelArmorItem armor
 					&& armor.makesPiglinsNeutral(stack, entity)) {
 				cir.setReturnValue(true);

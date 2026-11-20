@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -102,7 +103,7 @@ public class EndoflameBlockEntity extends GeneratingFlowerBlockEntity {
 							&& !itemEntity.getItem().is(BotaniaTags.Items.IGNORED_BY_ENDOFLAME)
 							&& itemEntity.getItem().getItem().getCraftingRemainder() == null)) {
 				ItemStack stack = item.getItem();
-				int burnTime = getBurnTime(stack);
+				int burnTime = getBurnTime(level, stack);
 				if (burnTime > 0) {
 					if (BotaniaConfig.common().flowerItemPickupAnimations()) {
 						XplatAbstractions.instance().sendToTracking(item,
@@ -179,8 +180,8 @@ public class EndoflameBlockEntity extends GeneratingFlowerBlockEntity {
 		cooldownTime = input.getIntOr(TAG_COOLDOWN_TIME, 0);
 	}
 
-	private int getBurnTime(ItemStack stack) {
-		return stack.isEmpty() ? 0 : XplatAbstractions.INSTANCE.getSmeltingBurnTime(stack);
+	private int getBurnTime(Level level, ItemStack stack) {
+		return stack.isEmpty() ? 0 : XplatAbstractions.INSTANCE.getSmeltingBurnTime(level, stack);
 	}
 
 }

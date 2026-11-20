@@ -23,7 +23,7 @@ import org.violetmoon.botania.common.item.equipment.bauble.RingOfDexterousMotion
 public class KeyboardHandlerFabricMixin {
 	@Inject(at = @At("HEAD"), method = "keyPress")
 	private void keyEvent(long window, int action, KeyEvent key, CallbackInfo ci) {
-		if (window == Minecraft.getInstance().getWindow().getWindow()) {
+		if (window == Minecraft.getInstance().getWindow().handle()) {
 			RingOfDexterousMotionItem.ClientLogic.onKeyDown();
 			KonamiHandler.handleInput(key.key(), action, key.modifiers());
 		}

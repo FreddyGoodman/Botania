@@ -9,10 +9,6 @@
  */
 package org.violetmoon.botania.fabric.data.xplat;
 
-import com.mojang.authlib.properties.PropertyMap;
-
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -32,39 +28,34 @@ import org.violetmoon.botania.data.util.BotaniaRecipeHelper;
 import org.violetmoon.botania.fabric.data.FabricDatagenInitializer;
 
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
-public class PetalApothecaryProvider extends FabricRecipeProvider {
-	private static final Ingredient DEFAULT_REAGENT = Ingredient.of(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);
+import static org.violetmoon.botania.data.util.BotaniaRecipeHelper.recipeKey;
 
-	public PetalApothecaryProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider);
+public class PetalApothecaryProvider extends BotaniaFabricRecipeProvider {
+
+	public PetalApothecaryProvider(HolderLookup.Provider registries, RecipeOutput output, ConditionalOutput conditionalOutput) {
+		super(registries, output, conditionalOutput);
 	}
 
 	@Override
-	public String getName() {
-		return "Botania petal apothecary recipes";
-	}
-
-	@Override
-	public void buildRecipes(RecipeOutput consumer) {
-		Ingredient white = Ingredient.of(BotaniaTags.Items.PETALS_WHITE);
-		Ingredient orange = Ingredient.of(BotaniaTags.Items.PETALS_ORANGE);
-		Ingredient magenta = Ingredient.of(BotaniaTags.Items.PETALS_MAGENTA);
-		Ingredient lightBlue = Ingredient.of(BotaniaTags.Items.PETALS_LIGHT_BLUE);
-		Ingredient yellow = Ingredient.of(BotaniaTags.Items.PETALS_YELLOW);
-		Ingredient lime = Ingredient.of(BotaniaTags.Items.PETALS_LIME);
-		Ingredient pink = Ingredient.of(BotaniaTags.Items.PETALS_PINK);
-		Ingredient gray = Ingredient.of(BotaniaTags.Items.PETALS_GRAY);
-		Ingredient lightGray = Ingredient.of(BotaniaTags.Items.PETALS_LIGHT_GRAY);
-		Ingredient cyan = Ingredient.of(BotaniaTags.Items.PETALS_CYAN);
-		Ingredient purple = Ingredient.of(BotaniaTags.Items.PETALS_PURPLE);
-		Ingredient blue = Ingredient.of(BotaniaTags.Items.PETALS_BLUE);
-		Ingredient brown = Ingredient.of(BotaniaTags.Items.PETALS_BROWN);
-		Ingredient green = Ingredient.of(BotaniaTags.Items.PETALS_GREEN);
-		Ingredient red = Ingredient.of(BotaniaTags.Items.PETALS_RED);
-		Ingredient black = Ingredient.of(BotaniaTags.Items.PETALS_BLACK);
+	public void buildRecipes() {
+		RecipeOutput consumer = output;
+		Ingredient white = tag(BotaniaTags.Items.PETALS_WHITE);
+		Ingredient orange = tag(BotaniaTags.Items.PETALS_ORANGE);
+		Ingredient magenta = tag(BotaniaTags.Items.PETALS_MAGENTA);
+		Ingredient lightBlue = tag(BotaniaTags.Items.PETALS_LIGHT_BLUE);
+		Ingredient yellow = tag(BotaniaTags.Items.PETALS_YELLOW);
+		Ingredient lime = tag(BotaniaTags.Items.PETALS_LIME);
+		Ingredient pink = tag(BotaniaTags.Items.PETALS_PINK);
+		Ingredient gray = tag(BotaniaTags.Items.PETALS_GRAY);
+		Ingredient lightGray = tag(BotaniaTags.Items.PETALS_LIGHT_GRAY);
+		Ingredient cyan = tag(BotaniaTags.Items.PETALS_CYAN);
+		Ingredient purple = tag(BotaniaTags.Items.PETALS_PURPLE);
+		Ingredient blue = tag(BotaniaTags.Items.PETALS_BLUE);
+		Ingredient brown = tag(BotaniaTags.Items.PETALS_BROWN);
+		Ingredient green = tag(BotaniaTags.Items.PETALS_GREEN);
+		Ingredient red = tag(BotaniaTags.Items.PETALS_RED);
+		Ingredient black = tag(BotaniaTags.Items.PETALS_BLACK);
 		Ingredient runeWater = Ingredient.of(BotaniaItems.RUNE_OF_WATER);
 		Ingredient runeFire = Ingredient.of(BotaniaItems.RUNE_OF_FIRE);
 		Ingredient runeEarth = Ingredient.of(BotaniaItems.RUNE_OF_EARTH);
@@ -83,8 +74,8 @@ public class PetalApothecaryProvider extends FabricRecipeProvider {
 		Ingredient runePride = Ingredient.of(BotaniaItems.RUNE_OF_PRIDE);
 
 		Ingredient redstoneRoot = Ingredient.of(BotaniaItems.REDSTONE_ROOT);
-		Ingredient pixieDust = Ingredient.of(ConventionalBotaniaTags.Items.PIXIE_DUSTS);
-		Ingredient enderEssence = Ingredient.of(BotaniaTags.Items.ENDER_ESSENCES);
+		Ingredient pixieDust = tag(ConventionalBotaniaTags.Items.PIXIE_DUSTS);
+		Ingredient enderEssence = tag(BotaniaTags.Items.ENDER_ESSENCES);
 		Ingredient gaiaSpirit = Ingredient.of(BotaniaItems.GAIA_SPIRIT);
 
 		make(consumer, BotaniaBlocks.PURE_DAISY, white, white, white, white);
@@ -140,16 +131,16 @@ public class PetalApothecaryProvider extends FabricRecipeProvider {
 
 		ItemStack vazkiiHead = new ItemStack(Items.PLAYER_HEAD);
 		vazkiiHead.set(DataComponents.PROFILE,
-				new ResolvableProfile(Optional.of("Vazkii"), Optional.empty(), new PropertyMap()));
+				ResolvableProfile.createUnresolved("Vazkii"));
 		Ingredient[] inputs = new Ingredient[16];
 		Arrays.fill(inputs, pink);
-		consumer.accept(BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, "vazkii_head"),
-				new PetalApothecaryRecipe(vazkiiHead, DEFAULT_REAGENT, inputs), null);
+		consumer.accept(recipeKey(BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, "vazkii_head")),
+				new PetalApothecaryRecipe(vazkiiHead, tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT), inputs), null);
 	}
 
-	protected static void make(RecipeOutput consumer, ItemLike output, Ingredient... ingredients) {
-		consumer.accept(BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, output),
-				new PetalApothecaryRecipe(new ItemStack(output), DEFAULT_REAGENT, ingredients), null);
+	private void make(RecipeOutput consumer, ItemLike output, Ingredient... ingredients) {
+		consumer.accept(recipeKey(BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, output)),
+				new PetalApothecaryRecipe(new ItemStack(output), tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT), ingredients), null);
 	}
 
 }

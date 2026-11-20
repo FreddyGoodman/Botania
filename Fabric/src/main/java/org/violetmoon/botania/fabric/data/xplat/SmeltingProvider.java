@@ -17,6 +17,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
@@ -30,6 +31,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 import static org.violetmoon.botania.data.util.BotaniaRecipeHelper.deriveRecipeId;
+import static org.violetmoon.botania.data.util.BotaniaRecipeHelper.recipeKey;
 
 public class SmeltingProvider extends BotaniaRecipeProvider {
 	public SmeltingProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
@@ -37,7 +39,7 @@ public class SmeltingProvider extends BotaniaRecipeProvider {
 	}
 
 	private static Criterion<InventoryChangeTrigger.TriggerInstance> conditionsFromItem(ItemLike item) {
-		return CraftingRecipeProvider.conditionsFromItem(item);
+		return InventoryChangeTrigger.TriggerInstance.hasItems(item);
 	}
 
 	@Override
@@ -53,8 +55,8 @@ public class SmeltingProvider extends BotaniaRecipeProvider {
 		makeDefaultSmeltingRecipe(recipeOutput, BotaniaBlocks.LIVINGROCK_BRICKS, BotaniaBlocks.CRACKED_LIVINGROCK_BRICKS);
 
 		for (String variant : LibBlockNames.QUARTZ_VARIANTS) {
-			Block base = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.BLOCK_SUFFIX));
-			Block smooth = BuiltInRegistries.BLOCK.get(
+			Block base = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.BLOCK_SUFFIX));
+			Block smooth = BuiltInRegistries.BLOCK.getValue(
 					botaniaRL(LibBlockNames.SMOOTH_PREFIX + variant + LibBlockNames.BLOCK_SUFFIX));
 			makeDefaultSmeltingRecipe(recipeOutput, base, smooth);
 		}
@@ -62,9 +64,9 @@ public class SmeltingProvider extends BotaniaRecipeProvider {
 
 	private static void makeDefaultSmeltingRecipe(RecipeOutput consumer, Block input, Block output) {
 		SimpleCookingRecipeBuilder
-				.smelting(Ingredient.of(input), RecipeCategory.BUILDING_BLOCKS, output, 0.1f, 200)
+				.smelting(Ingredient.of(input), RecipeCategory.BUILDING_BLOCKS, CookingBookCategory.BLOCKS, output, 0.1f, 200)
 				.unlockedBy("has_item", conditionsFromItem(input))
-				.save(consumer, deriveRecipeId(RecipeType.SMELTING, output));
+				.save(consumer, recipeKey(deriveRecipeId(RecipeType.SMELTING, output)));
 	}
 
 	@Override

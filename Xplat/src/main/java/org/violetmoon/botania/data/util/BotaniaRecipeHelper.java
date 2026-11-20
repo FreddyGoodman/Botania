@@ -11,8 +11,11 @@
 package org.violetmoon.botania.data.util;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 
@@ -21,6 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class BotaniaRecipeHelper {
+	public static ResourceKey<Recipe<?>> recipeKey(Identifier id) {
+		return ResourceKey.create(Registries.RECIPE, id);
+	}
+
 	public static Identifier deriveRecipeId(RecipeType<?> type, ItemLike output) {
 		return deriveRecipeId(type, null, output, null);
 	}

@@ -31,6 +31,7 @@ import org.violetmoon.botania.data.util.BotaniaRecipeHelper;
 import java.util.concurrent.CompletableFuture;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
+import static org.violetmoon.botania.data.util.BotaniaRecipeHelper.recipeKey;
 
 public class PureDaisyProvider extends BotaniaRecipeProvider {
 	public PureDaisyProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
@@ -64,12 +65,12 @@ public class PureDaisyProvider extends BotaniaRecipeProvider {
 	}
 
 	private void withFunction(RecipeOutput consumer, StateIngredient input, BlockState output, @Nullable CacheableFunction successFunction) {
-		consumer.accept(id(output.getBlock()), new PureDaisyRecipe(input, StateIngredients.of(output),
+		consumer.accept(recipeKey(id(output.getBlock())), new PureDaisyRecipe(input, StateIngredients.of(output),
 				PureDaisyRecipe.DEFAULT_TIME, false, null, successFunction), null);
 	}
 
 	private void stateCopying(RecipeOutput consumer, StateIngredient input, Block output) {
-		consumer.accept(id(output), new PureDaisyRecipe(input, StateIngredients.of(output),
+		consumer.accept(recipeKey(id(output)), new PureDaisyRecipe(input, StateIngredients.of(output),
 				PureDaisyRecipe.DEFAULT_TIME, true, null, null), null);
 	}
 

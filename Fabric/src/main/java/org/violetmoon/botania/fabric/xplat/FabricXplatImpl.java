@@ -15,11 +15,9 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeBuilder;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -45,14 +43,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Unit;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -121,8 +118,6 @@ import org.violetmoon.botania.xplat.XplatAbstractions;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
@@ -416,7 +411,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public void sendToNear(Level level, BlockPos pos, CustomPacketPayload packet) {
-		var pkt = ServerPlayNetworking.createS2CPacket(packet);
+		var pkt = ServerPlayNetworking.createClientboundPacket(packet);
 		for (var player : PlayerLookup.tracking((ServerLevel) level, pos)) {
 			if (player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 64 * 64) {
 				player.connection.send(pkt);
@@ -426,7 +421,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public void sendToTracking(Entity e, CustomPacketPayload packet) {
-		var pkt = ServerPlayNetworking.createS2CPacket(packet);
+		var pkt = ServerPlayNetworking.createClientboundPacket(packet);
 		PlayerLookup.tracking(e).forEach(p -> p.connection.send(pkt));
 		if (e instanceof ServerPlayer) {
 			((ServerPlayer) e).connection.send(pkt);
@@ -435,23 +430,12 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public void registerReloadListener(PackType type, Identifier id, PreparableReloadListener listener) {
-		ResourceManagerHelper.get(type).registerReloadListener(new IdentifiableResourceReloadListener() {
-			@Override
-			public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager, ProfilerFiller prepProfiler,
-					ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-				return listener.reload(barrier, manager, prepProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
-			}
-
-			@Override
-			public Identifier getFabricId() {
-				return id;
-			}
-		});
+		ResourceLoader.get(type).registerReloadListener(id, listener);
 	}
 
 	@Override
 	public <T extends AbstractContainerMenu, D> MenuType<T> createMenuType(TriFunction<Integer, Inventory, D, T> constructor, StreamCodec<? super RegistryFriendlyByteBuf, D> streamCodec) {
-		return new ExtendedScreenHandlerType<>(constructor::apply, streamCodec);
+		return new ExtendedMenuType<>(constructor::apply, streamCodec);
 	}
 
 	@Nullable
@@ -466,7 +450,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public <D> void openMenu(ServerPlayer player, MenuProvider menu, D initialData, StreamCodec<? super RegistryFriendlyByteBuf, D> streamCodec) {
-		var menuProvider = new ExtendedScreenHandlerFactory<D>() {
+		var menuProvider = new ExtendedMenuProvider<D>() {
 			@Nullable
 			@Override
 			public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
@@ -493,13 +477,12 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public Fluid getBucketFluid(BucketItem item) {
-		return ((BucketItemAccessor) item).fabric_getFluid();
+		return ((BucketItemAccessor) item).fabric_getContent();
 	}
 
 	@Override
-	public int getSmeltingBurnTime(ItemStack stack) {
-		Integer v = FuelRegistry.INSTANCE.get(stack.getItem());
-		return v == null ? 0 : v;
+	public int getSmeltingBurnTime(Level level, ItemStack stack) {
+		return level.fuelValues().burnDuration(stack);
 	}
 
 	@Override
@@ -537,7 +520,8 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public ItemStack getCraftingRemainingItem(ItemStack inputStack) {
-		return inputStack.getRecipeRemainder();
+		var remainder = inputStack.getItem().getCraftingRemainder();
+		return remainder == null ? ItemStack.EMPTY : remainder.create();
 	}
 
 	@Override
@@ -591,7 +575,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 				.openableByWindCharge(canOpenByWindCharge)
 				.buttonActivatedByArrows(canButtonBeActivatedByArrows)
 				.pressurePlateActivationRule(pressurePlateSensitivity)
-				.soundGroup(soundType)
+				.soundType(soundType)
 				.doorCloseSound(doorClose)
 				.doorOpenSound(doorOpen)
 				.trapdoorCloseSound(trapdoorClose)
@@ -606,8 +590,8 @@ public class FabricXplatImpl implements XplatAbstractions {
 	@Override
 	public WoodType registerWoodType(String name, BlockSetType setType, SoundType soundType, SoundType hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen) {
 		return WoodTypeBuilder.copyOf(WoodType.OAK)
-				.soundGroup(soundType)
-				.hangingSignSoundGroup(hangingSignSoundType)
+				.soundType(soundType)
+				.hangingSignSoundType(hangingSignSoundType)
 				.fenceGateCloseSound(fenceGateClose)
 				.fenceGateOpenSound(fenceGateOpen)
 				.register(botaniaRL(name), setType);
@@ -617,14 +601,17 @@ public class FabricXplatImpl implements XplatAbstractions {
 	public RecipeOutput createRecipeOutput(RecipeAcceptor recipeAcceptor, Supplier<Advancement.Builder> advancementBuilder) {
 		return new RecipeOutput() {
 			@Override
-			public void accept(Identifier location, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
-				recipeAcceptor.accept(location, recipe, advancement);
+			public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
+				recipeAcceptor.accept(key.identifier(), recipe, advancement);
 			}
 
 			@Override
 			public Advancement.Builder advancement() {
 				return advancementBuilder.get();
 			}
+
+			@Override
+			public void includeRootAdvancement() {}
 		};
 	}
 

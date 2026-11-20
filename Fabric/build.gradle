@@ -86,11 +86,14 @@ dependencies {
 
     implementation(libs.patchouli.fabric)
     implementation(libs.trinkets)
+    compileOnly(libs.yumi.commons.event)
     implementation(libs.fiber)
     include(libs.fiber)
 
     compileOnly(libs.jei.fabric.api)
     compileOnly(libs.rei.fabric)
+    compileOnly(libs.rei.basic.math)
+    compileOnly(libs.rei.architectury.fabric)
 
     compileOnly(libs.ears)
     compileOnly(libs.sodium.fabric) { transitive = false }

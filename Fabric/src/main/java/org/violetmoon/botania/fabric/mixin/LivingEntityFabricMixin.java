@@ -48,7 +48,7 @@ public abstract class LivingEntityFabricMixin extends Entity {
 		var self = (LivingEntity) (Object) this;
 		LooniumBlockEntity.dropLooniumItems(self, stack -> {
 			if (!stack.isEmpty()) {
-				self.spawnAtLocation(stack);
+				self.spawnAtLocation((net.minecraft.server.level.ServerLevel) self.level(), stack);
 			}
 			ci.cancel();
 		});

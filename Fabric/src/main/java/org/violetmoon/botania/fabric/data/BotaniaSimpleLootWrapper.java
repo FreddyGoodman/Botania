@@ -11,37 +11,37 @@
 package org.violetmoon.botania.fabric.data;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.util.context.ContextKeySet;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class BotaniaSimpleLootWrapper extends SimpleFabricLootTableProvider {
+public class BotaniaSimpleLootWrapper extends SimpleFabricLootTableSubProvider {
 	private final Supplier<LootTableSubProvider> lootProvider;
 
 	public BotaniaSimpleLootWrapper(Supplier<LootTableSubProvider> lootProvider,
-			FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup,
-			LootContextParamSet lootContextType) {
+			FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup,
+			ContextKeySet lootContextType) {
 		super(output, registryLookup, lootContextType);
 		this.lootProvider = lootProvider;
 	}
 
 	public static FabricDataGenerator.Pack.RegistryDependentFactory<BotaniaSimpleLootWrapper> wrap(
-			Supplier<LootTableSubProvider> vanillaSubProvider, LootContextParamSet lootContextType) {
+			Supplier<LootTableSubProvider> vanillaSubProvider, ContextKeySet lootContextType) {
 		return (output, registriesFuture) -> new BotaniaSimpleLootWrapper(
 				vanillaSubProvider, output, registriesFuture, lootContextType);
 	}
 
 	public static FabricDataGenerator.Pack.RegistryDependentFactory<BotaniaSimpleLootWrapper> wrap(
-			Function<HolderLookup.Provider, LootTableSubProvider> vanillaSubProvider, LootContextParamSet lootContextType) {
+			Function<HolderLookup.Provider, LootTableSubProvider> vanillaSubProvider, ContextKeySet lootContextType) {
 		return (output, registriesFuture) -> new BotaniaSimpleLootWrapper(
 				() -> vanillaSubProvider.apply(registriesFuture.join()), output, registriesFuture, lootContextType);
 	}

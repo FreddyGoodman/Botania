@@ -9,8 +9,6 @@
  */
 package org.violetmoon.botania.fabric.data.xplat;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
@@ -30,18 +28,19 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 import org.violetmoon.botania.data.util.BotaniaRecipeHelper;
 import org.violetmoon.botania.fabric.data.FabricDatagenInitializer;
 
-import java.util.concurrent.CompletableFuture;
+import static org.violetmoon.botania.data.util.BotaniaRecipeHelper.recipeKey;
 
-public class OrechidProvider extends FabricRecipeProvider {
+public class OrechidProvider extends BotaniaFabricRecipeProvider {
 
-	public OrechidProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider);
+	public OrechidProvider(HolderLookup.Provider registries, RecipeOutput output, ConditionalOutput conditionalOutput) {
+		super(registries, output, conditionalOutput);
 	}
 
 	// TODO: We had an enormous amount of ores defined for mod compat.
 	//       The old data needs to be completely revised.
 	@Override
-	public void buildRecipes(RecipeOutput consumer) {
+	public void buildRecipes() {
+		RecipeOutput consumer = output;
 		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.COAL_ORE, 5129);
 		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.IRON_ORE, 1568);
 		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.REDSTONE_ORE, 71);
@@ -94,7 +93,7 @@ public class OrechidProvider extends FabricRecipeProvider {
 	}
 
 	private void stone(RecipeOutput consumer, Block output, int weight, @Nullable TagKey<Biome> bonusBiomes, int bonusWeight) {
-		consumer.accept(orechidId(output), new OrechidRecipe(forBlock(Blocks.STONE), forBlock(output),
+		consumer.accept(recipeKey(orechidId(output)), new OrechidRecipe(forBlock(Blocks.STONE), forBlock(output),
 				OrechidBlockEntity.DEFAULT_DELAY, OrechidBlockEntity.DEFAULT_COST, weight, bonusWeight, bonusBiomes), null);
 	}
 
@@ -103,17 +102,17 @@ public class OrechidProvider extends FabricRecipeProvider {
 	}
 
 	protected void deepslate(RecipeOutput consumer, Block output, int weight, @Nullable TagKey<Biome> bonusBiome, int bonusWeight) {
-		consumer.accept(orechidId(output), new OrechidRecipe(forBlock(Blocks.DEEPSLATE), forBlock(output),
+		consumer.accept(recipeKey(orechidId(output)), new OrechidRecipe(forBlock(Blocks.DEEPSLATE), forBlock(output),
 				OrechidBlockEntity.DEFAULT_DELAY, OrechidBlockEntity.DEFAULT_COST, weight, bonusWeight, bonusBiome), null);
 	}
 
 	protected void nether(RecipeOutput consumer, Block input, Block output, int weight) {
-		consumer.accept(ignemId(output), new OrechidIgnemRecipe(forBlock(input), forBlock(output),
+		consumer.accept(recipeKey(ignemId(output)), new OrechidIgnemRecipe(forBlock(input), forBlock(output),
 				OrechidBlockEntity.DEFAULT_DELAY, OrechidIgnemBlockEntity.DEFAULT_COST, weight), null);
 	}
 
 	protected void biomeStone(RecipeOutput consumer, Block output, TagKey<Biome> biome) {
-		consumer.accept(marimorphosisId(output), new MarimorphosisRecipe(
+		consumer.accept(recipeKey(marimorphosisId(output)), new MarimorphosisRecipe(
 				forTag(BotaniaTags.Blocks.MARIMORPHOSIS_CONVERTABLE), forBlock(output),
 				MarimorphosisBlockEntity.COST, 1, 11, biome), null);
 	}
@@ -124,11 +123,6 @@ public class OrechidProvider extends FabricRecipeProvider {
 
 	protected static StateIngredient forTag(TagKey<Block> tag) {
 		return StateIngredients.of(tag);
-	}
-
-	@Override
-	public String getName() {
-		return "Botania Orechid and Marimorphosis recipes";
 	}
 
 }

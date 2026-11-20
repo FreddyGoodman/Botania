@@ -10,7 +10,7 @@
 
 package org.violetmoon.botania.fabric.data.xplat;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -47,7 +47,7 @@ public class ConventionalBiomeTagProvider extends TagsProvider<Biome> {
 			ConventionalBiomeTags.IS_UNDERGROUND
 	);
 
-	public ConventionalBiomeTagProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+	public ConventionalBiomeTagProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(packOutput, Registries.BIOME, lookupProvider, DummyTagLookup.completedFuture(RELEVANT_TAGS));
 	}
 

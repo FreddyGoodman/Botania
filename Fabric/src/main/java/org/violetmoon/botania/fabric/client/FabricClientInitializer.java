@@ -13,11 +13,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.Minecraft;
@@ -63,6 +65,8 @@ import vazkii.patchouli.api.BookDrawScreenCallback;
 import java.util.List;
 import java.util.function.Function;
 
+import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
+
 public class FabricClientInitializer implements ClientModInitializer {
 
 	public FabricClientInitializer() {
@@ -103,14 +107,14 @@ public class FabricClientInitializer implements ClientModInitializer {
 		});
 
 		// BE/Entity Renderer
-		BotaniaLayerDefinitions.init((loc, supplier) -> EntityModelLayerRegistry.registerModelLayer(loc, supplier::get));
+		BotaniaLayerDefinitions.init((loc, supplier) -> ModelLayerRegistry.registerModelLayer(loc, supplier::get));
 		EntityRenderers.registerBlockEntityRenderers(BlockEntityRendererRegistry::register);
 		EntityRenderers.registerEntityRenderers(EntityRendererRegistry::register);
 
 		BotaniaParticles.FactoryHandler.registerFactories(new BotaniaParticles.FactoryHandler.Consumer() {
 			@Override
 			public <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> constructor) {
-				ParticleFactoryRegistry.getInstance().register(type, constructor::apply);
+				ParticleProviderRegistry.getInstance().register(type, constructor::apply);
 			}
 		});
 
@@ -119,16 +123,16 @@ public class FabricClientInitializer implements ClientModInitializer {
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::loadComplete);
 		ClientTickEvents.END_CLIENT_TICK.register(ClientTickHandler::clientTickEnd);
 		ClientTickEvents.END_CLIENT_TICK.register(KonamiHandler::clientTick);
-		HudRenderCallback.EVENT.register(HUDHandler::onDrawExperienceBarPost);
-		HudRenderCallback.EVENT.register(HUDHandler::onDrawAirLevelPost);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, botaniaRL("hud_early"), HUDHandler::onDrawExperienceBarPost);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.AIR_BAR, botaniaRL("hud_late"), HUDHandler::onDrawAirLevelPost);
 		ItemTooltipCallback.EVENT.register(TooltipHandler::onTooltipEvent);
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ScreenKeyboardEvents.allowKeyPress(screen)
 				.register((ignored, key) -> !CorporeaInputHandler.buttonPressed(key)));
-		TooltipComponentCallback.EVENT.register(ManaBarTooltipComponent::tryConvert);
+		ClientTooltipComponentCallback.EVENT.register(ManaBarTooltipComponent::tryConvert);
 
 		// Etc
 		ClientProxy.initSeasonal();
-		ClientProxy.initKeybindings(KeyBindingHelper::registerKeyBinding);
+		ClientProxy.initKeybindings(KeyMappingHelper::registerKeyMapping);
 
 		registerCapabilities();
 

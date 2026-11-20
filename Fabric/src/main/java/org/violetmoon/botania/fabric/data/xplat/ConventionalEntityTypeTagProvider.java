@@ -10,8 +10,8 @@
 
 package org.violetmoon.botania.fabric.data.xplat;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.entity.EntityType;
@@ -21,20 +21,20 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ConventionalEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
-	public ConventionalEntityTypeTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
+public class ConventionalEntityTypeTagProvider extends FabricTagsProvider.EntityTypeTagsProvider {
+	public ConventionalEntityTypeTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
 		super(output, completableFuture);
 	}
 
 	@Override
 	protected void addTags(HolderLookup.Provider wrapperLookup) {
-		tag(ConventionalEntityTypeTags.BOSSES).add(reverseLookup(BotaniaEntities.GAIA_GUARDIAN));
+		builder(ConventionalEntityTypeTags.BOSSES).add(BotaniaEntities.GAIA_GUARDIAN.builtInRegistryHolder().key());
 
-		tag(BotaniaTags.Entities.NOT_CHARMABLE)
-				.add(reverseLookup(EntityType.WARDEN))
+		builder(BotaniaTags.Entities.NOT_CHARMABLE)
+				.add(EntityType.WARDEN.builtInRegistryHolder().key())
 				.addTag(ConventionalEntityTypeTags.BOSSES);
 
-		tag(ConventionalEntityTypeTags.MINECARTS).add(reverseLookup(BotaniaEntities.MANA_POOL_MINECART));
+		builder(ConventionalEntityTypeTags.MINECARTS).add(BotaniaEntities.MANA_POOL_MINECART.builtInRegistryHolder().key());
 	}
 
 }

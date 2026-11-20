@@ -25,17 +25,18 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.MinecartComparatorLogicRegistry;
-import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.CompostableRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.fabricmc.fabric.api.registry.FuelValueEvents;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -148,7 +149,7 @@ public class FabricCommonInitializer implements ModInitializer {
 	private static final MappedRegistry<StateIngredientType<?>> STATE_INGREDIENT_TYPE_REGISTRY = FabricRegistryBuilder
 			.createDefaulted(BotaniaRegistries.STATE_INGREDIENT_TYPE, StateIngredientType.DEFAULT_ID).buildAndRegister();
 	private static final MappedRegistry<ItemSource> ITEM_SOURCE_REGISTRY = FabricRegistryBuilder
-			.createSimple(BotaniaRegistries.ITEM_SOURCE).buildAndRegister();
+			.create(BotaniaRegistries.ITEM_SOURCE).buildAndRegister();
 
 	public FabricCommonInitializer() {
 		// This happens before all mod initializations.
@@ -163,7 +164,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		registryInit();
 
 		PaintableData.init();
-		CompostingData.init(CompostingChanceRegistry.INSTANCE::add);
+		CompostingData.init(CompostableRegistry.INSTANCE::add);
 		DefaultCorporeaMatchers.init();
 		PlayerHelper.setFakePlayerClass(FakePlayer.class);
 
@@ -201,7 +202,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaBlocks.registerItemBlocks(boundForItem);
 		BotaniaBlockFlammability.register();
 		BotaniaBlockEntities.registerTiles(bind(BuiltInRegistries.BLOCK_ENTITY_TYPE));
-		BotaniaBlockEntities.registerAdditionalBlocks(BlockEntityType::addSupportedBlock);
+		BotaniaBlockEntities.registerAdditionalBlocks((type, block) -> ((FabricBlockEntityType) type).addValidBlock(block));
 		BotaniaItems.registerItems(boundForItem);
 		PortParityTests.register(bind(BuiltInRegistries.TEST_FUNCTION));
 		RegressionGameTests.register(bind(BuiltInRegistries.TEST_FUNCTION));
@@ -219,10 +220,11 @@ public class FabricCommonInitializer implements ModInitializer {
 		}
 		EnchantmentEvents.ALLOW_ENCHANTING.register((enchantment, target, enchantingContext) -> target.is(BotaniaItems.ELEMENTIUM_AXE) && enchantment.is(Enchantments.LOOTING) ? TriState.TRUE : TriState.DEFAULT);
 
-		int blazeTime = 2400;
-		FuelRegistry.INSTANCE.add(BotaniaBlocks.BLAZE_MESH.asItem(), blazeTime * (XplatAbstractions.INSTANCE.gogLoaded() ? 5 : 10));
-		int wallTime = 300;
-		FuelRegistry.INSTANCE.add(BotaniaTags.Items.WOODEN_WALLS, wallTime);
+		FuelValueEvents.BUILD.register((builder, context) -> {
+			int blazeTime = 2400;
+			builder.add(BotaniaBlocks.BLAZE_MESH, blazeTime * (XplatAbstractions.INSTANCE.gogLoaded() ? 5 : 10));
+			builder.add(BotaniaTags.Items.WOODEN_WALLS, 300);
+		});
 
 		// GUI and Recipe
 		BotaniaItems.registerMenuTypes(bind(BuiltInRegistries.MENU));
@@ -267,13 +269,13 @@ public class FabricCommonInitializer implements ModInitializer {
 		Registry.register(
 				BuiltInRegistries.CREATIVE_MODE_TAB,
 				BotaniaRegistries.BOTANIA_TAB_KEY,
-				FabricItemGroup.builder()
+				FabricCreativeModeTab.builder()
 						.title(Component.translatable("itemGroup.botania").withStyle((style -> style.withColor(ChatFormatting.WHITE))))
 						.icon(() -> new ItemStack(BotaniaItems.LEXICA_BOTANIA))
 						.backgroundTexture(botaniaRL("textures/gui/tab_botania.png"))
 						.build()
 		);
-		ItemGroupEvents.modifyEntriesEvent(BotaniaRegistries.BOTANIA_TAB_KEY)
+		CreativeModeTabEvents.modifyOutputEvent(BotaniaRegistries.BOTANIA_TAB_KEY)
 				.register(entries -> {
 					for (Item item : this.itemsToAddToCreativeTab) {
 						if (item instanceof CustomCreativeTabContents cc) {
@@ -320,9 +322,9 @@ public class FabricCommonInitializer implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPING.register(this::serverStopping);
 		ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> FlugelTiaraItem.playerLoggedOut(handler.player)));
 		ServerPlayerEvents.AFTER_RESPAWN.register(ResoluteIvyItem::onPlayerRespawn);
-		ServerTickEvents.END_WORLD_TICK.register(CommonTickHandler::onTick);
-		ServerTickEvents.END_WORLD_TICK.register(GrassSeedsItem::onTickEnd);
-		ServerTickEvents.END_WORLD_TICK.register(TerraTruncatorItem::onTickEnd);
+		ServerTickEvents.END_LEVEL_TICK.register(CommonTickHandler::onTick);
+		ServerTickEvents.END_LEVEL_TICK.register(GrassSeedsItem::onTickEnd);
+		ServerTickEvents.END_LEVEL_TICK.register(TerraTruncatorItem::onTickEnd);
 		UseBlockCallback.EVENT.register(RedStringInterceptorBlock::onInteract);
 		UseBlockCallback.EVENT.register(RingOfLokiItem::onPlayerInteract);
 	}

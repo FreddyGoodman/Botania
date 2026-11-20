@@ -20,10 +20,13 @@ patchouli-neoforge = "26.1-94"
 
 jei = "29.54.0.116"
 rei = "26.1.819"
+rei-basic-math = "0.6.1"
+rei-architectury = "20.0.6"
 
 curios = "15.0.0+26.1.2"
 trinkets = "4.0.1+26.1"
-teamreborn-energy = "4.1.0"
+yumi-commons-event = "2.0.0"
+teamreborn-energy = "5.0.0"
 
 ears = "1.4.7"
 sodium-fabric = "mc26.1.2-0.9.2-fabric"
@@ -64,10 +67,15 @@ jei-neoforge-api = { module = "mezz.jei:jei-26.1.2-neoforge-api", version.ref = 
 rei-fabric = { module = "me.shedaniel:RoughlyEnoughItems-fabric", version.ref = "rei" }
 rei-neoforge = { module = "me.shedaniel:RoughlyEnoughItems-neoforge", version.ref = "rei" }
 
+rei-basic-math = { module = "me.shedaniel.cloth:basic-math", version.ref = "rei-basic-math" }
+
+rei-architectury-fabric = { module = "dev.architectury:architectury-fabric", version.ref = "rei-architectury" }
+
 # other mods
 curios = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 trinkets = { module = "maven.modrinth:trinkets-updated", version.ref = "trinkets" }
 ears = { module = "com.unascribed:ears-api", version.ref = "ears" }
+yumi-commons-event = { module = "dev.yumi.commons:yumi-commons-event", version.ref = "yumi-commons-event" }
 teamreborn-energy = { module = "teamreborn:energy", version.ref = "teamreborn-energy" }
 fiber = { module = "me.zeroeightsix:fiber", version.ref = "fiber" }
 sodium-fabric = { module = "maven.modrinth:sodium", version.ref = "sodium-fabric" }
