@@ -64,7 +64,7 @@ public class GaiaGuardianRenderer extends MobRenderer<GaiaGuardianEntity, GaiaGu
 		AbstractClientPlayer player = getViewingPlayer();
 		var skin = player == null ? DefaultPlayerSkin.get(guardian.getUUID()) : player.getSkin();
 		state.texture = skin.body().texturePath();
-		state.slim = player != null && DefaultPlayerSkin.get(player.getUUID()).model() == PlayerModelType.SLIM;
+		state.slim = skin.model() == PlayerModelType.SLIM;
 		state.showHat = player != null && player.isModelPartShown(PlayerModelPart.HAT);
 		state.showJacket = player != null && player.isModelPartShown(PlayerModelPart.JACKET);
 		state.showLeftPants = player != null && player.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);

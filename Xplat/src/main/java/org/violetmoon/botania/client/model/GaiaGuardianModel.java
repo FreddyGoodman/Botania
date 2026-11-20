@@ -29,11 +29,11 @@ public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderer.State>
 
 	public GaiaGuardianModel(ModelPart root, boolean slim) {
 		super(root, RenderHelper::getGaiaNoiseDynamicLayer);
-		this.leftSleeve = root.getChild("left_sleeve");
-		this.rightSleeve = root.getChild("right_sleeve");
-		this.leftPants = root.getChild("left_pants");
-		this.rightPants = root.getChild("right_pants");
-		this.jacket = root.getChild("jacket");
+		this.leftSleeve = leftArm.getChild("left_sleeve");
+		this.rightSleeve = rightArm.getChild("right_sleeve");
+		this.leftPants = leftLeg.getChild("left_pants");
+		this.rightPants = rightLeg.getChild("right_pants");
+		this.jacket = body.getChild("jacket");
 		this.slim = slim;
 	}
 
@@ -46,12 +46,6 @@ public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderer.State>
 		rightPants.visible = state.showRightPants;
 		leftSleeve.visible = state.showLeftSleeve;
 		rightSleeve.visible = state.showRightSleeve;
-
-		leftPants.loadPose(leftLeg.storePose());
-		rightPants.loadPose(rightLeg.storePose());
-		leftSleeve.loadPose(leftArm.storePose());
-		rightSleeve.loadPose(rightArm.storePose());
-		jacket.loadPose(body.storePose());
 	}
 
 	@Override
