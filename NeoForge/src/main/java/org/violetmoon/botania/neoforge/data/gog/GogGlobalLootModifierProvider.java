@@ -18,6 +18,7 @@ import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,10 +43,10 @@ public class GogGlobalLootModifierProvider extends GlobalLootModifierProvider {
 	protected void start() {
 		add("extra_seeds", new AddTableLootModifier(new LootItemCondition[] {
 				AnyOfCondition.anyOf(
-						LootTableIdCondition.builder(Blocks.SHORT_GRASS.getLootTable().identifier()),
-						LootTableIdCondition.builder(Blocks.TALL_GRASS.getLootTable().identifier())
+						LootTableIdCondition.builder(Blocks.SHORT_GRASS.getLootTable().orElseThrow().identifier()),
+						LootTableIdCondition.builder(Blocks.TALL_GRASS.getLootTable().orElseThrow().identifier())
 				).build()
-		}, ResourceKey.create(Registries.LOOT_TABLE, gogRL("extra_seeds"))));
+		}, IGlobalLootModifier.DEFAULT_PRIORITY, ResourceKey.create(Registries.LOOT_TABLE, gogRL("extra_seeds"))));
 	}
 
 }

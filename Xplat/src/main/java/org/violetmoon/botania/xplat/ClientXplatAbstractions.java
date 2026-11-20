@@ -13,7 +13,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -41,8 +40,6 @@ public interface ClientXplatAbstractions {
 	}
 
 	int getGuiRightHeight(Player player);
-	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);
-	void restoreLastFilter(AbstractTexture texture);
 	/** Marks an animated sprite as "active" for Sodium, if present. */
 	void markSpriteActive(TextureAtlasSprite sprite);
 

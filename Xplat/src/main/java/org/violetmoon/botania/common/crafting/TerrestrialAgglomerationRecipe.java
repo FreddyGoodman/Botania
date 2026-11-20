@@ -18,6 +18,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -33,17 +34,21 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 	public static final RecipeSerializer<TerrestrialAgglomerationRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final int mana;
 	private final NonNullList<Ingredient> ingredients;
-	private final ItemStack output;
+	private final ItemStackTemplate output;
 	private final boolean requireSpecialMatching;
 
 	public TerrestrialAgglomerationRecipe(int mana, ItemStack output, Ingredient... ingredients) {
+		this(mana, ItemStackTemplate.fromNonEmptyStack(output), ingredients);
+	}
+
+	private TerrestrialAgglomerationRecipe(int mana, ItemStackTemplate output, Ingredient... ingredients) {
 		this.mana = mana;
 		this.ingredients = NonNullList.of(null, ingredients);
 		this.output = output;
 		this.requireSpecialMatching = Arrays.stream(ingredients).anyMatch(XplatAbstractions.instance()::requiresCustomTesting);
 	}
 
-	private static TerrestrialAgglomerationRecipe of(List<Ingredient> ingredients, int mana, ItemStack output) {
+	private static TerrestrialAgglomerationRecipe of(List<Ingredient> ingredients, int mana, ItemStackTemplate output) {
 		return new TerrestrialAgglomerationRecipe(mana, output, ingredients.toArray(Ingredient[]::new));
 	}
 
@@ -53,7 +58,7 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 	}
 
 	public ItemStack getOutput() {
-		return output;
+		return output.create();
 	}
 
 	@Override
@@ -63,12 +68,12 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 
 	@Override
 	public ItemStack assemble(ProcessingRecipeInput inv) {
-		return output.copy();
+		return output.create();
 	}
 
 	@Override
 	public ItemStack getResultItem(HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@Override
@@ -81,17 +86,21 @@ public class TerrestrialAgglomerationRecipe implements org.violetmoon.botania.ap
 		return SERIALIZER;
 	}
 
+	private ItemStackTemplate outputTemplate() {
+		return output;
+	}
+
 	public static final class Serializer {
 		public static final MapCodec<TerrestrialAgglomerationRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).fieldOf("ingredients")
 						.forGetter(TerrestrialAgglomerationRecipe::getIngredients),
 				ExtraCodecs.POSITIVE_INT.fieldOf("mana").forGetter(TerrestrialAgglomerationRecipe::getMana),
-				RecipeUtils.OUTPUT_CODEC.fieldOf("result").forGetter(TerrestrialAgglomerationRecipe::getOutput)
+				ItemStackTemplate.CODEC.fieldOf("result").forGetter(TerrestrialAgglomerationRecipe::outputTemplate)
 		).apply(instance, TerrestrialAgglomerationRecipe::of));
 		public static final StreamCodec<RegistryFriendlyByteBuf, TerrestrialAgglomerationRecipe> STREAM_CODEC = StreamCodec.composite(
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), TerrestrialAgglomerationRecipe::getIngredients,
 				ByteBufCodecs.VAR_INT, TerrestrialAgglomerationRecipe::getMana,
-				ItemStack.STREAM_CODEC, TerrestrialAgglomerationRecipe::getOutput,
+				ItemStackTemplate.STREAM_CODEC, TerrestrialAgglomerationRecipe::outputTemplate,
 				TerrestrialAgglomerationRecipe::of
 		);
 

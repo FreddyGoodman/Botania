@@ -32,7 +32,7 @@ public abstract class EntityMixin {
 	/**
 	 * Cancels some invulnerabilities conferred by items
 	 */
-	@Inject(at = @At("HEAD"), method = "isInvulnerableTo", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "isInvulnerableToBase", cancellable = true)
 	private void checkInvulnerabilities(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
 		if (((Object) this) instanceof LivingEntity self) {
 			if (EquestrianVirusItem.onLivingHurt(self, source)) {

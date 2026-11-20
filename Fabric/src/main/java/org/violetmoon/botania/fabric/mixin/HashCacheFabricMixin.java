@@ -51,7 +51,7 @@ public abstract class HashCacheFabricMixin {
 	}
 
 	@WrapWithCondition(
-		method = "method_46571",
+		method = "lambda$purgeStaleAndWrite$0",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/data/HashCache$ProviderCache;save(Ljava/nio/file/Path;Ljava/nio/file/Path;Ljava/lang/String;)V"

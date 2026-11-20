@@ -34,7 +34,8 @@ public record ManastormChargeTrigger(Level level, BlockPos pos) implements ManaT
 			if (storm == null) {
 				return;
 			}
-			storm.setOwner(entity.getOwner(), ((ProjectileAccessor) entity).botania_getOwnerUUID());
+			var owner = ((ProjectileAccessor) entity).botania_getOwner();
+			storm.setOwner(entity.getOwner(), owner == null ? null : owner.getUUID());
 			storm.burstColor = burst.getColor();
 			storm.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 			level.addFreshEntity(storm);

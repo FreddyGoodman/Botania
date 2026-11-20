@@ -9,6 +9,7 @@
 package org.violetmoon.botania.fabric.mixin;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -22,10 +23,12 @@ import org.violetmoon.botania.common.block.SpectralRailBlock;
 @Mixin(AbstractMinecart.class)
 public class AbstractMinecartFabricMixin {
 	@Inject(at = @At("HEAD"), method = "moveAlongTrack")
-	private void handleOnRail(BlockPos pos, BlockState state, CallbackInfo ci) {
+	private void handleOnRail(ServerLevel level, CallbackInfo ci) {
+		AbstractMinecart self = (AbstractMinecart) (Object) this;
+		BlockPos pos = self.getCurrentBlockPosOrRailBelow();
+		BlockState state = level.getBlockState(pos);
 		if (state.is(BotaniaBlocks.SPECTRAL_RAIL)) {
-			AbstractMinecart self = (AbstractMinecart) (Object) this;
-			((SpectralRailBlock) BotaniaBlocks.SPECTRAL_RAIL).onMinecartPass(state, self.level(), pos, self);
+			((SpectralRailBlock) BotaniaBlocks.SPECTRAL_RAIL).onMinecartPass(state, level, pos, self);
 		}
 
 	}

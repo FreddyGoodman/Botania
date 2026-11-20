@@ -26,7 +26,7 @@ import org.violetmoon.botania.common.item.equipment.tool.ToolCommons;
 public class ItemStackNeoForgeMixin {
 
 	@WrapOperation(
-		method = "hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V",
+		method = "processDurabilityChange(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)I",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;processDurabilityChange(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;I)I"

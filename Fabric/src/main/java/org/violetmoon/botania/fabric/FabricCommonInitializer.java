@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.MinecartComparatorLogicRegistry;
+import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.api.registry.CompostableRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FuelValueEvents;
@@ -58,6 +59,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -125,7 +129,6 @@ import org.violetmoon.botania.fabric.internal_caps.FabricInternalEntityAttachmen
 import org.violetmoon.botania.fabric.internal_caps.RedStringContainerStorage;
 import org.violetmoon.botania.fabric.loot.LootHandler;
 import org.violetmoon.botania.fabric.network.FabricPacketHandler;
-import org.violetmoon.botania.fabric.network.RecipeSyncPayload;
 import org.violetmoon.botania.network.clientbound.ItemLifeTimePacket;
 import org.violetmoon.botania.test.BoreHarvestLevelTestEnvironment;
 import org.violetmoon.botania.test.PortParityTests;
@@ -230,7 +233,13 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaItems.registerMenuTypes(bind(BuiltInRegistries.MENU));
 		StateIngredients.submitRegistrations(bind(STATE_INGREDIENT_TYPE_REGISTRY));
 		BotaniaRecipeTypes.submitRecipeTypes(bind(BuiltInRegistries.RECIPE_TYPE));
-		BotaniaRecipeTypes.submitRecipeSerializers(bind(BuiltInRegistries.RECIPE_SERIALIZER));
+		BotaniaRecipeTypes.submitRecipeSerializers((serializer, id) -> {
+			Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, id, serializer);
+			RecipeSynchronization.synchronizeRecipeSerializer(serializer);
+		});
+		RecipeSynchronization.synchronizeRecipeSerializer(ShapedRecipe.SERIALIZER);
+		RecipeSynchronization.synchronizeRecipeSerializer(ShapelessRecipe.SERIALIZER);
+		RecipeSynchronization.synchronizeRecipeSerializer(SmeltingRecipe.SERIALIZER);
 
 		// Entities
 		BotaniaEntities.registerEntities(bind(BuiltInRegistries.ENTITY_TYPE));
@@ -317,7 +326,6 @@ public class FabricCommonInitializer implements ModInitializer {
 		});
 		ManaNetworkCallback.EVENT.register(ManaNetworkHandler.instance::onNetworkEvent);
 		ServerEntityEvents.ENTITY_LOAD.register(TigerseyeBlockEntity::pacifyAfterLoad);
-		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> RecipeSyncPayload.sendRecipes(player));
 		ServerLifecycleEvents.SERVER_STARTED.register(this::serverAboutToStart);
 		ServerLifecycleEvents.SERVER_STOPPING.register(this::serverStopping);
 		ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> FlugelTiaraItem.playerLoggedOut(handler.player)));

@@ -39,7 +39,7 @@ public abstract class ClientLevelDataMixin implements SkyblockWorldInfo {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "getClearColorScale", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "voidDarknessOnsetRange", cancellable = true)
 	private void gogFog(CallbackInfoReturnable<Float> cir) {
 		if (gardenOfGlass) {
 			cir.setReturnValue(1.0F);

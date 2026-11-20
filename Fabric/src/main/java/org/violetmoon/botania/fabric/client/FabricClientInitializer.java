@@ -17,11 +17,13 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
+import net.fabricmc.fabric.api.client.recipe.v1.sync.ClientRecipeSynchronizedEvent;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleProvider;
@@ -30,6 +32,7 @@ import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
@@ -37,6 +40,7 @@ import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.BotaniaAPIClient;
 import org.violetmoon.botania.api.fabric.BotaniaFabricCapabilities;
 import org.violetmoon.botania.client.BotaniaClientCapabilities;
+import org.violetmoon.botania.client.ClientRecipeSync;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.handler.CorporeaInputHandler;
 import org.violetmoon.botania.client.core.handler.KonamiHandler;
@@ -115,6 +119,15 @@ public class FabricClientInitializer implements ClientModInitializer {
 			@Override
 			public <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> constructor) {
 				ParticleProviderRegistry.getInstance().register(type, constructor::apply);
+			}
+		});
+
+		// Publish the recipe view before recipe viewers read it in their default phase.
+		var recipePhase = botaniaRL("recipes");
+		ClientRecipeSynchronizedEvent.EVENT.addPhaseOrdering(recipePhase, Event.DEFAULT_PHASE);
+		ClientRecipeSynchronizedEvent.EVENT.register(recipePhase, (minecraft, synchronizedRecipes) -> {
+			if (minecraft.getConnection() instanceof ClientRecipeSync recipes) {
+				recipes.botania$setRecipes(RecipeMap.create(synchronizedRecipes.recipes()));
 			}
 		});
 

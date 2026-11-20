@@ -11,9 +11,12 @@ package org.violetmoon.botania.neoforge.data.gog;
 
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -33,7 +36,11 @@ import org.violetmoon.botania.common.loot.BotaniaLootTables;
 import java.util.function.BiConsumer;
 
 public class GogBlockLootSubProvider implements LootTableSubProvider {
-	public GogBlockLootSubProvider(HolderLookup.Provider provider) {}
+	private final HolderGetter<Item> items;
+
+	public GogBlockLootSubProvider(HolderLookup.Provider provider) {
+		items = provider.lookupOrThrow(Registries.ITEM);
+	}
 
 	@Override
 	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
@@ -52,7 +59,7 @@ public class GogBlockLootSubProvider implements LootTableSubProvider {
 						.when(ExplosionCondition.survivesExplosion())
 						.when(LootItemRandomChanceCondition.randomChance(0.03125f))
 						// TODO: on NeoForge this should actually match the shears tool ability, not the item tag
-						.when(MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.TOOLS_SHEAR)).invert())
+						.when(MatchTool.toolMatches(ItemPredicate.Builder.item().of(items, Tags.Items.TOOLS_SHEAR)).invert())
 				));
 	}
 }

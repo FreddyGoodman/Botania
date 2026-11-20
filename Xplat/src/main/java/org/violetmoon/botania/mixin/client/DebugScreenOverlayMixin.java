@@ -6,22 +6,24 @@
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
  */
-package org.violetmoon.botania.fabric.mixin.client;
+package org.violetmoon.botania.mixin.client;
 
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.violetmoon.botania.client.core.handler.DebugHandler;
 
 import java.util.List;
 
 @Mixin(DebugScreenOverlay.class)
-public class DebugScreenOverlayFabricMixin {
-	@Inject(at = @At("RETURN"), method = "getGameInformation")
-	private void addLeftText(CallbackInfoReturnable<List<String>> cir) {
-		DebugHandler.onDrawDebugText(cir.getReturnValue());
+public class DebugScreenOverlayMixin {
+	@ModifyArg(method = "extractRenderState", at = @At(value = "INVOKE", ordinal = 0,
+			target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;extractLines(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Ljava/util/List;Z)V"),
+			index = 1)
+	private List<String> addBotaniaDebugText(List<String> lines) {
+		DebugHandler.onDrawDebugText(lines);
+		return lines;
 	}
 }

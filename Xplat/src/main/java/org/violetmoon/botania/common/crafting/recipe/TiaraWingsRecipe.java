@@ -36,7 +36,7 @@ public class TiaraWingsRecipe extends BotaniaSpecialRecipe {
 
 	public TiaraWingsRecipe(CraftingBookCategory category, Optional<Ingredient> material, int variant) {
 		super(category);
-		if (material.isPresent() && material.get().test(BotaniaItems.FLUGEL_TIARA.getDefaultInstance())) {
+		if (material.isPresent() && material.get().acceptsItem(BotaniaItems.FLUGEL_TIARA.builtInRegistryHolder())) {
 			throw new IllegalArgumentException("Material cannot be a Flügel Tiara");
 		}
 		this.material = material;

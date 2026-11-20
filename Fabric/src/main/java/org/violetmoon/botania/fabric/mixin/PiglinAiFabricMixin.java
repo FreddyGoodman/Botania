@@ -8,6 +8,7 @@
  */
 package org.violetmoon.botania.fabric.mixin;
 
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.item.ItemStack;
@@ -20,12 +21,9 @@ import org.violetmoon.botania.common.item.equipment.armor.terrasteel.TerrasteelA
 
 @Mixin(PiglinAi.class)
 public class PiglinAiFabricMixin {
-	@Inject(at = @At("HEAD"), method = "isWearingGold", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "isWearingSafeArmor", cancellable = true)
 	private static void terrasteelNeutral(LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
-		for (var slot : net.minecraft.world.entity.EquipmentSlot.VALUES) {
-			if (!slot.isArmor()) {
-				continue;
-			}
+		for (var slot : EquipmentSlotGroup.ARMOR) {
 			ItemStack stack = entity.getItemBySlot(slot);
 			if (stack.getItem() instanceof TerrasteelArmorItem armor
 					&& armor.makesPiglinsNeutral(stack, entity)) {

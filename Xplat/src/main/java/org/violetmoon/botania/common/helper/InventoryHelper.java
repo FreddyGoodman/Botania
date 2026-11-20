@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import org.violetmoon.botania.mixin.HopperBlockEntityAccessor;
-import org.violetmoon.botania.mixin.InventoryAccessor;
 
 import java.util.List;
 import java.util.function.Function;
@@ -197,14 +196,6 @@ public class InventoryHelper {
 	 * @return {@code true} if the inventory contains an item of the specified type, otherwise {@code false}.
 	 */
 	public static boolean containsType(Inventory inventory, Item item) {
-		for (List<ItemStack> compartment : ((InventoryAccessor) inventory).botania_getCompartments()) {
-			for (ItemStack stack : compartment) {
-				if (stack.is(item)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return inventory.contains(stack -> stack.is(item));
 	}
 }

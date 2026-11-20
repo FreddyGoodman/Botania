@@ -19,6 +19,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -26,17 +27,20 @@ import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.recipe.StateIngredient;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.block.mana.ManaPoolBlock;
-import org.violetmoon.botania.common.crafting.recipe.RecipeUtils;
 
 public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.ManaInfusionRecipe {
 	public static final RecipeSerializer<ManaInfusionRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
-	private final ItemStack output;
+	private final ItemStackTemplate output;
 	private final Ingredient input;
 	private final int mana;
 	private final StateIngredient catalyst;
 	private final String group;
 
 	public ManaInfusionRecipe(ItemStack output, Ingredient input, int mana, @Nullable String group, @Nullable StateIngredient catalyst) {
+		this(ItemStackTemplate.fromNonEmptyStack(output), input, mana, group, catalyst);
+	}
+
+	private ManaInfusionRecipe(ItemStackTemplate output, Ingredient input, int mana, @Nullable String group, @Nullable StateIngredient catalyst) {
 		this.output = output;
 		this.input = input;
 		this.mana = mana;
@@ -66,7 +70,7 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 
 	@Override
 	public ItemStack getResultItem(HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@Override
@@ -89,12 +93,16 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 	}
 
 	protected ItemStack getOutput() {
+		return output.create();
+	}
+
+	private ItemStackTemplate outputTemplate() {
 		return output;
 	}
 
 	public static final class Serializer {
 		public static final MapCodec<ManaInfusionRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				RecipeUtils.OUTPUT_CODEC.fieldOf("output").forGetter(ManaInfusionRecipe::getOutput),
+				ItemStackTemplate.CODEC.fieldOf("output").forGetter(ManaInfusionRecipe::outputTemplate),
 				Ingredient.CODEC.fieldOf("input").forGetter(ManaInfusionRecipe::getInput),
 				// Leaving wiggle room for a certain modpack having creative-pool-only recipes
 				ExtraCodecs.intRange(1, ManaPoolBlock.MAX_MANA + 1).fieldOf("mana")
@@ -104,7 +112,7 @@ public class ManaInfusionRecipe implements org.violetmoon.botania.api.recipe.Man
 						.forGetter(ManaInfusionRecipe::getRecipeCatalyst)
 		).apply(instance, ManaInfusionRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, ManaInfusionRecipe> STREAM_CODEC = StreamCodec.composite(
-				ItemStack.STREAM_CODEC, ManaInfusionRecipe::getOutput,
+				ItemStackTemplate.STREAM_CODEC, ManaInfusionRecipe::outputTemplate,
 				Ingredient.CONTENTS_STREAM_CODEC, ManaInfusionRecipe::getInput,
 				ByteBufCodecs.VAR_INT, ManaInfusionRecipe::getManaToConsume,
 				ByteBufCodecs.STRING_UTF8, ManaInfusionRecipe::group,

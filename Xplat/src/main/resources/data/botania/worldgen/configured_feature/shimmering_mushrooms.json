@@ -1,6 +1,6 @@
 {
   "__comment1": "ID of the code-registered `Feature` we're placing",
-  "type": "minecraft:random_patch",
+  "type": "botania:random_patch",
   "__comment2": "The config that Feature expects",
   "config": {
     "__comment1": "type of containing object: RandomPatchConfig",

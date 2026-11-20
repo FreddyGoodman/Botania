@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.tags.TagKey;
@@ -65,6 +66,10 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 			return;
 		}
 
+		if (!(this.level instanceof ServerLevel serverLevel)) {
+			return;
+		}
+
 		if (burnTime > 0) {
 			if (shouldUpdateThisTick()) {
 				addMana(manaPerTick);
@@ -90,7 +95,7 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 				}
 				BlockState blockState = level.getBlockState(pos);
 				if (!(fluidState.getType() instanceof FlowingFluid flowing)
-						|| !((FlowingFluidAccessor) flowing).botania_getNewLiquid(level, pos, blockState).isSource()) {
+						|| !((FlowingFluidAccessor) flowing).botania_getNewLiquid(serverLevel, pos, blockState).isSource()) {
 					// liquid would not form a new source here if this one was removed, so consume it
 					if (!(blockState.getBlock() instanceof BucketPickup bucketPickup)
 							|| bucketPickup.pickupBlock(null, level, pos, blockState).isEmpty()) {

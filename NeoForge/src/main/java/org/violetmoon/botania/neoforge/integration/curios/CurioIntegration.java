@@ -9,14 +9,6 @@
 package org.violetmoon.botania.neoforge.integration.curios;
 
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
@@ -29,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.common.handler.EquipmentHandler;
@@ -41,10 +32,9 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
-import top.theillusivec4.curios.api.client.ICurioRenderer;
 import top.theillusivec4.curios.api.event.DropRulesEvent;
 import top.theillusivec4.curios.api.type.capability.ICurio;
-import top.theillusivec4.curios.api.type.capability.ICurio.DropRule;
+import top.theillusivec4.curios.api.common.DropRule;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.ArrayList;
@@ -100,7 +90,7 @@ public class CurioIntegration extends EquipmentHandler {
 
 	@Override
 	public void onInit(Item item) {
-		Proxy.INSTANCE.runOnClient(() -> () -> ICurioRenderer.register(item, () -> Renderer.INSTANCE));
+		Proxy.INSTANCE.runOnClient(() -> () -> CuriosRendering.register(item));
 	}
 
 	@Override
@@ -167,31 +157,4 @@ public class CurioIntegration extends EquipmentHandler {
 		}
 	}
 
-	private static class Renderer implements ICurioRenderer {
-		private static final Renderer INSTANCE = new Renderer();
-
-		@Override
-		public <S extends LivingEntityRenderState, M extends EntityModel<? super S>> void render(ItemStack stack,
-				SlotContext slotContext, PoseStack pose, SubmitNodeCollector collector, int light, S renderState,
-				RenderLayerParent<S, M> renderLayerParent, EntityRendererProvider.Context context, float yaw, float pitch) {
-			LivingEntity living = slotContext.entity();
-			BaubleItem item = (BaubleItem) stack.getItem();
-			if (!item.hasRender(stack, living) || !(renderLayerParent.getModel() instanceof HumanoidModel<?> model)) {
-				return;
-			}
-
-			pose.pushPose();
-			ItemStack cosmetic = item.getCosmeticItem(stack);
-			if (!cosmetic.isEmpty()) {
-				ICurioRenderer.get(cosmetic).render(cosmetic, slotContext, pose, collector, light,
-						renderState, renderLayerParent, context, yaw, pitch);
-			} else {
-				var renderer = AccessoryRenderRegistry.get(stack);
-				if (renderer != null) {
-					renderer.submit(model, stack, living, pose, collector, light, renderState.ageInTicks);
-				}
-			}
-			pose.popPose();
-		}
-	}
 }

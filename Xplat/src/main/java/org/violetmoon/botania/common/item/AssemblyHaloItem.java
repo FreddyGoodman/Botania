@@ -8,6 +8,7 @@
  */
 package org.violetmoon.botania.common.item;
 
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -65,11 +66,12 @@ import org.violetmoon.botania.common.helper.VecHelper;
 import org.violetmoon.botania.network.clientbound.HaloCraftEffectPacket;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
+import java.util.function.Supplier;
 
 public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 
 	private static final Identifier glowTexture = Identifier.parse(ResourcesLib.MISC_GLOW_GREEN);
-	private static final ItemStack craftingTable = new ItemStack(Blocks.CRAFTING_TABLE);
+	private static final Supplier<ItemStack> craftingTable = Suppliers.memoize(() -> new ItemStack(Blocks.CRAFTING_TABLE));
 
 	public static final int SEGMENTS = 12;
 
@@ -286,7 +288,7 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 
 	private static ItemStack getDisplayItem(Level world, ItemStack stack, int segment) {
 		if (segment == 0) {
-			return craftingTable;
+			return craftingTable.get();
 		} else if (segment >= SEGMENTS) {
 			return ItemStack.EMPTY;
 		} else {
@@ -453,14 +455,14 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 			int slot = getSegmentLookedAt(stack, player);
 
 			if (slot == 0) {
-				String name = craftingTable.getHoverName().getString();
+				String name = craftingTable.get().getHoverName().getString();
 				int l = font.width(name);
 				int x = window.getGuiScaledWidth() / 2 - l / 2;
 				int y = window.getGuiScaledHeight() / 2 - 65;
 
 				gui.fill(x - 6, y - 6, x + l + 6, y + 37, 0x22000000);
 				gui.fill(x - 4, y - 4, x + l + 4, y + 35, 0x22000000);
-				gui.item(craftingTable, window.getGuiScaledWidth() / 2 - 8, window.getGuiScaledHeight() / 2 - 52);
+				gui.item(craftingTable.get(), window.getGuiScaledWidth() / 2 - 8, window.getGuiScaledHeight() / 2 - 52);
 
 				gui.text(font, name, x, y, 0xFFFFFF);
 			} else {

@@ -10,8 +10,6 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 import com.google.common.base.Suppliers;
 
-import com.mojang.serialization.Codec;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.Container;
@@ -37,8 +35,6 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public final class RecipeUtils {
-	public static final Codec<ItemStack> OUTPUT_CODEC = ItemStack.CODEC.validate(ItemStack::validateStrict);
-
 	/**
 	 * Check if every ingredient in {@code recipe} is satisfied by an item in {@code input}.
 	 *

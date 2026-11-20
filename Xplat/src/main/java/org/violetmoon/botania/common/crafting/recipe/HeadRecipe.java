@@ -72,7 +72,7 @@ public class HeadRecipe extends RunicAltarRecipe {
 	}
 
 	private HeadRecipe(RunicAltarRecipe recipe) {
-		super(recipe.getOutput(), recipe.getReagent(), recipe.getMana(),
+		super(recipe.outputTemplate(), recipe.getReagent(), recipe.getMana(),
 				recipe.getIngredients().toArray(Ingredient[]::new), recipe.getCatalysts().toArray(Ingredient[]::new));
 	}
 

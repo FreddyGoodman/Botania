@@ -15,7 +15,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import org.violetmoon.botania.client.ClientRecipeSync;
 import org.violetmoon.botania.network.clientbound.ArenaIndicatorEffectPacket;
 import org.violetmoon.botania.network.clientbound.AvatarSkiesRodEffectPacket;
 import org.violetmoon.botania.network.clientbound.AvatarSkiesRodUpdatePacket;
@@ -53,7 +52,6 @@ public final class FabricPacketHandler {
 		PayloadTypeRegistry.serverboundPlay().register(JumpPacket.ID, JumpPacket.STREAM_CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(LeftClickPacket.ID, LeftClickPacket.STREAM_CODEC);
 
-		PayloadTypeRegistry.clientboundPlay().register(RecipeSyncPayload.ID, RecipeSyncPayload.STREAM_CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(ArenaIndicatorEffectPacket.ID, ArenaIndicatorEffectPacket.STREAM_CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(AvatarSkiesRodUpdatePacket.ID, AvatarSkiesRodUpdatePacket.STREAM_CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(AvatarSkiesRodEffectPacket.ID, AvatarSkiesRodEffectPacket.STREAM_CODEC);
@@ -89,11 +87,6 @@ public final class FabricPacketHandler {
 	}
 
 	public static void initClient() {
-		ClientPlayNetworking.registerGlobalReceiver(RecipeSyncPayload.ID, (payload, context) -> {
-			if (context.player().connection instanceof ClientRecipeSync recipes) {
-				recipes.botania$acceptRecipes(payload.first(), payload.last(), payload.recipes());
-			}
-		});
 		ClientPlayNetworking.registerGlobalReceiver(ArenaIndicatorEffectPacket.ID, makeClientBoundHandler(ArenaIndicatorEffectPacket.Handler::handle));
 		ClientPlayNetworking.registerGlobalReceiver(AvatarSkiesRodUpdatePacket.ID, makeClientBoundHandler(AvatarSkiesRodUpdatePacket.Handler::handle));
 		ClientPlayNetworking.registerGlobalReceiver(AvatarSkiesRodEffectPacket.ID, makeClientBoundHandler(AvatarSkiesRodEffectPacket.Handler::handle));

@@ -10,15 +10,14 @@
 package org.violetmoon.botania.neoforge.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -31,6 +30,7 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
@@ -75,7 +75,7 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 public class NeoForgeClientInitializer {
 	@SubscribeEvent
 	public static void registerGuiOverlays(RegisterGuiLayersEvent e) {
-		e.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, botaniaRL("hud_early"), HUDHandler::onDrawExperienceBarPost);
+		e.registerAbove(VanillaGuiLayers.CONTEXTUAL_INFO_BAR, botaniaRL("hud_early"), HUDHandler::onDrawExperienceBarPost);
 		e.registerAbove(VanillaGuiLayers.AIR_LEVEL, botaniaRL("hud_late"), HUDHandler::onDrawAirLevelPost);
 	}
 
@@ -108,12 +108,11 @@ public class NeoForgeClientInitializer {
 				e.setCanceled(true);
 			}
 		});
-		bus.addListener((RecipesReceivedEvent e) -> {
+		bus.addListener(EventPriority.HIGH, (RecipesReceivedEvent e) -> {
 			if (Minecraft.getInstance().getConnection() instanceof ClientRecipeSync recipes) {
 				recipes.botania$setRecipes(e.getRecipeMap());
 			}
 		});
-		bus.addListener((CustomizeGuiOverlayEvent.DebugText e) -> DebugHandler.onDrawDebugText(e.getLeft()));
 		bus.addListener((InputEvent.Key e) -> {
 			RingOfDexterousMotionItem.ClientLogic.onKeyDown();
 			KonamiHandler.handleInput(e.getKey(), e.getAction(), e.getModifiers());
@@ -188,7 +187,7 @@ public class NeoForgeClientInitializer {
 		event.registerItem(
 				new IClientItemExtensions() {
 					@Override
-					public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
+					public Model getHumanoidArmorModel(ItemStack stack, EquipmentClientInfo.LayerType layer, Model defaultModel) {
 						return Objects.requireNonNull(ArmorModels.get(stack));
 					}
 				},

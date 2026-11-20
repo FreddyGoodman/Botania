@@ -5,32 +5,47 @@
  *
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
- *
  */
 
 package org.violetmoon.botania.neoforge.internal_caps;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStackSimple;
+import net.neoforged.neoforge.transfer.ItemAccessResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class WaterBowlFluidHandler extends FluidHandlerItemStackSimple.SwapEmpty {
-	public WaterBowlFluidHandler(ItemStack stack) {
-		super(() -> BotaniaNeoforgeDataComponents.BOWL_FLUID, stack, new ItemStack(Items.BOWL),
-				FluidType.BUCKET_VOLUME);
-		setFluid(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME));
+import org.violetmoon.botania.common.item.BotaniaItems;
+
+public class WaterBowlFluidHandler extends ItemAccessResourceHandler<FluidResource> {
+	public WaterBowlFluidHandler(ItemAccess access) {
+		super(access, 1);
 	}
 
 	@Override
-	public boolean canFillFluidType(FluidStack fluid) {
+	protected FluidResource getResourceFrom(ItemResource resource, int index) {
+		return resource.is(BotaniaItems.WATER_BOWL) ? FluidResource.of(Fluids.WATER) : FluidResource.EMPTY;
+	}
+
+	@Override
+	protected int getAmountFrom(ItemResource resource, int index) {
+		return resource.is(BotaniaItems.WATER_BOWL) ? FluidType.BUCKET_VOLUME : 0;
+	}
+
+	@Override
+	protected ItemResource update(ItemResource resource, int index, FluidResource fluid, int amount) {
+		return amount == 0 ? ItemResource.of(Items.BOWL) : ItemResource.EMPTY;
+	}
+
+	@Override
+	public boolean isValid(int index, FluidResource fluid) {
 		return false;
 	}
 
 	@Override
-	public boolean canDrainFluidType(FluidStack fluid) {
-		return fluid.getFluid() == Fluids.WATER;
+	protected int getCapacity(int index, FluidResource fluid) {
+		return FluidType.BUCKET_VOLUME;
 	}
 }

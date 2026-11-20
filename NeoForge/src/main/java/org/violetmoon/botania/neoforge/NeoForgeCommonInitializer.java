@@ -46,8 +46,9 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.common.util.TriState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraft.util.TriState;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.*;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -63,7 +64,8 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
+import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
+import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -358,7 +360,7 @@ public class NeoForgeCommonInitializer {
 		// FabricMixinExplosion
 		bus.addListener((ExplosionEvent.Detonate e) -> {
 			if (BenevolentGoddessCharmItem.shouldProtectExplosion(e.getLevel(), e.getExplosion().center())) {
-				e.getExplosion().clearToBlow();
+				e.getAffectedBlocks().clear();
 			}
 		});
 		// FabricMixinItemEntity
@@ -419,7 +421,7 @@ public class NeoForgeCommonInitializer {
 			});
 			bus.addListener((LivingFallEvent e) -> {
 				if (e.getEntity() instanceof Player player) {
-					e.setDistance(SojournersSashItem.onPlayerFall(player, e.getDistance()));
+					e.setDistance(SojournersSashItem.onPlayerFall(player, (float) e.getDistance()));
 				}
 			});
 			bus.addListener(EventPriority.LOW, (CriticalHitEvent e) -> {
@@ -460,18 +462,18 @@ public class NeoForgeCommonInitializer {
 			ci.initCapability(e, baubleItems);
 		}
 
-		e.registerItem(Capabilities.FluidHandler.ITEM,
-				(stack, context) -> new WaterBowlFluidHandler(stack),
+		e.registerItem(Capabilities.Fluid.ITEM,
+				(stack, access) -> new WaterBowlFluidHandler(access),
 				BotaniaItems.WATER_BOWL
 		);
-		e.registerItem(Capabilities.FluidHandler.ITEM,
-				(stack, context) -> new ExtrapolatedBucketFluidHandler(stack),
+		e.registerItem(Capabilities.Fluid.ITEM,
+				(stack, access) -> new ExtrapolatedBucketFluidHandler(),
 				BotaniaItems.EXTRAPOLATED_BUCKET
 		);
 
 		Stream.of(BotaniaBlockEntities.RED_STRINGED_CONTAINER, BotaniaBlockEntities.RED_STRINGED_DISPENSER)
 				.forEach(blockEntityType -> e.registerBlockEntity(
-						Capabilities.ItemHandler.BLOCK, blockEntityType, new RedStringContainerCapProvider()));
+						Capabilities.Item.BLOCK, blockEntityType, new RedStringContainerCapProvider()));
 
 		// apparently NeoForge needs a hint that these have automation-accessible storage
 		Stream.of(
@@ -479,39 +481,30 @@ public class NeoForgeCommonInitializer {
 				BotaniaBlockEntities.HOVERING_HOURGLASS, BotaniaBlockEntities.INCENSE_PLATE,
 				BotaniaBlockEntities.OPEN_CRATE, BotaniaBlockEntities.SPARK_TINKERER, BotaniaBlockEntities.TINY_POTATO
 		).forEach(blockEntityType -> e.registerBlockEntity(
-				Capabilities.ItemHandler.BLOCK, blockEntityType, SidedInvWrapper::new));
+				Capabilities.Item.BLOCK, blockEntityType, (container, side) -> side == null
+						? VanillaContainerWrapper.of(container) : new WorldlyContainerWrapper(container, side)));
 
-		e.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BotaniaBlockEntities.MANA_FLUXFIELD,
+		e.registerBlockEntity(Capabilities.Energy.BLOCK, BotaniaBlockEntities.MANA_FLUXFIELD,
 				// we only provide a view of the energy level, no interaction allowed
-				(gen, context) -> new IEnergyStorage() {
+				(gen, context) -> new EnergyHandler() {
 					@Override
-					public int getEnergyStored() {
+					public long getAmountAsLong() {
 						return gen.getEnergy();
 					}
 
 					@Override
-					public int getMaxEnergyStored() {
+					public long getCapacityAsLong() {
 						return PowerGeneratorBlockEntity.MAX_ENERGY;
 					}
 
 					@Override
-					public boolean canExtract() {
-						return false;
-					}
-
-					@Override
-					public int extractEnergy(int maxExtract, boolean simulate) {
+					public int extract(int amount, TransactionContext transaction) {
 						return 0;
 					}
 
 					@Override
-					public int receiveEnergy(int maxReceive, boolean simulate) {
+					public int insert(int amount, TransactionContext transaction) {
 						return 0;
-					}
-
-					@Override
-					public boolean canReceive() {
-						return false;
 					}
 				});
 	}

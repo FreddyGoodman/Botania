@@ -74,7 +74,16 @@ public class NeoForgeDatagenInitializer {
 			Registries.WORLD_PRESET, BotaniaAPI.gogRL("gardenofglass"));
 
 	@SubscribeEvent
-	public static void configureDatagen(GatherDataEvent evt) {
+	public static void gatherServerData(GatherDataEvent.Server event) {
+		configureDatagen(event);
+	}
+
+	@SubscribeEvent
+	public static void gatherClientData(GatherDataEvent.Client event) {
+		configureDatagen(event);
+	}
+
+	private static void configureDatagen(GatherDataEvent evt) {
 		if (System.getProperty("botania.gog_datagen") != null) {
 			configureGogDatagen(evt);
 		} else {
@@ -93,7 +102,7 @@ public class NeoForgeDatagenInitializer {
 
 	private static void configureGogDatagen(GatherDataEvent evt) {
 		evt.createProvider(GogBlockTagsProvider::new);
-		evt.createProvider(GogRecipeProvider::new);
+		evt.createProvider(GogRecipeProvider.Runner::new);
 		evt.createProvider(GogGlobalLootModifierProvider::new);
 		evt.createDatapackRegistryObjects(addWorldPresets(), Set.of(BotaniaAPI.GOG_MODID));
 		evt.createProvider(GogWorldPresetTagsProvider::new);
@@ -101,7 +110,7 @@ public class NeoForgeDatagenInitializer {
 				new LootTableProvider.SubProviderEntry(GogBlockUseLootProvider::new, LootContextParamSets.BLOCK_USE),
 				new LootTableProvider.SubProviderEntry(GogBlockLootSubProvider::new, LootContextParamSets.BLOCK)
 		), evt.getLookupProvider()));
-		evt.addProvider(new GogSoundDefinitionProvider(evt.getGenerator().getPackOutput(), evt.getExistingFileHelper()));
+		evt.addProvider(new GogSoundDefinitionProvider(evt.getGenerator().getPackOutput()));
 		evt.createProvider(GogDataMapsProvider::new);
 	}
 

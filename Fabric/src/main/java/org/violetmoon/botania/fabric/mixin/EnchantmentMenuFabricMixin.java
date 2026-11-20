@@ -24,7 +24,7 @@ import org.violetmoon.botania.common.block.PylonBlock;
 @Mixin(EnchantmentMenu.class)
 public class EnchantmentMenuFabricMixin {
 	@ModifyVariable(
-		method = "method_17411(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V",
+		method = "lambda$slotsChanged$0(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V",
 		at = @At(value = "STORE", ordinal = 0),
 		ordinal = 0
 	)

@@ -8,23 +8,15 @@
  */
 package org.violetmoon.botania.fabric.integration.trinkets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import eu.pb4.trinkets.api.TrinketDropRule;
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.TrinketSlotUtils;
 import eu.pb4.trinkets.api.TrinketsApi;
 import eu.pb4.trinkets.api.callback.TrinketCallback;
-import eu.pb4.trinkets.api.client.TrinketRenderer;
-import eu.pb4.trinkets.api.client.TrinketRendererRegistry;
 import eu.pb4.trinkets.api.component.TrinketDataComponents;
 import eu.pb4.trinkets.api.event.TrinketDropCallback;
 
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
@@ -40,7 +32,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.common.handler.EquipmentHandler;
@@ -114,7 +105,7 @@ public class TrinketsIntegration extends EquipmentHandler {
 	@Override
 	public void onInit(Item item) {
 		TrinketCallback.setCallback(item, WRAPPER);
-		Proxy.INSTANCE.runOnClient(() -> () -> TrinketRendererRegistry.registerRenderer(item, new RenderWrapper()));
+		Proxy.INSTANCE.runOnClient(() -> () -> TrinketsRendering.register(item));
 	}
 
 	@Override
@@ -159,26 +150,4 @@ public class TrinketsIntegration extends EquipmentHandler {
 		}
 	};
 
-	private static class RenderWrapper implements TrinketRenderer {
-		@Override
-		public void submit(ItemStack stack, TrinketSlotAccess slot, EntityModel<? extends LivingEntityRenderState> contextModel,
-				PoseStack pose, SubmitNodeCollector collector, int light, LivingEntityRenderState state, float yaw, float pitch) {
-			LivingEntity living = slot.inventory().getAttachment().getEntity();
-			BaubleItem item = (BaubleItem) stack.getItem();
-			if (!item.hasRender(stack, living) || !(contextModel instanceof HumanoidModel<?> model)) {
-				return;
-			}
-
-			ItemStack cosmetic = item.getCosmeticItem(stack);
-			if (!cosmetic.isEmpty()) {
-				TrinketRendererRegistry.getRenderer(cosmetic.getItem())
-						.ifPresent(renderer -> renderer.submit(cosmetic, slot, contextModel, pose, collector, light, state, yaw, pitch));
-			} else {
-				var renderer = AccessoryRenderRegistry.get(stack);
-				if (renderer != null) {
-					renderer.submit(model, stack, living, pose, collector, light, state.ageInTicks);
-				}
-			}
-		}
-	}
 }

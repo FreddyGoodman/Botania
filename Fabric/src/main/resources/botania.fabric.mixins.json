@@ -4,7 +4,6 @@
   "package": "org.violetmoon.botania.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractFurnaceBlockEntityFabricAccessor",
     "AbstractMinecartFabricMixin",
     "AnvilMenuFabricMixin",
     "AxeItemFabricMixin",
@@ -13,6 +12,7 @@
     "EnchantmentMenuFabricMixin",
     "EnderManFabricMixin",
     "ExplosionFabricMixin",
+    "FabricDataGenHelperMixin",
     "HashCacheFabricMixin",
     "HashCacheProviderCacheBuilderFabricMixin",
     "HashCacheProviderCacheFabricMixin",
@@ -25,12 +25,12 @@
     "PowderSnowBlockMixin",
     "PrimedTntMixin",
     "RepairItemRecipeFabricMixin",
-    "ResultSlotFabricMixin"
+    "ResultSlotFabricMixin",
+    "ServerPlayerFabricMixin",
+    "TypedInstanceFabricMixin"
   ],
   "client": [
-    "client.AbstractTextureFabricMixin",
     "client.ClientPacketListenerMixin",
-    "client.DebugScreenOverlayFabricMixin",
     "client.KeyboardHandlerFabricMixin",
     "client.MinecraftFabricMixin"
   ],

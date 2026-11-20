@@ -19,7 +19,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -81,15 +80,7 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 		return rightHeight;
 	}
 
-	@Override
-	public void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap) {
-		((ExtendedTexture) texture).setFilterSave(filter, mipmap);
-	}
 
-	@Override
-	public void restoreLastFilter(AbstractTexture texture) {
-		((ExtendedTexture) texture).restoreLastFilter();
-	}
 
 	@Override
 	public void markSpriteActive(TextureAtlasSprite sprite) {

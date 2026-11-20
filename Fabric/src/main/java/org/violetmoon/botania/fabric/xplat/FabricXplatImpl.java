@@ -35,7 +35,6 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -66,13 +65,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -112,7 +109,6 @@ import org.violetmoon.botania.fabric.block_entity.FabricRedStringContainerBlockE
 import org.violetmoon.botania.fabric.integration.tr_energy.FluxfieldTRStorage;
 import org.violetmoon.botania.fabric.integration.trinkets.TrinketsIntegration;
 import org.violetmoon.botania.fabric.internal_caps.FabricInternalEntityAttachments;
-import org.violetmoon.botania.fabric.mixin.AbstractFurnaceBlockEntityFabricAccessor;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.LinkedHashMap;
@@ -470,10 +466,6 @@ public class FabricXplatImpl implements XplatAbstractions {
 		player.openMenu(menuProvider);
 	}
 
-	@Override
-	public boolean canFurnaceBurn(AbstractFurnaceBlockEntity furnace, @Nullable RecipeHolder<?> recipeHolder, NonNullList<ItemStack> items, int maxStackSize) {
-		return AbstractFurnaceBlockEntityFabricAccessor.botania_canBurn(furnace.getLevel().registryAccess(), recipeHolder, items, maxStackSize);
-	}
 
 	@Override
 	public Fluid getBucketFluid(BucketItem item) {

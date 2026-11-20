@@ -9,21 +9,23 @@
 
 package org.violetmoon.botania.mixin;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.projectile.Projectile;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 
 @Mixin(Projectile.class)
 public interface ProjectileAccessor {
 	@Accessor("leftOwner")
 	boolean botania_getLeftOwner();
 
-	@Accessor("ownerUUID")
-	UUID botania_getOwnerUUID();
+	@Accessor("owner")
+	@Nullable EntityReference<Entity> botania_getOwner();
 
-	@Accessor("ownerUUID")
-	void botania_setOwnerUUID(UUID ownerUUID);
+	@Accessor("owner")
+	void botania_setOwner(@Nullable EntityReference<Entity> owner);
 }

@@ -83,7 +83,8 @@ dependencies {
     compileOnly(libs.rei.neoforge)
 
     compileOnly(libs.ears)
-    compileOnly(libs.sodium.neoforge) { transitive = false }
+    // Sodium ships its NeoForge classes inside a nested jar. The sprite API is shared with Fabric.
+    compileOnly(libs.sodium.fabric) { transitive = false }
     compileOnly(libs.embeddium) { transitive = false }
 
     runtimeOnly(libs.curios)

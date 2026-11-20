@@ -40,6 +40,8 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 import org.violetmoon.botania.common.loot.BotaniaLootTables;
 import org.violetmoon.botania.mixin.MobAccessor;
 
+import java.util.Optional;
+
 public class FelPumpkinBlock extends Block {
 	public static final MapCodec<FelPumpkinBlock> CODEC = simpleCodec(FelPumpkinBlock::new);
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
@@ -100,7 +102,7 @@ public class FelPumpkinBlock extends Block {
 			Blaze blaze = EntityType.BLAZE.create(level, EntitySpawnReason.TRIGGERED);
 			if (blaze != null) {
 				blaze.setPersistenceRequired();
-				((MobAccessor) blaze).botania_setLootTable(BotaniaLootTables.FEL_BLAZE);
+				((MobAccessor) blaze).botania_setLootTable(Optional.of(BotaniaLootTables.FEL_BLAZE));
 				spawnBlazeInWorld(level, blockPatternMatch, blaze, blockPatternMatch.getBlock(0, 2, 0).getPos());
 			}
 		}

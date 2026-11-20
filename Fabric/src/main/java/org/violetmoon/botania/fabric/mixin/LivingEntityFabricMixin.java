@@ -8,6 +8,7 @@
  */
 package org.violetmoon.botania.fabric.mixin;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -40,15 +41,12 @@ public abstract class LivingEntityFabricMixin extends Entity {
 	@Shadow
 	public abstract ItemStack getItemInHand(InteractionHand hand);
 
-	@Shadow
-	protected int lastHurtByPlayerTime;
-
-	@Inject(at = @At("HEAD"), cancellable = true, method = "dropFromLootTable")
-	private void dropLoonium(DamageSource source, boolean causedByPlayer, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), cancellable = true, method = "dropFromLootTable(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;Z)V")
+	private void dropLoonium(ServerLevel level, DamageSource source, boolean causedByPlayer, CallbackInfo ci) {
 		var self = (LivingEntity) (Object) this;
 		LooniumBlockEntity.dropLooniumItems(self, stack -> {
 			if (!stack.isEmpty()) {
-				self.spawnAtLocation((net.minecraft.server.level.ServerLevel) self.level(), stack);
+				self.spawnAtLocation(level, stack);
 			}
 			ci.cancel();
 		});
@@ -84,7 +82,7 @@ public abstract class LivingEntityFabricMixin extends Entity {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F", ordinal = 0), method = "actuallyHurt")
-	private void onActuallyHurt(DamageSource damageSource, float damageAmount, CallbackInfo ci) {
+	private void onActuallyHurt(ServerLevel level, DamageSource damageSource, float damageAmount, CallbackInfo ci) {
 		if (damageSource.getDirectEntity() instanceof Player player) {
 			CharmOfTheDivaItem.onEntityDamaged(player, (LivingEntity) (Object) this);
 		}

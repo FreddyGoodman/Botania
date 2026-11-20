@@ -50,7 +50,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerAccess {
 	// Perform damage source modifications and apply the potion effects.
 	@ModifyArg(
 		method = "attack",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z")
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z")
 	)
 	private DamageSource onDamageTarget(DamageSource source, float amount) {
 		if (this.terraWillCritTarget != null) {
@@ -82,7 +82,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerAccess {
 	 * Makes the player invulnerable to certain damage when wearing an Odin Ring
 	 */
 	@Inject(at = @At("HEAD"), method = "isInvulnerableTo", cancellable = true)
-	private void odinRing(DamageSource src, CallbackInfoReturnable<Boolean> cir) {
+	private void odinRing(ServerLevel level, DamageSource src, CallbackInfoReturnable<Boolean> cir) {
 		if (RingOfOdinItem.onPlayerAttacked((Player) (Object) this, src)) {
 			cir.setReturnValue(true);
 		}
@@ -106,7 +106,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerAccess {
 		slice = @Slice(
 			from = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/Util;getRandom(Ljava/util/List;Lnet/minecraft/util/RandomSource;)Ljava/lang/Object;"
+				target = "Lnet/minecraft/util/Util;getRandom(Ljava/util/List;Lnet/minecraft/util/RandomSource;)Ljava/lang/Object;"
 			)
 		)
 	)

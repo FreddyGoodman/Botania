@@ -10,6 +10,7 @@
 package org.violetmoon.botania.mixin;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
@@ -36,7 +37,7 @@ public class ItemFrameMixin {
 	}
 
 	@Inject(method = "interact", at = @At("HEAD"), cancellable = true)
-	private void botania_applyPhantomInk(Player player, InteractionHand hand,
+	private void botania_applyPhantomInk(Player player, InteractionHand hand, Vec3 hit,
 			CallbackInfoReturnable<InteractionResult> cir) {
 		if (PhantomInked.applyToItemFrame((ItemFrame) (Object) this, player, hand)) {
 			cir.setReturnValue(InteractionResult.CONSUME);

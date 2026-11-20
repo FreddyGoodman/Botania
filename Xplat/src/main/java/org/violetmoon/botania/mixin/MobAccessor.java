@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import java.util.Optional;
+
 @Mixin(Mob.class)
 public interface MobAccessor {
 	@Invoker("readAdditionalSaveData")
@@ -30,7 +32,7 @@ public interface MobAccessor {
 	SoundEvent botania_getAmbientSound();
 
 	@Accessor("lootTable")
-	void botania_setLootTable(ResourceKey<LootTable> id);
+	void botania_setLootTable(Optional<ResourceKey<LootTable>> id);
 
 	@Accessor("goalSelector")
 	GoalSelector botania_getGoalSelector();

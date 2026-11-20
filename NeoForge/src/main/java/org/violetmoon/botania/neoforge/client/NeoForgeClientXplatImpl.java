@@ -16,7 +16,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -25,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.neoforge.item.TinyPotatoRenderEvent;
@@ -45,7 +44,7 @@ public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 
 	@Override
 	public void sendToServer(CustomPacketPayload packet) {
-		PacketDistributor.sendToServer(packet);
+		ClientPacketDistributor.sendToServer(packet);
 	}
 
 	private static final Map<Identifier, StandaloneModelKey<BlockStateModelPart>> BLOCK_MODEL_KEYS = new ConcurrentHashMap<>();
@@ -66,15 +65,7 @@ public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 		return Minecraft.getInstance().gui.rightHeight;
 	}
 
-	@Override
-	public void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap) {
-		texture.setBlurMipmap(filter, mipmap);
-	}
 
-	@Override
-	public void restoreLastFilter(AbstractTexture texture) {
-		texture.restoreLastBlurMipmap();
-	}
 
 	@Override
 	public void markSpriteActive(TextureAtlasSprite sprite) {

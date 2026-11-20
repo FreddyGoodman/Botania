@@ -26,6 +26,7 @@ public class BotaniaFeatures {
 
 	public static void registerFeatures(BiConsumer<Feature<?>, Identifier> r) {
 		r.accept(new MysticalFlowerFeature(MysticalFlowerConfig.CODEC), botaniaRL("mystical_flower"));
+		r.accept(new RandomPatchFeature(), botaniaRL("random_patch"));
 	}
 
 }

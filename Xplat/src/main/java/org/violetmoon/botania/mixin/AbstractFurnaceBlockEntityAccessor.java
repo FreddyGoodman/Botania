@@ -17,27 +17,33 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 public interface AbstractFurnaceBlockEntityAccessor {
+	@Invoker("canBurn")
+	static boolean botania_canBurn(NonNullList<ItemStack> items, int containerLimit, ItemStack result) {
+		throw new AssertionError();
+	}
+
 	@Accessor("items")
 	NonNullList<ItemStack> botania_getItems();
 
 	@Accessor("quickCheck")
 	RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> botania_getQuickCheck();
 
-	@Accessor("litTime")
+	@Accessor("litTimeRemaining")
 	int botania_getLitTime();
 
-	@Accessor("litTime")
+	@Accessor("litTimeRemaining")
 	void botania_setLitTime(int burnTime);
 
-	@Accessor("cookingProgress")
+	@Accessor("cookingTimer")
 	int botania_getCookingProgress();
 
 	@Accessor("cookingTotalTime")
 	int botania_getCookingTotalTime();
 
-	@Accessor("cookingProgress")
+	@Accessor("cookingTimer")
 	void botania_setCookingProgress(int cookTime);
 }

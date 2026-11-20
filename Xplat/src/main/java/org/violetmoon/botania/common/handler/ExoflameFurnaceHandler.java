@@ -11,6 +11,7 @@ package org.violetmoon.botania.common.handler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -20,12 +21,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.block.ExoflameHeatable;
 import org.violetmoon.botania.mixin.AbstractFurnaceBlockEntityAccessor;
-import org.violetmoon.botania.xplat.XplatAbstractions;
 
 public class ExoflameFurnaceHandler {
-	public static boolean canSmeltRecipe(AbstractFurnaceBlockEntity furnace, RecipeHolder<?> recipeHolder) {
+	public static boolean canSmeltRecipe(AbstractFurnaceBlockEntity furnace, RecipeHolder<? extends AbstractCookingRecipe> recipeHolder) {
 		var items = ((AbstractFurnaceBlockEntityAccessor) furnace).botania_getItems();
-		return XplatAbstractions.INSTANCE.canFurnaceBurn(furnace, recipeHolder, items, furnace.getMaxStackSize());
+		ItemStack result = recipeHolder.value().assemble(new SingleRecipeInput(items.getFirst()));
+		return !result.isEmpty() && AbstractFurnaceBlockEntityAccessor.botania_canBurn(items, furnace.getMaxStackSize(), result);
 	}
 
 	public static boolean canSmelt(AbstractFurnaceBlockEntity furnace) {

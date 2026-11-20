@@ -13,12 +13,13 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
@@ -43,13 +44,11 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -62,23 +61,24 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
@@ -107,7 +107,6 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 import org.violetmoon.botania.integration.speedrunigt.BotaniaSpeedrunCategories;
 import org.violetmoon.botania.neoforge.integration.curios.CurioIntegration;
 import org.violetmoon.botania.neoforge.internal_caps.NeoForgeInternalEntityCapabilities;
-import org.violetmoon.botania.neoforge.mixin.AbstractFurnaceBlockEntityNeoForgeAccessor;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.List;
@@ -128,7 +127,7 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 
 	@Override
 	public boolean isDevEnvironment() {
-		return !FMLLoader.isProduction();
+		return !FMLLoader.getCurrent().isProduction();
 	}
 
 	@Override
@@ -138,7 +137,7 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 
 	@Override
 	public boolean isPhysicalClient() {
-		return FMLLoader.getDist() == Dist.CLIENT;
+		return FMLLoader.getCurrent().getDist() == Dist.CLIENT;
 	}
 
 	@Override
@@ -201,115 +200,123 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 
 	@Override
 	public boolean isFluidContainer(ItemEntity item) {
-		return item.getItem().getCapability(Capabilities.FluidHandler.ITEM) != null;
+		ItemStack stack = item.getItem();
+		return !stack.isEmpty() && ItemAccess.forStack(stack).getCapability(Capabilities.Fluid.ITEM) != null;
 	}
 
 	@Override
 	public boolean extractFluidFromItemEntity(ItemEntity item, Fluid fluid) {
-		IFluidHandlerItem h = item.getItem().getCapability(Capabilities.FluidHandler.ITEM);
-		if (h == null) {
+		var container = singleStackHandler(item.getItem());
+		if (!extractBucket(ItemAccess.forHandlerIndexStrict(container, 0), fluid, false)) {
 			return false;
 		}
-		var extracted = h.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
-		boolean success = extracted.getFluid() == fluid && extracted.getAmount() == FluidType.BUCKET_VOLUME;
-		if (success) {
-			h.drain(extracted, IFluidHandler.FluidAction.EXECUTE);
-			item.setItem(h.getContainer());
-		}
-		return success;
+		item.setItem(container.getResource(0).toStack(container.getAmountAsInt(0)));
+		return true;
 	}
 
 	@Override
 	public boolean extractFluidFromPlayerItem(Player player, InteractionHand hand, Fluid fluid) {
-		var stack = player.getItemInHand(hand);
-		IFluidHandlerItem h = stack.getCapability(Capabilities.FluidHandler.ITEM);
-		if (h == null) {
+		boolean simulate = player.hasInfiniteMaterials();
+		ItemAccess access = simulate
+				? ItemAccess.forHandlerIndexStrict(singleStackHandler(player.getItemInHand(hand)), 0)
+				: ItemAccess.forPlayerInteraction(player, hand).oneByOne();
+		return extractBucket(access, fluid, simulate);
+	}
+
+	private static boolean extractBucket(ItemAccess access, Fluid fluid, boolean simulate) {
+		var handler = access.getCapability(Capabilities.Fluid.ITEM);
+		if (handler == null) {
 			return false;
 		}
-		var extracted = h.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
-		var success = extracted.getFluid() == fluid && extracted.getAmount() == FluidType.BUCKET_VOLUME;
-		if (success && !player.hasInfiniteMaterials()) {
-			h.drain(extracted, IFluidHandler.FluidAction.EXECUTE);
-			player.setItemInHand(hand, h.getContainer());
+		try (var transaction = Transaction.openRoot()) {
+			var extracted = ResourceHandlerUtil.extractFirst(handler, resource -> resource.getFluid() == fluid,
+					FluidType.BUCKET_VOLUME, transaction);
+			if (extracted == null || extracted.amount() != FluidType.BUCKET_VOLUME) {
+				return false;
+			}
+			if (!simulate) {
+				transaction.commit();
+			}
+			return true;
 		}
-		return success;
 	}
 
 	@Override
 	public boolean insertFluidIntoPlayerItem(Player player, InteractionHand hand, Fluid fluid) {
-		var stack = player.getItemInHand(hand);
+		ItemStack stack = player.getItemInHand(hand);
 		if (stack.isEmpty()) {
 			return false;
 		}
-
-		// Have to copy and simulate on a stack of size 1, because buckets don't accept
-		// fluid input if they're stacked (why NeoForge??)
-		ItemStack toFill = stack.copy();
-		toFill.setCount(1);
-
-		var fluidHandler = toFill.getCapability(Capabilities.FluidHandler.ITEM);
-		if (fluidHandler != null) {
-			var fluidToFill = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
-			int filled = fluidHandler.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
-
-			if (filled == FluidType.BUCKET_VOLUME) {
-				if (!player.hasInfiniteMaterials()) {
-					fluidHandler.fill(fluidToFill, IFluidHandler.FluidAction.EXECUTE);
-					stack.shrink(1);
-					ItemStack result = fluidHandler.getContainer();
-					if (stack.isEmpty()) {
-						player.setItemInHand(hand, result);
-					} else {
-						player.getInventory().placeItemBackInInventory(result);
-					}
-				}
-				return true;
-			}
+		boolean simulate = player.hasInfiniteMaterials();
+		ItemAccess access = simulate
+				? ItemAccess.forHandlerIndexStrict(singleStackHandler(stack.copyWithCount(1)), 0)
+				: ItemAccess.forPlayerInteraction(player, hand).oneByOne();
+		var handler = access.getCapability(Capabilities.Fluid.ITEM);
+		if (handler == null) {
+			return false;
 		}
-
-		return false;
+		try (var transaction = Transaction.openRoot()) {
+			if (handler.insert(FluidResource.of(fluid), FluidType.BUCKET_VOLUME, transaction) != FluidType.BUCKET_VOLUME) {
+				return false;
+			}
+			if (!simulate) {
+				transaction.commit();
+			}
+			return true;
+		}
 	}
 
 	@Override
 	public ItemStack fillItemWithWater(ItemStack stackToFill, Player player) {
-		ItemStack split = stackToFill.copyWithCount(1);
-		Optional<IFluidHandlerItem> optionalHandler = FluidUtil.getFluidHandler(split);
-		if (optionalHandler.isPresent()) {
-			var handler = optionalHandler.get();
-			if (handler.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME),
-					IFluidHandler.FluidAction.EXECUTE) > 0) {
-				return handler.getContainer();
-			}
-		} else if (split.is(Items.GLASS_BOTTLE)) {
+		if (stackToFill.is(Items.GLASS_BOTTLE)) {
 			return PotionContents.createItemStack(Items.POTION, Potions.WATER);
+		}
+		var container = singleStackHandler(stackToFill.copyWithCount(1));
+		var handler = ItemAccess.forHandlerIndexStrict(container, 0).getCapability(Capabilities.Fluid.ITEM);
+		if (handler != null) {
+			try (var transaction = Transaction.openRoot()) {
+				if (handler.insert(FluidResource.of(Fluids.WATER), FluidType.BUCKET_VOLUME, transaction) > 0) {
+					transaction.commit();
+					return container.getResource(0).toStack(container.getAmountAsInt(0));
+				}
+			}
 		}
 		return ItemStack.EMPTY;
 	}
 
+	private static ItemStacksResourceHandler singleStackHandler(ItemStack stack) {
+		var handler = new ItemStacksResourceHandler(1);
+		handler.set(0, ItemResource.of(stack), stack.getCount());
+		return handler;
+	}
+
 	@Override
 	public boolean hasInventory(Level level, BlockPos pos, Direction sideOfPos) {
-		return level.getCapability(Capabilities.ItemHandler.BLOCK, pos, sideOfPos) != null;
+		return level.getCapability(Capabilities.Item.BLOCK, pos, sideOfPos) != null;
 	}
 
 	@Override
 	public ItemStack insertToInventory(Level level, BlockPos pos, Direction sideOfPos, ItemStack toInsert, boolean simulate) {
 		BlockState state = level.getBlockState(pos);
-		IItemHandler itemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, state, null, sideOfPos);
-
-		// can't do incremental simulations
-		if (simulate || !state.is(BotaniaTags.Blocks.SINGLE_ITEM_INSERT)) {
-			return ItemHandlerHelper.insertItemStacked(itemHandler, toInsert, simulate);
+		ResourceHandler<ItemResource> inventory = level.getCapability(Capabilities.Item.BLOCK, pos, state, null, sideOfPos);
+		if (inventory == null || toInsert.isEmpty()) {
+			return toInsert;
 		}
-
-		int maxInserts = toInsert.getCount();
-		for (int i = 0; i < maxInserts; i++) {
-			ItemStack single = toInsert.copyWithCount(1);
-			if (!ItemHandlerHelper.insertItemStacked(itemHandler, single, false).isEmpty()) {
-				break;
+		ItemResource resource = ItemResource.of(toInsert);
+		try (var transaction = Transaction.openRoot()) {
+			int remaining = toInsert.getCount();
+			if (!simulate && state.is(BotaniaTags.Blocks.SINGLE_ITEM_INSERT)) {
+				while (remaining > 0 && ResourceHandlerUtil.insertStacking(inventory, resource, 1, transaction) == 1) {
+					remaining--;
+				}
+			} else {
+				remaining -= ResourceHandlerUtil.insertStacking(inventory, resource, remaining, transaction);
 			}
-			toInsert.setCount(toInsert.getCount() - 1);
+			if (!simulate) {
+				transaction.commit();
+			}
+			return toInsert.copyWithCount(remaining);
 		}
-		return toInsert;
 	}
 
 	@Override
@@ -375,16 +382,15 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 	@Override
 	public void registerReloadListener(PackType type, Identifier id, PreparableReloadListener listener) {
 		switch (type) {
-			case CLIENT_RESOURCES -> NeoForge.EVENT_BUS.addListener(
-					(RegisterClientReloadListenersEvent e) -> e.registerReloadListener(listener));
-			case SERVER_DATA -> NeoForge.EVENT_BUS.addListener(
-					(AddReloadListenerEvent e) -> e.addListener(listener));
+			case CLIENT_RESOURCES -> ModList.get().getModContainerById(BotaniaAPI.MODID).orElseThrow().getEventBus()
+					.addListener((AddClientReloadListenersEvent event) -> event.addListener(id, listener));
+			case SERVER_DATA -> NeoForge.EVENT_BUS.addListener((AddServerReloadListenersEvent event) -> event.addListener(id, listener));
 		}
 	}
 
 	@Override
 	public Item.Properties noRepairOnNeoForge(Item.Properties builder) {
-		return builder.setNoRepair();
+		return builder.setNoCombineRepair();
 	}
 
 	@Override
@@ -407,10 +413,6 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 		player.openMenu(menu, buf -> streamCodec.encode(buf, initialData));
 	}
 
-	@Override
-	public boolean canFurnaceBurn(AbstractFurnaceBlockEntity furnace, @Nullable RecipeHolder<?> recipeHolder, NonNullList<ItemStack> items, int maxStackSize) {
-		return AbstractFurnaceBlockEntityNeoForgeAccessor.botania_canBurn(furnace.getLevel().registryAccess(), recipeHolder, items, maxStackSize, furnace);
-	}
 
 	@Override
 	public Fluid getBucketFluid(BucketItem item) {
@@ -419,12 +421,12 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 
 	@Override
 	public int getSmeltingBurnTime(Level level, ItemStack stack) {
-		return stack.getBurnTime(RecipeType.SMELTING);
+		return stack.getBurnTime(RecipeType.SMELTING, level.fuelValues());
 	}
 
 	@Override
 	public boolean preventsRemoteMovement(ItemEntity entity) {
-		return entity.getPersistentData().getBoolean("PreventRemoteMovement");
+		return entity.getPersistentData().getBooleanOr("PreventRemoteMovement", false);
 	}
 
 	@Override
@@ -435,14 +437,17 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 				continue;
 			}
 
-			IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, neighbor, e.getOpposite());
+			EnergyHandler storage = level.getCapability(Capabilities.Energy.BLOCK, neighbor, e.getOpposite());
 
 			if (storage == null) {
-				storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, neighbor, null);
+				storage = level.getCapability(Capabilities.Energy.BLOCK, neighbor, null);
 			}
 
 			if (storage != null) {
-				energy -= storage.receiveEnergy(energy, false);
+				try (var transaction = Transaction.openRoot()) {
+					energy -= storage.insert(energy, transaction);
+					transaction.commit();
+				}
 
 				if (energy <= 0) {
 					return 0;
@@ -455,7 +460,7 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 	@Nullable
 	@Override
 	public FoodProperties getFoodProperties(ItemStack stack) {
-		return stack.getFoodProperties(null);
+		return stack.get(DataComponents.FOOD);
 	}
 
 	@Override
@@ -472,7 +477,8 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 
 	@Override
 	public ItemStack getCraftingRemainingItem(ItemStack inputStack) {
-		return inputStack.getCraftingRemainingItem();
+		var remainder = inputStack.getCraftingRemainder();
+		return remainder == null ? ItemStack.EMPTY : remainder.create();
 	}
 
 	@Override
@@ -491,11 +497,11 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 		BlockState state = level.getBlockState(pos);
 		BlockEntity be = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
 		for (Direction dir : Direction.values()) {
-			if (level.getCapability(Capabilities.ItemHandler.BLOCK, pos, state, be, dir) != null) {
+			if (level.getCapability(Capabilities.Item.BLOCK, pos, state, be, dir) != null) {
 				return true;
 			}
 		}
-		return level.getCapability(Capabilities.ItemHandler.BLOCK, pos, state, be, null) != null;
+		return level.getCapability(Capabilities.Item.BLOCK, pos, state, be, null) != null;
 	}
 
 	@Override
@@ -549,11 +555,14 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 			}
 
 			@Override
-			public void accept(Identifier id, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
+			public void includeRootAdvancement() {}
+
+			@Override
+			public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
 				if (conditions.length > 0) {
 					throw new UnsupportedOperationException("Conditions are not supported");
 				}
-				recipeAcceptor.accept(id, recipe, advancement);
+				recipeAcceptor.accept(key.identifier(), recipe, advancement);
 			}
 		};
 	}

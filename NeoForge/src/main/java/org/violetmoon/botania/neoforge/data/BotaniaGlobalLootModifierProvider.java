@@ -17,6 +17,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -36,7 +37,7 @@ public class BotaniaGlobalLootModifierProvider extends GlobalLootModifierProvide
 			if (targetTable != null) {
 				add(lootTable.identifier().getPath(), new AddTableLootModifier(
 						new LootItemCondition[] { LootTableIdCondition.builder(targetTable.identifier()).build() },
-						lootTable)
+						IGlobalLootModifier.DEFAULT_PRIORITY, lootTable)
 				);
 			}
 		}

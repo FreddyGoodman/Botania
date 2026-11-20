@@ -4,7 +4,6 @@
   "package": "org.violetmoon.botania.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractFurnaceBlockEntityNeoForgeAccessor",
     "BotaniaGrassBlockNeoForgeMixin",
     "IDeathMessageProviderNeoForgeMixin",
     "ItemStackNeoForgeMixin",

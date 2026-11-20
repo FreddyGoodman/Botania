@@ -8,8 +8,6 @@
  */
 package org.violetmoon.botania.mixin.client;
 
-import com.llamalad7.mixinextras.sugar.Local;
-
 import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.network.chat.Component;
@@ -28,7 +26,8 @@ import org.violetmoon.botania.client.integration.shared.LocaleHelper;
 import org.violetmoon.botania.common.block.block_entity.TinyPotatoBlockEntity;
 import org.violetmoon.botania.xplat.BotaniaConfig;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.List;
 
 /**
@@ -56,19 +55,19 @@ public class SplashManagerMixin {
 
 	@Inject(
 		method = "getSplash",
-		at = @At(value = "INVOKE", target = "Ljava/util/Calendar;get(I)I", ordinal = 0),
+		at = @At("HEAD"),
 		cancellable = true
 	)
-	private void handleBotaniaSplashes(CallbackInfoReturnable<SplashRenderer> cir, @Local Calendar calendar) {
+	private void handleBotaniaSplashes(CallbackInfoReturnable<SplashRenderer> cir) {
 		var config = BotaniaConfig.client();
 		if (config == null || !config.splashesEnabled()) {
 			return;
 		}
 
 		// override splash for tater's birthday
-		if (calendar.get(Calendar.MONTH) + 1 == TinyPotatoBlockEntity.BIRTHDAY.getMonth().getValue()
-				&& calendar.get(Calendar.DAY_OF_MONTH) == TinyPotatoBlockEntity.BIRTHDAY.getDayOfMonth()) {
-			int age = calendar.get(Calendar.YEAR) - TinyPotatoBlockEntity.BIRTHDAY.getYear();
+		var today = LocalDate.now();
+		if (MonthDay.from(today).equals(MonthDay.from(TinyPotatoBlockEntity.BIRTHDAY))) {
+			int age = today.getYear() - TinyPotatoBlockEntity.BIRTHDAY.getYear();
 			cir.setReturnValue(new SplashRenderer(Component.literal("Happy %s birthday, Tiny Potato!"
 					.formatted(LocaleHelper.formatAsEnglishOrdinal(age)))));
 			return;

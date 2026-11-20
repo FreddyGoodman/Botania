@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.crafting;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Suppliers;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -24,10 +25,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
+import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.recipe.ProcessingRecipeInput;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.crafting.recipe.RecipeUtils;
@@ -36,17 +39,24 @@ import org.violetmoon.botania.xplat.XplatAbstractions;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.RunicAltarRecipe {
 	public static final RecipeSerializer<RunicAltarRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
-	private final ItemStack output;
+	private final ItemStackTemplate output;
 	private final Ingredient reagent;
 	private final NonNullList<Ingredient> ingredients;
 	private final NonNullList<Ingredient> catalysts;
 	private final int mana;
+	// Datapack decoding runs before tag contents are bound.
+	private final Supplier<Boolean> distinctIngredientRoles = Suppliers.memoize(this::validateItemRoles);
 
 	public RunicAltarRecipe(ItemStack output, Ingredient reagent, int mana, Ingredient[] ingredients, Ingredient[] catalysts) {
+		this(ItemStackTemplate.fromNonEmptyStack(output), reagent, mana, ingredients, catalysts);
+	}
+
+	protected RunicAltarRecipe(ItemStackTemplate output, Ingredient reagent, int mana, Ingredient[] ingredients, Ingredient[] catalysts) {
 		int numIngredients = ingredients.length;
 		int numCatalysts = catalysts.length;
 		Preconditions.checkArgument(numIngredients + numCatalysts > 0, "Must have at least one ingredient or catalyst");
@@ -68,32 +78,6 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 			throw new IllegalArgumentException("Ingredients with custom test implementations are not supported: " + customTestIngredients);
 		}
 
-		var ingredientItems = new ReferenceOpenHashSet<Item>(ingredients.length);
-		var catalystItems = new ReferenceOpenHashSet<Item>(catalysts.length);
-		var reagentItems = new ReferenceOpenHashSet<Item>(1);
-		Stream.of(ingredients).flatMap(Ingredient::items)
-				.map(Holder::value).forEach(ingredientItems::add);
-		Stream.of(catalysts).flatMap(Ingredient::items)
-				.map(Holder::value).forEach(catalystItems::add);
-		reagent.items().map(Holder::value).forEach(reagentItems::add);
-
-
-		var ingredientsOverlap = ingredientItems.clone();
-		ingredientsOverlap.retainAll(catalystItems);
-		if (!ingredientsOverlap.isEmpty()) {
-			throw new IllegalArgumentException("The following item types can match both as ingredient and as catalyst: " + ingredientsOverlap);
-		}
-
-		ingredientItems.retainAll(reagentItems);
-		if (!ingredientItems.isEmpty()) {
-			throw new IllegalArgumentException("The following item types can match both as ingredient and as reagent: " + ingredientItems);
-		}
-
-		catalystItems.retainAll(reagentItems);
-		if (!catalystItems.isEmpty()) {
-			throw new IllegalArgumentException("The following item types can match both as catalyst and as reagent: " + catalystItems);
-		}
-
 		// fallback check: test ingredient, catalyst and reagent definitions against each other directly
 		List<Ingredient> ingredientList = List.of(ingredients);
 		List<Ingredient> catalystsList = List.of(catalysts);
@@ -107,7 +91,40 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 
 	}
 
-	private static RunicAltarRecipe of(List<Ingredient> ingredients, List<Ingredient> catalysts, Ingredient reagent, int mana, ItemStack output) {
+	private boolean validateItemRoles() {
+		var ingredientItems = new ReferenceOpenHashSet<Item>(ingredients.size());
+		var catalystItems = new ReferenceOpenHashSet<Item>(catalysts.size());
+		var reagentItems = new ReferenceOpenHashSet<Item>(1);
+		ingredients.stream().flatMap(Ingredient::items)
+				.map(Holder::value).forEach(ingredientItems::add);
+		catalysts.stream().flatMap(Ingredient::items)
+				.map(Holder::value).forEach(catalystItems::add);
+		reagent.items().map(Holder::value).forEach(reagentItems::add);
+
+
+		var ingredientsOverlap = ingredientItems.clone();
+		ingredientsOverlap.retainAll(catalystItems);
+		if (!ingredientsOverlap.isEmpty()) {
+			BotaniaAPI.LOGGER.error("Ignoring runic altar recipe for {}. " + "The following item types can match both as ingredient and as catalyst: " + "{}", output, ingredientsOverlap);
+			return false;
+		}
+
+		ingredientItems.retainAll(reagentItems);
+		if (!ingredientItems.isEmpty()) {
+			BotaniaAPI.LOGGER.error("Ignoring runic altar recipe for {}. " + "The following item types can match both as ingredient and as reagent: " + "{}", output, ingredientItems);
+			return false;
+		}
+
+		catalystItems.retainAll(reagentItems);
+		if (!catalystItems.isEmpty()) {
+			BotaniaAPI.LOGGER.error("Ignoring runic altar recipe for {}. " + "The following item types can match both as catalyst and as reagent: " + "{}", output, catalystItems);
+			return false;
+		}
+
+		return true;
+	}
+
+	private static RunicAltarRecipe of(List<Ingredient> ingredients, List<Ingredient> catalysts, Ingredient reagent, int mana, ItemStackTemplate output) {
 		return new RunicAltarRecipe(output, reagent, mana, ingredients.toArray(Ingredient[]::new), catalysts.toArray(Ingredient[]::new));
 	}
 
@@ -116,7 +133,7 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 		if (input.size() != ingredients.size() + catalysts.size()) {
 			return false;
 		}
-		return input.getStackedContents().canCraft(RecipeUtils.getIngredientsAndCatalysts(this), null);
+		return distinctIngredientRoles.get() && input.getStackedContents().canCraft(RecipeUtils.getIngredientsAndCatalysts(this), null);
 	}
 
 	@Override
@@ -144,12 +161,12 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 
 	@Override
 	public final ItemStack getResultItem(HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@Override
 	public ItemStack assemble(ProcessingRecipeInput inv) {
-		return output.copy();
+		return output.create();
 	}
 
 	@Override
@@ -183,12 +200,16 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 	}
 
 	public ItemStack getOutput() {
-		return output;
+		return output.create();
 	}
 
 	@Override
 	public Ingredient getReagent() {
 		return reagent;
+	}
+
+	public ItemStackTemplate outputTemplate() {
+		return output;
 	}
 
 	public static final class Serializer {
@@ -197,7 +218,7 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 				Ingredient.CODEC.listOf().fieldOf("catalysts").forGetter(RunicAltarRecipe::getCatalysts),
 				Ingredient.CODEC.fieldOf("reagent").forGetter(RunicAltarRecipe::getReagent),
 				ExtraCodecs.POSITIVE_INT.fieldOf("mana").forGetter(RunicAltarRecipe::getMana),
-				RecipeUtils.OUTPUT_CODEC.fieldOf("output").forGetter(RunicAltarRecipe::getOutput)
+				ItemStackTemplate.CODEC.fieldOf("output").forGetter(RunicAltarRecipe::outputTemplate)
 		).apply(instance, RunicAltarRecipe::of));
 		public static final MapCodec<RunicAltarRecipe> CODEC = RAW_CODEC.validate(recipe -> {
 			if (recipe.getIngredients().size() + recipe.getCatalysts().size() == 0) {
@@ -213,7 +234,7 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), RunicAltarRecipe::getCatalysts,
 				Ingredient.CONTENTS_STREAM_CODEC, RunicAltarRecipe::getReagent,
 				ByteBufCodecs.VAR_INT, RunicAltarRecipe::getMana,
-				ItemStack.STREAM_CODEC, RunicAltarRecipe::getOutput,
+				ItemStackTemplate.STREAM_CODEC, RunicAltarRecipe::outputTemplate,
 				RunicAltarRecipe::of
 		);
 
