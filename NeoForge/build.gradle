@@ -50,13 +50,13 @@ neoForge {
         }
         neoforgeDatagen {
             serverData()
-            programArguments.addAll("--mod", mod_id, "--all",
+            programArguments.addAll("--mod", mod_id, "--server", "--flat",
                     "--output", (datagenOutput == null ? file("src/generated/resources/") : new File(datagenOutput, "neoforge")).getAbsolutePath(),
                     "--existing", file("src/main/resources/").getAbsolutePath())
         }
         gardenOfGlassDatagen {
             serverData()
-            programArguments.addAll("--mod", mod_id, "--all",
+            programArguments.addAll("--mod", mod_id, "--server", "--flat",
                     "--output", (datagenOutput == null ? file("../garden_of_glass/src/generated/resources/") : new File(datagenOutput, "garden_of_glass")).getAbsolutePath(),
                     "--existing", file("../garden_of_glass/src/main/resources/").getAbsolutePath())
             systemProperty("botania.gog_datagen", "1")
