@@ -43,7 +43,7 @@ public class ElvenTradeProcessor implements IComponentProcessor {
 		for (ElvenTradeRecipe recipe : recipes) {
 			List<Ingredient> inputs = recipe.getIngredients();
 			for (Ingredient ingredient : inputs) {
-				int length = ingredient.getItems().length;
+				int length = PatchouliUtils.displayStacks(ingredient, level).size();
 				if (length > longestIngredientSize) {
 					longestIngredientSize = length;
 				}
@@ -89,7 +89,7 @@ public class ElvenTradeProcessor implements IComponentProcessor {
 			if (inputIndex < ingredients.size()) {
 				return ingredients.get(inputIndex);
 			} else {
-				return Ingredient.EMPTY;
+				return null;
 			}
 		}).collect(Collectors.toList());
 		return PatchouliUtils.interweaveIngredients(recipes, longestIngredientSize, level);

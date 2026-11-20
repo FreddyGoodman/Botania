@@ -8,12 +8,14 @@
  */
 package org.violetmoon.botania.client.patchouli.processor;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,13 +28,12 @@ import vazkii.patchouli.api.IVariableProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MultiCraftingProcessor implements IComponentProcessor {
 	@SuppressWarnings("NotNullFieldNotInitialized")
-	private List<CraftingRecipe> recipes;
+	private List<RecipeView> recipes;
 	@Nullable
-	private List<CraftingRecipe> recipes2;
+	private List<RecipeView> recipes2;
 	private boolean shapeless = true;
 	private boolean shapeless2 = true;
 	private int longestIngredientSize = 0;
@@ -51,37 +52,53 @@ public class MultiCraftingProcessor implements IComponentProcessor {
 			this.recipes2 = result2.recipes();
 			this.shapeless2 = result2.shapeless();
 			this.longestIngredientSize2 = result2.longestIngredientSize();
+		} else {
+			this.recipes2 = null;
 		}
 		this.hasCustomHeading = variables.has("heading");
 	}
 
 	private static RecipeData getRecipeData(Level level, IVariableProvider variables, String recipesVariable) {
 		List<String> names = variables.get(recipesVariable, level.registryAccess()).asStream(level.registryAccess()).map(IVariable::asString).toList();
-		var recipes = new ArrayList<CraftingRecipe>();
-		boolean shapeless = true;
-		int longestIngredientSize = 0;
+		var views = new ArrayList<RecipeView>();
+		var context = SlotDisplayContext.fromLevel(level);
 		for (String name : names) {
 			CraftingRecipe recipe = PatchouliUtils.getRecipe(level, RecipeType.CRAFTING, Identifier.parse(name));
-			if (recipe != null) {
-				recipes.add(recipe);
-				if (shapeless) {
-					shapeless = !(recipe instanceof ShapedRecipe);
-				}
-				for (Ingredient ingredient : recipe.getIngredients()) {
-					int size = ingredient.getItems().length;
-					if (longestIngredientSize < size) {
-						longestIngredientSize = size;
-					}
-				}
-			} else {
+			if (recipe == null) {
 				BotaniaAPI.LOGGER.warn("Missing crafting recipe {}", name);
+				continue;
+			}
+			for (RecipeDisplay display : recipe.display()) {
+				switch (display) {
+					case ShapedCraftingRecipeDisplay shaped -> {
+						views.add(new RecipeView(shaped.ingredients().stream().map(slot -> slot.resolveForStacks(context)).toList(),
+								shaped.result().resolveForFirstStack(context), shaped.width()));
+					}
+					case ShapelessCraftingRecipeDisplay shapeless -> {
+						views.add(new RecipeView(shapeless.ingredients().stream().map(slot -> slot.resolveForStacks(context)).toList(),
+								shapeless.result().resolveForFirstStack(context), 0));
+					}
+					default -> {}
+				}
 			}
 		}
-		return new RecipeData(recipes, shapeless, longestIngredientSize);
+		boolean shapeless = views.stream().allMatch(view -> view.width == 0);
+		int longest = views.stream().flatMap(view -> view.slots.stream()).mapToInt(List::size).max().orElse(0);
+		return new RecipeData(views, shapeless, longest);
 	}
 
-	private record RecipeData(ArrayList<CraftingRecipe> recipes, boolean shapeless, int longestIngredientSize) {
+	private record RecipeView(List<List<ItemStack>> slots, ItemStack result, int width) {
+		List<ItemStack> inputAt(int index) {
+			int column = index % 3;
+			if (width != 0 && column >= width) {
+				return List.of();
+			}
+			int slot = width == 0 ? index : index / 3 * width + column;
+			return slot >= 0 && slot < slots.size() ? slots.get(slot) : List.of();
+		}
 	}
+
+	private record RecipeData(List<RecipeView> recipes, boolean shapeless, int longestIngredientSize) {}
 
 	@SuppressWarnings("NullableProblems")
 	@Nullable
@@ -89,7 +106,7 @@ public class MultiCraftingProcessor implements IComponentProcessor {
 	public IVariable process(Level level, String key) {
 		if (key.equals("heading")) {
 			if (!hasCustomHeading && !recipes.isEmpty()) {
-				return IVariable.from(recipes.getFirst().getResultItem(level.registryAccess()).getHoverName(), level.registryAccess());
+				return IVariable.from(recipes.getFirst().result.getHoverName(), level.registryAccess());
 			}
 			return null;
 		}
@@ -104,37 +121,20 @@ public class MultiCraftingProcessor implements IComponentProcessor {
 	}
 
 	@Nullable
-	private IVariable processRecipes(Level level, String key, List<CraftingRecipe> recipeList, String inputKeyPrefix,
+	private IVariable processRecipes(Level level, String key, List<RecipeView> recipeList, String inputKeyPrefix,
 			String outputKey, String shapelessKey, int size, boolean isShapeless) {
 		if (recipeList.isEmpty()) {
 			return null;
 		}
 		if (key.startsWith(inputKeyPrefix) && key.length() == inputKeyPrefix.length() + 1) {
 			int index = Integer.parseInt(key.substring(inputKeyPrefix.length())) - 1;
-			int shapedX = index % 3;
-			int shapedY = index / 3;
-			List<Ingredient> ingredients = new ArrayList<>();
-			for (CraftingRecipe recipe : recipeList) {
-				if (recipe instanceof ShapedRecipe shaped) {
-					if (shaped.getWidth() < shapedX + 1) {
-						ingredients.add(Ingredient.EMPTY);
-					} else {
-						int realIndex = index - (shapedY * (3 - shaped.getWidth()));
-						NonNullList<Ingredient> list = recipe.getIngredients();
-						ingredients.add(list.size() > realIndex ? list.get(realIndex) : Ingredient.EMPTY);
-					}
-
-				} else {
-					NonNullList<Ingredient> list = recipe.getIngredients();
-					ingredients.add(list.size() > index ? list.get(index) : Ingredient.EMPTY);
-				}
-			}
-			return PatchouliUtils.interweaveIngredients(ingredients, size, level);
+			List<List<ItemStack>> stacks = recipeList.stream().map(recipe -> recipe.inputAt(index)).toList();
+			return PatchouliUtils.interweaveStacks(stacks, size, level);
 		}
 		if (key.equals(outputKey)) {
 			return IVariable.wrapList(recipeList.stream()
-					.map(r -> IVariable.from(r.getResultItem(level.registryAccess()), level.registryAccess()))
-					.collect(Collectors.toList()), level.registryAccess());
+					.map(r -> IVariable.from(r.result, level.registryAccess()))
+					.toList(), level.registryAccess());
 		}
 		if (key.equals(shapelessKey)) {
 			return IVariable.wrap(isShapeless, level.registryAccess());

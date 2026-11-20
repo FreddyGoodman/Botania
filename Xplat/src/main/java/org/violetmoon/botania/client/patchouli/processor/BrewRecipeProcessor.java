@@ -23,7 +23,6 @@ import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariable;
 import vazkii.patchouli.api.IVariableProvider;
 
-import java.util.Arrays;
 
 public class BrewRecipeProcessor implements IComponentProcessor {
 	@Nullable
@@ -61,7 +60,7 @@ public class BrewRecipeProcessor implements IComponentProcessor {
 
 			return index < recipe.getIngredients().size() && index >= 0
 					? IVariable.wrapList(
-							Arrays.stream(recipe.getIngredients().get(index).getItems())
+							PatchouliUtils.displayStacks(recipe.getIngredients().get(index), level).stream()
 									.map(o -> IVariable.from(o, level.registryAccess()))
 									.toList(),
 							level.registryAccess())

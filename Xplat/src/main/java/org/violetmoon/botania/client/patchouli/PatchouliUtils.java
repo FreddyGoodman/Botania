@@ -84,83 +84,43 @@ public class PatchouliUtils {
 		return list;
 	}
 
-	/**
-	 * Combines the ingredients, returning the first matching stack of each, then the second stack of each, etc.
-	 * looping back ingredients that run out of matched stacks, until the ingredients reach the length
-	 * of the longest ingredient in the recipe set.
-	 *
-	 * @param ingredients           List of ingredients in the specific slot
-	 * @param longestIngredientSize Longest ingredient in the entire recipe
-	 * @return Serialized Patchouli ingredient string
-	 */
+	public static List<ItemStack> displayStacks(@Nullable Ingredient ingredient, Level level) {
+		return ingredient == null ? List.of() : ingredient.display().resolveForStacks(SlotDisplayContext.fromLevel(level));
+	}
+
 	public static IVariable interweaveIngredients(List<Ingredient> ingredients, int longestIngredientSize, Level level) {
-		if (ingredients.size() == 1) {
-			return IVariable.wrapList(Arrays.stream(ingredients.getFirst().getItems())
-					.map(i -> IVariable.from(i, level.registryAccess()))
-					.collect(Collectors.toList()), level.registryAccess());
-		}
-
-		ItemStack[] empty = { ItemStack.EMPTY };
-		List<ItemStack[]> stacks = new ArrayList<>();
-		for (Ingredient ingredient : ingredients) {
-			//noinspection ConstantValue
-			if (ingredient != null && !ingredient.isEmpty()) {
-				stacks.add(ingredient.getItems());
-			} else {
-				stacks.add(empty);
-			}
-		}
-		List<IVariable> list = new ArrayList<>(stacks.size() * longestIngredientSize);
-		for (int i = 0; i < longestIngredientSize; i++) {
-			for (ItemStack[] stack : stacks) {
-				list.add(IVariable.from(stack[i % stack.length], level.registryAccess()));
-			}
-		}
-		return IVariable.wrapList(list, level.registryAccess());
+		return interweaveStacks(ingredients.stream().map(ingredient -> displayStacks(ingredient, level)).toList(), longestIngredientSize, level);
 	}
 
-	/**
-	 * Overload of the method above that uses the provided list's longest ingredient size.
-	 */
 	public static IVariable interweaveIngredients(List<Ingredient> ingredients, Level level) {
-		return interweaveIngredients(ingredients, ingredients.stream().mapToInt(ingr -> ingr.getItems().length).max().orElse(1), level);
+		var stacks = ingredients.stream().map(ingredient -> displayStacks(ingredient, level)).toList();
+		int longest = stacks.stream().mapToInt(List::size).max().orElse(1);
+		return interweaveStacks(stacks, longest, level);
 	}
 
 	/**
-	 * Combines the state ingredients, returning the first matching display stack of each, then the second stack of
-	 * each, etc. looping back ingredients that run out of matched stacks, until the ingredients reach the length of the
-	 * longest ingredient in the recipe set.
+	 * Cycles the stacks in each recipe column together so that alternatives stay aligned across the page.
 	 */
-	public static IVariable interweaveStateIngredients(List<StateIngredient> ingredients, Level level) {
-		if (ingredients.size() == 1) {
-			return IVariable.wrapList(ingredients.getFirst().getDisplayedStacks().stream()
-					.map(i -> IVariable.from(i, level.registryAccess()))
-					.toList(), level.registryAccess());
+	public static IVariable interweaveStacks(List<List<ItemStack>> stacks, int longestIngredientSize, Level level) {
+		var registries = level.registryAccess();
+		if (stacks.size() == 1) {
+			return IVariable.wrapList(stacks.getFirst().stream().map(stack -> IVariable.from(stack, registries)).toList(), registries);
 		}
 
-		int longestIngredientSize = 1;
-		List<List<ItemStack>> stackLists = new ArrayList<>();
-		for (StateIngredient ingredient : ingredients) {
-			//noinspection ConstantValue
-			if (ingredient != null) {
-				List<ItemStack> ingredientStacks = ingredient.getDisplayedStacks();
-				if (!ingredientStacks.isEmpty()) {
-					stackLists.add(ingredientStacks);
-					if (ingredientStacks.size() > longestIngredientSize) {
-						longestIngredientSize = ingredientStacks.size();
-					}
-					continue;
-				}
-			}
-			stackLists.add(List.of(ItemStack.EMPTY));
-		}
-		List<IVariable> list = new ArrayList<>(stackLists.size() * longestIngredientSize);
-		for (int i = 0; i < longestIngredientSize; i++) {
-			for (List<ItemStack> stackList : stackLists) {
-				list.add(IVariable.from(stackList.get(i % stackList.size()), level.registryAccess()));
+		List<IVariable> values = new ArrayList<>(stacks.size() * longestIngredientSize);
+		for (int cycle = 0; cycle < longestIngredientSize; cycle++) {
+			for (List<ItemStack> options : stacks) {
+				ItemStack stack = options.isEmpty() ? ItemStack.EMPTY : options.get(cycle % options.size());
+				values.add(IVariable.from(stack, registries));
 			}
 		}
-		return IVariable.wrapList(list, level.registryAccess());
+		return IVariable.wrapList(values, registries);
+	}
+
+	public static IVariable interweaveStateIngredients(List<StateIngredient> ingredients, Level level) {
+		var stacks = ingredients.stream().map(ingredient -> ingredient != null ? ingredient.getDisplayedStacks() : List.<ItemStack>of()).toList();
+		int longest = Math.max(1, stacks.stream().mapToInt(List::size).max().orElse(0));
+		return interweaveStacks(stacks, longest, level);
 	}
 
 	/**
