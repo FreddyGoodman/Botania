@@ -8,24 +8,26 @@
  */
 package org.violetmoon.botania.fabric.integration.trinkets;
 
-import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.Trinket;
-import dev.emi.trinkets.api.TrinketEnums;
-import dev.emi.trinkets.api.TrinketItem;
-import dev.emi.trinkets.api.TrinketsApi;
-import dev.emi.trinkets.api.client.TrinketRenderer;
-import dev.emi.trinkets.api.client.TrinketRendererRegistry;
-import dev.emi.trinkets.api.event.TrinketDropCallback;
+import eu.pb4.trinkets.api.TrinketDropRule;
+import eu.pb4.trinkets.api.TrinketSlotAccess;
+import eu.pb4.trinkets.api.TrinketSlotUtils;
+import eu.pb4.trinkets.api.TrinketsApi;
+import eu.pb4.trinkets.api.callback.TrinketCallback;
+import eu.pb4.trinkets.api.client.TrinketRenderer;
+import eu.pb4.trinkets.api.client.TrinketRendererRegistry;
+import eu.pb4.trinkets.api.component.TrinketDataComponents;
+import eu.pb4.trinkets.api.event.TrinketDropCallback;
 
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -40,155 +42,141 @@ import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
+import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.common.handler.EquipmentHandler;
 import org.violetmoon.botania.common.item.ResoluteIvyItem;
 import org.violetmoon.botania.common.item.equipment.bauble.BaubleItem;
 import org.violetmoon.botania.common.proxy.Proxy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+
+import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class TrinketsIntegration extends EquipmentHandler {
 	public static void init() {
-		TrinketDropCallback.EVENT.register(TrinketsIntegration::keepAccessoryDrops);
+		TrinketDropCallback.EVENT.register(botaniaRL("resolute_ivy"), TrinketsIntegration::keepAccessoryDrops);
 		UseItemCallback.EVENT.register(TrinketsIntegration::useBaubleItem);
 	}
 
-	private static TrinketEnums.DropRule keepAccessoryDrops(TrinketEnums.DropRule oldRule,
-			ItemStack stack, SlotReference ref, LivingEntity livingEntity) {
-		//TODO make this less hacky
+	private static TrinketDropRule keepAccessoryDrops(TrinketDropRule oldRule, ItemStack stack, TrinketSlotAccess slot, LivingEntity living) {
 		if (ResoluteIvyItem.hasIvy(stack)) {
 			stack.remove(BotaniaDataComponents.RESOLUTE_IVY);
-			return TrinketEnums.DropRule.KEEP;
+			return TrinketDropRule.KEEP;
 		}
 		return oldRule;
 	}
 
 	private static InteractionResult useBaubleItem(Player player, Level level, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (stack.getItem() instanceof BaubleItem bi && bi.canEquip(stack, player) && TrinketItem.equipItem(player, stack)) {
-			return InteractionResult.SUCCESS;
+		if (!(stack.getItem() instanceof BaubleItem bauble) || !bauble.canEquip(stack, player)) {
+			return InteractionResult.PASS;
+		}
+
+		for (var inventory : TrinketsApi.getAttachment(player).getInventories().values()) {
+			for (int index = 0; index < inventory.getContainerSize(); index++) {
+				var slot = inventory.getSlotAccess(index);
+				if (slot.get().isEmpty() && TrinketSlotUtils.mayPlace(slot, stack)
+						&& inventory.slotType().interactEquipableCheck(stack, slot, player)) {
+					if (!level.isClientSide()) {
+						if (!slot.set(stack.copyWithCount(1))) {
+							continue;
+						}
+						stack.consume(1, player);
+						level.playSound(null, player.getX(), player.getY(), player.getZ(),
+								BotaniaSounds.EQUIP_BAUBLE, SoundSource.PLAYERS, 0.1F, 1.3F);
+					}
+					return InteractionResult.SUCCESS;
+				}
+			}
 		}
 		return InteractionResult.PASS;
 	}
 
 	@Override
 	protected Container getAllWornItems(LivingEntity living) {
-		return TrinketsApi.getTrinketComponent(living).map(h -> {
-			List<ItemStack> list = new ArrayList<>();
-			for (var tuple : h.getAllEquipped()) {
-				ItemStack stack = tuple.getB();
-				list.add(stack);
-			}
-
-			return new SimpleContainer(list.toArray(new ItemStack[0]));
-		}).orElseGet(() -> new SimpleContainer(0));
+		ItemStack[] stacks = TrinketsApi.getAttachment(living).allEquipped(false).stream()
+				.map(TrinketSlotAccess::get).toArray(ItemStack[]::new);
+		return new SimpleContainer(stacks);
 	}
 
 	@Override
 	protected ItemStack findItem(Item item, LivingEntity living) {
-		return TrinketsApi.getTrinketComponent(living).flatMap(h -> {
-			var results = h.getEquipped(item);
-			if (results.isEmpty()) {
-				return Optional.empty();
-			} else {
-				return Optional.of(results.get(0).getB());
-			}
-		}).orElse(ItemStack.EMPTY);
+		return findItem(stack -> stack.is(item), living);
 	}
 
 	@Override
-	protected ItemStack findItem(Predicate<ItemStack> pred, LivingEntity living) {
-		return TrinketsApi.getTrinketComponent(living).flatMap(h -> {
-			var results = h.getEquipped(pred);
-			if (results.isEmpty()) {
-				return Optional.empty();
-			} else {
-				return Optional.of(results.get(0).getB());
-			}
-		}).orElse(ItemStack.EMPTY);
+	protected ItemStack findItem(Predicate<ItemStack> predicate, LivingEntity living) {
+		return TrinketsApi.getAttachment(living).findFirst(predicate, false)
+				.map(TrinketSlotAccess::get).orElse(ItemStack.EMPTY);
 	}
 
 	@Override
 	public void onInit(Item item) {
-		TrinketsApi.registerTrinket(item, WRAPPER);
+		TrinketCallback.setCallback(item, WRAPPER);
 		Proxy.INSTANCE.runOnClient(() -> () -> TrinketRendererRegistry.registerRenderer(item, new RenderWrapper()));
 	}
 
 	@Override
 	public boolean isAccessory(ItemStack stack) {
-		return super.isAccessory(stack)
-				|| TrinketsApi.getTrinket(stack.getItem()) != TrinketsApi.getDefaultTrinket();
+		return super.isAccessory(stack) || stack.has(TrinketDataComponents.EQUIPMENT)
+				|| TrinketCallback.getCallback(stack) != TrinketCallback.DEFAULT;
 	}
 
-	public static final Trinket WRAPPER = new Trinket() {
-		private BaubleItem getItem(ItemStack stack) {
-			return (BaubleItem) stack.getItem();
-		}
-
+	private static final TrinketCallback WRAPPER = new TrinketCallback() {
 		@Override
-		public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
-			if (!stack.isEmpty()) {
-				getItem(stack).onWornTick(stack, entity);
+		public void tick(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity) {
+			if (stack.getItem() instanceof BaubleItem bauble && slot.canApplyEffects(stack)) {
+				bauble.onWornTick(stack, entity);
 			}
 		}
 
 		@Override
-		public void onEquip(ItemStack stack, SlotReference slot, LivingEntity entity) {
-			if (!stack.isEmpty()) {
-				getItem(stack).onEquipped(stack, entity);
+		public void onEquip(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity) {
+			if (stack.getItem() instanceof BaubleItem bauble && !slot.cosmetic()) {
+				bauble.onEquipped(stack, entity);
 			}
 		}
 
 		@Override
-		public void onUnequip(ItemStack stack, SlotReference slot, LivingEntity entity) {
-			if (!stack.isEmpty()) {
-				getItem(stack).onUnequipped(stack, entity);
+		public void onUnequip(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity) {
+			if (stack.getItem() instanceof BaubleItem bauble && !slot.cosmetic()) {
+				bauble.onUnequipped(stack, entity);
 			}
 		}
 
 		@Override
-		public boolean canEquip(ItemStack stack, SlotReference slot, LivingEntity entity) {
-			if (!stack.isEmpty()) {
-				return getItem(stack).canEquip(stack, entity);
-			}
-			return false;
+		public boolean canEquip(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity) {
+			return stack.getItem() instanceof BaubleItem bauble && bauble.canEquip(stack, entity);
 		}
 
 		@Override
-		public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, Identifier slotIdentifier) {
-			var ret = Trinket.super.getModifiers(stack, slot, entity, slotIdentifier);
-			if (!stack.isEmpty()) {
-				ret.putAll(getItem(stack).getEquippedAttributeModifiers(stack, slotIdentifier));
+		public void forEachTrinketModifier(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity, Identifier slotId,
+				BiConsumer<Holder<Attribute>, AttributeModifier> consumer) {
+			if (stack.getItem() instanceof BaubleItem bauble) {
+				bauble.getEquippedAttributeModifiers(stack, slotId).forEach(consumer);
 			}
-			return ret;
 		}
 	};
 
 	private static class RenderWrapper implements TrinketRenderer {
 		@Override
-		public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel,
-				PoseStack matrices, MultiBufferSource vertexConsumers, int light, LivingEntity livingEntity,
-				float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+		public void submit(ItemStack stack, TrinketSlotAccess slot, EntityModel<? extends LivingEntityRenderState> contextModel,
+				PoseStack pose, SubmitNodeCollector collector, int light, LivingEntityRenderState state, float yaw, float pitch) {
+			LivingEntity living = slot.inventory().getAttachment().getEntity();
 			BaubleItem item = (BaubleItem) stack.getItem();
-			if (!item.hasRender(stack, livingEntity)) {
-				return;
-			}
-
-			if (!(contextModel instanceof HumanoidModel<?>)) {
+			if (!item.hasRender(stack, living) || !(contextModel instanceof HumanoidModel<?> model)) {
 				return;
 			}
 
 			ItemStack cosmetic = item.getCosmeticItem(stack);
 			if (!cosmetic.isEmpty()) {
 				TrinketRendererRegistry.getRenderer(cosmetic.getItem())
-						.ifPresent(sub -> sub.render(cosmetic, slotReference, contextModel, matrices, vertexConsumers, light, livingEntity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch));
+						.ifPresent(renderer -> renderer.submit(cosmetic, slot, contextModel, pose, collector, light, state, yaw, pitch));
 			} else {
 				var renderer = AccessoryRenderRegistry.get(stack);
 				if (renderer != null) {
-					renderer.doRender((HumanoidModel<?>) contextModel, stack, livingEntity, matrices, vertexConsumers, light, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
+					renderer.submit(model, stack, living, pose, collector, light, state.ageInTicks);
 				}
 			}
 		}

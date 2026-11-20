@@ -9,26 +9,21 @@
 package org.violetmoon.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-import org.violetmoon.botania.client.core.handler.MiscellaneousModels;
+import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
+import org.violetmoon.botania.client.core.helper.AccessoryRenderHelper;
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.client.render.AccessoryRenderer;
 import org.violetmoon.botania.common.handler.EquipmentHandler;
 import org.violetmoon.botania.common.item.BotaniaItems;
-import org.violetmoon.botania.common.proxy.Proxy;
 
 public class CrimsonPendantItem extends BaubleItem {
 
@@ -51,15 +46,12 @@ public class CrimsonPendantItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void submit(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float ageInTicks) {
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(-0.25, 0.5, armor ? 0.05 : 0.12);
 			ms.scale(0.5F, -0.5F, -0.5F);
-			BakedModel model = MiscellaneousModels.INSTANCE.crimsonGem;
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+			AccessoryRenderHelper.submitIcon(StandaloneBlockModels.CRIMSON_GEM, ms, collector, light);
 		}
 	}
 }

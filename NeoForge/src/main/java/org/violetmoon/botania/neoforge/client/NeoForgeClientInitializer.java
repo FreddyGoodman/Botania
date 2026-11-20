@@ -13,8 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -166,13 +164,6 @@ public class NeoForgeClientInitializer {
 	}
 
 	@SubscribeEvent
-	public static void onModelRegister(ModelEvent.RegisterAdditional evt) {
-		var resourceManager = Minecraft.getInstance().getResourceManager();
-		MiscellaneousModels.INSTANCE.onModelRegister(resourceManager,
-				id -> evt.register(ModelResourceLocation.standalone(id)));
-	}
-
-	@SubscribeEvent
 	public static void registerEntityLayers(EntityRenderersEvent.RegisterLayerDefinitions evt) {
 		BotaniaLayerDefinitions.init(evt::registerLayerDefinition);
 	}
@@ -223,19 +214,9 @@ public class NeoForgeClientInitializer {
 
 
 	@SubscribeEvent
-	public static void initAuxiliaryRender(EntityRenderersEvent.AddLayers evt) {
-		for (var playerModelType : evt.getSkins()) {
-			if (evt.getSkin(playerModelType) instanceof PlayerRenderer renderer) {
-				EntityRenderers.addAuxiliaryPlayerRenders(renderer, renderer::addLayer);
-			}
-		}
-	}
-
-	@SubscribeEvent
 	public static void onModelBake(ModelEvent.ModifyBakingResult evt) {
 		NeoForgeFloatingFlowerModel.apply(evt);
 		evt.getBakingResult().blockStateModels().replaceAll((state, model) ->
 				state.getBlock() instanceof PlatformBlock ? new NeoForgePlatformModel(model) : model);
-		MiscellaneousModels.INSTANCE.onModelBake(evt.getModelBakery(), evt.getModels());
 	}
 }

@@ -12,7 +12,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -73,8 +73,7 @@ public class JEIBotaniaPlugin implements IModPlugin {
 	@SuppressWarnings("removal")
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registry) {
-		//TODO use ISubtypeInterpreter instead? (weird interface, requiring you to implement a deprecated-for-removal method)
-		IIngredientSubtypeInterpreter<ItemStack> interpreter = (stack, ctx) -> BaseBrewItem.getSubtype(stack);
+		ISubtypeInterpreter<ItemStack> interpreter = (stack, ctx) -> BaseBrewItem.getSubtype(stack);
 		registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, BotaniaItems.BREW_VIAL, interpreter);
 		registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, BotaniaItems.BREW_FLASK, interpreter);
 		registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, BotaniaItems.INCENSE_STICK, interpreter);

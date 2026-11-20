@@ -18,8 +18,13 @@ import org.violetmoon.botania.client.render.block_entity.CorporeaCrystalCubeBloc
 import org.violetmoon.botania.client.render.block_entity.ManaPumpBlockEntityRenderer;
 import org.violetmoon.botania.client.render.block_entity.ManaSpreaderBlockEntityRenderer;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
+import org.violetmoon.botania.common.item.equipment.bauble.FlugelTiaraItem;
+import org.violetmoon.botania.common.item.equipment.bauble.ThirdEyeItem;
+import org.violetmoon.botania.common.item.relic.KeyOfTheKingsLawItem;
 
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
@@ -28,12 +33,32 @@ public final class StandaloneBlockModels {
 	public static final Identifier PHI_FLOWER = botaniaRL("icon/phiflower");
 	public static final Identifier NERF_BAT = botaniaRL("icon/nerfbat");
 	public static final Identifier GOLDFISH = botaniaRL("icon/goldfish");
+	public static final Identifier TERRASTEEL_WILL = botaniaRL("icon/will_flame");
+	public static final Identifier BLOOD_PENDANT_CHAIN = botaniaRL("icon/tainted_blood_pendant_chain");
+	public static final Identifier BLOOD_PENDANT_GEM = botaniaRL("icon/tainted_blood_pendant_gem");
+	public static final Identifier PYROCLAST_GEM = botaniaRL("icon/pyroclast_pendant_gem");
+	public static final Identifier CRIMSON_GEM = botaniaRL("icon/crimson_pendant_gem");
+	public static final Identifier SPECTATOR_GEM = botaniaRL("icon/the_spectator_gem");
+	public static final Identifier CIRRUS_GEM = botaniaRL("icon/cirrus_amulet_gem");
+	public static final Identifier NIMBUS_GEM = botaniaRL("icon/nimbus_amulet_gem");
+	public static final Identifier SNOWFLAKE_GEM = botaniaRL("icon/snowflake_pendant_gem");
+	public static final Identifier ORANGE_SHADES = botaniaRL("item/cosmetic_orange_shades");
+	public static final Identifier KAMUI_EYE = botaniaRL("item/cosmetic_kamui_eye");
+	public static final List<Identifier> THIRD_EYE_LAYERS = IntStream.range(0, ThirdEyeItem.Renderer.NUM_LAYERS)
+			.mapToObj(index -> botaniaRL("icon/third_eye_" + index)).toList();
+	public static final List<Identifier> TIARA_WINGS = IntStream.rangeClosed(1, FlugelTiaraItem.WING_TYPES)
+			.mapToObj(index -> botaniaRL("icon/tiara_wing_" + index)).toList();
+	public static final List<Identifier> TREASURY_WEAPONS = IntStream.range(0, KeyOfTheKingsLawItem.WEAPON_TYPES)
+			.mapToObj(index -> botaniaRL("icon/gate_weapon_" + index)).toList();
 
 	public static void register(ResourceManager resources, Consumer<Identifier> consumer) {
 		consumer.accept(CorporeaCrystalCubeBlockEntityRenderer.CUBE_MODEL_ID);
-		consumer.accept(PHI_FLOWER);
-		consumer.accept(NERF_BAT);
-		consumer.accept(GOLDFISH);
+		Stream.of(PHI_FLOWER, NERF_BAT, GOLDFISH, TERRASTEEL_WILL,
+				BLOOD_PENDANT_CHAIN, BLOOD_PENDANT_GEM, PYROCLAST_GEM, CRIMSON_GEM, SPECTATOR_GEM,
+				CIRRUS_GEM, NIMBUS_GEM, SNOWFLAKE_GEM, ORANGE_SHADES, KAMUI_EYE).forEach(consumer);
+		TREASURY_WEAPONS.forEach(consumer);
+		THIRD_EYE_LAYERS.forEach(consumer);
+		TIARA_WINGS.forEach(consumer);
 		consumer.accept(ManaPumpBlockEntityRenderer.PUMP_HEAD_ID);
 		registerSpreaderComponents(consumer);
 		registerTinyPotatoModels(resources, consumer);

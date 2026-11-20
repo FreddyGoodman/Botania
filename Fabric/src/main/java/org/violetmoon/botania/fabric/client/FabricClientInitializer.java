@@ -26,13 +26,9 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -42,7 +38,6 @@ import org.violetmoon.botania.client.BotaniaClientCapabilities;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.handler.CorporeaInputHandler;
 import org.violetmoon.botania.client.core.handler.KonamiHandler;
-import org.violetmoon.botania.client.core.handler.MiscellaneousModels;
 import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
 import org.violetmoon.botania.common.block.PlatformBlock;
 import org.violetmoon.botania.common.block.flower.FloatingFlowerBaseBlock;
@@ -105,15 +100,12 @@ public class FabricClientInitializer implements ClientModInitializer {
 				pluginContext.addModel(FabricClientXplatImpl.getBlockModelKey(id),
 						new SimpleUnbakedExtraModel<>(id, (model, baker) -> variant.bake(baker)));
 			});
-			MiscellaneousModels.INSTANCE.onModelRegister(Minecraft.getInstance().getResourceManager(), pluginContext::addModels);
-			pluginContext.modifyModelAfterBake().register((bakedModel, context) -> MiscellaneousModels.INSTANCE.modifyModelAfterbake(bakedModel, context.resourceId()));
 		});
 
 		// BE/Entity Renderer
 		BotaniaLayerDefinitions.init((loc, supplier) -> EntityModelLayerRegistry.registerModelLayer(loc, supplier::get));
 		EntityRenderers.registerBlockEntityRenderers(BlockEntityRendererRegistry::register);
 		EntityRenderers.registerEntityRenderers(EntityRendererRegistry::register);
-		LivingEntityFeatureRendererRegistrationCallback.EVENT.register(this::initAuxiliaryRender);
 
 		BotaniaParticles.FactoryHandler.registerFactories(new BotaniaParticles.FactoryHandler.Consumer() {
 			@Override
@@ -155,10 +147,4 @@ public class FabricClientInitializer implements ClientModInitializer {
 		FabricPlatformModel.registerTints();
 	}
 
-	private void initAuxiliaryRender(EntityType<? extends LivingEntity> type, LivingEntityRenderer<?, ?> renderer,
-			LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper helper, EntityRendererProvider.Context ctx) {
-		if (type == EntityType.PLAYER && renderer instanceof PlayerRenderer playerRenderer) {
-			EntityRenderers.addAuxiliaryPlayerRenders(playerRenderer, helper::register);
-		}
-	}
 }

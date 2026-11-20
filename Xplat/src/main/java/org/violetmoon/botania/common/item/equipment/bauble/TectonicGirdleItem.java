@@ -11,12 +11,11 @@ package org.violetmoon.botania.common.item.equipment.bauble;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
@@ -54,10 +53,10 @@ public class TectonicGirdleItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Nullable
-		private static HumanoidModel<LivingEntity> model = null;
+		private static HumanoidModel<?> model = null;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void submit(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float ageInTicks) {
 			AccessoryRenderHelper.rotateIfSneaking(ms, living);
 
 			float s = 1.15F;
@@ -67,8 +66,7 @@ public class TectonicGirdleItem extends BaubleItem {
 						.getEntityModels().bakeLayer(ModelLayers.PLAYER));
 			}
 
-			VertexConsumer buffer = buffers.getBuffer(model.renderType(texture));
-			model.body.render(ms, buffer, light, OverlayTexture.NO_OVERLAY);
+			collector.submitModelPart(model.body, ms, model.renderType(texture), light, OverlayTexture.NO_OVERLAY, null);
 		}
 	}
 }

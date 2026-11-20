@@ -13,7 +13,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.util.RandomSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -29,6 +33,7 @@ import org.violetmoon.botania.client.render.AccessoryRenderer;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.proxy.Proxy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TinyPlanetItem extends BaubleItem {
@@ -49,11 +54,15 @@ public class TinyPlanetItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void submit(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float ageInTicks) {
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(-0.25, -0.4, 0);
 			ms.scale(0.5F, -0.5F, -0.5F);
-			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(BotaniaBlocks.TINY_PLANET.defaultBlockState(), ms, buffers, light, OverlayTexture.NO_OVERLAY);
+			var block = BotaniaBlocks.TINY_PLANET.defaultBlockState();
+			var model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(block);
+			var parts = new ArrayList<BlockStateModelPart>();
+			model.collectParts(RandomSource.create(42), parts);
+			collector.submitBlockModel(ms, Sheets.cutoutBlockSheet(), parts, BlockModelRenderState.EMPTY_TINTS, light, OverlayTexture.NO_OVERLAY, 0);
 		}
 	}
 

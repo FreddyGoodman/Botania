@@ -9,79 +9,95 @@
 package org.violetmoon.botania.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
 
-import org.joml.Matrix4f;
-import org.violetmoon.botania.client.core.handler.MiscellaneousModels;
+import org.jetbrains.annotations.Nullable;
+import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.entity.BabylonWeaponEntity;
 import org.violetmoon.botania.common.helper.VecHelper;
+import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 
+import java.util.List;
 import java.util.Random;
 
-public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
-
-	public BabylonWeaponRenderer(EntityRendererProvider.Context ctx) {
-		super(ctx);
+public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity, BabylonWeaponRenderer.State> {
+	public BabylonWeaponRenderer(EntityRendererProvider.Context context) {
+		super(context);
 	}
 
 	@Override
-	public void render(BabylonWeaponEntity weapon, float yaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
-		ms.pushPose();
-		ms.mulPose(VecHelper.rotateY(weapon.getRotation()));
+	public State createRenderState() {
+		return new State();
+	}
 
+	@Override
+	public void extractRenderState(BabylonWeaponEntity weapon, State state, float partialTick) {
+		super.extractRenderState(weapon, state, partialTick);
+		state.rotation = weapon.getRotation();
 		int live = weapon.getLiveTicks();
 		int delay = weapon.getDelay();
-		float charge = Math.min(10F, Math.max(live, weapon.getChargeTicks()) + partialTicks);
-		float chargeMul = charge / 10F;
+		float charge = Math.min(10F, Math.max(live, weapon.getChargeTicks()) + partialTick);
+		state.circleAlpha = charge / 10F;
+		float shrink = live > delay ? Math.min(1F, (live - delay + partialTick) * 0.2F) : 0;
+		state.circleScale = 2F * (state.circleAlpha - shrink);
 
-		ms.pushPose();
-		ms.translate(-0.75, 0, 1); // X shifts the weapon hilt to the center of the circle, Z makes it intersect it.
-		float s = 1.5F;
-		ms.scale(s, s, s);
-		ms.mulPose(VecHelper.rotateY(90F)); // Rotate to make it match facing, instead of perpendicular to the circle
-		ms.mulPose(VecHelper.rotateZ(-45F)); // Perpendicular to the ground, instead of the rising 45 deg of the sprite
-
-		BakedModel model = MiscellaneousModels.INSTANCE.kingKeyWeaponModels[weapon.getVariety()];
-		Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffers.getBuffer(Sheets.translucentItemSheet()), null, model, 1, 1, 1, 0xF000F0, OverlayTexture.NO_OVERLAY);
-		ms.popPose();
-
-		Random rand = new Random(weapon.getUUID().getMostSignificantBits());
-		ms.mulPose(VecHelper.rotateX(-90F)); // Lay the circle horizontally
-		ms.translate(0F, -0.3F + rand.nextFloat() * 0.1F, 0F); // Randomly offset how deep the item is in the circle
-
-		s = chargeMul;
-		if (live > delay) {
-			s -= Math.min(1F, (live - delay + partialTicks) * 0.2F);
-		}
-		s *= 2F;
-		ms.scale(s, s, s);
-
-		ms.mulPose(VecHelper.rotateY(charge * 9F + (weapon.tickCount + partialTicks) * 0.5F + rand.nextFloat() * 360F));
-
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.getBabylonIconLayer());
-		Matrix4f mat = ms.last().pose();
-		buffer.addVertex(mat, -1, 0, -1).setColor(1, 1, 1, chargeMul).setUv(0, 0);
-		buffer.addVertex(mat, -1, 0, 1).setColor(1, 1, 1, chargeMul).setUv(0, 1);
-		buffer.addVertex(mat, 1, 0, 1).setColor(1, 1, 1, chargeMul).setUv(1, 1);
-		buffer.addVertex(mat, 1, 0, -1).setColor(1, 1, 1, chargeMul).setUv(1, 0);
-
-		ms.popPose();
+		Random random = new Random(weapon.getUUID().getMostSignificantBits());
+		state.circleOffset = -0.3F + random.nextFloat() * 0.1F;
+		state.circleRotation = charge * 9F + state.ageInTicks * 0.5F + random.nextFloat() * 360F;
+		int variety = Math.floorMod(weapon.getVariety(), StandaloneBlockModels.TREASURY_WEAPONS.size());
+		state.weapon = ClientXplatAbstractions.INSTANCE.findBlockModelPart(StandaloneBlockModels.TREASURY_WEAPONS.get(variety));
 	}
 
 	@Override
-	public Identifier getTextureLocation(BabylonWeaponEntity entity) {
-		return InventoryMenu.BLOCK_ATLAS;
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		super.submit(state, pose, collector, camera);
+		pose.pushPose();
+		pose.mulPose(VecHelper.rotateY(state.rotation));
+
+		if (state.weapon != null) {
+			pose.pushPose();
+			pose.translate(-0.75, 0, 1);
+			pose.scale(1.5F, 1.5F, 1.5F);
+			pose.mulPose(VecHelper.rotateY(90F));
+			pose.mulPose(VecHelper.rotateZ(-45F));
+			collector.submitBlockModel(pose, Sheets.translucentItemSheet(), List.of(state.weapon),
+					BlockModelRenderState.EMPTY_TINTS, 0xF000F0, OverlayTexture.NO_OVERLAY, 0);
+			pose.popPose();
+		}
+
+		pose.mulPose(VecHelper.rotateX(-90F));
+		pose.translate(0, state.circleOffset, 0);
+		float scale = state.circleScale;
+		pose.scale(scale, scale, scale);
+		pose.mulPose(VecHelper.rotateY(state.circleRotation));
+
+		float alpha = state.circleAlpha;
+		collector.submitCustomGeometry(pose, RenderHelper.getBabylonIconLayer(), (transform, buffer) -> {
+			var matrix = transform.pose();
+			buffer.addVertex(matrix, -1, 0, -1).setColor(1, 1, 1, alpha).setUv(0, 0);
+			buffer.addVertex(matrix, -1, 0, 1).setColor(1, 1, 1, alpha).setUv(0, 1);
+			buffer.addVertex(matrix, 1, 0, 1).setColor(1, 1, 1, alpha).setUv(1, 1);
+			buffer.addVertex(matrix, 1, 0, -1).setColor(1, 1, 1, alpha).setUv(1, 0);
+		});
+		pose.popPose();
 	}
 
+	public static class State extends EntityRenderState {
+		private float rotation;
+		private float circleAlpha;
+		private float circleScale;
+		private float circleOffset;
+		private float circleRotation;
+		private @Nullable BlockStateModelPart weapon;
+	}
 }

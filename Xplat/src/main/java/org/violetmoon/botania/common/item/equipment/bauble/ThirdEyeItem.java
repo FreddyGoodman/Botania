@@ -9,14 +9,9 @@
 package org.violetmoon.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -26,11 +21,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
 import org.violetmoon.botania.api.mana.ManaItemHandler;
-import org.violetmoon.botania.client.core.handler.MiscellaneousModels;
+import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
+import org.violetmoon.botania.client.core.helper.AccessoryRenderHelper;
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.client.render.AccessoryRenderer;
 import org.violetmoon.botania.common.entity.MagicMissileEntity;
-import org.violetmoon.botania.common.proxy.Proxy;
 
 import java.util.List;
 
@@ -66,7 +61,7 @@ public class ThirdEyeItem extends BaubleItem {
 		public static final int NUM_LAYERS = 3;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void submit(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float ageInTicks) {
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 
 			for (int i = 0; i < NUM_LAYERS; i++) {
@@ -77,7 +72,7 @@ public class ThirdEyeItem extends BaubleItem {
 					case 0:
 						break;
 					case 1:
-						double time = (living.tickCount + partialTicks) * 0.12;
+						double time = ageInTicks * 0.12;
 						double dist = 0.05;
 						ms.translate(Math.sin(time) * dist, Math.cos(time * 0.5) * dist, 0);
 
@@ -91,10 +86,7 @@ public class ThirdEyeItem extends BaubleItem {
 
 				ms.translate(-0.3, 0.6, armor ? 0.10 : 0.15);
 				ms.scale(0.6F, -0.6F, -0.6F);
-				BakedModel model = MiscellaneousModels.INSTANCE.thirdEyeLayers[i];
-				VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-				Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-						.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+				AccessoryRenderHelper.submitIcon(StandaloneBlockModels.THIRD_EYE_LAYERS.get(i), ms, collector, light);
 				ms.popPose();
 			}
 		}

@@ -11,10 +11,8 @@ package org.violetmoon.botania.common.item.equipment.bauble;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
@@ -22,6 +20,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 
 import org.violetmoon.botania.api.item.CosmeticAttachable;
 import org.violetmoon.botania.api.item.CosmeticBauble;
+import org.violetmoon.botania.client.core.helper.AccessoryRenderHelper;
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.client.render.AccessoryRenderer;
 import org.violetmoon.botania.common.handler.EquipmentHandler;
@@ -45,12 +44,11 @@ public class ManaseerMonocleItem extends BaubleItem implements CosmeticBauble {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void submit(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float ageInTicks) {
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(0.15, -0.2, -0.25);
 			ms.scale(0.3F, -0.3F, -0.3F);
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE,
-					light, OverlayTexture.NO_OVERLAY, ms, buffers, living.level(), living.getId());
+			AccessoryRenderHelper.submitItem(stack, living, ms, collector, light);
 		}
 	}
 

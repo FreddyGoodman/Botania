@@ -9,11 +9,10 @@
 package org.violetmoon.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
@@ -73,7 +72,7 @@ public class CloakOfVirtueItem extends BaubleItem {
 		private static CloakModel model = null;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void submit(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float ageInTicks) {
 			CloakOfVirtueItem item = ((CloakOfVirtueItem) stack.getItem());
 			AccessoryRenderHelper.rotateIfSneaking(ms, living);
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
@@ -83,11 +82,8 @@ public class CloakOfVirtueItem extends BaubleItem {
 				model = new CloakModel(Minecraft.getInstance().getEntityModels().bakeLayer(BotaniaModelLayers.CLOAK));
 			}
 
-			VertexConsumer buffer = buffers.getBuffer(model.renderType(item.getCloakTexture()));
-			model.renderToBuffer(ms, buffer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFF);
-
-			buffer = buffers.getBuffer(model.renderType(item.getCloakGlowTexture()));
-			model.renderToBuffer(ms, buffer, 0xF000F0, OverlayTexture.NO_OVERLAY, 0xFFFFFF);
+			collector.submitModel(model, null, ms, item.getCloakTexture(), light, OverlayTexture.NO_OVERLAY, 0, null);
+			collector.submitModel(model, null, ms, item.getCloakGlowTexture(), 0xF000F0, OverlayTexture.NO_OVERLAY, 0, null);
 		}
 	}
 

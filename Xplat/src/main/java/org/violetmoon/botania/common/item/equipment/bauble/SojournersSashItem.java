@@ -9,15 +9,13 @@
 package org.violetmoon.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -148,10 +146,10 @@ public class SojournersSashItem extends BaubleItem {
 	}
 
 	public static class Renderer implements AccessoryRenderer {
-		private static HumanoidModel<LivingEntity> model = null;
+		private static HumanoidModel<?> model = null;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void submit(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float ageInTicks) {
 			AccessoryRenderHelper.rotateIfSneaking(ms, living);
 
 			float s = 1.15F;
@@ -162,8 +160,7 @@ public class SojournersSashItem extends BaubleItem {
 			}
 
 			Identifier texture = ((SojournersSashItem) stack.getItem()).getRenderTexture();
-			VertexConsumer buffer = buffers.getBuffer(model.renderType(texture));
-			model.body.render(ms, buffer, light, OverlayTexture.NO_OVERLAY, ARGB.color(1, 1, 1, 1));
+			collector.submitModelPart(model.body, ms, model.renderType(texture), light, OverlayTexture.NO_OVERLAY, null);
 		}
 	}
 

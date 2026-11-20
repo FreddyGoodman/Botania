@@ -9,16 +9,11 @@
 package org.violetmoon.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -37,13 +32,14 @@ import org.violetmoon.botania.api.brew.Brew;
 import org.violetmoon.botania.api.brew.BrewContainer;
 import org.violetmoon.botania.api.brew.BrewItem;
 import org.violetmoon.botania.api.mana.ManaItemHandler;
-import org.violetmoon.botania.client.core.handler.MiscellaneousModels;
+import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
+import org.violetmoon.botania.client.core.helper.AccessoryRenderHelper;
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.client.render.AccessoryRenderer;
+import org.violetmoon.botania.common.item.CustomCreativeTabContents;
+import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 import org.violetmoon.botania.common.brew.BotaniaBrews;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
-import org.violetmoon.botania.common.item.CustomCreativeTabContents;
-import org.violetmoon.botania.common.proxy.Proxy;
 import org.violetmoon.botania.client.render.ColorHandler;
 
 import java.util.function.Consumer;
@@ -112,24 +108,18 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void submit(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float ageInTicks) {
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(-0.25, 0.4, armor ? 0.05 : 0.12);
 			ms.scale(0.5F, -0.5F, -0.5F);
 
-			BakedModel model = MiscellaneousModels.INSTANCE.bloodPendantChain;
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
-
-			model = MiscellaneousModels.INSTANCE.bloodPendantGem;
-			int color = ColorHandler.getItemColor(stack, 1);
-			float r = (color >> 16 & 0xFF) / 255F;
-			float g = (color >> 8 & 0xFF) / 255F;
-			float b = (color & 0xFF) / 255F;
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, r, g, b, 0xF000F0, OverlayTexture.NO_OVERLAY);
+			AccessoryRenderHelper.submitIcon(StandaloneBlockModels.BLOOD_PENDANT_CHAIN, ms, collector, light);
+			var gem = ClientXplatAbstractions.INSTANCE.findBlockModelPart(StandaloneBlockModels.BLOOD_PENDANT_GEM);
+			if (gem != null) {
+				int color = ColorHandler.getItemColor(stack, 1) | 0xFF000000;
+				AccessoryRenderHelper.submitTintedIcon(AccessoryRenderHelper.iconQuads(gem), ms, collector, 0xF000F0, color);
+			}
 		}
 	}
 

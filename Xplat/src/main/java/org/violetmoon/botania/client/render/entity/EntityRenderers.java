@@ -9,16 +9,12 @@
 
 package org.violetmoon.botania.client.render.entity;
 
-import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -58,13 +54,6 @@ public final class EntityRenderers {
 		consumer.accept(BotaniaEntities.THORN_CHAKRAM, ThrownItemRenderer::new);
 		consumer.accept(BotaniaEntities.VINE_BALL, ThrownItemRenderer::new);
 		consumer.accept(BotaniaEntities.ENDER_ESSENCE_FLASK, ThrownItemRenderer::new);
-	}
-
-	public static void addAuxiliaryPlayerRenders(PlayerRenderer renderer,
-			Consumer<RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>> consumer) {
-		consumer.accept(new ContributorFancinessHandler(renderer));
-		consumer.accept(new ManaTabletRenderHandler(renderer));
-		consumer.accept(new TerrasteelHelmetLayer(renderer));
 	}
 
 	public interface BERConsumer {
