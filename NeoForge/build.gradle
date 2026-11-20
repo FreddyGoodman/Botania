@@ -10,6 +10,8 @@ repositories {
     }
 }
 
+def datagenOutput = providers.environmentVariable("BOTANIA_DATAGEN_OUTPUT").map { file(it) }.getOrNull()
+
 neoForge {
     version = neoforge_version
     // Automatically enable neoforge AccessTransformers if the file exists
@@ -49,13 +51,13 @@ neoForge {
         neoforgeDatagen {
             data()
             programArguments.addAll("--mod", mod_id, "--all",
-                    "--output", file("src/generated/resources/").getAbsolutePath(),
+                    "--output", (datagenOutput == null ? file("src/generated/resources/") : new File(datagenOutput, "neoforge")).getAbsolutePath(),
                     "--existing", file("src/main/resources/").getAbsolutePath())
         }
         gardenOfGlassDatagen {
             data()
             programArguments.addAll("--mod", mod_id, "--all",
-                    "--output", file("../garden_of_glass/src/generated/resources/").getAbsolutePath(),
+                    "--output", (datagenOutput == null ? file("../garden_of_glass/src/generated/resources/") : new File(datagenOutput, "garden_of_glass")).getAbsolutePath(),
                     "--existing", file("../garden_of_glass/src/main/resources/").getAbsolutePath())
             systemProperty("botania.gog_datagen", "1")
         }

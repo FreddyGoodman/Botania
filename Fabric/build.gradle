@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.fabric.loom)
 }
 
+def datagenOutput = providers.environmentVariable("BOTANIA_DATAGEN_OUTPUT").map { file(it) }.getOrNull()
+
 loom {
     accessWidenerPath = file("src/main/resources/botania.accesswidener")
 
@@ -29,14 +31,14 @@ loom {
             vmArg("-Dbotania.xplat_datagen=1")
             vmArg("-Dfabric-api.datagen")
             vmArg("-Dfabric-api.datagen.modid=botania")
-            vmArg("-Dfabric-api.datagen.output-dir=${file("../Xplat/src/generated/resources")}")
+            vmArg("-Dfabric-api.datagen.output-dir=${datagenOutput == null ? file("../Xplat/src/generated/resources") : new File(datagenOutput, "xplat")}")
         }
 
         fabricDatagen {
             client()
             vmArg("-Dfabric-api.datagen")
             vmArg("-Dfabric-api.datagen.modid=botania")
-            vmArg("-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}")
+            vmArg("-Dfabric-api.datagen.output-dir=${datagenOutput == null ? file("src/generated/resources") : new File(datagenOutput, "fabric")}")
         }
 
         configureEach {
