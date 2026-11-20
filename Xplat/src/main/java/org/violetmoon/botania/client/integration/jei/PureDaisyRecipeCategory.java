@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -55,16 +54,16 @@ public class PureDaisyRecipeCategory extends BotaniaRecipeCategoryBase<PureDaisy
 	@Override
 	public void draw(PureDaisyRecipe recipe, IRecipeSlotsView slotsView, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, slotsView, gui, mouseX, mouseY);
-		RenderSystem.enableBlend();
+
 		overlay.draw(gui, 17, 0);
-		RenderSystem.disableBlend();
+
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, PureDaisyRecipe recipe, IFocusGroup focusGroup) {
 		buildSlot(recipe.getInput(), builder, RecipeIngredientRole.INPUT, 9, 12);
 
-		builder.addSlot(RecipeIngredientRole.CATALYST, 39, 12)
+		builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 39, 12)
 				.addItemStack(new ItemStack(BotaniaBlocks.PURE_DAISY));
 
 		buildSlot(recipe.getOutput(), builder, RecipeIngredientRole.OUTPUT, 68, 12);
@@ -77,7 +76,7 @@ public class PureDaisyRecipeCategory extends BotaniaRecipeCategoryBase<PureDaisy
 		for (var state : ingredient.getDisplayed()) {
 			if (!state.getFluidState().isEmpty()) {
 				inputSlotBuilder.addIngredient(this.fluidHelper.getFluidIngredientType(),
-						this.fluidHelper.create(state.getFluidState().holder(), 1000));
+						this.fluidHelper.create(state.getFluidState().getType().builtInRegistryHolder(), 1000));
 			}
 		}
 		inputSlotBuilder.addItemStacks(ingredient.getDisplayedStacks())

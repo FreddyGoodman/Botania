@@ -8,30 +8,31 @@
  */
 package org.violetmoon.botania.client.integration.rei;
 
-import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
+import org.violetmoon.botania.api.recipe.BotaniaRecipe;
+import org.violetmoon.botania.client.patchouli.PatchouliUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-public abstract class BotaniaRecipeDisplay<T extends Recipe<? extends RecipeInput>> implements Display {
+public abstract class BotaniaRecipeDisplay<T extends BotaniaRecipe<?>> implements RecipeBackedDisplay {
 	protected final RecipeHolder<? extends T> recipe;
 	protected List<EntryIngredient> inputs;
 	protected EntryIngredient outputs;
 
 	public BotaniaRecipeDisplay(RecipeHolder<? extends T> recipe) {
 		this.recipe = recipe;
-		this.inputs = EntryIngredients.ofIngredients(recipe.value().getIngredients());
-		// TODO 1.19.4 figure out the proper way to get a registry access
-		this.outputs = EntryIngredients.of(recipe.value().getResultItem(RegistryAccess.EMPTY));
+		var level = Minecraft.getInstance().level;
+		this.inputs = level == null ? List.of() : recipe.value().getIngredients().stream()
+				.map(ingredient -> EntryIngredients.ofItemStacks(PatchouliUtils.displayStacks(ingredient, level)))
+				.toList();
+		var registries = level == null ? RegistryAccess.EMPTY : level.registryAccess();
+		this.outputs = EntryIngredients.of(recipe.value().getResultItem(registries));
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public abstract class BotaniaRecipeDisplay<T extends Recipe<? extends RecipeInpu
 	}
 
 	@Override
-	public Optional<Identifier> getDisplayLocation() {
-		return Optional.ofNullable(this.recipe).map(RecipeHolder::id);
+	public RecipeHolder<? extends T> recipeHolder() {
+		return recipe;
 	}
 }

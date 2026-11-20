@@ -22,6 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.*;
@@ -34,6 +35,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -328,6 +330,12 @@ public final class RenderHelper {
 
 	public static RenderType getGaiaNoiseConstantLayer(Identifier texture) {
 		return BotaniaConfig.client().useShaders() ? GAIA_NOISE_CONSTANT_LAYER.apply(texture) : RenderTypes.entityTranslucent(texture);
+	}
+
+	public static void drawAlfheimPortal(GuiGraphicsExtractor graphics, int x, int y) {
+		var sprite = Minecraft.getInstance().getAtlasManager()
+				.get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("block/alfheim_portal_swirl")));
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, 48, 48);
 	}
 
 	public static void drawTexturedModalRect(GuiGraphicsExtractor gui, Identifier textureId, int x, int y, int u, int v, int width, int height) {

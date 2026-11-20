@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -59,11 +58,11 @@ public class TerrestrialAgglomerationRecipeCategory extends BotaniaRecipeCategor
 	@Override
 	public void draw(TerrestrialAgglomerationRecipe recipe, IRecipeSlotsView view, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, view, gui, mouseX, mouseY);
-		RenderSystem.enableBlend();
+
 		overlay.draw(gui, 25, 14);
 		HUDHandler.renderManaBar(gui, 6, 126, 0x0000FF, 0.75F, recipe.getMana(), 100000);
 		terraPlate.draw(gui, 35, 92);
-		RenderSystem.disableBlend();
+
 	}
 
 	@Override
@@ -80,7 +79,7 @@ public class TerrestrialAgglomerationRecipeCategory extends BotaniaRecipeCategor
 			point = PetalApothecaryRecipeCategory.rotatePointAbout(point, center, angleBetweenEach);
 		}
 
-		builder.addSlot(RecipeIngredientRole.CATALYST, 48, 92)
+		builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 48, 92)
 				.addItemStack(new ItemStack(BotaniaBlocks.TERRESTRIAL_AGGLOMERATION_PLATE));
 	}
 }

@@ -20,6 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import org.violetmoon.botania.common.crafting.recipe.CompositeLensRecipe;
 import org.violetmoon.botania.common.item.lens.LensItem;
@@ -75,4 +76,10 @@ public class CompositeLensRecipeWrapper implements ICraftingCategoryExtension<Co
 				List.of(firstInput, List.of(new ItemStack(Items.SLIME_BALL)), secondInput), 0, 0);
 		helper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, outputs);
 	}
+	@Override
+	public List<SlotDisplay> getIngredients(RecipeHolder<CompositeLensRecipe> recipe) {
+		var lenses = new SlotDisplay.Composite(allLenses.stream().map(item -> (SlotDisplay) new SlotDisplay.ItemSlotDisplay(item)).toList());
+		return List.of(lenses, new SlotDisplay.ItemSlotDisplay(Items.SLIME_BALL), lenses);
+	}
+
 }

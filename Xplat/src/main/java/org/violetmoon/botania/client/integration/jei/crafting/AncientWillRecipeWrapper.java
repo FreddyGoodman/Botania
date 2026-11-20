@@ -15,8 +15,10 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import org.violetmoon.botania.api.item.AncientWillContainer;
 import org.violetmoon.botania.common.crafting.recipe.AncientWillRecipe;
@@ -28,6 +30,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class AncientWillRecipeWrapper implements ICraftingCategoryExtension<AncientWillRecipe> {
+	private static final List<Item> WILLS = List.of(BotaniaItems.WILL_OF_AHRIM, BotaniaItems.WILL_OF_DHAROK,
+			BotaniaItems.WILL_OF_GUTHAN, BotaniaItems.WILL_OF_TORAG, BotaniaItems.WILL_OF_VERAC, BotaniaItems.WILL_OF_KARIL);
+
 	@Override
 	public void setRecipe(RecipeHolder<AncientWillRecipe> recipe, IRecipeLayoutBuilder builder, ICraftingGridHelper helper, IFocusGroup focusGroup) {
 		var foci = focusGroup.getFocuses(VanillaTypes.ITEM_STACK, RecipeIngredientRole.INPUT)
@@ -35,14 +40,7 @@ public class AncientWillRecipeWrapper implements ICraftingCategoryExtension<Anci
 				.map(f -> f.getTypedValue().getIngredient())
 				.toList();
 
-		var willStacks = !foci.isEmpty() ? foci : List.of(
-				new ItemStack(BotaniaItems.WILL_OF_AHRIM),
-				new ItemStack(BotaniaItems.WILL_OF_DHAROK),
-				new ItemStack(BotaniaItems.WILL_OF_GUTHAN),
-				new ItemStack(BotaniaItems.WILL_OF_TORAG),
-				new ItemStack(BotaniaItems.WILL_OF_VERAC),
-				new ItemStack(BotaniaItems.WILL_OF_KARIL)
-		);
+		var willStacks = !foci.isEmpty() ? foci : WILLS.stream().map(ItemStack::new).toList();
 
 		var outputStacks = new ArrayList<ItemStack>();
 		for (var will : !foci.isEmpty() ? foci : willStacks) {
@@ -55,4 +53,10 @@ public class AncientWillRecipeWrapper implements ICraftingCategoryExtension<Anci
 				List.of(Collections.singletonList(new ItemStack(BotaniaItems.TERRASTEEL_HELMET)), willStacks), 0, 0);
 		helper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, outputStacks);
 	}
+	@Override
+	public List<SlotDisplay> getIngredients(RecipeHolder<AncientWillRecipe> recipe) {
+		var wills = new SlotDisplay.Composite(WILLS.stream().map(item -> (SlotDisplay) new SlotDisplay.ItemSlotDisplay(item)).toList());
+		return List.of(new SlotDisplay.ItemSlotDisplay(BotaniaItems.TERRASTEEL_HELMET), wills);
+	}
+
 }

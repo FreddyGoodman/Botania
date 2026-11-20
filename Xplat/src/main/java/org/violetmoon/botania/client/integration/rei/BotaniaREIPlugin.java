@@ -20,6 +20,7 @@ import me.shedaniel.rei.api.client.overlay.OverlayListWidget;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
@@ -53,6 +54,8 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
+
+import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class BotaniaREIPlugin implements REIClientPlugin {
 	private static final Supplier<ItemStack> HOVERED_STACK_GETTER = BotaniaREIPlugin::getHoveredREIStack;
@@ -135,28 +138,20 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 		registerCompositeLensRecipeWrapper(registry);
 		registerTerraPickTippingRecipeWrapper(registry);
 
-		registry.registerRecipeFiller(PetalApothecaryRecipe.class,
-				BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE,
-				PetalApothecaryREIDisplay::new);
-		registry.registerRecipeFiller(BotanicalBreweryRecipe.class,
-				BotaniaRecipeTypes.BREW_TYPE,
-				BreweryREIDisplay::new);
-		registry.registerRecipeFiller(ElvenTradeRecipe.class,
-				BotaniaRecipeTypes.ELVEN_TRADE_TYPE::equals,
-				recipe -> !recipe.value().isReturnRecipe(),
-				ElvenTradeREIDisplay::new);
-		registry.registerRecipeFiller(ManaInfusionRecipe.class,
-				BotaniaRecipeTypes.MANA_INFUSION_TYPE,
-				ManaPoolREIDisplay::new);
-		registry.registerRecipeFiller(PureDaisyRecipe.class,
-				BotaniaRecipeTypes.PURE_DAISY_TYPE,
-				PureDaisyREIDisplay::new);
-		registry.registerRecipeFiller(RunicAltarRecipe.class,
-				BotaniaRecipeTypes.RUNIC_ALTAR_TYPE,
-				RunicAltarREIDisplay::new);
-		registry.registerRecipeFiller(TerrestrialAgglomerationRecipe.class,
-				BotaniaRecipeTypes.TERRA_PLATE_TYPE,
-				TerrestrialAgglomerationREIDisplay::new);
+		var serializers = DisplaySerializerRegistry.getInstance();
+		if (!serializers.isRegistered(RecipeBackedDisplay.SERIALIZER)) {
+			serializers.register(botaniaRL("recipe_display"), RecipeBackedDisplay.SERIALIZER);
+		}
+		var recipeMap = BotaniaRecipeTypes.recipes(Minecraft.getInstance().level);
+		for (var recipe : recipeMap.values()) {
+			if (recipe.value() instanceof ElvenTradeRecipe trade && trade.isReturnRecipe()) {
+				continue;
+			}
+			var display = RecipeBackedDisplay.create(recipe);
+			if (display != null) {
+				registry.add(display, recipe);
+			}
+		}
 
 		try {
 			for (var block : AxeStrippingData.getCustomStrippables()) {
@@ -166,15 +161,6 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 			BotaniaAPI.LOGGER.error("Error adding strippable entry to REI", e);
 		}
 
-		registry.registerRecipeFiller(OrechidRecipe.class,
-				BotaniaRecipeTypes.ORECHID_TYPE,
-				OrechidREIDisplay::new);
-		registry.registerRecipeFiller(OrechidRecipe.class,
-				BotaniaRecipeTypes.ORECHID_IGNEM_TYPE,
-				OrechidIgnemREIDisplay::new);
-		registry.registerRecipeFiller(OrechidRecipe.class,
-				BotaniaRecipeTypes.MARIMORPHOSIS_TYPE,
-				MarimorphosisREIDisplay::new);
 	}
 
 	void registerAncientWillRecipeWrapper(DisplayRegistry helper) {
@@ -194,8 +180,7 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 			container.addAncientWill(copy, ((AncientWillItem) will.getItem()).type);
 			output.add(EntryStacks.of(copy));
 		}
-		helper.add(new DefaultCustomDisplay(null, input.build(),
-				Collections.singletonList(EntryIngredient.of(output.build()))));
+		helper.add(new DefaultCustomDisplay(input.build(), Collections.singletonList(EntryIngredient.of(output.build())), Optional.empty()));
 	}
 
 	void registerCompositeLensRecipeWrapper(DisplayRegistry helper) {
@@ -233,7 +218,7 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 		inputs.set(0, EntryIngredients.ofItemStacks(firstInput));
 		inputs.set(2, EntryIngredients.ofItemStacks(secondInput));
 
-		helper.add(new DefaultCustomDisplay(null, inputs, Collections.singletonList(EntryIngredients.ofItemStacks(outputs))));
+		helper.add(new DefaultCustomDisplay(inputs, Collections.singletonList(EntryIngredients.ofItemStacks(outputs)), Optional.empty()));
 	}
 
 	void registerTerraPickTippingRecipeWrapper(DisplayRegistry helper) {
@@ -243,7 +228,7 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 		ItemStack output = new ItemStack(BotaniaItems.TERRA_SHATTERER);
 		TerraShattererItem.setTipped(output);
 
-		helper.add(new DefaultCustomDisplay(null, inputs, Collections.singletonList(EntryIngredients.of(output))));
+		helper.add(new DefaultCustomDisplay(inputs, Collections.singletonList(EntryIngredients.of(output)), Optional.empty()));
 	}
 
 	private static ItemStack getHoveredREIStack() {

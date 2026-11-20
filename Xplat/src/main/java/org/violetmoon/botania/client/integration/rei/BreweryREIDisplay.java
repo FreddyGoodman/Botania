@@ -12,10 +12,12 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
+import org.violetmoon.botania.client.patchouli.PatchouliUtils;
 import org.violetmoon.botania.api.recipe.BotanicalBreweryRecipe;
 import org.violetmoon.botania.common.crafting.recipe.RecipeUtils;
 
@@ -30,7 +32,7 @@ public class BreweryREIDisplay extends BotaniaRecipeDisplay<BotanicalBreweryReci
 		Ingredient brewContainerIngredient = RecipeUtils.getBrewContainerIngredient();
 		this.containers = EntryIngredients.ofIngredient(brewContainerIngredient);
 		List<ItemStack> outputs = new ArrayList<>();
-		for (ItemStack stack : brewContainerIngredient.getItems()) {
+		for (ItemStack stack : PatchouliUtils.displayStacks(brewContainerIngredient, Minecraft.getInstance().level)) {
 			ItemStack brewed = recipe.value().getOutput(stack);
 			if (!brewed.isEmpty()) {
 				outputs.add(brewed);

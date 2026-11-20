@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.jei.orechid;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -52,7 +51,7 @@ public abstract class OrechidRecipeCategoryBase extends BotaniaRecipeCategoryBas
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 9, 12)
 				.addItemStacks(recipe.getInput().getDisplayedStacks());
-		builder.addSlot(RecipeIngredientRole.CATALYST, 39, 12).addItemStack(iconStack);
+		builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 39, 12).addItemStack(iconStack);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 68, 12)
 				.addItemStacks(recipe.getOutput().getDisplayedStacks())
@@ -69,9 +68,9 @@ public abstract class OrechidRecipeCategoryBase extends BotaniaRecipeCategoryBas
 			int xOffset = 90 - font.width(chanceComponent);
 			gui.text(font, chanceComponent, xOffset, 1, 0x888888, false);
 		}
-		RenderSystem.enableBlend();
+
 		overlay.draw(gui, 17, 0);
-		RenderSystem.disableBlend();
+
 	}
 
 	@Override

@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.rei;
 
-import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
@@ -20,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class OrechidBaseREIDisplay implements Display {
+public abstract class OrechidBaseREIDisplay implements RecipeBackedDisplay {
 	private final List<EntryIngredient> stone;
 	private final List<EntryIngredient> ores;
 	private final RecipeHolder<? extends OrechidRecipe> recipe;
@@ -39,6 +38,11 @@ public abstract class OrechidBaseREIDisplay implements Display {
 	@Override
 	public List<EntryIngredient> getOutputEntries() {
 		return ores;
+	}
+
+	@Override
+	public RecipeHolder<? extends OrechidRecipe> recipeHolder() {
+		return recipe;
 	}
 
 	public RecipeHolder<? extends OrechidRecipe> getRecipe() {

@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.rei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import me.shedaniel.math.FloatingPoint;
 import me.shedaniel.math.Point;
@@ -23,10 +22,10 @@ interface CategoryUtils {
 	 * instead.
 	 */
 	static void drawOverlay(GuiGraphicsExtractor gui, Identifier texture, int x, int y, int u, int v, int width, int height) {
-		RenderSystem.enableBlend();
+
 		// TODO 1.19.4 check that this still works
 		gui.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, u, v, width, height, 256, 256);
-		RenderSystem.disableBlend();
+
 	}
 
 	/**

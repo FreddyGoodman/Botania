@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -52,10 +51,10 @@ public class RunicAltarRecipeCategory extends BotaniaRecipeCategoryBase<RunicAlt
 	@Override
 	public void draw(RunicAltarRecipe recipe, IRecipeSlotsView slotsView, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, slotsView, gui, mouseX, mouseY);
-		RenderSystem.enableBlend();
+
 		overlay.draw(gui, 0, 4);
 		HUDHandler.renderManaBar(gui, 6, 98, 0x0000FF, 0.75F, recipe.getMana(), ManaPoolBlock.MAX_MANA / 10);
-		RenderSystem.disableBlend();
+
 	}
 
 	@Override

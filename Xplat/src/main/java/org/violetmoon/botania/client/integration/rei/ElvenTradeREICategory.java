@@ -8,8 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.rei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -22,18 +20,12 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.violetmoon.botania.api.BotaniaAPI;
+import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
 
 import java.util.ArrayList;
@@ -65,7 +57,7 @@ public class ElvenTradeREICategory implements DisplayCategory<ElvenTradeREIDispl
 		widgets.add(Widgets.createRecipeBase(bounds));
 		widgets.add(Widgets.createDrawableWidget((gui, mouseX, mouseY, delta) -> {
 			CategoryUtils.drawOverlay(gui, TRADE_OVERLAY, center.x - 45, center.y - 34, 20, 19, 71, 75);
-			drawPortal(gui.pose(), center);
+			RenderHelper.drawAlfheimPortal(gui, center.x - 43, center.y - 17);
 		}));
 		int x = center.x - 20;
 		for (EntryIngredient o : display.getInputEntries()) {
@@ -85,20 +77,4 @@ public class ElvenTradeREICategory implements DisplayCategory<ElvenTradeREIDispl
 		return 100;
 	}
 
-	void drawPortal(PoseStack matrices, Point point) {
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(BotaniaAPI.botaniaRL("block/alfheim_portal_swirl"));
-		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer v = immediate.getBuffer(RenderTypes.solidMovingBlock());
-		int startX = point.x - 43;
-		int startY = point.y - 17;
-		int stopX = startX + 48;
-		int stopY = startY + 48;
-		Matrix4f mat = matrices.last().pose();
-		Matrix3f n = matrices.last().normal();
-		v.addVertex(mat, startX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV0()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, startX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV1()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, stopX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV1()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, stopX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV0()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		immediate.endBatch();
-	}
 }

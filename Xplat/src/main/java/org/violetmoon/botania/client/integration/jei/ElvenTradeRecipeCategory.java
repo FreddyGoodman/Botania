@@ -8,9 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -21,19 +18,13 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.recipe.ElvenTradeRecipe;
+import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
@@ -57,27 +48,8 @@ public class ElvenTradeRecipeCategory extends BotaniaRecipeCategoryBase<ElvenTra
 	@Override
 	public void draw(ElvenTradeRecipe recipe, IRecipeSlotsView slotsView, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, slotsView, gui, mouseX, mouseY);
-		PoseStack matrices = gui.pose();
-		RenderSystem.enableBlend();
 		overlay.draw(gui, 0, 4);
-		RenderSystem.disableBlend();
-
-		RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(BotaniaAPI.botaniaRL("block/alfheim_portal_swirl"));
-		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer v = immediate.getBuffer(RenderTypes.solidMovingBlock());
-		int startX = 22;
-		int startY = 25;
-		int stopX = 70;
-		int stopY = 73;
-		Matrix4f mat = matrices.last().pose();
-		Matrix3f n = matrices.last().normal();
-		v.addVertex(mat, startX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV0()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, startX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV1()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, stopX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV1()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, stopX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV0()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		immediate.endBatch();
-
+		RenderHelper.drawAlfheimPortal(gui, 22, 25);
 	}
 
 	@Override

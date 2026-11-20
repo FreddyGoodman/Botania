@@ -16,10 +16,12 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
+import org.violetmoon.botania.client.patchouli.PatchouliUtils;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.recipe.BotanicalBreweryRecipe;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
@@ -53,7 +55,7 @@ public class BreweryRecipeCategory extends BotaniaRecipeCategoryBase<BotanicalBr
 		List<ItemStack> outputs = new ArrayList<>();
 		List<ItemStack> containers = new ArrayList<>();
 
-		for (var container : RecipeUtils.getBrewContainerIngredient().getItems()) {
+		for (var container : PatchouliUtils.displayStacks(RecipeUtils.getBrewContainerIngredient(), Minecraft.getInstance().level)) {
 			ItemStack brewed = recipe.getOutput(container);
 			if (!brewed.isEmpty()) {
 				containers.add(container);
