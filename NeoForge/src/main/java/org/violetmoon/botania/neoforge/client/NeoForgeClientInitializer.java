@@ -158,8 +158,10 @@ public class NeoForgeClientInitializer {
 	@SubscribeEvent
 	public static void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
 		NeoForgeFloatingFlowerModel.register(event);
-		StandaloneBlockModels.register(Minecraft.getInstance().getResourceManager(), id -> event.register(NeoForgeClientXplatImpl.getBlockModelKey(id),
-				SimpleUnbakedStandaloneModel.simpleModelWrapper(id)));
+		StandaloneBlockModels.register(Minecraft.getInstance().getResourceManager(),
+				id -> event.register(NeoForgeClientXplatImpl.getBlockModelKey(id), SimpleUnbakedStandaloneModel.simpleModelWrapper(id)),
+				id -> event.register(NeoForgeClientXplatImpl.getBlockModelKey(id),
+						new SimpleUnbakedStandaloneModel<>(id, (model, baker, name) -> StandaloneBlockModels.bakeItemModel(model, baker))));
 	}
 
 	@SubscribeEvent

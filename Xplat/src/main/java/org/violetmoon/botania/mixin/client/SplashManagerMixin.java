@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -28,6 +27,7 @@ import org.violetmoon.botania.xplat.BotaniaConfig;
 
 import java.time.LocalDate;
 import java.time.MonthDay;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +38,6 @@ import java.util.List;
 @Mixin(SplashManager.class)
 public class SplashManagerMixin {
 	@Shadow
-	@Final
 	private List<Component> splashes;
 
 	@Unique
@@ -83,6 +82,7 @@ public class SplashManagerMixin {
 
 	@Unique
 	private void botania_addSplashes() {
+		splashes = new ArrayList<>(splashes);
 		splashes.addAll(List.of(
 				"Do not feed bread to elves!",
 				"Drum wild!",

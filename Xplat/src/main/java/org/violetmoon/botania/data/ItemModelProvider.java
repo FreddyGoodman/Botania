@@ -595,7 +595,7 @@ public class ItemModelProvider implements DataProvider {
 		itemBlocks.remove(BotaniaBlocks.ROSY_TALC_BRICK_WALL.asItem());
 
 		itemBlocks.forEach(item -> consumer.accept(ModelLocationUtils.getModelLocation(item),
-				new DelegatedModel(ModelLocationUtils.getModelLocation(item.getBlock()))));
+				new DelegatedModel(ModelLocationUtils.getModelLocation(Block.byItem(item)))));
 	}
 
 	// [VanillaCopy] item/chest.json
@@ -664,6 +664,7 @@ public class ItemModelProvider implements DataProvider {
 		consumer.accept(ModelLocationUtils.getModelLocation(item), () -> {
 			JsonObject json = new JsonObject();
 			json.add("display", display);
+			json.addProperty("parent", ModelLocationUtils.getModelLocation(Block.byItem(item)).toString());
 			return json;
 		});
 	}

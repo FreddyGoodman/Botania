@@ -102,5 +102,6 @@
         0
       ]
     }
-  }
+  },
+  "parent": "botania:block/teru_teru_bozu"
 }

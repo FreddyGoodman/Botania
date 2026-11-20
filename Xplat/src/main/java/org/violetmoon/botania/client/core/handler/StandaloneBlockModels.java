@@ -8,6 +8,11 @@
  */
 package org.violetmoon.botania.client.core.handler;
 
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -51,17 +56,27 @@ public final class StandaloneBlockModels {
 	public static final List<Identifier> TREASURY_WEAPONS = IntStream.range(0, KeyOfTheKingsLawItem.WEAPON_TYPES)
 			.mapToObj(index -> botaniaRL("icon/gate_weapon_" + index)).toList();
 
-	public static void register(ResourceManager resources, Consumer<Identifier> consumer) {
-		consumer.accept(CorporeaCrystalCubeBlockEntityRenderer.CUBE_MODEL_ID);
+	public static void register(ResourceManager resources, Consumer<Identifier> blockModels, Consumer<Identifier> itemModels) {
+		blockModels.accept(CorporeaCrystalCubeBlockEntityRenderer.CUBE_MODEL_ID);
+		blockModels.accept(ManaPumpBlockEntityRenderer.PUMP_HEAD_ID);
+		registerSpreaderComponents(blockModels);
+		registerTinyPotatoModels(resources, blockModels);
+
 		Stream.of(PHI_FLOWER, NERF_BAT, GOLDFISH, TERRASTEEL_WILL,
 				BLOOD_PENDANT_CHAIN, BLOOD_PENDANT_GEM, PYROCLAST_GEM, CRIMSON_GEM, SPECTATOR_GEM,
-				CIRRUS_GEM, NIMBUS_GEM, SNOWFLAKE_GEM, ORANGE_SHADES, KAMUI_EYE).forEach(consumer);
-		TREASURY_WEAPONS.forEach(consumer);
-		THIRD_EYE_LAYERS.forEach(consumer);
-		TIARA_WINGS.forEach(consumer);
-		consumer.accept(ManaPumpBlockEntityRenderer.PUMP_HEAD_ID);
-		registerSpreaderComponents(consumer);
-		registerTinyPotatoModels(resources, consumer);
+				CIRRUS_GEM, NIMBUS_GEM, SNOWFLAKE_GEM, ORANGE_SHADES, KAMUI_EYE).forEach(itemModels);
+		TREASURY_WEAPONS.forEach(itemModels);
+		THIRD_EYE_LAYERS.forEach(itemModels);
+		TIARA_WINGS.forEach(itemModels);
+	}
+
+	public static BlockStateModelPart bakeItemModel(ResolvedModel model, ModelBaker baker) {
+		// These standalone parts render on the item sheet. Vanilla's block model baker only accepts block sprites.
+		var textures = model.getTopTextureSlots();
+		var quads = model.bakeTopGeometry(textures, baker, BlockModelRotation.IDENTITY);
+		var particleSlot = textures.getMaterial("particle") != null ? "particle" : "layer0";
+		var particle = baker.materials().resolveSlot(textures, particleSlot, model);
+		return new SimpleModelWrapper(quads, model.getTopAmbientOcclusion(), particle);
 	}
 
 	private static void registerSpreaderComponents(Consumer<Identifier> consumer) {

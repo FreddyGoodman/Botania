@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.violetmoon.botania.api.mana.BasicLensItem;
 import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.common.helper.VecHelper;
 import org.violetmoon.botania.common.item.ManaBlasterItem;
@@ -99,7 +100,7 @@ public record ManaBlasterItemModel(Gun open, Gun clipped, Map<Item, Lens> lenses
 			resolver.markDependency(base);
 			resolver.markDependency(clip);
 			for (Item lens : BuiltInRegistries.ITEM) {
-				if (ManaBlasterItem.isValidLens(lens.getDefaultInstance())) {
+				if (lens instanceof BasicLensItem) {
 					resolver.markDependency(ModelLocationUtils.getModelLocation(lens));
 				}
 			}
@@ -110,7 +111,7 @@ public record ManaBlasterItemModel(Gun open, Gun clipped, Map<Item, Lens> lenses
 			var baker = context.blockModelBaker();
 			Map<Item, Lens> lenses = new IdentityHashMap<>();
 			for (Item item : BuiltInRegistries.ITEM) {
-				if (ManaBlasterItem.isValidLens(item.getDefaultInstance())) {
+				if (item instanceof BasicLensItem) {
 					var model = baker.getModel(ModelLocationUtils.getModelLocation(item));
 					var quads = model.bakeTopGeometry(model.getTopTextureSlots(), baker, LENS_TRANSFORM);
 					lenses.put(item, new Lens(quads, CuboidItemModelWrapper.computeExtents(quads.getAll())));

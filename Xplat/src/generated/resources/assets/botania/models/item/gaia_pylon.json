@@ -102,5 +102,6 @@
         0
       ]
     }
-  }
+  },
+  "parent": "botania:block/gaia_pylon"
 }

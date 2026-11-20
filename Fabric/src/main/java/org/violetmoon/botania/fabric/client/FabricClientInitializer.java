@@ -107,7 +107,8 @@ public class FabricClientInitializer implements ClientModInitializer {
 				var variant = new Variant(id);
 				pluginContext.addModel(FabricClientXplatImpl.getBlockModelKey(id),
 						new SimpleUnbakedExtraModel<>(id, (model, baker) -> variant.bake(baker)));
-			});
+			}, id -> pluginContext.addModel(FabricClientXplatImpl.getBlockModelKey(id),
+					new SimpleUnbakedExtraModel<>(id, StandaloneBlockModels::bakeItemModel)));
 		});
 
 		// BE/Entity Renderer
