@@ -49,13 +49,13 @@ neoForge {
             systemProperty("neoforge.logging.console.level", "debug")
         }
         neoforgeDatagen {
-            data()
+            serverData()
             programArguments.addAll("--mod", mod_id, "--all",
                     "--output", (datagenOutput == null ? file("src/generated/resources/") : new File(datagenOutput, "neoforge")).getAbsolutePath(),
                     "--existing", file("src/main/resources/").getAbsolutePath())
         }
         gardenOfGlassDatagen {
-            data()
+            serverData()
             programArguments.addAll("--mod", mod_id, "--all",
                     "--output", (datagenOutput == null ? file("../garden_of_glass/src/generated/resources/") : new File(datagenOutput, "garden_of_glass")).getAbsolutePath(),
                     "--existing", file("../garden_of_glass/src/main/resources/").getAbsolutePath())
