@@ -8,34 +8,24 @@
  */
 package org.violetmoon.botania.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 /**
  * Model for the Cloaks of Judgement.
  * 
  * @author wiiv
  */
-public class CloakModel extends Model {
-
-	private final ModelPart collar;
-	private final ModelPart sideL;
-	private final ModelPart sideR;
+public class CloakModel extends Model<Void> {
 
 	public CloakModel(ModelPart root) {
-		super(RenderType::entityCutout);
+		super(root, RenderTypes::entityCutoutCull);
 
-		collar = root.getChild("collar");
-		sideL = root.getChild("sideL");
-		sideR = root.getChild("sideR");
 	}
 
 	public static MeshDefinition createMesh() {
@@ -54,10 +44,4 @@ public class CloakModel extends Model {
 		return mesh;
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		collar.render(ms, buffer, light, overlay, color);
-		sideL.render(ms, buffer, light, overlay, color);
-		sideR.render(ms, buffer, light, overlay, color);
-	}
 }

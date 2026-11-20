@@ -8,40 +8,82 @@
  */
 package org.violetmoon.botania.client.render.block_entity;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import org.violetmoon.botania.api.block.Bound;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
+import org.violetmoon.botania.common.block.BotaniaBlocks;
+import org.violetmoon.botania.common.block.PylonBlock;
 
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
-public class BlockEntityItemRenderer {
-	private final Block block;
-	private final Supplier<BlockEntity> dummy;
+public final class BlockEntityItemRenderer implements NoDataSpecialModelRenderer {
+	private final BlockEntity blockEntity;
+	private final boolean direct;
 
-	public BlockEntityItemRenderer(Block block) {
-		Preconditions.checkArgument(block instanceof EntityBlock);
-		this.block = block;
-		this.dummy = Suppliers.memoize(() -> ((EntityBlock) block).newBlockEntity(Bound.UNBOUND_POS, block.defaultBlockState()));
+	private BlockEntityItemRenderer(BlockEntity blockEntity, boolean direct) {
+		this.blockEntity = blockEntity;
+		this.direct = direct;
 	}
 
-	public void render(ItemStack stack, ItemDisplayContext mode, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		if (stack.is(block.asItem())) {
-			Minecraft minecraft = Minecraft.getInstance();
-			BlockEntityRenderer<?> r = minecraft.getBlockEntityRenderDispatcher().getRenderer(dummy.get());
-			if (r != null) {
-				r.render(null, minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true), ms, buffers, light, overlay);
+	@Override
+	public void submit(PoseStack pose, SubmitNodeCollector collector, int light, int overlay, boolean foil, int outline) {
+		Minecraft minecraft = Minecraft.getInstance();
+		if (minecraft.getBlockEntityRenderDispatcher().getRenderer(blockEntity) instanceof Display display) {
+			float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+			display.submitAsItem(blockEntity.getBlockState().getBlock(), direct, partialTick, pose, collector, light, overlay);
+		}
+	}
+
+	public boolean isAnimated() {
+		Block block = blockEntity.getBlockState().getBlock();
+		return block instanceof PylonBlock || block == BotaniaBlocks.CORPOREA_INDEX
+				|| block == BotaniaBlocks.BOTANICAL_BREWERY || block == BotaniaBlocks.TERU_TERU_BOZU;
+	}
+
+	@Override
+	public void getExtents(Consumer<Vector3fc> consumer) {
+		for (int corner = 0; corner < 8; corner++) {
+			consumer.accept(new Vector3f(corner & 1, (corner >> 1) & 1, (corner >> 2) & 1));
+		}
+	}
+
+	public interface Display {
+		void submitAsItem(Block block, boolean direct, float partialTick, PoseStack pose, SubmitNodeCollector collector, int light, int overlay);
+	}
+
+	public record Unbaked(Block block, boolean direct) implements NoDataSpecialModelRenderer.Unbaked {
+		public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(Unbaked::block),
+				Codec.BOOL.optionalFieldOf("direct", false).forGetter(Unbaked::direct)
+		).apply(instance, Unbaked::new));
+
+		@Override
+		public BlockEntityItemRenderer bake(BakingContext context) {
+			if (block instanceof EntityBlock entityBlock) {
+				BlockEntity entity = entityBlock.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+				if (entity != null) {
+					return new BlockEntityItemRenderer(entity, direct);
+				}
 			}
+			return null;
+		}
+
+		@Override
+		public MapCodec<Unbaked> type() {
+			return CODEC;
 		}
 	}
 }

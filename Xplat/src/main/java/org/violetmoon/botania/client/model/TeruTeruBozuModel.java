@@ -8,30 +8,22 @@
  */
 package org.violetmoon.botania.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class TeruTeruBozuModel extends Model {
+public class TeruTeruBozuModel extends Model<Boolean> {
 
-	private final ModelPart thread;
-	private final ModelPart cloth;
 	private final ModelPart happyFace;
 	private final ModelPart sadFace;
 
 	public TeruTeruBozuModel(ModelPart root) {
-		super(RenderType::entityCutoutNoCull);
+		super(root, RenderTypes::entityCutout);
 		sadFace = root.getChild("sad_face");
 		happyFace = root.getChild("happy_face");
-		thread = root.getChild("thread");
-		cloth = root.getChild("cloth");
 	}
 
 	public static MeshDefinition createMesh() {
@@ -53,13 +45,8 @@ public class TeruTeruBozuModel extends Model {
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		if (Minecraft.getInstance().level.isRaining()) {
-			sadFace.render(ms, buffer, light, overlay, color);
-		} else {
-			happyFace.render(ms, buffer, light, overlay, color);
-		}
-		thread.render(ms, buffer, light, overlay, color);
-		cloth.render(ms, buffer, light, overlay, color);
+	public void setupAnim(Boolean raining) {
+		sadFace.visible = raining;
+		happyFace.visible = !raining;
 	}
 }

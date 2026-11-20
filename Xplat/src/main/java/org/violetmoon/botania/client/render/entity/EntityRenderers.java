@@ -12,6 +12,7 @@ package org.violetmoon.botania.client.render.entity;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
@@ -20,18 +21,14 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import org.violetmoon.botania.client.render.block_entity.*;
-import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 import org.violetmoon.botania.common.entity.BotaniaEntities;
 
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public final class EntityRenderers {
 	public interface EntityRendererConsumer {
@@ -71,7 +68,7 @@ public final class EntityRenderers {
 	}
 
 	public interface BERConsumer {
-		<E extends BlockEntity> void register(BlockEntityType<E> type, BlockEntityRendererProvider<? super E> factory);
+		<E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<? extends E> type, BlockEntityRendererProvider<E, S> factory);
 	}
 
 	public static void registerBlockEntityRenderers(BERConsumer consumer) {
@@ -161,18 +158,6 @@ public final class EntityRenderers {
 		consumer.register(BotaniaBlockEntities.ORECHID_IGNEM, SpecialFlowerBlockEntityRenderer::new);
 		consumer.register(BotaniaBlockEntities.LABELLIA, SpecialFlowerBlockEntityRenderer::new);
 	}
-
-	public static final Map<Block, Function<Block, BlockEntityItemRenderer>> BE_ITEM_RENDERER_FACTORIES = Map.of(
-			BotaniaBlocks.MANA_PYLON, PylonBlockEntityRenderer.ItemRenderer::new,
-			BotaniaBlocks.NATURA_PYLON, PylonBlockEntityRenderer.ItemRenderer::new,
-			BotaniaBlocks.GAIA_PYLON, PylonBlockEntityRenderer.ItemRenderer::new,
-			BotaniaBlocks.TERU_TERU_BOZU, BlockEntityItemRenderer::new,
-			BotaniaBlocks.LIVINGWOOD_AVATAR, BlockEntityItemRenderer::new,
-			BotaniaBlocks.MANATIDE_BELLOWS, BlockEntityItemRenderer::new,
-			BotaniaBlocks.BOTANICAL_BREWERY, BlockEntityItemRenderer::new,
-			BotaniaBlocks.CORPOREA_INDEX, BlockEntityItemRenderer::new,
-			BotaniaBlocks.HOVERING_HOURGLASS, BlockEntityItemRenderer::new
-	);
 
 	private EntityRenderers() {}
 }

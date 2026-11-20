@@ -24,7 +24,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -58,7 +57,6 @@ import org.violetmoon.botania.client.model.BotaniaLayerDefinitions;
 import org.violetmoon.botania.client.model.armor.ArmorModels;
 import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.client.render.entity.EntityRenderers;
-import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
 import org.violetmoon.botania.client.ClientRecipeSync;
 import org.violetmoon.botania.common.item.BotaniaItems;
@@ -73,7 +71,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -206,14 +203,6 @@ public class NeoForgeClientInitializer {
 				armorItems.toArray(Item[]::new)
 		);
 
-		event.registerItem(
-				NeoForgeBlockEntityItemRendererHelper.PROPS,
-				Stream.of(
-						BotaniaBlocks.BOTANICAL_BREWERY, BotaniaBlocks.MANA_PYLON, BotaniaBlocks.NATURA_PYLON, BotaniaBlocks.GAIA_PYLON,
-						BotaniaBlocks.MANATIDE_BELLOWS, BotaniaBlocks.CORPOREA_INDEX, BotaniaBlocks.HOVERING_HOURGLASS,
-						BotaniaBlocks.TERU_TERU_BOZU, BotaniaBlocks.LIVINGWOOD_AVATAR
-				).map(Block::asItem).toArray(Item[]::new)
-		);
 	}
 
 	@SubscribeEvent

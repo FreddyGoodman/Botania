@@ -9,35 +9,46 @@
 package org.violetmoon.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
+import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.block.block_entity.RunicAltarBlockEntity;
 import org.violetmoon.botania.common.helper.VecHelper;
 
+import java.util.Arrays;
+
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicAltarBlockEntity> {
+public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicAltarBlockEntity, RunicAltarBlockEntityRenderer.State> {
 	private final ModelPart spinningCube;
+	private final ItemModelResolver itemModels;
 	private static final Identifier cubeTex = botaniaRL("textures/block/runic_altar_cube.png");
 
 	public RunicAltarBlockEntityRenderer(BlockEntityRendererProvider.Context manager) {
+		itemModels = manager.itemModelResolver();
 		var mesh = new MeshDefinition();
 		// todo 1.17 this doesn't properly map the full texture onto the cube. Needs more param fiddling.
 		mesh.getRoot().addOrReplaceChild("cube", CubeListBuilder.create().addBox(0, 0, 0, 1, 1, 1), PartPose.ZERO);
@@ -45,62 +56,66 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 	}
 
 	@Override
-	public void render(RunicAltarBlockEntity altar, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		ms.pushPose();
-
-		int items = 0;
-		for (int i = 0; i < altar.inventorySize(); i++) {
-			if (altar.getItemHandler().getItem(i).isEmpty()) {
-				break;
-			} else {
-				items++;
-			}
-		}
-		float[] angles = new float[altar.inventorySize()];
-
-		float anglePer = 360F / items;
-		float totalAngle = 0F;
-		for (int i = 0; i < angles.length; i++) {
-			angles[i] = totalAngle += anglePer;
-		}
-
-		long ticks = altar.getLevel().getGameTime();
-		double time = ticks + partialTick;
-
-		for (int i = 0; i < altar.inventorySize(); i++) {
-			ms.pushPose();
-			ms.translate(0.5F, 1.25F, 0.5F);
-			ms.mulPose(VecHelper.rotateY(angles[i] + (float) (time % 360f)));
-			ms.translate(1.125F, 0F, 0.25F);
-			ms.mulPose(VecHelper.rotateY(90F));
-			ms.translate(0D, 0.075 * Math.sin((time + i * 10) / 5D), 0F);
-			ItemStack stack = altar.getItemHandler().getItem(i);
-			Minecraft mc = Minecraft.getInstance();
-			if (!stack.isEmpty()) {
-				mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
-						light, overlay, ms, buffers, altar.getLevel(), 0);
-			}
-			ms.popPose();
-		}
-
-		ms.pushPose();
-		ms.translate(0.5F, 0.5F, 0.5F);
-		renderSpinningCubes(ms, buffers, overlay, 2, 15, time);
-		ms.popPose();
-
-		ms.translate(0F, 0.2F, 0F);
-		float scale = altar.getTargetMana() == 0 ? 0 : (float) altar.getCurrentMana() / (float) altar.getTargetMana() / 75F;
-
-		if (scale != 0) {
-			int seed = altar.getBlockPos().getX() ^ altar.getBlockPos().getY() ^ altar.getBlockPos().getZ();
-			ms.translate(0.5F, 0.7F, 0.5F);
-			RenderHelper.renderStar(ms, buffers, 0x00E4D7, scale, scale, scale, seed, partialTick);
-		}
-
-		ms.popPose();
+	public State createRenderState() {
+		return new State();
 	}
 
-	private void renderSpinningCubes(PoseStack ms, MultiBufferSource buffers, int overlay, int cubes, int iters, double time) {
+	@Override
+	public void extractRenderState(RunicAltarBlockEntity altar, State state, float partialTick, Vec3 camera,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+		BlockEntityRenderer.super.extractRenderState(altar, state, partialTick, camera, crumblingOverlay);
+		if (state.items.length != altar.inventorySize()) {
+			state.items = new ItemStackRenderState[altar.inventorySize()];
+			Arrays.setAll(state.items, i -> new ItemStackRenderState());
+		}
+		state.itemCount = 0;
+		for (int slot = 0; slot < state.items.length; slot++) {
+			var stack = altar.getItemHandler().getItem(slot);
+			itemModels.updateForTopItem(state.items[slot], stack, ItemDisplayContext.GROUND, altar.getLevel(), null, 0);
+			if (!stack.isEmpty()) {
+				state.itemCount++;
+			}
+		}
+		state.time = altar.getLevel().getGameTime() + (double) partialTick;
+		state.starTicks = ClientTickHandler.getEntityTicksInGame() + partialTick;
+		state.starScale = altar.getTargetMana() == 0 ? 0 : (float) altar.getCurrentMana() / altar.getTargetMana() / 75F;
+		state.starSeed = altar.getBlockPos().getX() ^ altar.getBlockPos().getY() ^ altar.getBlockPos().getZ();
+	}
+
+	@Override
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		if (state.itemCount > 0) {
+			float anglePer = 360F / state.itemCount;
+			for (int slot = 0; slot < state.items.length; slot++) {
+				ItemStackRenderState item = state.items[slot];
+				if (item.isEmpty()) {
+					continue;
+				}
+				pose.pushPose();
+				pose.translate(0.5F, 1.25F, 0.5F);
+				pose.mulPose(VecHelper.rotateY(anglePer * (slot + 1) + (float) (state.time % 360)));
+				pose.translate(1.125F, 0F, 0.25F);
+				pose.mulPose(VecHelper.rotateY(90F));
+				pose.translate(0D, 0.075 * Math.sin((state.time + slot * 10) / 5), 0F);
+				item.submit(pose, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+				pose.popPose();
+			}
+		}
+
+		pose.pushPose();
+		pose.translate(0.5F, 0.5F, 0.5F);
+		submitSpinningCubes(pose, collector, 2, 15, state.time);
+		pose.popPose();
+
+		if (state.starScale != 0) {
+			pose.pushPose();
+			pose.translate(0.5F, 0.9F, 0.5F);
+			RenderHelper.submitStar(pose, collector, 0x00E4D7, state.starScale, state.starSeed, state.starTicks);
+			pose.popPose();
+		}
+	}
+
+	private void submitSpinningCubes(PoseStack ms, SubmitNodeCollector collector, int cubes, int iters, double time) {
 		for (int curIter = iters; curIter > 0; curIter--) {
 			final float modifier = 6F;
 			final float rotationModifier = 0.2F;
@@ -134,12 +149,23 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 					alpha = (float) curIter / (float) iters * 0.4F;
 				}
 
-				VertexConsumer buffer = buffers.getBuffer(curIter < iters ? RenderTypes.entityTranslucentCullItemTarget(cubeTex) : RenderTypes.entitySolid(cubeTex));
-				spinningCube.render(ms, buffer, 0xF000F0, overlay, ARGB.colorFromFloat(alpha, 1, 1, 1));
+				var layer = curIter < iters ? RenderTypes.entityTranslucentCullItemTarget(cubeTex) : RenderTypes.entitySolid(cubeTex);
+				int color = ARGB.colorFromFloat(alpha, 1, 1, 1);
+				collector.submitModelPart(spinningCube, ms, layer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+						null, false, false, color, null, 0);
 
 				ms.popPose();
 			}
 			ms.popPose();
 		}
+	}
+
+	public static class State extends BlockEntityRenderState {
+		private ItemStackRenderState[] items = new ItemStackRenderState[0];
+		private int itemCount;
+		private double time;
+		private float starTicks;
+		private float starScale;
+		private int starSeed;
 	}
 }

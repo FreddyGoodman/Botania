@@ -9,18 +9,23 @@
 package org.violetmoon.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -31,8 +36,8 @@ import org.violetmoon.botania.client.model.BotaniaModelLayers;
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
 import org.violetmoon.botania.common.helper.VecHelper;
 
-public class CorporeaIndexBlockEntityRenderer implements BlockEntityRenderer<CorporeaIndexBlockEntity> {
-	private static final RenderType LAYER = RenderTypes.entityCutout(Identifier.parse(ResourcesLib.MODEL_CORPOREA_INDEX));
+public class CorporeaIndexBlockEntityRenderer implements BlockEntityRenderer<CorporeaIndexBlockEntity, CorporeaIndexBlockEntityRenderer.State>, BlockEntityItemRenderer.Display {
+	private static final RenderType LAYER = RenderTypes.entityCutoutCull(Identifier.parse(ResourcesLib.MODEL_CORPOREA_INDEX));
 	private static final float ANGLE = (float) Math.sin(Math.toRadians(45));
 	private final ModelPart ring;
 	private final ModelPart cube;
@@ -56,68 +61,87 @@ public class CorporeaIndexBlockEntityRenderer implements BlockEntityRenderer<Cor
 	}
 
 	@Override
-	public boolean shouldRenderOffScreen(CorporeaIndexBlockEntity blockEntity) {
+	public boolean shouldRenderOffScreen() {
 		return true;
 	}
 
 	@Override
-	public void render(@Nullable CorporeaIndexBlockEntity index, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		ms.pushPose();
-		ms.translate(0.5, 0, 0.5);
-
-		float rotation = (ClientTickHandler.getEntityTicksInGame() + partialTicks) * 2;
-		float translation;
-		if (index == null) { // Item render
-			ms.scale(1.3f, 1.3f, 1.3f);
-			ms.translate(0, -0.1, 0);
-			translation = 0;
-		} else {
-			translation = (float) ((Math.cos((index.ticksWithCloseby + (index.hasCloseby ? partialTicks : 0)) / 10F) * 0.5 + 0.5) * 0.25);
-		}
-
-		VertexConsumer buffer = buffers.getBuffer(LAYER);
-		ms.pushPose();
-		ms.translate(0.0D, -1, 0.0D);
-
-		ms.mulPose(VecHelper.rotateY(rotation));
-		ms.translate(0.0D, 1.5F + translation / 2.0F, 0.0D);
-		ms.mulPose(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
-		this.ring.render(ms, buffer, light, overlay);
-		ms.scale(0.875F, 0.875F, 0.875F);
-		ms.mulPose(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
-		ms.mulPose(VecHelper.rotateY(rotation));
-		this.ring.render(ms, buffer, light, overlay);
-		ms.scale(0.875F, 0.875F, 0.875F);
-		ms.mulPose(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
-		ms.mulPose(VecHelper.rotateY(rotation));
-		this.cube.render(ms, buffer, light, overlay);
-		ms.popPose();
-
-		if (index != null && index.closeby > 0F) {
-			float starScale = 0.02F;
-			float starRadius = (float) CorporeaIndexBlockEntity.RADIUS * index.closeby + (index.closeby == 1F ? 0F : index.hasCloseby ? partialTicks : -partialTicks) * 0.2F;
-			double rads = (index.ticksWithCloseby + partialTicks) * 2 * Math.PI / 180;
-			double starX = Math.cos(rads) * starRadius;
-			double starZ = Math.sin(rads) * starRadius;
-			int color = 0xFF00FF;
-			int seed = index.getBlockPos().getX() ^ index.getBlockPos().getY() ^ index.getBlockPos().getZ();
-
-			ms.translate(starX, 0.3, starZ);
-			RenderHelper.renderStar(ms, buffers, color, starScale, starScale, starScale, seed, partialTicks);
-			ms.translate(-starX * 2, 0, -starZ * 2);
-			RenderHelper.renderStar(ms, buffers, color, starScale, starScale, starScale, seed, partialTicks);
-			ms.translate(starX, 0, starZ);
-
-			rads = -rads;
-			starX = Math.cos(rads) * starRadius;
-			starZ = Math.sin(rads) * starRadius;
-			ms.translate(starX, 0, starZ);
-			RenderHelper.renderStar(ms, buffers, color, starScale, starScale, starScale, seed, partialTicks);
-			ms.translate(-starX * 2, 0, -starZ * 2);
-			RenderHelper.renderStar(ms, buffers, color, starScale, starScale, starScale, seed, partialTicks);
-			ms.translate(starX, 0, starZ);
-		}
-		ms.popPose();
+	public State createRenderState() {
+		return new State();
 	}
 
+	@Override
+	public void extractRenderState(CorporeaIndexBlockEntity index, State state, float partialTick, Vec3 camera,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+		BlockEntityRenderer.super.extractRenderState(index, state, partialTick, camera, crumblingOverlay);
+		state.ticks = ClientTickHandler.getEntityTicksInGame() + partialTick;
+		state.height = (float) ((Math.cos((index.ticksWithCloseby + (index.hasCloseby ? partialTick : 0)) / 10F) * 0.5 + 0.5) * 0.25);
+		state.starRadius = 0;
+		if (index.closeby > 0F) {
+			state.starRadius = (float) CorporeaIndexBlockEntity.RADIUS * index.closeby
+					+ (index.closeby == 1F ? 0F : index.hasCloseby ? partialTick : -partialTick) * 0.2F;
+			state.starAngle = (index.ticksWithCloseby + partialTick) * 2 * Math.PI / 180;
+			state.starSeed = index.getBlockPos().getX() ^ index.getBlockPos().getY() ^ index.getBlockPos().getZ();
+		}
+	}
+
+	@Override
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		pose.pushPose();
+		pose.translate(0.5, 0, 0.5);
+		submitIndex(pose, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.ticks * 2, state.height);
+		if (state.starRadius > 0F) {
+			double x = Math.cos(state.starAngle) * state.starRadius;
+			double z = Math.sin(state.starAngle) * state.starRadius;
+			submitStar(pose, collector, state, x, z);
+			submitStar(pose, collector, state, -x, -z);
+			submitStar(pose, collector, state, x, -z);
+			submitStar(pose, collector, state, -x, z);
+		}
+		pose.popPose();
+	}
+
+	private static void submitStar(PoseStack pose, SubmitNodeCollector collector, State state, double x, double z) {
+		pose.pushPose();
+		pose.translate(x, 0.3, z);
+		RenderHelper.submitStar(pose, collector, 0xFF00FF, 0.02F, state.starSeed, state.ticks);
+		pose.popPose();
+	}
+
+	@Override
+	public void submitAsItem(Block block, boolean direct, float partialTick, PoseStack pose, SubmitNodeCollector collector, int light, int overlay) {
+		pose.pushPose();
+		pose.translate(0.5, 0, 0.5);
+		pose.scale(1.3F, 1.3F, 1.3F);
+		pose.translate(0, -0.1, 0);
+		submitIndex(pose, collector, light, overlay, (ClientTickHandler.getEntityTicksInGame() + partialTick) * 2, 0);
+		pose.popPose();
+	}
+
+	private void submitIndex(PoseStack pose, SubmitNodeCollector collector, int light, int overlay, float rotation, float height) {
+		pose.pushPose();
+		pose.mulPose(VecHelper.rotateY(rotation));
+		pose.translate(0, 0.5F + height / 2F, 0);
+		var tilt = new Quaternionf().rotateAxis(VecHelper.toRadians(60F), ANGLE, 0F, ANGLE);
+
+		pose.mulPose(tilt);
+		collector.submitModelPart(ring, pose, LAYER, light, overlay, null);
+		pose.scale(0.875F, 0.875F, 0.875F);
+		pose.mulPose(tilt);
+		pose.mulPose(VecHelper.rotateY(rotation));
+		collector.submitModelPart(ring, pose, LAYER, light, overlay, null);
+		pose.scale(0.875F, 0.875F, 0.875F);
+		pose.mulPose(tilt);
+		pose.mulPose(VecHelper.rotateY(rotation));
+		collector.submitModelPart(cube, pose, LAYER, light, overlay, null);
+		pose.popPose();
+	}
+
+	public static class State extends BlockEntityRenderState {
+		private float ticks;
+		private float height;
+		private float starRadius;
+		private double starAngle;
+		private int starSeed;
+	}
 }

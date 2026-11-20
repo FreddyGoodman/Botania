@@ -23,7 +23,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -95,12 +94,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 
 		// BE/Entity Renderer
 		BotaniaLayerDefinitions.init((loc, supplier) -> EntityModelLayerRegistry.registerModelLayer(loc, supplier::get));
-		EntityRenderers.registerBlockEntityRenderers(BlockEntityRenderers::register);
-		for (var pair : EntityRenderers.BE_ITEM_RENDERER_FACTORIES.entrySet()) {
-			var block = pair.getKey();
-			var renderer = pair.getValue().apply(block);
-			BuiltinItemRendererRegistry.INSTANCE.register(block, renderer::render);
-		}
+		EntityRenderers.registerBlockEntityRenderers(BlockEntityRendererRegistry::register);
 		EntityRenderers.registerEntityRenderers(EntityRendererRegistry::register);
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register(this::initAuxiliaryRender);
 

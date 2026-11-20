@@ -44,6 +44,7 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
@@ -629,7 +630,7 @@ public final class RenderHelper {
 				new PoseStack(),
 				// This part differs from vanilla. We wrap the buffer to allow drawing translucently
 				wrapBuffer(buffer, alpha, alpha < 255),
-				LightTexture.FULL_BRIGHT,
+				LightCoordsUtil.FULL_BRIGHT,
 				OverlayTexture.NO_OVERLAY,
 				model
 		);

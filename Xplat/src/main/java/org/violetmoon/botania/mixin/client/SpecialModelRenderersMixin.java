@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.violetmoon.botania.client.model.GaiaHeadSpecialRenderer;
+import org.violetmoon.botania.client.render.block_entity.BlockEntityItemRenderer;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -32,7 +33,8 @@ public abstract class SpecialModelRenderersMixin {
 	private static ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends SpecialModelRenderer.Unbaked<?>>> ID_MAPPER;
 
 	@Inject(method = "bootstrap", at = @At("TAIL"))
-	private static void botania_registerGaiaHead(CallbackInfo ci) {
+	private static void botania_registerSpecialModels(CallbackInfo ci) {
 		ID_MAPPER.put(botaniaRL("gaia_head"), GaiaHeadSpecialRenderer.Unbaked.CODEC);
+		ID_MAPPER.put(botaniaRL("block_entity"), BlockEntityItemRenderer.Unbaked.CODEC);
 	}
 }

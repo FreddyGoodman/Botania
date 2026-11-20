@@ -649,7 +649,6 @@ public class ItemModelProvider implements DataProvider {
 		}
 		consumer.accept(ModelLocationUtils.getModelLocation(item), () -> {
 			JsonObject json = new JsonObject();
-			json.addProperty("parent", "minecraft:builtin/entity");
 			json.add("display", display);
 			return json;
 		});

@@ -8,33 +8,17 @@
  */
 package org.violetmoon.botania.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class AvatarModel extends Model {
-
-	private final ModelPart body;
-	private final ModelPart rightarm;
-	private final ModelPart leftarm;
-	private final ModelPart rightleg;
-	private final ModelPart leftleg;
-	private final ModelPart head;
+public class AvatarModel extends Model<Void> {
 
 	public AvatarModel(ModelPart root) {
-		super(RenderType::entitySolid);
-		leftleg = root.getChild("left_leg");
-		rightarm = root.getChild("right_arm");
-		leftarm = root.getChild("left_arm");
-		head = root.getChild("head");
-		rightleg = root.getChild("right_leg");
-		body = root.getChild("body");
+		super(root, RenderTypes::entitySolid);
 	}
 
 	public static MeshDefinition createMesh() {
@@ -59,16 +43,6 @@ public class AvatarModel extends Model {
 				.addBox(-1.5F, 0.0F, -1.5F, 3, 6, 3),
 				PartPose.offset(-1.5F, 18.0F, -0.5F));
 		return mesh;
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		leftleg.render(ms, buffer, light, overlay, color);
-		rightarm.render(ms, buffer, light, overlay, color);
-		leftarm.render(ms, buffer, light, overlay, color);
-		head.render(ms, buffer, light, overlay, color);
-		rightleg.render(ms, buffer, light, overlay, color);
-		body.render(ms, buffer, light, overlay, color);
 	}
 
 }

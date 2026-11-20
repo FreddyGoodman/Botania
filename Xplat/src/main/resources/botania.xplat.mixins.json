@@ -115,6 +115,7 @@
     "client.RenderTypeAccessor",
     "client.SkullBlockRendererAccessor",
     "client.SpecialModelRenderersMixin",
+    "client.SpecialModelWrapperMixin",
     "client.SoundEngineMixin",
     "client.SplashManagerMixin"
   ],
