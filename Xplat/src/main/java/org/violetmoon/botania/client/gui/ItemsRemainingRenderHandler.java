@@ -8,8 +8,6 @@
  */
 package org.violetmoon.botania.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -38,7 +36,6 @@ public final class ItemsRemainingRenderHandler {
 	private static int ticks, count;
 
 	public static void render(GuiGraphicsExtractor gui, float partialTick) {
-		PoseStack ms = gui.pose();
 		if (ticks > 0 && !stack.isEmpty()) {
 			int pos = MAX_TICKS - ticks;
 			Minecraft mc = Minecraft.getInstance();
@@ -48,13 +45,13 @@ public final class ItemsRemainingRenderHandler {
 			int start = MAX_TICKS - LEAVE_TICKS;
 			float alpha = ticks + partialTick > start ? 1F : (ticks + partialTick) / start;
 
-			// RenderSystem.setShaderColor(1F, 1F, 1F, alpha);
 			int xp = x + (int) (16F * (1F - alpha));
-			ms.pushPose();
-			ms.translate(xp, y, 0F);
-			ms.scale(alpha, 1F, 1F);
+			var pose = gui.pose();
+			pose.pushMatrix();
+			pose.translate(xp, y);
+			pose.scale(alpha, 1F);
 			gui.item(stack, 0, 0);
-			ms.popPose();
+			pose.popMatrix();
 
 			Component text = customString != null ? customString : getRemainingCount(stack, count);
 

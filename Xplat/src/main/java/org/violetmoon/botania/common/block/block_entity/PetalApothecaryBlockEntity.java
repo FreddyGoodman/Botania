@@ -9,7 +9,6 @@
 package org.violetmoon.botania.common.block.block_entity;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -36,7 +35,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4fStack;
 import org.violetmoon.botania.api.block.PetalApothecary;
 import org.violetmoon.botania.api.internal.ItemSource;
 import org.violetmoon.botania.api.recipe.CustomApothecaryColor;
@@ -346,43 +344,43 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 				Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = BotaniaRecipeTypes.findRecipe(
 						altar.level, BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, altar.getRecipeInput());
 				maybeRecipe.ifPresent(recipe -> {
-					RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
 					RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, xc + radius + 9, yc - 8, 0, 8, 22, 15);
 
 					ItemStack stack = recipe.value().assemble(altar.getRecipeInput());
 					gui.fakeItem(stack, xc + radius + 32, yc - 8);
 
-					var reagents = recipe.value().getReagent().getItems();
+					var reagents = recipe.value().getReagent().items().map(ItemStack::new).toList();
 					ItemStack reagent;
-					if (reagents.length == 0) {
+					if (reagents.isEmpty()) {
 						reagent = new ItemStack(Items.BARRIER);
 					} else {
-						int idx = (int) ((altar.level.getGameTime() / 20) % reagents.length);
-						reagent = reagents[idx];
+						int idx = (int) ((altar.level.getGameTime() / 20) % reagents.size());
+						reagent = reagents.get(idx);
 					}
 					gui.fakeItem(reagent, xc + radius + 16, yc + 6);
-					gui.text(font, "+", xc + radius + 14, yc + 10, 0xFFFFFF, false);
+					gui.text(font, "+", xc + radius + 14, yc + 10, 0xFFFFFFFF, false);
 				});
 
 				for (int i = 0; i < amt; i++) {
 					double xPos = xc + Math.cos(angle * Math.PI / 180D) * radius - 8;
 					double yPos = yc + Math.sin(angle * Math.PI / 180D) * radius - 8;
-					Matrix4fStack pose = RenderSystem.getModelViewStack();
+					var pose = gui.pose();
 					pose.pushMatrix();
-					pose.translate((float) xPos, (float) yPos, 0);
-					RenderSystem.applyModelViewMatrix();
+					pose.translate((float) xPos, (float) yPos);
+
 					gui.fakeItem(altar.getItemHandler().getItem(i), 0, 0);
 					pose.popMatrix();
-					RenderSystem.applyModelViewMatrix();
+
 
 					angle += anglePer;
 				}
 			}
 			if (altar.recipeKeepTicks > 0 && altar.canAddLastRecipe()) {
 				String s = I18n.get("botaniamisc.altarRefill0");
-				gui.text(font, s, xc - font.width(s) / 2, yc + 10, 0xFFFFFF, false);
+				gui.text(font, s, xc - font.width(s) / 2, yc + 10, 0xFFFFFFFF, false);
 				s = I18n.get("botaniamisc.altarRefill1");
-				gui.text(font, s, xc - font.width(s) / 2, yc + 20, 0xFFFFFF, false);
+				gui.text(font, s, xc - font.width(s) / 2, yc + 20, 0xFFFFFFFF, false);
 			}
 		}
 	}

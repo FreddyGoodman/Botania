@@ -9,8 +9,6 @@
 package org.violetmoon.botania.common.block.block_entity;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -41,7 +39,6 @@ import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-import org.lwjgl.opengl.GL11;
 import org.violetmoon.botania.api.block.Wandable;
 import org.violetmoon.botania.api.internal.ItemSource;
 import org.violetmoon.botania.api.mana.ManaReceiver;
@@ -407,7 +404,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 
 	public static class Hud {
 		public static void render(RunicAltarBlockEntity altar, GuiGraphicsExtractor gui, Window window, Font font, LocalPlayer player, float partialTick) {
-			PoseStack ms = gui.pose();
+			var pose = gui.pose();
 			int xc = window.getGuiScaledWidth() / 2;
 			int yc = window.getGuiScaledHeight() / 2;
 
@@ -424,26 +421,24 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 			if (amt > 0 && altar.manaToGet > 0) {
 				float anglePer = 360F / amt;
 				if (altar.currentRecipe != null) {
-					RenderSystem.enableBlend();
-					RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+
 
 					float progress = (float) altar.mana / (float) altar.manaToGet;
 
-					RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 					RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, xc + radius + 9, yc - 8, progress == 1F ? 0 : 22, 8, 22, 15);
 
 					if (progress == 1F) {
-						ItemStack[] reagents = altar.currentRecipe.value().getReagent().getItems();
+						var reagents = altar.currentRecipe.value().getReagent().items().map(ItemStack::new).toList();
 						ItemStack reagent;
-						if (reagents.length == 0) {
+						if (reagents.isEmpty()) {
 							reagent = new ItemStack(Items.BARRIER);
 						} else {
-							int idx = (int) ((altar.level.getGameTime() / 20) % reagents.length);
-							reagent = reagents[idx];
+							int idx = (int) ((altar.level.getGameTime() / 20) % reagents.size());
+							reagent = reagents.get(idx);
 						}
 						gui.fakeItem(reagent, xc + radius + 16, yc + 8);
-						ms.pushPose();
-						ms.translate(0, 0, 100);
+
 						// If the player is holding a WandOfTheForestItem or has one in their inventory, render that instead of a generic twigWand
 						ItemStack playerWand = PlayerHelper.getFirstHeldItemClass(player, WandOfTheForestItem.class);
 						if (playerWand.isEmpty()) {
@@ -451,7 +446,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 						}
 						ItemStack wandToRender = playerWand.isEmpty() ? new ItemStack(BotaniaItems.WAND_OF_THE_FOREST) : playerWand;
 						gui.fakeItem(wandToRender, xc + radius + 24, yc + 8);
-						ms.popPose();
+
 					}
 
 					RenderHelper.renderProgressPie(gui, partialTick, xc + radius + 32, yc - 8, progress,
@@ -459,17 +454,17 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 					);
 
 					if (progress == 1F) {
-						gui.text(font, "+", xc + radius + 14, yc + 12, 0xFFFFFF, false);
+						gui.text(font, "+", xc + radius + 14, yc + 12, 0xFFFFFFFF, false);
 					}
 				}
 
 				for (int i = 0; i < amt; i++) {
 					double xPos = xc + Math.cos(angle * Math.PI / 180D) * radius - 8;
 					double yPos = yc + Math.sin(angle * Math.PI / 180D) * radius - 8;
-					ms.pushPose();
-					ms.translate(xPos, yPos, 0);
+					pose.pushMatrix();
+					pose.translate((float) xPos, (float) yPos);
 					gui.fakeItem(altar.getItemHandler().getItem(i), 0, 0);
-					ms.popPose();
+					pose.popMatrix();
 
 					angle += anglePer;
 				}

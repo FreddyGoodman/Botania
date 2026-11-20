@@ -9,7 +9,6 @@
 package org.violetmoon.botania.common.block.block_entity.corporea;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -218,7 +217,7 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 
 	public static class Hud {
 		public static void render(CorporeaCrystalCubeBlockEntity cube, GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
-			PoseStack ps = gui.pose();
+			var pose = gui.pose();
 
 			ItemStack target = cube.getRequestTarget();
 			if (!target.isEmpty()) {
@@ -234,20 +233,20 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 
 				int centerX = window.getGuiScaledWidth() / 2;
 				int centerY = window.getGuiScaledHeight() / 2;
-				ps.pushPose();
-				ps.translate(centerX, centerY, 0);
+				pose.pushMatrix();
+				pose.translate(centerX, centerY);
 
 				RenderHelper.renderHUDBox(gui, 8, -11, strlen + 32, locked ? 21 : 11);
 
-				gui.text(font, nameStr, 30, -9, 0x6666FF);
-				gui.text(font, countStr, 30, 1, 0xFFFFFF);
+				gui.text(font, nameStr, 30, -9, 0xFF6666FF);
+				gui.text(font, countStr, 30, 1, 0xFFFFFFFF);
 				if (locked) {
-					gui.text(font, lockedStr, 30, 11, 0xFFAA00);
+					gui.text(font, lockedStr, 30, 11, 0xFFFFAA00);
 				}
 
 				gui.item(target, 10, -9);
 
-				ps.popPose();
+				pose.popMatrix();
 			}
 		}
 	}

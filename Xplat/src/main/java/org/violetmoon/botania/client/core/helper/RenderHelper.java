@@ -19,11 +19,8 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -58,7 +55,6 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
-import org.lwjgl.opengl.GL11;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.common.helper.VecHelper;
@@ -342,6 +338,10 @@ public final class RenderHelper {
 		gui.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, u, v, width, height, 256, 256);
 	}
 
+	public static void drawTexturedModalRect(GuiGraphicsExtractor gui, Identifier textureId, int x, int y, int u, int v, int width, int height, int color) {
+		gui.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, u, v, width, height, 256, 256, color);
+	}
+
 	public static void renderStar(PoseStack ms, MultiBufferSource buffers, int color, float xScale, float yScale, float zScale, long seed, float partialTicks) {
 		float ticks = ClientTickHandler.getEntityTicksInGame() + partialTicks;
 		renderStar(ms, buffers.getBuffer(STAR), color, xScale, yScale, zScale, seed, ticks);
@@ -414,33 +414,22 @@ public final class RenderHelper {
 		buffer.addVertex(mat, xMax, y, zMax).setColor(r, g, b, a);
 	}
 
+	private static final RenderPipeline GUI_PROGRESS_PIE = geometryPipeline("gui_progress_pie", "core/position_tex_color",
+			DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+			.withFragmentShader(botaniaRL("core/gui_progress_pie"))
+			.withSampler("Sampler0")
+			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+			.build();
+	private static final Identifier PROGRESS_PIE_TEXTURE = Identifier.parse(ResourcesLib.GUI_MANA_HUD);
+
 	public static void renderProgressPie(GuiGraphicsExtractor gui, float partialTick, int x, int y, float progress, ItemStack stack) {
-		PoseStack ms = gui.pose();
-		Minecraft mc = Minecraft.getInstance();
-
-		int r = 10;
-		int centerX = x + 8;
-		int centerY = y + 8;
-		int degs = (int) (360 * progress);
-		float a = 0.5F + 0.2F * (Mth.cos(ClientTickHandler.getUiAnimationTicks() / 10) * 0.5F + 0.5F);
-
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-		Matrix4f mat = ms.last().pose();
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		BufferBuilder buf = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-		buf.addVertex(mat, centerX, centerY, 0).setColor(0, 0.5F, 0.5F, a);
-
-		for (int i = degs; i >= 0; i--) {
-			float rad = (i - 90) / 180F * (float) Math.PI;
-			buf.addVertex(mat, centerX + Mth.cos(rad) * r, centerY + Mth.sin(rad) * r, 0).setColor(0F, 1F, 0.5F, a);
+		int degrees = (int) (360 * Mth.clamp(progress, 0F, 1F));
+		if (degrees > 0) {
+			float pulse = 0.5F + 0.2F * (Mth.cos(ClientTickHandler.getUiAnimationTicks() / 10) * 0.5F + 0.5F);
+			int parameters = ARGB.color(ARGB.as8BitChannel(pulse), degrees >> 8, degrees & 0xFF, 0);
+			// The blit provides normalized UVs and GUI clipping. Its color carries the wedge size and opacity.
+			gui.blit(GUI_PROGRESS_PIE, PROGRESS_PIE_TEXTURE, x - 2, y - 2, 0, 0, 20, 20, 1, 1, 1, 1, parameters);
 		}
-
-		buf.addVertex(mat, centerX, centerY, 0).setColor(0F, 1F, 0.5F, a);
-		BufferUploader.drawWithShader(buf.buildOrThrow());
-		RenderSystem.disableBlend();
-
 		gui.item(stack, x, y);
 	}
 
