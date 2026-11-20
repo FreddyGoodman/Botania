@@ -14,10 +14,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+
+import java.util.stream.Stream;
 
 public class RandomPatchFeature extends Feature<RandomPatchFeature.Configuration> {
 	public RandomPatchFeature() {
@@ -51,5 +54,10 @@ public class RandomPatchFeature extends Feature<RandomPatchFeature.Configuration
 				ExtraCodecs.intRange(0, Integer.MAX_VALUE - 1).optionalFieldOf("y_spread", 3).forGetter(Configuration::verticalSpread),
 				PlacedFeature.CODEC.fieldOf("feature").forGetter(Configuration::feature)
 		).apply(instance, Configuration::new));
+
+		@Override
+		public Stream<Holder<ConfiguredFeature<?, ?>>> getSubFeatures() {
+			return feature.value().getFeatures();
+		}
 	}
 }
