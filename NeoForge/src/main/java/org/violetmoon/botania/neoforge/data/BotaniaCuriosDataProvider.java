@@ -12,6 +12,7 @@ package org.violetmoon.botania.neoforge.data;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.EntityType;
 
 import org.violetmoon.botania.api.BotaniaAPI;
 
@@ -26,7 +27,7 @@ public class BotaniaCuriosDataProvider extends CuriosDataProvider {
 
 	@Override
 	public void generate(HolderLookup.Provider registries) {
-		createEntities("default_player_slots").addPlayer().addSlots(
+		createEntities("default_player_slots").addEntities(EntityType.PLAYER).addSlots(
 				"belt", "body", "charm", "head", "necklace", "ring");
 		createSlot("ring").operation("ADD").size(1);
 	}
