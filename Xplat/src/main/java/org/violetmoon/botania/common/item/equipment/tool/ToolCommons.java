@@ -8,22 +8,16 @@
  */
 package org.violetmoon.botania.common.item.equipment.tool;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DiggerItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -115,35 +109,26 @@ public final class ToolCommons {
 	}
 
 	public static int getToolPriority(ItemStack stack) {
-		if (stack.isEmpty()) {
+		if (!stack.has(DataComponents.TOOL)) {
 			return 0;
 		}
 
-		Item item = stack.getItem();
-		if (!(item instanceof DiggerItem tool)) {
-			return 0;
-		}
-
-		Tier material = tool.getTier();
+		var repairable = stack.get(DataComponents.REPAIRABLE);
+		var repairTag = repairable == null ? null : repairable.items().unwrapKey().orElse(null);
 		int materialLevel = 0;
-		if (material == BotaniaItemTiers.MANASTEEL) {
+		if (BotaniaItemTiers.MANASTEEL.repairItems().equals(repairTag)) {
 			materialLevel = 10;
-		}
-		if (material == BotaniaItemTiers.ELEMENTIUM) {
+		} else if (BotaniaItemTiers.ELEMENTIUM.repairItems().equals(repairTag)) {
 			materialLevel = 11;
-		}
-		if (material == BotaniaItemTiers.TERRASTEEL) {
+		} else if (BotaniaItemTiers.TERRASTEEL.repairItems().equals(repairTag)) {
 			materialLevel = 20;
 		}
 
-		int modifier = 0;
-		if (stack.is(BotaniaItems.TERRA_SHATTERER)) {
-			modifier = TerraShattererItem.getLevel(stack);
-		}
-
-		//Todo test if this works
-		HolderLookup<Enchantment> enchLookup = Minecraft.getInstance().level.holderLookup(Registries.ENCHANTMENT);
-		int efficiency = EnchantmentHelper.getItemEnchantmentLevel(enchLookup.getOrThrow(Enchantments.EFFICIENCY), stack);
+		int modifier = stack.is(BotaniaItems.TERRA_SHATTERER) ? TerraShattererItem.getLevel(stack) : 0;
+		int efficiency = EnchantmentHelper.getEnchantmentsForCrafting(stack).entrySet().stream()
+				.filter(entry -> entry.getKey().is(Enchantments.EFFICIENCY))
+				.mapToInt(entry -> entry.getIntValue())
+				.findFirst().orElse(0);
 		return materialLevel * 100 + modifier * 10 + efficiency;
 	}
 

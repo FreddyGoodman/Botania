@@ -138,7 +138,7 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 		output.accept(getStructureId(BuiltinStructures.MINESHAFT_MESA), buildDelegateLootTable(BuiltInLootTables.ABANDONED_MINESHAFT));
 		output.accept(getStructureId(BuiltinStructures.OCEAN_MONUMENT),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(EntityType.ELDER_GUARDIAN.getDefaultLootTable()).setWeight(5))
+						.add(NestedLootTable.lootTableReference(EntityType.ELDER_GUARDIAN.getDefaultLootTable().orElseThrow()).setWeight(5))
 						// sponge is a player-kill drop and won't be rolled for the elder guardian table by the Loonium
 						.add(LootItem.lootTableItem(Items.WET_SPONGE))
 

@@ -228,8 +228,8 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements ClientIn
 		}
 	}
 
-	public static boolean isTipped(ItemStack stack) {
-		return stack.has(BotaniaDataComponents.ELEMENTIUM_TIPPED);
+	public static boolean isTipped(ItemInstance stack) {
+		return stack.get(BotaniaDataComponents.ELEMENTIUM_TIPPED) != null;
 	}
 
 	public static void setTipped(ItemStack stack) {

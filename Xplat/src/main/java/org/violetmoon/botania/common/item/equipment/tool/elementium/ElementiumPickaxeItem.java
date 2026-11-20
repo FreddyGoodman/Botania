@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.item.equipment.tool.elementium;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 
 import org.violetmoon.botania.common.item.BotaniaItems;
@@ -22,8 +23,8 @@ public class ElementiumPickaxeItem extends ManasteelPickaxeItem {
 		super(properties);
 	}
 
-	public static boolean shouldFilterOut(Entity e, ItemStack tool, ItemStack drop) {
-		if (!tool.isEmpty() && (tool.is(BotaniaItems.ELEMENTIUM_PICKAXE)
+	public static boolean shouldFilterOut(Entity e, ItemInstance tool, ItemStack drop) {
+		if (tool.count() > 0 && (tool.is(BotaniaItems.ELEMENTIUM_PICKAXE)
 				|| tool.is(BotaniaItems.TERRA_SHATTERER) && TerraShattererItem.isTipped(tool))) {
 			return !drop.isEmpty() && (isDisposable(drop) || isSemiDisposable(drop) && !e.isShiftKeyDown());
 		}

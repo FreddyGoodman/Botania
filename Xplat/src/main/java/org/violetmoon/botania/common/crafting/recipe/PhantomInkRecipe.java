@@ -35,7 +35,7 @@ public class PhantomInkRecipe extends BotaniaSpecialRecipe {
 				if (stack.is(BotaniaItems.PHANTOM_INK) && !foundInk) {
 					foundInk = true;
 				} else if (!foundItem) {
-					if (stack.getItem() instanceof PhantomInkable && !stack.getItem().hasCraftingRemainingItem()) {
+					if (stack.getItem() instanceof PhantomInkable && stack.getItem().getCraftingRemainder() == null) {
 						foundItem = true;
 					} else {
 						return false;

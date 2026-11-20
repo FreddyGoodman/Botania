@@ -9,16 +9,16 @@
 
 package org.violetmoon.botania.common.config;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.util.ExtraCodecs;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -121,9 +121,8 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 	}
 
 	@Override
-	public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager,
-			ProfilerFiller prepProfiler, ProfilerFiller reloadProfiler,
-			Executor backgroundExecutor, Executor gameExecutor) {
+	public CompletableFuture<Void> reload(SharedState state, Executor backgroundExecutor, PreparationBarrier barrier, Executor gameExecutor) {
+		ResourceManager manager = state.resourceManager();
 		var looniumTask = scheduleConfigParse(barrier, manager, backgroundExecutor, gameExecutor, ConfigDataType.LOONIUM);
 		var gaiaFightTask = scheduleConfigParse(barrier, manager, backgroundExecutor, gameExecutor, ConfigDataType.GAIA_FIGHT);
 
@@ -134,7 +133,7 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 			Executor backgroundExecutor, Executor gameExecutor, ConfigDataType<T> type) {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<Identifier, JsonElement> resourceMap = new HashMap<>();
-			SimpleJsonResourceReloadListener.scanDirectory(manager, type.directory, new Gson(), resourceMap);
+			SimpleJsonResourceReloadListener.scanDirectory(manager, FileToIdConverter.json(type.directory), JsonOps.INSTANCE, ExtraCodecs.JSON, resourceMap);
 			Map<Identifier, T> configs = new HashMap<>(resourceMap.size());
 			resourceMap.forEach((id, jsonElement) -> {
 				BotaniaAPI.LOGGER.debug("Parsing {} config '{}'", type.directory, id);

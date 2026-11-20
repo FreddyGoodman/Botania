@@ -4,8 +4,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.OptionalDynamic;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.datafix.fixes.ItemStackComponentizationFix;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.SpawnData;
@@ -67,7 +67,7 @@ public abstract class ItemStackComponentizationFixMixin {
 			stack.removeTag("soulbindUUID").asString().ifSuccess(uuid -> {
 				stack.setComponent(
 						"botania:soulbound",
-						new Dynamic<>(NbtOps.INSTANCE, NbtUtils.createUUID(UUID.fromString(uuid)))
+						tag.createIntList(IntStream.of(UUIDUtil.uuidToIntArray(UUID.fromString(uuid))))
 				);
 			});
 		}

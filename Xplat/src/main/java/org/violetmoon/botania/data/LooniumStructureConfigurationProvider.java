@@ -11,7 +11,6 @@ package org.violetmoon.botania.data;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 
 import net.minecraft.core.HolderLookup;
@@ -25,10 +24,11 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.ExpirableValue;
+import net.minecraft.world.entity.ai.memory.MemoryMap;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -786,14 +787,10 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 			piglinNbt.putBoolean("IsImmuneToZombification", true);
 		}
 
-		Brain<LivingEntity> piglinBrain = Brain.provider(List.of(MemoryModuleType.UNIVERSAL_ANGER,
-				MemoryModuleType.ADMIRING_DISABLED, MemoryModuleType.ATE_RECENTLY), List.of())
-				.makeBrain(new Dynamic<>(NbtOps.INSTANCE));
-		piglinBrain.setMemory(MemoryModuleType.UNIVERSAL_ANGER, true);
-		piglinBrain.setMemory(MemoryModuleType.ADMIRING_DISABLED, true);
-		piglinBrain.setMemory(MemoryModuleType.ATE_RECENTLY, true);
-
-		DataResult<Tag> dataResult = piglinBrain.serializeStart(NbtOps.INSTANCE);
+		MemoryMap memories = MemoryMap.of(Stream.of(MemoryModuleType.UNIVERSAL_ANGER,
+				MemoryModuleType.ADMIRING_DISABLED, MemoryModuleType.ATE_RECENTLY)
+				.map(type -> new MemoryMap.Value<>(type, ExpirableValue.of(true))));
+		DataResult<Tag> dataResult = Brain.Packed.CODEC.encodeStart(NbtOps.INSTANCE, new Brain.Packed(memories));
 		dataResult.resultOrPartial(BotaniaAPI.LOGGER::error).ifPresent(tag -> piglinNbt.put("Brain", tag));
 
 		return MobSpawnData.entityWeight(EntityType.PIGLIN, weight)

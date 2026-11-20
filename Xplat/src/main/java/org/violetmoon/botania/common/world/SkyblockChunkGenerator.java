@@ -60,7 +60,7 @@ public class SkyblockChunkGenerator extends NoiseBasedChunkGenerator {
 	@Override
 	public void applyCarvers(WorldGenRegion worldGenRegion, long seed, RandomState randomState,
 			BiomeManager biomeManager, StructureManager structureManager,
-			ChunkAccess chunkAccess, GenerationStep.Carving carving) {}
+			ChunkAccess chunkAccess) {}
 
 	@Override
 	public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender,
@@ -82,7 +82,7 @@ public class SkyblockChunkGenerator extends NoiseBasedChunkGenerator {
 	public int getBaseHeightInEquivalentNoiseWorld(int x, int z, Heightmap.Types heightmap, WorldGenLevel level) {
 		RandomState randomState = RandomState.create(
 				generatorSettings().value(),
-				level.registryAccess().registryOrThrow(Registries.NOISE).asLookup(),
+				level.registryAccess().lookupOrThrow(Registries.NOISE),
 				level.getSeed());
 		return super.getBaseHeight(x, z, heightmap, level, randomState);
 	}

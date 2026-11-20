@@ -13,6 +13,7 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -116,7 +117,7 @@ public abstract class ItemEntityMixin_NoDespawn extends Entity {
 		Item item = stack.getItem();
 		if (BotaniaItems.isNoDespawn(item)) {
 			BotaniaAPI.LOGGER.warn("ItemEntity for {} has despawned at {}! Item stack data for reference: {}",
-					item, position(), stack.save(level().registryAccess()));
+					item, position(), ItemStack.CODEC.encodeStart(level().registryAccess().createSerializationContext(NbtOps.INSTANCE), stack));
 		}
 	}
 }

@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Creeper;
@@ -51,15 +52,15 @@ public class CharmOfTheDivaItem extends BaubleItem {
 		Proxy.INSTANCE.runOnClient(() -> () -> AccessoryRenderRegistry.register(this, new Renderer()));
 	}
 
-	private static Predicate<Mob> getCharmTargetPredicate(Player player, Mob mobToCharm) {
+	private static Predicate<Mob> getCharmTargetPredicate(ServerLevel level, Player player, Mob mobToCharm) {
 		return mob -> mob != mobToCharm && mob.isAlive() && mob.canBeSeenAsEnemy() && !mob.isPassengerOfSameVehicle(mobToCharm)
 				&& (!(mob instanceof TamableAnimal tamable) || !tamable.isOwnedBy(player))
-				&& (mob instanceof Enemy || mob instanceof NeutralMob neutralMob && (neutralMob.isAngryAt(player)
+				&& (mob instanceof Enemy || mob instanceof NeutralMob neutralMob && (neutralMob.isAngryAt(level, player)
 						|| mob.getTarget() instanceof TamableAnimal targetTamable && targetTamable.isOwnedBy(player)));
 	}
 
 	private static void charmMobs(ItemStack amulet, Player player, Mob target) {
-		if (!ManaItemHandler.instance().requestManaExact(amulet, player, MANA_COST, false)) {
+		if (!(player.level() instanceof ServerLevel level) || !ManaItemHandler.instance().requestManaExact(amulet, player, MANA_COST, false)) {
 			return;
 		}
 		if (target.isAlive()
@@ -70,7 +71,7 @@ public class CharmOfTheDivaItem extends BaubleItem {
 				&& player.position().closerThan(target.position(), CHARM_RANGE)) {
 			List<Mob> potentialTargets = player.level().getEntitiesOfClass(Mob.class,
 					AABB.ofSize(target.position(), 2 * CHARM_RANGE, 2 * CHARM_RANGE, 2 * CHARM_RANGE),
-					getCharmTargetPredicate(player, target));
+					getCharmTargetPredicate(level, player, target));
 			if (!potentialTargets.isEmpty() && HeiseiDreamBlockEntity.brainwashEntity(target, potentialTargets)) {
 				target.heal(target.getMaxHealth());
 				((EntityAccessor) target).botania_unsetRemoved();
@@ -95,7 +96,7 @@ public class CharmOfTheDivaItem extends BaubleItem {
 
 			if (server != null && !amulet.isEmpty()) {
 				// schedule for immediate execution after everything else in this tick
-				server.tell(new TickTask(0, () -> charmMobs(amulet, player, target)));
+				server.schedule(new TickTask(0, () -> charmMobs(amulet, player, target)));
 			}
 		}
 	}

@@ -37,7 +37,7 @@ public class ResoluteIvyRecipe extends BotaniaSpecialRecipe {
 					foundIvy = true;
 				} else if (!foundItem
 						&& !stack.has(BotaniaDataComponents.RESOLUTE_IVY)
-						&& !stack.getItem().hasCraftingRemainingItem()) {
+						&& stack.getItem().getCraftingRemainder() == null) {
 					foundItem = true;
 				} else {
 					return false;

@@ -11,8 +11,8 @@ package org.violetmoon.botania.common.crafting.recipe;
 
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -45,9 +45,9 @@ public class LexiconReturningShapelessRecipe extends ShapelessRecipe {
 
 		for (int i = 0; i < nonnulllist.size(); i++) {
 			ItemStack itemStack = input.getItem(i);
-			Item item = itemStack.getItem();
-			if (item.hasCraftingRemainingItem()) {
-				nonnulllist.set(i, new ItemStack(item.getCraftingRemainingItem()));
+			ItemStackTemplate remainder = itemStack.getItem().getCraftingRemainder();
+			if (remainder != null) {
+				nonnulllist.set(i, remainder.create());
 			} else if (itemStack.is(BotaniaItems.LEXICA_BOTANIA)) {
 				nonnulllist.set(i, itemStack.copy());
 			}

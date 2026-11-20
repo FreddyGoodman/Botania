@@ -181,7 +181,9 @@ public class BotaniaLootTables {
 	 * Gets the resource key of the loot table to inject into the specified entity type's default loot table.
 	 */
 	public static ResourceKey<LootTable> getInjectedLootTable(EntityType<?> entityType) {
-		return getInjectedLootTable(entityType.getDefaultLootTable());
+		Identifier baseId = entityType.getDefaultLootTable().map(ResourceKey::identifier)
+				.orElseGet(() -> EntityType.getKey(entityType).withPrefix("entities/"));
+		return getInjectedLootTable(baseId);
 	}
 
 	/**

@@ -9,6 +9,7 @@
 package org.violetmoon.botania.mixin;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -26,8 +27,8 @@ public class LootTableMixin {
 	@ModifyVariable(method = "getRandomItemsRaw(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V", at = @At("HEAD"), argsOnly = true)
 	private Consumer<ItemStack> filterDisposables(Consumer<ItemStack> inner, LootContext context) {
 		return stack -> {
-			Entity e = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-			ItemStack tool = context.getParamOrNull(LootContextParams.TOOL);
+			Entity e = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
+			ItemInstance tool = context.getOptionalParameter(LootContextParams.TOOL);
 			if (e != null && tool != null) {
 				if (ElementiumPickaxeItem.shouldFilterOut(e, tool, stack)) {
 					return;

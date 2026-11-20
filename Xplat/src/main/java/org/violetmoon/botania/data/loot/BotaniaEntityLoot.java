@@ -14,6 +14,7 @@ import net.minecraft.advancements.criterion.EntityEquipmentPredicate;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -159,7 +160,7 @@ public class BotaniaEntityLoot implements LootTableSubProvider {
 				defineAxeBeheadingDropTable(Items.PLAYER_HEAD, 0.0909f, 0.0909f)
 						.apply(FillPlayerHead.fillPlayerHead(LootContext.EntityTarget.THIS)));
 
-		output.accept(BotaniaEntities.GAIA_GUARDIAN.getDefaultLootTable(),
+		output.accept(BotaniaEntities.GAIA_GUARDIAN.getDefaultLootTable().orElseThrow(),
 				defineAxeBeheadingDropTable(BotaniaBlocks.GAIA_HEAD, 0.0769f, 0.0769f));
 	}
 
@@ -168,7 +169,7 @@ public class BotaniaEntityLoot implements LootTableSubProvider {
 				.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.ATTACKING_PLAYER,
 						EntityPredicate.Builder.entity().equipment(
 								EntityEquipmentPredicate.Builder.equipment().mainhand(
-										ItemPredicate.Builder.item().of(BotaniaItems.ELEMENTIUM_AXE)))))
+										ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), BotaniaItems.ELEMENTIUM_AXE)))))
 				.when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(registries,
 						chance, lootingMultiplier))
 		);

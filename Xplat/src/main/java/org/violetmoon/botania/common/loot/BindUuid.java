@@ -32,7 +32,7 @@ public class BindUuid extends LootItemConditionalFunction {
 
 	@Override
 	public ItemStack run(ItemStack stack, LootContext context) {
-		if (context.getParamOrNull(LootContextParams.ATTACKING_ENTITY) instanceof Player player) {
+		if (context.getOptionalParameter(LootContextParams.ATTACKING_ENTITY) instanceof Player player) {
 			var relic = Relic.LOOKUP.find(stack);
 			if (relic != null) {
 				relic.bindToUUID(player.getUUID());

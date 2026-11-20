@@ -6,7 +6,6 @@ import com.mojang.datafixers.types.templates.TypeTemplate;
 
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
-import net.minecraft.util.datafix.schemas.V100;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -24,7 +23,7 @@ public class V3807_5 extends NamespacedSchema {
 		Map<String, Supplier<TypeTemplate>> map = super.registerEntities(schema);
 
 		map.remove("botania:doppleganger");
-		schema.register(map, "botania:gaia_guardian", () -> V100.equipment(schema));
+		schema.register(map, "botania:gaia_guardian", () -> References.ENTITY_EQUIPMENT.in(schema));
 		map.remove("botania:magic_landmine");
 		schema.registerSimple(map, "botania:gaia_trap");
 

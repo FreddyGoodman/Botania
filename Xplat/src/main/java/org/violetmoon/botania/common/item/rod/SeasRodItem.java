@@ -68,8 +68,8 @@ public class SeasRodItem extends Item {
 				if (manaSuccess && !player.isShiftKeyDown() && blockState.getBlock() instanceof AbstractCauldronBlock cauldronBlock) {
 					// try filling cauldron with water (note: this can replace existing contents)
 					CauldronInteraction interaction = ((AbstractCauldronBlockAccessor) cauldronBlock)
-							.botania_getInteractions().map().get(Items.WATER_BUCKET);
-					if (interaction != null) {
+							.botania_getInteractions().get(new ItemStack(Items.WATER_BUCKET));
+					if (interaction != CauldronInteraction.DEFAULT) {
 						var result = interaction.interact(blockState, level, blockPos, player, interactionHand, itemStack.copy());
 						if (!ItemStack.matches(player.getItemInHand(interactionHand), itemStack)) {
 							// don't replace with an empty bucket
