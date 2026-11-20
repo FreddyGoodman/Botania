@@ -9,130 +9,146 @@
 package org.violetmoon.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.ItemEntityRenderer;
+import net.minecraft.client.renderer.entity.state.ItemClusterRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaCrystalCubeBlockEntity;
 import org.violetmoon.botania.common.helper.VecHelper;
-import org.violetmoon.botania.mixin.ItemEntityAccessor;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 
-import java.util.Objects;
+import java.util.List;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRenderer<CorporeaCrystalCubeBlockEntity> {
+public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRenderer<CorporeaCrystalCubeBlockEntity, CorporeaCrystalCubeBlockEntityRenderer.State> {
 	public static final Identifier CUBE_MODEL_ID = botaniaRL("block/corporea_crystal_cube_glass");
 
-	@Nullable
-	private ItemEntity entity = null;
-	private final BlockRenderDispatcher blockRenderDispatcher;
+	private final Font font;
+	private final ItemModelResolver itemModels;
+	private final RandomSource itemRandom = RandomSource.create();
 
 	public CorporeaCrystalCubeBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
+		font = ctx.font();
+		itemModels = ctx.itemModelResolver();
 	}
 
 	@Override
-	public void render(@Nullable CorporeaCrystalCubeBlockEntity cube, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		ItemStack stack;
-		if (cube != null) {
-			if (entity == null) {
-				entity = new ItemEntity(cube.getLevel(), cube.getBlockPos().getX(), cube.getBlockPos().getY(), cube.getBlockPos().getZ(), new ItemStack(Blocks.STONE));
-			}
-
-			((ItemEntityAccessor) entity).botania_setAge(ClientTickHandler.getEntityTicksInGame());
-			stack = cube.getRequestTarget();
-			entity.setItem(stack);
-		} else {
-			stack = ItemStack.EMPTY;
-		}
-
-		Minecraft mc = Minecraft.getInstance();
-		ms.pushPose();
-		ms.translate(0.5F, 1.5F, 0.5F);
-		ms.scale(1F, -1F, -1F);
-		/*
-			Using Mth.sin(((float)entity.getAge() + partialTick) / 10.0F + entity.bobOffs from ItemEntityRender#render to sync the bobbing.
-			Divided by a negative number to make the item inside not be static (-1 almost make the cube and item the same speed).
-			Making the divider smaller, slows down the cube bobbing (you can multiply instead to make it faster).
-			This still keeps the item and the cube in sync, the cube just doesn't move as much as the item,
-			but the item never goes outside the cube (based on the tests I made; some edge cases could exist).
-		*/
-		ms.translate(0F, (Mth.sin(((float) entity.getAge() + partialTick) / 10.0F + entity.bobOffs) * 0.1F + 0.1F) / -7F, 0F);
-
-		if (!stack.isEmpty()) {
-			ms.pushPose();
-			ms.translate(0F, 0.96F, 0F);
-			ms.scale(0.64F, 0.64F, 0.64F);
-			ms.mulPose(VecHelper.rotateZ(180F));
-			Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity).render(entity, 0, partialTick, ms, buffers, light);
-			ms.popPose();
-		}
-
-		ms.pushPose();
-		ms.translate(-0.5F, 0.25F, -0.5F);
-		VertexConsumer buffer = buffers.getBuffer(Sheets.translucentCullBlockSheet());
-		blockRenderDispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, getCubeModel(), 1, 1, 1, light, overlay);
-		ms.popPose();
-
-		if (!stack.isEmpty() && cube != null && !cube.isHiddenCount()) {
-			int count = cube.getItemCount();
-			String countStr;
-			int color;
-			if (count <= 9_999) {
-				countStr = String.valueOf(count);
-				color = DyeColor.WHITE.getTextColor();
-			} else {
-				if (count > 9_999_999) {
-					countStr = count / 1_000_000 + "M";
-					color = DyeColor.GREEN.getTextColor();
-				} else {
-					countStr = count / 1_000 + "K";
-					color = DyeColor.YELLOW.getTextColor();
-				}
-			}
-			int alpha = 160;
-			int colorText = ARGB.color(alpha, color);
-			int colorShade = ARGB.color(alpha, (color & 0xfcfcfc) >> 2);
-
-			float s = 1F / 64F;
-			ms.scale(s, s, s);
-			int l = mc.font.width(countStr);
-
-			ms.translate(0F, 55F, 0F);
-			float tr = -16.5F;
-			for (int i = 0; i < 4; i++) {
-				ms.mulPose(VecHelper.rotateY(90F));
-				ms.translate(0F, 0F, tr);
-				// cannot use dropshadow parameter as that shadow somehow renders in front of the text, not behind it
-				mc.font.drawInBatch(countStr, -l / 2, 0, colorText, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
-				ms.translate(0F, 0F, 0.1F);
-				mc.font.drawInBatch(countStr, -l / 2 + 1, 1, colorShade, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
-				ms.translate(0F, 0F, -tr - 0.1F);
-			}
-		}
-
-		ms.popPose();
+	public State createRenderState() {
+		return new State();
 	}
 
-	private BakedModel getCubeModel() {
-		return Objects.requireNonNull(ClientXplatAbstractions.instance().getResourceModel(CUBE_MODEL_ID));
+	@Override
+	public void extractRenderState(CorporeaCrystalCubeBlockEntity cube, State state, float partialTick, Vec3 camera,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+		BlockEntityRenderer.super.extractRenderState(cube, state, partialTick, camera, crumblingOverlay);
+		var stack = cube.getRequestTarget();
+		itemModels.updateForTopItem(state.items.item, stack, ItemDisplayContext.GROUND, cube.getLevel(), null, 0);
+		state.items.count = ItemClusterRenderState.getRenderedAmount(stack.getCount());
+		state.items.seed = ItemClusterRenderState.getSeedForItemStack(stack);
+		state.ticks = ClientTickHandler.getEntityTicksInGame() + partialTick;
+		state.phase = RandomSource.create(cube.getBlockPos().asLong()).nextFloat() * Mth.TWO_PI;
+		state.label = null;
+		if (!stack.isEmpty() && !cube.isHiddenCount()) {
+			int count = cube.getItemCount();
+			String label;
+			int color;
+			if (count <= 9_999) {
+				label = Integer.toString(count);
+				color = DyeColor.WHITE.getTextColor();
+			} else if (count > 9_999_999) {
+				label = count / 1_000_000 + "M";
+				color = DyeColor.GREEN.getTextColor();
+			} else {
+				label = count / 1_000 + "K";
+				color = DyeColor.YELLOW.getTextColor();
+			}
+			state.label = FormattedCharSequence.forward(label, Style.EMPTY);
+			state.labelWidth = font.width(label);
+			state.labelColor = ARGB.color(160, color);
+			state.labelShadow = ARGB.color(160, (color & 0xfcfcfc) >> 2);
+		}
+	}
+
+	@Override
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		float bob = Mth.sin(state.ticks / 10F + state.phase) * 0.1F + 0.1F;
+		pose.pushPose();
+		pose.translate(0.5F, 1.5F, 0.5F);
+		pose.scale(1F, -1F, -1F);
+		pose.translate(0F, bob / -7F, 0F);
+
+		if (!state.items.item.isEmpty()) {
+			pose.pushPose();
+			pose.translate(0F, 0.96F, 0F);
+			pose.scale(0.64F, 0.64F, 0.64F);
+			pose.mulPose(VecHelper.rotateZ(180));
+			var bounds = state.items.item.getModelBoundingBox();
+			pose.translate(0, bob + 0.0625 - bounds.minY, 0);
+			pose.mulPose(Axis.YP.rotation(ItemEntity.getSpin(state.ticks, state.phase)));
+			ItemEntityRenderer.submitMultipleFromCount(pose, collector, state.lightCoords, state.items, itemRandom, bounds);
+			pose.popPose();
+		}
+
+		pose.pushPose();
+		pose.translate(-0.5F, 0.25F, -0.5F);
+		var glass = ClientXplatAbstractions.INSTANCE.getBlockModelPart(CUBE_MODEL_ID);
+		collector.submitBlockModel(pose, RenderTypes.translucentMovingBlock(), List.of(glass), BlockModelRenderState.EMPTY_TINTS,
+				state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+		pose.popPose();
+
+		if (state.label != null) {
+			submitLabels(state, pose, collector);
+		}
+		pose.popPose();
+	}
+
+	private static void submitLabels(State state, PoseStack pose, SubmitNodeCollector collector) {
+		pose.scale(1F / 64F, 1F / 64F, 1F / 64F);
+		pose.translate(0F, 55F, 0F);
+		float x = -state.labelWidth / 2;
+		for (int side = 0; side < 4; side++) {
+			pose.mulPose(VecHelper.rotateY(90));
+			pose.pushPose();
+			pose.translate(0, 0, -16.5F);
+			collector.submitText(pose, x, 0, state.label, false, Font.DisplayMode.NORMAL, state.lightCoords, state.labelColor, 0, 0);
+			pose.translate(0, 0, 0.1F);
+			collector.submitText(pose, x + 1, 1, state.label, false, Font.DisplayMode.NORMAL, state.lightCoords, state.labelShadow, 0, 0);
+			pose.popPose();
+		}
+	}
+
+	public static class State extends BlockEntityRenderState {
+		private final ItemClusterRenderState items = new ItemClusterRenderState();
+		private float ticks;
+		private float phase;
+		private @Nullable FormattedCharSequence label;
+		private int labelWidth;
+		private int labelColor;
+		private int labelShadow;
 	}
 }

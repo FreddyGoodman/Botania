@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.mana.ManaPool;
@@ -76,8 +77,8 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 	}
 
 	@Override
-	public AbstractMinecart.Type getMinecartType() {
-		return Type.RIDEABLE;
+	public boolean isRideable() {
+		return true;
 	}
 
 	@Override
@@ -86,9 +87,8 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 	}
 
 	@Override
-	protected void applyNaturalSlowdown() {
-		float f = 0.98F;
-		this.setDeltaMovement(getDeltaMovement().multiply(f, 0, f));
+	protected Vec3 applyNaturalSlowdown(Vec3 movement) {
+		return movement.multiply(0.98F, 0, 0.98F);
 	}
 
 	@Override
@@ -103,9 +103,15 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 
 	@Override
 	public void tick() {
+		BlockPos railPos = getCurrentBlockPosOrRailBelow();
 		super.tick();
 
-		if (level().isClientSide()) {
+		if (level() instanceof ServerLevel serverLevel) {
+			// Both minecart movement implementations update this flag before moving on the rail.
+			if (isOnRails()) {
+				transferManaAtRail(serverLevel, railPos);
+			}
+		} else {
 			double particleChance = 1F - (double) getMana() / (double) ManaPoolBlock.MAX_MANA * 0.1;
 			int color = ManaPoolBlockEntity.PARTICLE_COLOR;
 			float red = (color >> 16 & 0xFF) / 255F;
@@ -121,17 +127,14 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 		}
 	}
 
-	@Override
-	public void moveAlongTrack(BlockPos pos, BlockState state) {
-		super.moveAlongTrack(pos, state);
-
+	private void transferManaAtRail(ServerLevel level, BlockPos pos) {
 		for (Direction dir : Direction.Plane.HORIZONTAL) {
 			BlockPos pumpPos = pos.relative(dir);
-			BlockState pumpState = level().getBlockState(pumpPos);
+			BlockState pumpState = level.getBlockState(pumpPos);
 			if (pumpState.is(BotaniaBlocks.MANA_PUMP)
-					&& level().getBlockEntity(pumpPos) instanceof ManaPumpBlockEntity pump) {
+					&& level.getBlockEntity(pumpPos) instanceof ManaPumpBlockEntity pump) {
 				BlockPos poolPos = pumpPos.relative(dir);
-				var receiver = ManaReceiver.LOOKUP.find(level(), poolPos, dir.getOpposite());
+				var receiver = ManaReceiver.LOOKUP.find(level, poolPos, dir.getOpposite());
 
 				if (receiver instanceof ManaPool pool) {
 					Direction pumpDir = pumpState.getValue(BlockStateProperties.HORIZONTAL_FACING);

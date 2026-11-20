@@ -9,150 +9,138 @@
 package org.violetmoon.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 import org.violetmoon.botania.api.mana.PoolOverlayProvider;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
+import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import org.violetmoon.botania.common.block.mana.ManaPoolBlock;
 import org.violetmoon.botania.common.helper.VecHelper;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPoolBlockEntity> {
-
-	// Overrides for when we call this renderer from a cart
-	public static int cartMana = -1;
-	public static int cartMaxMana = -1;
-	@UnknownNullability
-	public static ManaPoolBlock cartBlock;
-
+public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPoolBlockEntity, ManaPoolBlockEntityRenderer.State> {
+	private final SpriteGetter sprites;
 	private final TextureAtlasSprite waterSprite;
-	private final BlockRenderDispatcher blockRenderDispatcher;
 
 	public ManaPoolBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
-		this.waterSprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-						.apply(botaniaRL("block/mana_water"))
-		);
+		sprites = ctx.sprites();
+		waterSprite = waterSprite(sprites);
+	}
+
+	public static TextureAtlasSprite waterSprite(SpriteGetter sprites) {
+		return sprites.get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("block/mana_water")));
 	}
 
 	@Override
-	public void render(@Nullable ManaPoolBlockEntity pool, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		ms.pushPose();
-		Minecraft minecraft = Minecraft.getInstance();
-
-		boolean fabulous;
-		VoxelShape innerShape;
-		VoxelShape outerShape;
-		int mana;
-		int maxMana;
-		BlockState state;
-		Level level;
-
-		if (pool != null) {
-			level = pool.getLevel() != null ? pool.getLevel() : minecraft.level;
-			state = pool.getBlockState();
-			ManaPoolBlock block = (ManaPoolBlock) state.getBlock();
-			fabulous = block.isFabulous();
-			innerShape = block.getInnerShape(pool.getBlockState());
-			outerShape = block.getInteractionShape(pool.getBlockState(), pool.getLevel(), pool.getBlockPos());
-			mana = pool.getCurrentMana();
-			maxMana = pool.getMaxMana();
-		} else {
-			level = minecraft.level;
-			ManaPoolBlock block = cartBlock;
-			state = block.defaultBlockState();
-			fabulous = block.isFabulous();
-			innerShape = block.getInnerShape(block.defaultBlockState());
-			outerShape = block.getInteractionShape(block.defaultBlockState(), null, null);
-			mana = cartMana;
-			maxMana = cartMaxMana == -1 ? ManaPoolBlock.MAX_MANA : cartMaxMana;
-		}
-
-		float poolBottom = (float) innerShape.min(Direction.Axis.Y) + 0.001F;
-		float poolTop = (float) outerShape.max(Direction.Axis.Y) - 1 / 16f;
-		int uvStartX = (int) (16 * innerShape.min(Direction.Axis.X));
-		int uvStartY = (int) (16 * innerShape.min(Direction.Axis.Z));
-		int uvEndX = (int) (16 * innerShape.max(Direction.Axis.X));
-		int uvEndY = (int) (16 * innerShape.max(Direction.Axis.Z));
-
-		if (fabulous) {
-			int color = minecraft.getBlockColors().getColor(state, level, pool != null ? pool.getBlockPos() : null, 0);
-
-			float red = ARGB.red(color) / 255f;
-			float green = ARGB.green(color) / 255f;
-			float blue = ARGB.blue(color) / 255f;
-			BakedModel model = blockRenderDispatcher.getBlockModel(state);
-			VertexConsumer buffer = buffers.getBuffer(ItemBlockRenderTypes.getRenderType(state, false));
-			blockRenderDispatcher.getModelRenderer()
-					.renderModel(ms.last(), buffer, state, model, red, green, blue, light, overlay);
-		}
-
-		if (pool != null && level != null) {
-			PoolOverlayProvider overlayProvider = PoolOverlayProvider.LOOKUP.find(level, pool.getBlockPos().below());
-			if (overlayProvider != null) {
-				var overlaySpriteId = overlayProvider.getIcon(level, pool.getBlockPos());
-				var overlayIcon = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(overlaySpriteId);
-				ms.pushPose();
-
-				float alpha = (float) ((Mth.sin((ClientTickHandler.getEntityTicksInGame() + partialTick) / 20.0f) + 1) * 0.3 + 0.2);
-
-				ms.translate(0, poolBottom, 0);
-				ms.mulPose(VecHelper.rotateX(90F));
-
-				VertexConsumer buffer = buffers.getBuffer(RenderHelper.ICON_OVERLAY);
-				RenderHelper.renderIconCropped(
-						ms, buffer,
-						uvStartX, uvStartY, uvEndX, uvEndY,
-						overlayIcon, 0xFFFFFF, alpha, light
-				);
-
-				ms.popPose();
-			}
-		}
-
-		float manaLevel = (float) mana / (float) maxMana;
-		if (manaLevel > 0) {
-			ms.pushPose();
-			ms.translate(0, Mth.clampedMap(manaLevel, 0, 1, poolBottom, poolTop), 0);
-			ms.mulPose(VecHelper.rotateX(90F));
-
-			VertexConsumer buffer = buffers.getBuffer(RenderHelper.getManaPoolWaterLayer());
-			RenderHelper.renderIconCropped(
-					ms, buffer,
-					uvStartX, uvStartY, uvEndX, uvEndY,
-					this.waterSprite, 0xFFFFFF, 1, light);
-
-			ms.popPose();
-		}
-		ms.popPose();
-
-		cartMana = -1;
-		cartMaxMana = -1;
-		cartBlock = null;
+	public State createRenderState() {
+		return new State();
 	}
 
+	@Override
+	public void extractRenderState(ManaPoolBlockEntity pool, State state, float partialTick, Vec3 camera,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+		BlockEntityRenderer.super.extractRenderState(pool, state, partialTick, camera, crumblingOverlay);
+		var blockState = pool.getBlockState();
+		var pos = pool.getBlockPos();
+		var level = pool.getLevel();
+		var block = (ManaPoolBlock) blockState.getBlock();
+		state.surface = Surface.forBlock(block, blockState);
+		state.manaLevel = (float) pool.getCurrentMana() / pool.getMaxMana();
+
+		state.model.clear();
+		if (block.isFabulous()) {
+			var models = Minecraft.getInstance().getModelManager().getBlockStateModelSet();
+			models.get(blockState).collectParts(RandomSource.create(blockState.getSeed(pos)), state.model);
+			state.tint[0] = ARGB.opaque(ColorHandler.getManaPoolColor(block, blockState, pos));
+		}
+
+		state.overlaySprite = null;
+		if (level != null) {
+			PoolOverlayProvider provider = PoolOverlayProvider.LOOKUP.find(level, pos.below());
+			if (provider != null) {
+				state.overlaySprite = sprites.get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, provider.getIcon(level, pos)));
+				state.alpha = (float) ((Mth.sin((ClientTickHandler.getEntityTicksInGame() + partialTick) / 20F) + 1) * 0.3 + 0.2);
+			}
+		}
+	}
+
+	@Override
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		if (!state.model.isEmpty()) {
+			collector.submitBlockModel(pose, RenderTypes.cutoutMovingBlock(), state.model, state.tint,
+					state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+		}
+		if (state.overlaySprite != null) {
+			submitSurface(pose, collector, state.surface, state.surface.bottom, state.overlaySprite,
+					RenderHelper.ICON_OVERLAY, state.alpha, state.lightCoords);
+		}
+		submitMana(pose, collector, state.surface, waterSprite, state.manaLevel, state.lightCoords);
+	}
+
+	public static void submitMana(PoseStack pose, SubmitNodeCollector collector, Surface surface,
+			TextureAtlasSprite water, float fraction, int light) {
+		if (fraction > 0) {
+			float y = Mth.clampedMap(fraction, 0, 1, surface.bottom, surface.top);
+			submitSurface(pose, collector, surface, y, water, RenderHelper.getManaPoolWaterLayer(), 1F, light);
+		}
+	}
+
+	private static void submitSurface(PoseStack pose, SubmitNodeCollector collector, Surface surface, float y,
+			TextureAtlasSprite sprite, RenderType layer, float alpha, int light) {
+		pose.pushPose();
+		pose.translate(0, y, 0);
+		pose.mulPose(VecHelper.rotateX(90));
+		collector.submitCustomGeometry(pose, layer, (transform, buffer) ->
+				RenderHelper.renderIconCropped(transform, buffer, surface.minX, surface.minZ, surface.maxX, surface.maxZ,
+						sprite, 0xFFFFFF, alpha, light));
+		pose.popPose();
+	}
+
+	public record Surface(float bottom, float top, int minX, int minZ, int maxX, int maxZ) {
+		public static Surface forBlock(ManaPoolBlock block, BlockState state) {
+			var inner = block.getInnerShape(state);
+			var outer = block.getInteractionShape(state, null, null);
+			return new Surface((float) inner.min(Direction.Axis.Y) + 0.001F,
+					(float) outer.max(Direction.Axis.Y) - 1F / 16F,
+					(int) (16 * inner.min(Direction.Axis.X)), (int) (16 * inner.min(Direction.Axis.Z)),
+					(int) (16 * inner.max(Direction.Axis.X)), (int) (16 * inner.max(Direction.Axis.Z)));
+		}
+	}
+
+	public static class State extends BlockEntityRenderState {
+		private final List<BlockStateModelPart> model = new ArrayList<>();
+		private final int[] tint = new int[1];
+		private Surface surface;
+		private float manaLevel;
+		private @Nullable TextureAtlasSprite overlaySprite;
+		private float alpha;
+	}
 }

@@ -17,7 +17,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.violetmoon.botania.fabric.client.FabricFloatingFlowerModel;
 import org.violetmoon.botania.fabric.client.FabricManaBlasterModel;
 
 import java.lang.reflect.Type;
@@ -31,10 +30,7 @@ public class BlockModelDeserializerFabricMixin {
 	private void hookDeserialize(JsonElement jsonElement, Type type,
 			JsonDeserializationContext context,
 			CallbackInfoReturnable<BlockModel> cir) {
-		BlockModel model = FabricFloatingFlowerModel.hookModelLoad(jsonElement, context);
-		if (model == null) {
-			model = FabricManaBlasterModel.hookModelLoad(jsonElement);
-		}
+		BlockModel model = FabricManaBlasterModel.hookModelLoad(jsonElement);
 		if (model != null) {
 			cir.setReturnValue(model);
 		}

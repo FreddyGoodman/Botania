@@ -15,21 +15,17 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -39,6 +35,10 @@ import org.violetmoon.botania.neoforge.client.integration.embeddium.EmbeddiumHel
 import org.violetmoon.botania.neoforge.client.integration.sodium.SodiumNeoforgeHelper;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 import org.violetmoon.botania.xplat.XplatAbstractions;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 	@Override
@@ -56,6 +56,18 @@ public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 	public BakedModel getResourceModel(Identifier id) {
 		BakedModel model = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(id));
 		return model != Minecraft.getInstance().getModelManager().getMissingModel() ? model : null;
+	}
+
+	private static final Map<Identifier, StandaloneModelKey<BlockStateModelPart>> BLOCK_MODEL_KEYS = new ConcurrentHashMap<>();
+
+	static StandaloneModelKey<BlockStateModelPart> getBlockModelKey(Identifier id) {
+		return BLOCK_MODEL_KEYS.computeIfAbsent(id, modelId -> new StandaloneModelKey<>(modelId::toString));
+	}
+
+	@Override
+	public BlockStateModelPart getBlockModelPart(Identifier id) {
+		var models = Minecraft.getInstance().getModelManager();
+		return Objects.requireNonNull(models.getStandaloneModel(getBlockModelKey(id)), id::toString);
 	}
 
 	@Override
@@ -76,19 +88,6 @@ public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 	@Override
 	public void restoreLastFilter(AbstractTexture texture) {
 		texture.restoreLastBlurMipmap();
-	}
-
-	@Override
-	public void tessellateBlock(Level level, BlockState state, BlockPos pos, PoseStack ps, MultiBufferSource buffers, int overlay) {
-		var renderer = Minecraft.getInstance().getBlockRenderer();
-		var model = renderer.getBlockModel(state);
-		var modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
-		var rand = RandomSource.create();
-		for (RenderType type : model.getRenderTypes(state, rand, modelData)) {
-			renderer.getModelRenderer().tesselateBlock(level, model,
-					state, pos, ps, buffers.getBuffer(type), false, rand,
-					state.getSeed(pos), overlay, modelData, type);
-		}
 	}
 
 	@Override

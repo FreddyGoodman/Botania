@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -23,12 +24,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -42,6 +45,8 @@ import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.handler.CorporeaInputHandler;
 import org.violetmoon.botania.client.core.handler.KonamiHandler;
 import org.violetmoon.botania.client.core.handler.MiscellaneousModels;
+import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
+import org.violetmoon.botania.common.block.flower.FloatingFlowerBaseBlock;
 import org.violetmoon.botania.client.core.proxy.ClientProxy;
 import org.violetmoon.botania.client.fx.BotaniaParticles;
 import org.violetmoon.botania.client.gui.HUDHandler;
@@ -87,6 +92,18 @@ public class FabricClientInitializer implements ClientModInitializer {
 
 		// Blocks and Items
 		ModelLoadingPlugin.register(pluginContext -> {
+			pluginContext.modifyBlockModelOnLoad().register((model, context) -> {
+				var block = context.state().getBlock();
+				if (block instanceof FloatingFlowerBaseBlock) {
+					return new FabricFloatingFlowerModel.Unbaked(BuiltInRegistries.BLOCK.getKey(block).withPrefix("block/"));
+				}
+				return model;
+			});
+			StandaloneBlockModels.register(id -> {
+				var variant = new Variant(id);
+				pluginContext.addModel(FabricClientXplatImpl.getBlockModelKey(id),
+						new SimpleUnbakedExtraModel<>(id, (model, baker) -> variant.bake(baker)));
+			});
 			MiscellaneousModels.INSTANCE.onModelRegister(Minecraft.getInstance().getResourceManager(), pluginContext::addModels);
 			pluginContext.modifyModelAfterBake().register((bakedModel, context) -> MiscellaneousModels.INSTANCE.modifyModelAfterbake(bakedModel, context.resourceId()));
 		});

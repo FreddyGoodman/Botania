@@ -9,63 +9,66 @@
 package org.violetmoon.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.common.block.block_entity.mana.ManaPumpBlockEntity;
 import org.violetmoon.botania.common.helper.VecHelper;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 
-import java.util.Objects;
+import java.util.List;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public class ManaPumpBlockEntityRenderer implements BlockEntityRenderer<ManaPumpBlockEntity> {
+public class ManaPumpBlockEntityRenderer implements BlockEntityRenderer<ManaPumpBlockEntity, ManaPumpBlockEntityRenderer.State> {
 	public static final Identifier PUMP_HEAD_ID = botaniaRL("block/mana_pump_head");
 
-	private final BlockRenderDispatcher blockRenderDispatcher;
+	public ManaPumpBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
-	public ManaPumpBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
+	@Override
+	public State createRenderState() {
+		return new State();
 	}
 
 	@Override
-	public void render(ManaPumpBlockEntity pump, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		ms.pushPose();
-		ms.translate(0.5, 0, 0.5);
-		float angle = 0;
-		switch (pump.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)) {
-			case SOUTH:
-				angle = 180;
-				break;
-			case EAST:
-				angle = -90;
-				break;
-			case WEST:
-				angle = 90;
-				break;
-			case NORTH:
-			default:
-				break;
-		}
-		ms.mulPose(VecHelper.rotateY(angle));
-		ms.translate(-0.5, 0, -0.5);
-		double diff = Math.max(0F, Math.min(8F, pump.innerRingPos + pump.moving * partialTicks));
-		ms.translate(0, 0, diff / 14);
-		VertexConsumer buffer = buffers.getBuffer(RenderTypes.solidMovingBlock());
-		blockRenderDispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, getHeadModel(), 1, 1, 1, light, overlay);
-		ms.popPose();
+	public void extractRenderState(ManaPumpBlockEntity pump, State state, float partialTick, Vec3 camera,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+		BlockEntityRenderer.super.extractRenderState(pump, state, partialTick, camera, crumblingOverlay);
+		state.angle = switch (pump.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)) {
+			case SOUTH -> 180;
+			case EAST -> -90;
+			case WEST -> 90;
+			default -> 0;
+		};
+		state.extension = Math.clamp(pump.innerRingPos + pump.moving * partialTick, 0F, 8F) / 14F;
 	}
 
-	private BakedModel getHeadModel() {
-		return Objects.requireNonNull(ClientXplatAbstractions.instance().getResourceModel(PUMP_HEAD_ID));
+	@Override
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		pose.pushPose();
+		pose.translate(0.5, 0, 0.5);
+		pose.mulPose(VecHelper.rotateY(state.angle));
+		pose.translate(-0.5, 0, -0.5 + state.extension);
+		var head = ClientXplatAbstractions.INSTANCE.getBlockModelPart(PUMP_HEAD_ID);
+		collector.submitBlockModel(pose, RenderTypes.solidMovingBlock(), List.of(head), BlockModelRenderState.EMPTY_TINTS,
+				state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+		pose.popPose();
+	}
+
+	public static class State extends BlockEntityRenderState {
+		private float angle;
+		private float extension;
 	}
 }

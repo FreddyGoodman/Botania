@@ -9,11 +9,11 @@
       "from": [1, 1, 1],
       "to": [2, 15, 15],
       "faces": {
-        "north": { "texture": "#side" },
-        "east": { "texture": "#side" },
-        "south": { "texture": "#side" },
-        "west": { "texture": "#side" },
-        "up": { "texture": "#front" }
+        "north": { "texture": "#side", "tintindex": 0 },
+        "east": { "texture": "#side", "tintindex": 0 },
+        "south": { "texture": "#side", "tintindex": 0 },
+        "west": { "texture": "#side", "tintindex": 0 },
+        "up": { "texture": "#front", "tintindex": 0 }
       }
     },
     {
@@ -21,11 +21,11 @@
       "from": [14, 1, 1],
       "to": [15, 15, 15],
       "faces": {
-        "north": { "texture": "#side" },
-        "east": { "texture": "#side" },
-        "south": { "texture": "#side" },
-        "west": { "texture": "#side" },
-        "up": { "texture": "#front" }
+        "north": { "texture": "#side", "tintindex": 0 },
+        "east": { "texture": "#side", "tintindex": 0 },
+        "south": { "texture": "#side", "tintindex": 0 },
+        "west": { "texture": "#side", "tintindex": 0 },
+        "up": { "texture": "#front", "tintindex": 0 }
       }
     },
     {
@@ -33,9 +33,9 @@
       "from": [2, 1, 14],
       "to": [14, 15, 15],
       "faces": {
-        "north": { "texture": "#side" },
-        "south": { "texture": "#side" },
-        "up": { "texture": "#front" }
+        "north": { "texture": "#side", "tintindex": 0 },
+        "south": { "texture": "#side", "tintindex": 0 },
+        "up": { "texture": "#front", "tintindex": 0 }
       }
     },
     {
@@ -43,9 +43,9 @@
       "from": [2, 1, 1],
       "to": [14, 15, 2],
       "faces": {
-        "north": { "texture": "#side" },
-        "south": { "texture": "#side" },
-        "up": { "texture": "#front" }
+        "north": { "texture": "#side", "tintindex": 0 },
+        "south": { "texture": "#side", "tintindex": 0 },
+        "up": { "texture": "#front", "tintindex": 0 }
       }
     },
     {
@@ -53,7 +53,7 @@
       "from": [1, 1, 1],
       "to": [15, 2, 15],
       "faces": {
-        "down": { "texture": "#back", "rotation": 180 }
+        "down": { "texture": "#back", "tintindex": 0, "rotation": 180 }
       }
     }
   ]

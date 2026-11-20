@@ -1,7 +1,3 @@
 {
-  "parent": "minecraft:block/block",
-  "flower": {
-    "parent": "botania:block/hopperhock_petite"
-  },
-  "loader": "botania:floating_flower"
+  "parent": "botania:block/hopperhock_petite"
 }

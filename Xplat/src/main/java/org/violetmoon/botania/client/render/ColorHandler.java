@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.brew.Brew;
 import org.violetmoon.botania.api.brew.BrewItem;
@@ -81,16 +83,7 @@ public final class ColorHandler {
 						return -1;
 					}
 
-					Optional<Integer> optionalColor = poolBlock.getOptionalColor().map(color -> ARGB
-							.lerp(0.8f, 0xFFFFFF, MysticalPetalItem.getPetalLikeColor(color)));
-					if (poolBlock.isFabulous()) {
-						float time = (ClientTickHandler.getEntityTicksInGame() + ClientTickHandler.getEntityPartialTick()) * 0.005F;
-						float posOffset = pos != null ? new Random(state.getSeed(pos)).nextFloat() : 0;
-						int fabulousColor = Mth.hsvToRgb((time + posOffset) % 1f, 0.4F, 1F);
-						return optionalColor.map(color -> ARGB.multiply(fabulousColor, color))
-								.orElse(fabulousColor);
-					}
-					return optionalColor.orElse(-1);
+					return getManaPoolColor(poolBlock, state, pos);
 				},
 				getModBlocks(block -> block instanceof ManaPoolBlock pool && (pool.color != null || pool.isFabulous()))
 		);
@@ -113,6 +106,18 @@ public final class ColorHandler {
 				},
 				BotaniaBlocks.ABSTRUSE_PLATFORM, BotaniaBlocks.SPECTRAL_PLATFORM, BotaniaBlocks.INFRANGIBLE_PLATFORM
 		);
+	}
+
+	public static int getManaPoolColor(ManaPoolBlock block, BlockState state, @Nullable BlockPos pos) {
+		Optional<Integer> optionalColor = block.getOptionalColor()
+				.map(color -> ARGB.lerp(0.8f, 0xFFFFFF, MysticalPetalItem.getPetalLikeColor(color)));
+		if (block.isFabulous()) {
+			float time = (ClientTickHandler.getEntityTicksInGame() + ClientTickHandler.getEntityPartialTick()) * 0.005F;
+			float posOffset = pos != null ? new Random(state.getSeed(pos)).nextFloat() : 0;
+			int fabulousColor = Mth.hsvToRgb((time + posOffset) % 1f, 0.4F, 1F);
+			return optionalColor.map(color -> ARGB.multiply(fabulousColor, color)).orElse(fabulousColor);
+		}
+		return optionalColor.orElse(-1);
 	}
 
 	public static void submitItems(ItemHandlerConsumer items) {

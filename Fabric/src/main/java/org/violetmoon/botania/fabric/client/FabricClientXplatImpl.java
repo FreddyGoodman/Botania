@@ -13,30 +13,32 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
+import net.fabricmc.fabric.api.client.model.loading.v1.FabricModelManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 import org.violetmoon.botania.api.fabric.item.TinyPotatoRenderCallback;
 import org.violetmoon.botania.fabric.integration.sodium.SodiumFabricHelper;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 import org.violetmoon.botania.xplat.XplatAbstractions;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FabricClientXplatImpl implements ClientXplatAbstractions {
 	@Override
@@ -52,6 +54,18 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 	@Override
 	public BakedModel getResourceModel(Identifier id) {
 		return Minecraft.getInstance().getModelManager().getModel(id);
+	}
+
+	private static final Map<Identifier, ExtraModelKey<BlockStateModelPart>> BLOCK_MODEL_KEYS = new ConcurrentHashMap<>();
+
+	static ExtraModelKey<BlockStateModelPart> getBlockModelKey(Identifier id) {
+		return BLOCK_MODEL_KEYS.computeIfAbsent(id, modelId -> ExtraModelKey.create(modelId::toString));
+	}
+
+	@Override
+	public BlockStateModelPart getBlockModelPart(Identifier id) {
+		var models = (FabricModelManager) Minecraft.getInstance().getModelManager();
+		return Objects.requireNonNull(models.getModel(getBlockModelKey(id)), id::toString);
 	}
 
 	@Override
@@ -85,14 +99,6 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 	@Override
 	public void restoreLastFilter(AbstractTexture texture) {
 		((ExtendedTexture) texture).restoreLastFilter();
-	}
-
-	@Override
-	public void tessellateBlock(Level level, BlockState state, BlockPos pos, PoseStack ps, MultiBufferSource buffers, int overlay) {
-		var brd = Minecraft.getInstance().getBlockRenderer();
-		var buffer = buffers.getBuffer(ItemBlockRenderTypes.getRenderType(state, false));
-		brd.getModelRenderer().tesselateBlock(level, brd.getBlockModel(state), state, pos, ps,
-				buffer, true, RandomSource.create(), state.getSeed(pos), overlay);
 	}
 
 	@Override

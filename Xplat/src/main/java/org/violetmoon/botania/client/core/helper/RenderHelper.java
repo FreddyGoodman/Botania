@@ -547,10 +547,17 @@ public final class RenderHelper {
 			PoseStack ms, VertexConsumer buffer,
 			int uvStartX, int uvStartY, int uvEndX, int uvEndY,
 			TextureAtlasSprite icon, int color, float alpha, int light) {
-		renderIconFullBright(
-				ms, buffer,
+		renderIconCropped(ms.last(), buffer, uvStartX, uvStartY, uvEndX, uvEndY, icon, color, alpha, light);
+	}
+
+	public static void renderIconCropped(
+			PoseStack.Pose pose, VertexConsumer buffer,
+			int uvStartX, int uvStartY, int uvEndX, int uvEndY,
+			TextureAtlasSprite icon, int color, float alpha, int light) {
+		renderIcon(
+				pose, buffer,
 				uvStartX / 16F, uvStartY / 16F, uvEndX / 16F, uvEndY / 16F,
-				uvStartX / 16F, uvStartY / 16F, uvEndX / 16F, uvEndY / 16F,
+				uvStartX, uvStartY, uvEndX, uvEndY,
 				icon, color, alpha, light
 		);
 	}

@@ -157,10 +157,15 @@ public class NeoForgeClientInitializer {
 
 	@SubscribeEvent
 	public static void registerModelLoader(ModelEvent.RegisterGeometryLoaders evt) {
-		evt.register(ClientXplatAbstractions.FLOATING_FLOWER_MODEL_LOADER_ID,
-				NeoForgeFloatingFlowerModel.Loader.INSTANCE);
 		evt.register(ClientXplatAbstractions.MANA_GUN_MODEL_LOADER_ID,
 				NeoForgeManaBlasterModel.Loader.INSTANCE);
+	}
+
+	@SubscribeEvent
+	public static void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
+		NeoForgeFloatingFlowerModel.register(event);
+		StandaloneBlockModels.register(id -> event.register(NeoForgeClientXplatImpl.getBlockModelKey(id),
+				SimpleUnbakedStandaloneModel.simpleModelWrapper(id)));
 	}
 
 	@SubscribeEvent
@@ -236,6 +241,7 @@ public class NeoForgeClientInitializer {
 
 	@SubscribeEvent
 	public static void onModelBake(ModelEvent.ModifyBakingResult evt) {
+		NeoForgeFloatingFlowerModel.apply(evt);
 		MiscellaneousModels.INSTANCE.onModelBake(evt.getModelBakery(), evt.getModels());
 	}
 }

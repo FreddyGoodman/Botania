@@ -12,17 +12,15 @@ package org.violetmoon.botania.xplat;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.ServiceUtil;
@@ -30,7 +28,6 @@ import org.violetmoon.botania.api.ServiceUtil;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public interface ClientXplatAbstractions {
-	Identifier FLOATING_FLOWER_MODEL_LOADER_ID = botaniaRL("floating_flower");
 	Identifier MANA_GUN_MODEL_LOADER_ID = botaniaRL("mana_blaster");
 
 	// Event firing
@@ -47,11 +44,11 @@ public interface ClientXplatAbstractions {
 	 */
 	@Nullable
 	BakedModel getResourceModel(Identifier id);
+	BlockStateModelPart getBlockModelPart(Identifier id);
 	BakedModel wrapPlatformModel(BakedModel original);
 	int getGuiRightHeight(Player player);
 	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);
 	void restoreLastFilter(AbstractTexture texture);
-	void tessellateBlock(Level level, BlockState state, BlockPos pos, PoseStack ps, MultiBufferSource buffers, int overlay);
 	/** Marks an animated sprite as "active" for Sodium, if present. */
 	void markSpriteActive(TextureAtlasSprite sprite);
 

@@ -19,10 +19,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.client.model.TinyPotatoModel;
-import org.violetmoon.botania.client.render.block_entity.CorporeaCrystalCubeBlockEntityRenderer;
-import org.violetmoon.botania.client.render.block_entity.ManaPumpBlockEntityRenderer;
-import org.violetmoon.botania.client.render.block_entity.ManaSpreaderBlockEntityRenderer;
-import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.item.equipment.bauble.FlugelTiaraItem;
 import org.violetmoon.botania.common.item.equipment.bauble.ThirdEyeItem;
 import org.violetmoon.botania.common.item.relic.KeyOfTheKingsLawItem;
@@ -33,7 +29,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -87,24 +82,10 @@ public class MiscellaneousModels {
 		modelConsumers.keySet().forEach(consumer);
 
 		registerTaters(rm, consumer);
-		registerSpreaderComponents(consumer);
-		consumer.accept(CorporeaCrystalCubeBlockEntityRenderer.CUBE_MODEL_ID);
-		consumer.accept(ManaPumpBlockEntityRenderer.PUMP_HEAD_ID);
 
 		if (!registeredModels) {
 			registeredModels = true;
 		}
-	}
-
-	private void registerSpreaderComponents(Consumer<Identifier> consumer) {
-		Stream.of(BotaniaBlocks.MANA_SPREADER, BotaniaBlocks.PULSE_MANA_SPREADER,
-				BotaniaBlocks.ELVEN_MANA_SPREADER, BotaniaBlocks.GAIA_MANA_SPREADER
-		)
-				.flatMap(spreader -> Stream
-						.of(spreader.getSpreaderModelId(), spreader.getCoreModelId(), spreader.getScaffoldingModelId()))
-				.distinct()
-				.forEach(consumer);
-		ManaSpreaderBlockEntityRenderer.WOOL_PADDING_IDS.values().forEach(consumer);
 	}
 
 	private static void registerTaters(ResourceManager rm, Consumer<Identifier> consumer) {
