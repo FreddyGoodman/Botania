@@ -22,6 +22,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 
+import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.block.PetalApothecary;
 import org.violetmoon.botania.api.mana.ManaReceiver;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
@@ -74,7 +75,7 @@ public final class PortParityTests {
 			helper.runAtTickTime(tick, () -> {
 				sample(helper, tick, "after_tick");
 				if (tick == 10) {
-					System.out.println("BOTANIA_VERIFICATION_COMPLETE " + ID);
+					BotaniaAPI.LOGGER.info("BOTANIA_VERIFICATION_COMPLETE {}", ID);
 					helper.succeed();
 				}
 			});
@@ -90,7 +91,7 @@ public final class PortParityTests {
 
 	private static void observe(GameTestHelper helper, int tick, String phase, String subject, BlockPos pos) {
 		var receiver = (ManaReceiver) helper.getBlockEntity(pos, BlockEntity.class);
-		System.out.printf("BOTANIA_VERIFICATION_SAMPLE %s %d %s %s mana %d%n",
+		BotaniaAPI.LOGGER.info("BOTANIA_VERIFICATION_SAMPLE {} {} {} {} mana {}",
 				ID, tick, phase, subject, receiver.getCurrentMana());
 	}
 
@@ -156,12 +157,12 @@ public final class PortParityTests {
 	}
 
 	private static void sample(String id, int tick, String subject, String field, Object value) {
-		System.out.printf("BOTANIA_VERIFICATION_SAMPLE %s %d after_tick %s %s %s%n",
+		BotaniaAPI.LOGGER.info("BOTANIA_VERIFICATION_SAMPLE {} {} after_tick {} {} {}",
 				id, tick, subject, field, value);
 	}
 
 	private static void complete(GameTestHelper helper, String id) {
-		System.out.println("BOTANIA_VERIFICATION_COMPLETE " + id);
+		BotaniaAPI.LOGGER.info("BOTANIA_VERIFICATION_COMPLETE {}", id);
 		helper.succeed();
 	}
 }

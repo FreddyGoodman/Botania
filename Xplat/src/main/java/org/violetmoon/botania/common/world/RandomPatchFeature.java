@@ -48,6 +48,7 @@ public class RandomPatchFeature extends Feature<RandomPatchFeature.Configuration
 	public record Configuration(int tries, int horizontalSpread, int verticalSpread, Holder<PlacedFeature> feature)
 			implements
 				FeatureConfiguration {
+
 		public static final Codec<Configuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				ExtraCodecs.POSITIVE_INT.optionalFieldOf("tries", 128).forGetter(Configuration::tries),
 				ExtraCodecs.intRange(0, Integer.MAX_VALUE - 1).optionalFieldOf("xz_spread", 7).forGetter(Configuration::horizontalSpread),

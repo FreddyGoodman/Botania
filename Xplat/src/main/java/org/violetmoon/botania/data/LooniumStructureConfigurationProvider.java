@@ -47,7 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -786,9 +785,10 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 			piglinNbt.putBoolean("IsImmuneToZombification", true);
 		}
 
-		MemoryMap memories = MemoryMap.of(Stream.of(MemoryModuleType.UNIVERSAL_ANGER,
-				MemoryModuleType.ADMIRING_DISABLED, MemoryModuleType.ATE_RECENTLY)
-				.map(type -> new MemoryMap.Value<>(type, ExpirableValue.of(true))));
+		MemoryMap memories = new MemoryMap.Builder()
+				.add(MemoryModuleType.UNIVERSAL_ANGER, ExpirableValue.of(true))
+				.add(MemoryModuleType.ADMIRING_DISABLED, ExpirableValue.of(true))
+				.build();
 		DataResult<Tag> dataResult = Brain.Packed.CODEC.encodeStart(NbtOps.INSTANCE, new Brain.Packed(memories));
 		dataResult.resultOrPartial(BotaniaAPI.LOGGER::error).ifPresent(tag -> piglinNbt.put("Brain", tag));
 
