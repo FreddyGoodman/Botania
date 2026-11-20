@@ -82,12 +82,12 @@ public class FloatingFlowerModelProvider implements DataProvider {
 						top = botaniaRL("block/island_top");
 						side = botaniaRL("block/island_side");
 					} else {
-						top = TextureMapping.getBlockTexture(seedsBlock, "_top");
-						side = TextureMapping.getBlockTexture(seedsBlock, "_side");
+						top = TextureMapping.getBlockTexture(seedsBlock, "_top").sprite();
+						side = TextureMapping.getBlockTexture(seedsBlock, "_side").sprite();
 					}
 				} else if (item == Items.SNOWBALL) {
-					top = TextureMapping.getBlockTexture(Blocks.SNOW);
-					side = TextureMapping.getBlockTexture(Blocks.GRASS_BLOCK, "_snow");
+					top = TextureMapping.getBlockTexture(Blocks.SNOW).sprite();
+					side = TextureMapping.getBlockTexture(Blocks.GRASS_BLOCK, "_snow").sprite();
 				} else {
 					throw new IllegalStateException("Don't know how to generate island model " + name);
 				}

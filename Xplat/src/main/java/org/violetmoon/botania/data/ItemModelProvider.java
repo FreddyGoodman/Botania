@@ -19,11 +19,13 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.client.data.models.model.DelegatedModel;
+import net.minecraft.client.data.models.model.ModelInstance;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -63,7 +65,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -117,7 +118,7 @@ public class ItemModelProvider implements DataProvider {
 		Set<Item> items = BuiltInRegistries.ITEM.stream()
 				.filter(item -> BotaniaAPI.MODID.equals(BuiltInRegistries.ITEM.getKey(item).getNamespace()))
 				.collect(Collectors.toSet());
-		Map<Identifier, Supplier<JsonElement>> map = new HashMap<>();
+		Map<Identifier, ModelInstance> map = new HashMap<>();
 		registerItemBlocks(takeAll(items, item -> item instanceof BlockItem).stream()
 				.map(item -> (BlockItem) item)
 				.collect(Collectors.toSet()), map::put);
@@ -127,7 +128,7 @@ public class ItemModelProvider implements DataProvider {
 		PackOutput.PathProvider modelPathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
 		List<CompletableFuture<?>> outputList = new ArrayList<>();
 
-		for (Map.Entry<Identifier, Supplier<JsonElement>> e : map.entrySet()) {
+		for (Map.Entry<Identifier, ModelInstance> e : map.entrySet()) {
 			Identifier id = e.getKey();
 			outputList.add(DataProvider.saveStable(output, e.getValue().get(), modelPathProvider.json(id)));
 		}
@@ -135,7 +136,7 @@ public class ItemModelProvider implements DataProvider {
 		return CompletableFuture.allOf(outputList.toArray(CompletableFuture[]::new));
 	}
 
-	private static void registerItems(Set<Item> items, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
+	private static void registerItems(Set<Item> items, BiConsumer<Identifier, ModelInstance> consumer) {
 		// Written manually
 		items.remove(BotaniaItems.MANA_BLASTER);
 
@@ -149,7 +150,7 @@ public class ItemModelProvider implements DataProvider {
 				lens = botaniaRL("item/lens");
 			}
 			GENERATED_1.create(ModelLocationUtils.getModelLocation(item),
-					TextureMapping.layer0(lens).put(LAYER1, TextureMapping.getItemTexture(item)), consumer);
+					TextureMapping.layer0(new Material(lens)).put(LAYER1, TextureMapping.getItemTexture(item)), consumer);
 		});
 
 		GENERATED_1.create(ModelLocationUtils.getModelLocation(BotaniaItems.TAINTED_BLOOD_PENDANT),
@@ -207,8 +208,8 @@ public class ItemModelProvider implements DataProvider {
 	}
 
 	private static void singleGeneratedOverride(Item item, Identifier overrideModel, Identifier predicate,
-			double value, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
-		ModelTemplates.FLAT_ITEM.create(overrideModel, TextureMapping.layer0(overrideModel), consumer);
+			double value, BiConsumer<Identifier, ModelInstance> consumer) {
+		ModelTemplates.FLAT_ITEM.create(overrideModel, TextureMapping.layer0(new Material(overrideModel)), consumer);
 		GENERATED_OVERRIDES.create(ModelLocationUtils.getModelLocation(item),
 				TextureMapping.layer0(item),
 				new OverrideHolder().add(overrideModel, Pair.of(predicate, value)),
@@ -216,13 +217,13 @@ public class ItemModelProvider implements DataProvider {
 	}
 
 	private static void singleGeneratedSuffixOverride(Item item, String suffix, Identifier predicate,
-			double value, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
+			double value, BiConsumer<Identifier, ModelInstance> consumer) {
 		singleGeneratedOverride(item, ModelLocationUtils.getModelLocation(item, suffix), predicate, value, consumer);
 	}
 
 	private static void singleHandheldOverride(Item item, Identifier overrideModel, Identifier predicate,
-			double value, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
-		ModelTemplates.FLAT_HANDHELD_ITEM.create(overrideModel, TextureMapping.layer0(overrideModel), consumer);
+			double value, BiConsumer<Identifier, ModelInstance> consumer) {
+		ModelTemplates.FLAT_HANDHELD_ITEM.create(overrideModel, TextureMapping.layer0(new Material(overrideModel)), consumer);
 		HANDHELD_OVERRIDES.create(ModelLocationUtils.getModelLocation(item),
 				TextureMapping.layer0(item),
 				new OverrideHolder()
@@ -231,11 +232,11 @@ public class ItemModelProvider implements DataProvider {
 	}
 
 	private static void singleHandheldSuffixOverride(Item item, String suffix, Identifier predicate, double value,
-			BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
+			BiConsumer<Identifier, ModelInstance> consumer) {
 		singleHandheldOverride(item, ModelLocationUtils.getModelLocation(item, suffix), predicate, value, consumer);
 	}
 
-	private static void registerItemOverrides(Set<Item> items, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
+	private static void registerItemOverrides(Set<Item> items, BiConsumer<Identifier, ModelInstance> consumer) {
 		// Written manually
 		items.remove(BotaniaItems.LIVINGWOOD_BOW);
 		items.remove(BotaniaItems.CRYSTAL_BOW);
@@ -250,7 +251,7 @@ public class ItemModelProvider implements DataProvider {
 		for (int i = 1; i < BaseBrewItem.DEFAULT_USES_FLASK; i++) {
 			Identifier overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.BREW_FLASK, "_" + i);
 			GENERATED_1.create(overrideModel,
-					TextureMapping.layer0(BotaniaItems.ALFGLASS_FLASK).put(LAYER1, overrideModel),
+					TextureMapping.layer0(BotaniaItems.ALFGLASS_FLASK).put(LAYER1, new Material(overrideModel)),
 					consumer);
 
 			flaskOverrides.add(overrideModel, Pair.of(botaniaRL("swigs_taken"), (double) i / (BaseBrewItem.DEFAULT_USES_FLASK - 1)));
@@ -266,7 +267,7 @@ public class ItemModelProvider implements DataProvider {
 		for (int i = 1; i < BaseBrewItem.DEFAULT_USES_VIAL; i++) {
 			Identifier overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.BREW_VIAL, "_" + i);
 			GENERATED_1.create(overrideModel,
-					TextureMapping.layer0(BotaniaItems.MANAGLASS_VIAL).put(LAYER1, overrideModel),
+					TextureMapping.layer0(BotaniaItems.MANAGLASS_VIAL).put(LAYER1, new Material(overrideModel)),
 					consumer);
 			vialOverrides.add(overrideModel, Pair.of(botaniaRL("swigs_taken"), (double) i / (BaseBrewItem.DEFAULT_USES_VIAL - 1)));
 		}
@@ -280,7 +281,7 @@ public class ItemModelProvider implements DataProvider {
 		items.remove(BotaniaItems.ELEMENTIUM_SHEARS);
 
 		Identifier vuvuzela = botaniaRL("item/vuvuzela");
-		ModelTemplates.FLAT_HANDHELD_ITEM.create(vuvuzela, TextureMapping.layer0(vuvuzela), consumer);
+		ModelTemplates.FLAT_HANDHELD_ITEM.create(vuvuzela, TextureMapping.layer0(new Material(vuvuzela)), consumer);
 		// defined manually to apply display transforms:
 		items.remove(BotaniaItems.HORN_OF_THE_WILD);
 		items.remove(BotaniaItems.HORN_OF_THE_CANOPY);
@@ -301,7 +302,7 @@ public class ItemModelProvider implements DataProvider {
 		OverrideHolder bottleOverrides = new OverrideHolder();
 		for (int i = 1; i < BottledManaItem.SWIGS; i++) {
 			Identifier overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.MANA_IN_A_BOTTLE, "_" + i);
-			ModelTemplates.FLAT_ITEM.create(overrideModel, TextureMapping.layer0(overrideModel), consumer);
+			ModelTemplates.FLAT_ITEM.create(overrideModel, TextureMapping.layer0(new Material(overrideModel)), consumer);
 			bottleOverrides.add(overrideModel, Pair.of(botaniaRL("swigs_taken"), (double) i / (BottledManaItem.SWIGS - 1)));
 		}
 		GENERATED_OVERRIDES.create(ModelLocationUtils.getModelLocation(BotaniaItems.MANA_IN_A_BOTTLE),
@@ -344,13 +345,13 @@ public class ItemModelProvider implements DataProvider {
 		items.remove(BotaniaItems.MANUFACTORY_HALO);
 
 		Identifier enabledModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_active");
-		ModelTemplates.FLAT_HANDHELD_ITEM.create(enabledModel, TextureMapping.layer0(enabledModel), consumer);
+		ModelTemplates.FLAT_HANDHELD_ITEM.create(enabledModel, TextureMapping.layer0(new Material(enabledModel)), consumer);
 
 		Identifier tippedModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_tipped");
-		ModelTemplates.FLAT_HANDHELD_ITEM.create(tippedModel, TextureMapping.layer0(tippedModel), consumer);
+		ModelTemplates.FLAT_HANDHELD_ITEM.create(tippedModel, TextureMapping.layer0(new Material(tippedModel)), consumer);
 
 		Identifier tippedEnabledModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_tipped_active");
-		ModelTemplates.FLAT_HANDHELD_ITEM.create(tippedEnabledModel, TextureMapping.layer0(tippedEnabledModel), consumer);
+		ModelTemplates.FLAT_HANDHELD_ITEM.create(tippedEnabledModel, TextureMapping.layer0(new Material(tippedEnabledModel)), consumer);
 
 		HANDHELD_OVERRIDES.create(ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER),
 				TextureMapping.layer0(BotaniaItems.TERRA_SHATTERER),
@@ -368,7 +369,7 @@ public class ItemModelProvider implements DataProvider {
 		registerWandModels(items, consumer, BotaniaItems.WAND_OF_THE_ELVEN_FOREST);
 	}
 
-	private static void registerWandModels(Set<Item> items, BiConsumer<Identifier, Supplier<JsonElement>> consumer, Item wandType) {
+	private static void registerWandModels(Set<Item> items, BiConsumer<Identifier, ModelInstance> consumer, Item wandType) {
 		TextureMapping twigWandTextures = TextureMapping.layer0(wandType)
 				.put(LAYER1, TextureMapping.getItemTexture(wandType, "_top"))
 				.put(LAYER2, TextureMapping.getItemTexture(wandType, "_bottom"));
@@ -384,7 +385,7 @@ public class ItemModelProvider implements DataProvider {
 	}
 
 	@SuppressWarnings("SuspiciousMethodCalls")
-	private void registerItemBlocks(Set<BlockItem> itemBlocks, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
+	private void registerItemBlocks(Set<BlockItem> itemBlocks, BiConsumer<Identifier, ModelInstance> consumer) {
 		// Manually written
 		itemBlocks.remove(BotaniaBlocks.CORPOREA_CRYSTAL_CUBE.asItem());
 
@@ -395,10 +396,11 @@ public class ItemModelProvider implements DataProvider {
 		});
 
 		GENERATED_1.create(ModelLocationUtils.getModelLocation(BotaniaBlocks.ANIMATED_TORCH.asItem()),
-				TextureMapping.layer0(Blocks.REDSTONE_TORCH).put(LAYER1, botaniaRL("block/animated_torch_glimmer")), consumer);
+				TextureMapping.layer0(Blocks.REDSTONE_TORCH).put(LAYER1, new Material(botaniaRL("block/animated_torch_glimmer"))), consumer);
 		itemBlocks.remove(BotaniaBlocks.ANIMATED_TORCH.asItem());
 
-		ModelTemplates.SKULL_INVENTORY.create(ModelLocationUtils.getModelLocation(BotaniaBlocks.GAIA_HEAD.asItem()), new TextureMapping(), consumer);
+		consumer.accept(ModelLocationUtils.getModelLocation(BotaniaBlocks.GAIA_HEAD.asItem()),
+				new DelegatedModel(Identifier.withDefaultNamespace("item/template_skull")));
 		itemBlocks.remove(BotaniaBlocks.GAIA_HEAD.asItem());
 
 		takeAll(itemBlocks, item -> item.getBlock() instanceof TallMysticalFlowerBlock).forEach(
@@ -423,7 +425,7 @@ public class ItemModelProvider implements DataProvider {
 			String name = BuiltInRegistries.ITEM.getKey(item).getPath();
 			String baseName = name.substring(0, name.length() - "_pane".length());
 			ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item),
-					TextureMapping.layer0(botaniaRL("block/" + baseName)), consumer);
+					TextureMapping.layer0(new Material(botaniaRL("block/" + baseName))), consumer);
 		});
 
 		Predicate<BlockItem> defaultGenerated = item -> {
@@ -440,7 +442,7 @@ public class ItemModelProvider implements DataProvider {
 		takeAll(itemBlocks, item -> item.getBlock() instanceof FlowerMotifBlock).forEach(item -> {
 			String name = BuiltInRegistries.ITEM.getKey(item).getPath();
 			Identifier texName = botaniaRL("block/" + name.replace("_motif", ""));
-			ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item), TextureMapping.layer0(texName), consumer);
+			ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item), TextureMapping.layer0(new Material(texName)), consumer);
 		});
 
 		takeAll(itemBlocks, item -> item.getBlock() instanceof ManaPoolBlock).forEach(item -> {
@@ -471,7 +473,7 @@ public class ItemModelProvider implements DataProvider {
 					String name = BuiltInRegistries.ITEM.getKey(item).getPath();
 					String baseName = name.substring(0, name.length() - "_wall".length()) + "_log";
 					ModelTemplates.WALL_INVENTORY.create(ModelLocationUtils.getModelLocation(item),
-							new TextureMapping().put(TextureSlot.WALL, botaniaRL("block/" + baseName)), consumer);
+							new TextureMapping().put(TextureSlot.WALL, new Material(botaniaRL("block/" + baseName))), consumer);
 				});
 		takeAll(itemBlocks, item -> item.getBlock() instanceof ButtonBlock).forEach(
 				item -> consumer.accept(ModelLocationUtils.getModelLocation(item),
@@ -488,7 +490,7 @@ public class ItemModelProvider implements DataProvider {
 			String tentativeBaseName = name.substring(0, name.length() - "_wall".length());
 			String baseName = tentativeBaseName.endsWith("brick") ? tentativeBaseName + "s" : tentativeBaseName;
 			ModelTemplates.WALL_INVENTORY.create(ModelLocationUtils.getModelLocation(item),
-					new TextureMapping().put(TextureSlot.WALL, botaniaRL("block/" + baseName)), consumer);
+					new TextureMapping().put(TextureSlot.WALL, new Material(botaniaRL("block/" + baseName))), consumer);
 		});
 
 		takeAll(itemBlocks, item -> item.getBlock() instanceof ManaSpreaderBlock).forEach(item -> {
@@ -514,17 +516,17 @@ public class ItemModelProvider implements DataProvider {
 			DyeColor coverColor = block.getCoverColor();
 			if (coverColor != null) {
 				TextureMapping textureMapping = new TextureMapping()
-						.put(OUTSIDE, botaniaRL("block/" + outside))
-						.put(TextureSlot.INSIDE, botaniaRL("block/" + inside))
+						.put(OUTSIDE, new Material(botaniaRL("block/" + outside)))
+						.put(TextureSlot.INSIDE, new Material(botaniaRL("block/" + inside)))
 						.put(CORE, TextureMapping.getBlockTexture(baseBlock, "_core"))
 						.put(TextureSlot.WOOL, TextureMapping.getBlockTexture(ColorHelper.WOOL_MAP.apply(coverColor)));
 				COVERED_SPREADER.create(ModelLocationUtils.getModelLocation(item), textureMapping, consumer);
 			} else {
 				TextureMapping textureMapping = new TextureMapping()
 						.put(TextureSlot.SIDE, TextureMapping.getBlockTexture(baseBlock, "_side"))
-						.put(OUTSIDE, botaniaRL("block/" + outside))
+						.put(OUTSIDE, new Material(botaniaRL("block/" + outside)))
 						.put(TextureSlot.BACK, TextureMapping.getBlockTexture(baseBlock, "_back"))
-						.put(TextureSlot.INSIDE, botaniaRL("block/" + inside))
+						.put(TextureSlot.INSIDE, new Material(botaniaRL("block/" + inside)))
 						.put(CORE, TextureMapping.getBlockTexture(baseBlock, "_core"));
 				SPREADER.create(ModelLocationUtils.getModelLocation(item), textureMapping, consumer);
 			}
@@ -620,15 +622,15 @@ public class ItemModelProvider implements DataProvider {
 					}""";
 	private static final JsonElement BUILTIN_ENTITY_DISPLAY = new Gson().fromJson(BUILTIN_ENTITY_DISPLAY_STR, JsonElement.class);
 
-	protected void builtinEntity(Item item, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
+	protected void builtinEntity(Item item, BiConsumer<Identifier, ModelInstance> consumer) {
 		builtinEntity(item, consumer, 1.0);
 	}
 
-	protected void builtinEntity(Item item, BiConsumer<Identifier, Supplier<JsonElement>> consumer, double scale) {
+	protected void builtinEntity(Item item, BiConsumer<Identifier, ModelInstance> consumer, double scale) {
 		builtinEntity(item, consumer, scale, 0.0);
 	}
 
-	protected void builtinEntity(Item item, BiConsumer<Identifier, Supplier<JsonElement>> consumer, double scale, double handYOffset) {
+	protected void builtinEntity(Item item, BiConsumer<Identifier, ModelInstance> consumer, double scale, double handYOffset) {
 		final JsonElement display;
 		if (handYOffset == 0.0 && scale == 1.0) {
 			display = BUILTIN_ENTITY_DISPLAY;
