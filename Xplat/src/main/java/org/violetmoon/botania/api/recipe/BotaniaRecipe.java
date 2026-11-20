@@ -61,6 +61,11 @@ public interface BotaniaRecipe<T extends RecipeInput> extends Recipe<T> {
 	}
 
 	@Override
+	default boolean isSpecial() {
+		return true;
+	}
+
+	@Override
 	default PlacementInfo placementInfo() {
 		return PlacementInfo.NOT_PLACEABLE;
 	}

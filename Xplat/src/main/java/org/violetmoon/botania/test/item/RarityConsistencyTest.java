@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -56,8 +57,6 @@ public class RarityConsistencyTest {
 		boolean failedAnyChecks = false;
 		Set<Item> craftableItems = new HashSet<>();
 		for (RecipeHolder<?> recipeHolder : helper.getLevel().recipeAccess().getRecipes()) {
-			Rarity highestIngredientRarity = Rarity.COMMON;
-			Set<ItemStack> highestRarityIngredients = new LinkedHashSet<>();
 			Recipe<?> recipe = recipeHolder.value();
 			Collection<ItemStack> resultItems = getResultItems(helper, recipe);
 			if (resultItems.isEmpty() && recipeHolder.id().identifier().getNamespace().equals(BotaniaAPI.MODID)) {
@@ -71,6 +70,8 @@ public class RarityConsistencyTest {
 					// only check recipes that make Botania items
 					continue;
 				}
+				Rarity highestIngredientRarity = Rarity.COMMON;
+				Set<ItemStack> highestRarityIngredients = new LinkedHashSet<>();
 				var ingredients = switch (recipe) {
 					case BotaniaRecipe<?> botaniaRecipe -> botaniaRecipe.getIngredients();
 					case BotaniaSpecialRecipe specialRecipe -> specialRecipe.getIngredients();
@@ -134,6 +135,10 @@ public class RarityConsistencyTest {
 
 	private static Collection<ItemStack> getResultItems(GameTestHelper helper, Recipe<?> recipe) {
 		switch (recipe) {
+			// Trimming decorates an existing item and preserves its material rarity.
+			case SmithingTrimRecipe trimRecipe -> {
+				return List.of();
+			}
 			case ElvenTradeRecipe tradeRecipe -> {
 				return tradeRecipe.getOutputs();
 			}

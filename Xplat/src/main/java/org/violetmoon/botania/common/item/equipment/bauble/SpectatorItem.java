@@ -25,7 +25,7 @@ import net.minecraft.world.entity.animal.allay.Allay;
 import net.minecraft.world.entity.animal.equine.AbstractChestedHorse;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.minecart.AbstractMinecartContainer;
+import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -168,8 +168,8 @@ public class SpectatorItem extends BaubleItem {
 						entityIds.add(e.getId());
 					}
 				}
-			} else if (e instanceof Container inv && (!(inv instanceof AbstractMinecartContainer minecart)
-					|| minecart.getLootTable() == null)) {
+			} else if (e instanceof Container inv && (!(inv instanceof ContainerEntity vehicle)
+					|| vehicle.getContainerLootTable() == null)) {
 				if (scanInventory(inv, mainHandStack, offHandStack)) {
 					entityIds.add(e.getId());
 				}

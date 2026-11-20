@@ -356,7 +356,7 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 			hasReceivedInitialPacket = true;
 		}
 
-		if (input.getInt("redstoneRecheck").isPresent()) {
+		if (input.getString("redstoneRecheck").isPresent()) {
 			redstoneRecheck = true;
 		}
 	}

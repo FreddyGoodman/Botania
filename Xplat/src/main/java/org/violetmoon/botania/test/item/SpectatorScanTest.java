@@ -23,6 +23,9 @@ import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.Vec3;
@@ -81,6 +84,10 @@ public class SpectatorScanTest {
 				registries.lookupOrThrow(Registries.VILLAGER_PROFESSION).getOrThrow(VillagerProfession.TOOLSMITH),
 				2));
 
+		var offers = new MerchantOffers();
+		offers.add(new MerchantOffer(new ItemCost(Items.IRON_INGOT, 4), new ItemStack(Items.EMERALD), 12, 2, 0.05F));
+		villager.setOffers(offers);
+
 		// set inventory content
 		var regularChestCart = helper.spawn(EntityType.CHEST_MINECART, POSITION_CART_NORMAL);
 		regularChestCart.setItem(2, new ItemStack(Items.COAL));
@@ -118,7 +125,7 @@ public class SpectatorScanTest {
 		((SpectatorItem) BotaniaItems.THE_SPECTATOR).scanForItems(spectatorStack, player);
 
 		// ensure loot content has not been rolled
-		TestingUtil.assertThat(helper, lootChestCart.getLootTable() != null, () -> "Chest loot was rolled");
+		TestingUtil.assertThat(helper, lootChestCart.getContainerLootTable() != null, () -> "Chest loot was rolled");
 		TestingUtil.assertThat(helper, lootChest.getLootTable() != null, () -> "Chest loot was rolled");
 
 		// check that exactly the relevant positions have been found
@@ -129,12 +136,12 @@ public class SpectatorScanTest {
 				() -> "Chest position " + helper.absolutePos(POSITION_CHEST_NORMAL) + " not in result, but found " + chestPos);
 
 		List<Integer> entities = spectatorStack.getOrDefault(BotaniaDataComponents.SPECTATOR_HIGHLIGHT_ENTITIES, Collections.emptyList());
-		TestingUtil.assertEquals(helper, entities.size(), 5, () -> "Expected 5 entity hits, but got " + entities.size());
 		TestingUtil.assertThat(helper, entities.contains(villager.getId()), () -> "Villager not in result");
 		TestingUtil.assertThat(helper, entities.contains(itemEntity.getId()), () -> "Item entity not in result");
 		TestingUtil.assertThat(helper, entities.contains(regularChestCart.getId()), () -> "Minecart not in result");
 		TestingUtil.assertThat(helper, entities.contains(donkey.getId()), () -> "Donkey not in result");
 		TestingUtil.assertThat(helper, entities.contains(allay.getId()), () -> "Allay not in result");
+		TestingUtil.assertEquals(helper, entities.size(), 5, () -> "Expected 5 entity hits, but got " + entities.size());
 
 		helper.killAllEntities();
 		helper.succeed();

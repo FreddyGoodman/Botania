@@ -164,7 +164,7 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
 		}
 
-		if (input.getInt("redstoneRecheck").isPresent()) {
+		if (input.getString("redstoneRecheck").isPresent()) {
 			redstoneRecheck = true;
 		}
 	}

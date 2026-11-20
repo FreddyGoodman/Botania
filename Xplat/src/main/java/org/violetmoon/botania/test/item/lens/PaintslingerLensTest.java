@@ -24,7 +24,6 @@ import org.violetmoon.botania.test.TestingUtil;
 
 public class PaintslingerLensTest {
 
-	// TODO: test structure data needs upgrading; maybe useful as first datafixer test, but optional result for now
 	public void testPainting(GameTestHelper helper) {
 		BlockPos spreaderPos = new BlockPos(2, 5, 2);
 		BlockPos buttonPos = new BlockPos(2, 5, 3);
