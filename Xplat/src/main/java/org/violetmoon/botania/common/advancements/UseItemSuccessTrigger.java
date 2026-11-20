@@ -11,6 +11,7 @@ package org.violetmoon.botania.common.advancements;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.*;
 import net.minecraft.resources.Identifier;
@@ -50,7 +51,7 @@ public class UseItemSuccessTrigger extends SimpleCriterionTrigger<UseItemSuccess
 
 		public static Criterion<Instance> used(ItemLike... items) {
 			return INSTANCE.createCriterion(new Instance(Optional.empty(),
-					Optional.of(ItemPredicate.Builder.item().of(items).build()), Optional.empty()));
+					Optional.of(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, items).build()), Optional.empty()));
 		}
 
 		boolean test(ItemStack stack, ServerLevel world, double x, double y, double z) {

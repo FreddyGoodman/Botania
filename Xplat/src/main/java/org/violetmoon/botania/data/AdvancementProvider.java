@@ -10,9 +10,13 @@ package org.violetmoon.botania.data;
 
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.criterion.*;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.predicates.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentExactPredicate;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +26,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -39,6 +43,7 @@ import org.violetmoon.botania.common.item.equipment.bauble.FlugelTiaraItem;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -56,37 +61,36 @@ public class AdvancementProvider {
 		@Override
 		public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> writer) {
 			Criterion<InventoryChangeTrigger.TriggerInstance> elvenLexicon = InventoryChangeTrigger.TriggerInstance.hasItems(
-					ItemPredicate.Builder.item().of(BotaniaItems.LEXICA_BOTANIA)
-							.hasComponents(DataComponentPredicate.builder()
-									.expect(BotaniaDataComponents.ELVEN_UNLOCK, Unit.INSTANCE).build())
+					ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, BotaniaItems.LEXICA_BOTANIA)
+							.withComponents(exactComponent(BotaniaDataComponents.ELVEN_UNLOCK, Unit.INSTANCE))
 							.build()
 			);
 
 			// Main progression line
 			AdvancementHolder root = Advancement.Builder.advancement()
 					.display(rootDisplay(BotaniaItems.LEXICA_BOTANIA, "itemGroup.botania",
-							"botania.desc", botaniaRL("textures/block/livingwood_log.png")))
-					.addCriterion("flower", onPickup(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
+							"botania.desc", botaniaRL("block/livingwood_log")))
+					.addCriterion("flower", onPickup(registries, BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
 					.save(writer, mainId("root"));
 
 			AdvancementHolder flowerPickup = Advancement.Builder.advancement()
 					.display(simple(BotaniaBlocks.PINK_MYSTICAL_FLOWER, "flowerPickup", AdvancementType.TASK))
 					.parent(root)
-					.addCriterion("flower", onPickup(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
-					.addCriterion("double_flower", onPickup(BotaniaTags.Items.TALL_MYSTICAL_FLOWERS))
+					.addCriterion("flower", onPickup(registries, BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
+					.addCriterion("double_flower", onPickup(registries, BotaniaTags.Items.TALL_MYSTICAL_FLOWERS))
 					.requirements(AdvancementRequirements.Strategy.OR)
 					.save(writer, mainId("flower_pickup"));
 
 			AdvancementHolder manaPoolPickup = Advancement.Builder.advancement()
 					.display(simple(BotaniaBlocks.MANA_POOL, "manaPoolPickup", AdvancementType.TASK))
 					.parent(flowerPickup)
-					.addCriterion("pickup", onPickup(BotaniaTags.Items.ALL_MANA_POOLS))
+					.addCriterion("pickup", onPickup(registries, BotaniaTags.Items.ALL_MANA_POOLS))
 					.save(writer, mainId("mana_pool_pickup"));
 
 			AdvancementHolder runePickup = Advancement.Builder.advancement()
 					.display(simple(BotaniaBlocks.RUNIC_ALTAR, "runePickup", AdvancementType.TASK))
 					.parent(manaPoolPickup)
-					.addCriterion("rune", onPickup(BotaniaTags.Items.RUNES))
+					.addCriterion("rune", onPickup(registries, BotaniaTags.Items.RUNES))
 					.save(writer, mainId("rune_pickup"));
 
 			AdvancementHolder terrasteelPickup = Advancement.Builder.advancement()
@@ -105,13 +109,13 @@ public class AdvancementProvider {
 					.display(simple(BotaniaBlocks.GAIA_HEAD, "gaiaGuardianKill", AdvancementType.TASK))
 					.parent(elfPortalOpen)
 					.addCriterion("guardian", KilledTrigger.TriggerInstance
-							.playerKilledEntity(EntityPredicate.Builder.entity().of(BotaniaEntities.GAIA_GUARDIAN)))
+							.playerKilledEntity(EntityPredicate.Builder.entity().of(BuiltInRegistries.ENTITY_TYPE, BotaniaEntities.GAIA_GUARDIAN)))
 					.save(writer, mainId("gaia_guardian_kill"));
 
 			AdvancementHolder enderEssenceMake = Advancement.Builder.advancement()
 					.display(simple(BotaniaItems.PURE_ENDER_ESSENCE, "enderEssenceMake", AdvancementType.TASK))
 					.parent(elfPortalOpen)
-					.addCriterion("essence", onPickup(BotaniaTags.Items.ENDER_ESSENCES))
+					.addCriterion("essence", onPickup(registries, BotaniaTags.Items.ENDER_ESSENCES))
 					.save(writer, mainId("ender_essence_make"));
 
 			// Parent: root
@@ -130,7 +134,7 @@ public class AdvancementProvider {
 			Advancement.Builder.advancement()
 					.display(simple(BotaniaBlocks.ENDOFLAME, "generatingFlower", AdvancementType.TASK))
 					.parent(flowerPickup)
-					.addCriterion("flower", onPickup(BotaniaTags.Items.GENERATING_SPECIAL_FLOWERS))
+					.addCriterion("flower", onPickup(registries, BotaniaTags.Items.GENERATING_SPECIAL_FLOWERS))
 					.save(writer, mainId("generating_flower"));
 
 			// Parent: mana pool
@@ -143,7 +147,7 @@ public class AdvancementProvider {
 			Advancement.Builder.advancement()
 					.display(simple(BotaniaBlocks.BELLETHORNE, "functionalFlower", AdvancementType.TASK))
 					.parent(manaPoolPickup)
-					.addCriterion("flower", onPickup(BotaniaTags.Items.FUNCTIONAL_SPECIAL_FLOWERS))
+					.addCriterion("flower", onPickup(registries, BotaniaTags.Items.FUNCTIONAL_SPECIAL_FLOWERS))
 					.save(writer, mainId("functional_flower"));
 			Advancement.Builder.advancement()
 					.display(simple(BotaniaItems.MANA_POOL_MINECART, "manaCartCraft", AdvancementType.TASK))
@@ -166,7 +170,7 @@ public class AdvancementProvider {
 					.display(simple(BotaniaItems.BISCUIT_OF_TOTALITY, "manaCookieEat", AdvancementType.TASK))
 					.parent(manaPoolPickup)
 					.addCriterion("cookie",
-							ConsumeItemTrigger.TriggerInstance.usedItem(BotaniaItems.BISCUIT_OF_TOTALITY))
+							ConsumeItemTrigger.TriggerInstance.usedItem(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, BotaniaItems.BISCUIT_OF_TOTALITY)))
 					.save(writer, mainId("biscuit_of_totality_eat"));
 			Advancement.Builder.advancement()
 					.display(simple(BotaniaItems.ASSEMBLY_HALO, "craftingHaloCraft", AdvancementType.TASK))
@@ -239,12 +243,12 @@ public class AdvancementProvider {
 					.addCriterion("use_life_aggregator",
 							UseItemSuccessTrigger.Instance.used(BotaniaItems.LIFE_AGGREGATOR))
 					.save(writer, mainId("life_aggregator_use"));
-			DisplayInfo tiaraWings = simple(BotaniaItems.FLUGEL_TIARA, "tiaraWings", AdvancementType.TASK);
-			tiaraWings.getIcon().set(BotaniaDataComponents.TIARA_VARIANT, 1);
+			var tiaraIcon = new ItemStackTemplate(BotaniaItems.FLUGEL_TIARA,
+					DataComponentPatch.builder().set(BotaniaDataComponents.TIARA_VARIANT, 1).build());
+			DisplayInfo tiaraWings = simple(tiaraIcon, "tiaraWings", AdvancementType.TASK);
 			Criterion<?>[] variants = IntStream.range(1, FlugelTiaraItem.WING_TYPES)
-					.mapToObj(i -> ItemPredicate.Builder.item().of(BotaniaItems.FLUGEL_TIARA)
-							.hasComponents(DataComponentPredicate.builder()
-									.expect(BotaniaDataComponents.TIARA_VARIANT, i).build())
+					.mapToObj(i -> ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, BotaniaItems.FLUGEL_TIARA)
+							.withComponents(exactComponent(BotaniaDataComponents.TIARA_VARIANT, i))
 							.build())
 					.map(InventoryChangeTrigger.TriggerInstance::hasItems)
 					.toArray(Criterion<?>[]::new);
@@ -289,14 +293,14 @@ public class AdvancementProvider {
 			// Lexicon locks
 			Advancement.Builder.advancement()
 					.parent(root)
-					.addCriterion("flower", onPickup(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
-					.addCriterion("double_flower", onPickup(BotaniaTags.Items.TALL_MYSTICAL_FLOWERS))
+					.addCriterion("flower", onPickup(registries, BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
+					.addCriterion("double_flower", onPickup(registries, BotaniaTags.Items.TALL_MYSTICAL_FLOWERS))
 					.addCriterion("elven_lexicon", elvenLexicon)
 					.requirements(AdvancementRequirements.Strategy.OR)
 					.save(writer, mainId("flower_pickup_lexicon"));
 			Advancement.Builder.advancement()
 					.parent(flowerPickup)
-					.addCriterion("apothecary", onPickup(BotaniaTags.Items.PETAL_APOTHECARIES))
+					.addCriterion("apothecary", onPickup(registries, BotaniaTags.Items.PETAL_APOTHECARIES))
 					.addCriterion("elven_lexicon", elvenLexicon)
 					.requirements(AdvancementRequirements.Strategy.OR)
 					.save(writer, mainId("apothecary_pickup"));
@@ -308,14 +312,14 @@ public class AdvancementProvider {
 					.save(writer, mainId("pure_daisy_pickup"));
 			Advancement.Builder.advancement()
 					.parent(root)
-					.addCriterion("pickup", onPickup(BotaniaTags.Items.ALL_MANA_POOLS))
+					.addCriterion("pickup", onPickup(registries, BotaniaTags.Items.ALL_MANA_POOLS))
 					.addCriterion("elven_lexicon", elvenLexicon)
 					.requirements(AdvancementRequirements.Strategy.OR)
 					.save(writer, mainId("mana_pool_pickup_lexicon"));
 			Advancement.Builder.advancement()
 					.parent(flowerPickup)
 					.addCriterion("altar", onPickup(BotaniaBlocks.RUNIC_ALTAR))
-					.addCriterion("rune", onPickup(BotaniaTags.Items.RUNES))
+					.addCriterion("rune", onPickup(registries, BotaniaTags.Items.RUNES))
 					.addCriterion("elven_lexicon", elvenLexicon)
 					.requirements(AdvancementRequirements.Strategy.OR)
 					.save(writer, mainId("runic_altar_pickup"));
@@ -370,8 +374,8 @@ public class AdvancementProvider {
 					.display(rootDisplay(BotaniaItems.DICE_OF_FATE,
 							"advancement.botania_challenge",
 							"advancement.botania_challenge.desc",
-							botaniaRL("textures/block/livingrock_bricks.png")))
-					.addCriterion("flower", onPickup(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
+							botaniaRL("block/livingrock_bricks")))
+					.addCriterion("flower", onPickup(registries, BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
 					.save(writer, challengeId("root"));
 
 			// hardmode Gaia Guardian related
@@ -383,7 +387,7 @@ public class AdvancementProvider {
 					.rewards(AdvancementRewards.Builder.experience(100))
 					.addCriterion("guardian", KilledTrigger.TriggerInstance.playerKilledEntity(
 							EntityPredicate.Builder.entity()
-									.of(BotaniaEntities.GAIA_GUARDIAN)
+									.of(BuiltInRegistries.ENTITY_TYPE, BotaniaEntities.GAIA_GUARDIAN)
 									.nbt(new NbtPredicate(hardmodeNbt))))
 					.save(writer, challengeId("gaia_guardian_hardmode"));
 
@@ -442,9 +446,8 @@ public class AdvancementProvider {
 					.parent(root)
 					.rewards(AdvancementRewards.Builder.experience(65))
 					.addCriterion("use_l20_shard", InventoryChangeTrigger.TriggerInstance.hasItems(
-							ItemPredicate.Builder.item().of(BotaniaItems.SHARD_OF_LAPUTA).hasComponents(
-									DataComponentPredicate.builder()
-											.expect(BotaniaDataComponents.SHARD_LEVEL, LaputaShardItem.MAX_LEVEL).build())
+							ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, BotaniaItems.SHARD_OF_LAPUTA)
+									.withComponents(exactComponent(BotaniaDataComponents.SHARD_LEVEL, LaputaShardItem.MAX_LEVEL))
 									.build()))
 					.save(writer, challengeId("l20_shard_use"));
 			Advancement.Builder.advancement()
@@ -472,7 +475,7 @@ public class AdvancementProvider {
 				builder.addCriterion(
 						BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString(),
 						KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity()
-								.of(entityType).team(LooniumBlockEntity.LOONIUM_TEAM_NAME))
+								.of(BuiltInRegistries.ENTITY_TYPE, entityType).team(LooniumBlockEntity.LOONIUM_TEAM_NAME))
 				);
 			}
 
@@ -491,9 +494,9 @@ public class AdvancementProvider {
 				.save(consumer, id);
 	}
 
-	protected static Criterion<InventoryChangeTrigger.TriggerInstance> onPickup(TagKey<Item> tag) {
+	protected static Criterion<InventoryChangeTrigger.TriggerInstance> onPickup(HolderLookup.Provider registries, TagKey<Item> tag) {
 		return InventoryChangeTrigger.TriggerInstance.hasItems(
-				ItemPredicate.Builder.item().of(tag).build());
+				ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), tag).build());
 	}
 
 	protected static Criterion<InventoryChangeTrigger.TriggerInstance> onPickup(ItemLike... items) {
@@ -501,12 +504,20 @@ public class AdvancementProvider {
 	}
 
 	protected static ItemPredicate matchItems(ItemLike... items) {
-		return ItemPredicate.Builder.item().of(items).build();
+		return ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, items).build();
+	}
+
+	private static <T> DataComponentMatchers exactComponent(DataComponentType<T> type, T value) {
+		return new DataComponentMatchers(DataComponentExactPredicate.expect(type, value), Map.of());
 	}
 
 	protected static DisplayInfo simple(ItemLike icon, String name, AdvancementType advancementType) {
+		return simple(new ItemStackTemplate(icon.asItem()), name, advancementType);
+	}
+
+	private static DisplayInfo simple(ItemStackTemplate icon, String name, AdvancementType advancementType) {
 		String expandedName = "advancement.botania:" + name;
-		return new DisplayInfo(new ItemStack(icon.asItem()),
+		return new DisplayInfo(icon,
 				Component.translatable(expandedName),
 				Component.translatable(expandedName + ".desc"),
 				Optional.empty(), advancementType, true, true, false);
@@ -514,17 +525,17 @@ public class AdvancementProvider {
 
 	protected static DisplayInfo hidden(ItemLike icon, String name, AdvancementType advancementType) {
 		String expandedName = "advancement.botania:" + name;
-		return new DisplayInfo(new ItemStack(icon.asItem()),
+		return new DisplayInfo(new ItemStackTemplate(icon.asItem()),
 				Component.translatable(expandedName),
 				Component.translatable(expandedName + ".desc"),
 				Optional.empty(), advancementType, true, true, true);
 	}
 
 	protected static DisplayInfo rootDisplay(ItemLike icon, String titleKey, String descKey, Identifier background) {
-		return new DisplayInfo(new ItemStack(icon.asItem()),
+		return new DisplayInfo(new ItemStackTemplate(icon.asItem()),
 				Component.translatable(titleKey),
 				Component.translatable(descKey),
-				Optional.of(background), AdvancementType.TASK, false, false, false);
+				Optional.of(new ClientAsset.ResourceTexture(background)), AdvancementType.TASK, false, false, false);
 	}
 
 	private static String mainId(String name) {

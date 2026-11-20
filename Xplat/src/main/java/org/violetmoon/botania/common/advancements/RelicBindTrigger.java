@@ -11,6 +11,7 @@ package org.violetmoon.botania.common.advancements;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.*;
 import net.minecraft.resources.Identifier;
@@ -45,7 +46,7 @@ public class RelicBindTrigger extends SimpleCriterionTrigger<RelicBindTrigger.In
 
 		public static Criterion<Instance> bound(ItemLike relicItem) {
 			return INSTANCE.createCriterion(new Instance(Optional.empty(),
-					Optional.of(ItemPredicate.Builder.item().of(relicItem).build())));
+					Optional.of(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, relicItem).build())));
 		}
 
 		boolean test(ItemStack stack) {
