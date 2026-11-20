@@ -4,13 +4,18 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.DyeColor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BotaniaDataFixers {
+	// These saved IDs are fixed at schema 3945. Data fixers can be built before registry bootstrap.
+	private static final List<String> LEGACY_DYE_NAMES = List.of(
+			"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
+			"light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black");
+
 	public static final Map<String, String> RENAMED_BLOCKS;
 	public static final Map<String, String> RENAMED_ITEMS;
 
@@ -145,8 +150,7 @@ public class BotaniaDataFixers {
 		ImmutableMap.Builder<String, String> blocks = ImmutableMap.builder();
 		ImmutableMap.Builder<String, String> items = ImmutableMap.builder();
 
-		for (DyeColor dyeColor : DyeColor.values()) {
-			String color = dyeColor.getName();
+		for (String color : LEGACY_DYE_NAMES) {
 			blocks.put("botania:" + color + "_shiny_flower", "botania:" + color + "_glimmering_flower");
 			blocks.put("botania:potted_" + color + "_shiny_flower", "botania:potted_" + color + "_glimmering_flower");
 			blocks.put("botania:" + color + "_mushroom", "botania:" + color + "_shimmering_mushroom");
