@@ -67,7 +67,6 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 		Stream.of(
 				BotaniaBlocks.BIFROST_BRIDGE,
 				BotaniaBlocks.COCOON_OF_CAPRICE,
-				BotaniaBlocks.FAKE_AIR,
 				BotaniaBlocks.MANA_FLAME
 		).forEach(b -> specialCases.put(b, noDrop()));
 
@@ -112,7 +111,7 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 
 		for (Block block : BuiltInRegistries.BLOCK) {
 			Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
-			if (!BotaniaAPI.MODID.equals(blockId.getNamespace()) || specialHandling.contains(block)) {
+			if (!BotaniaAPI.MODID.equals(blockId.getNamespace()) || specialHandling.contains(block) || block.getLootTable().isEmpty()) {
 				continue;
 			}
 			if (specialCases.containsKey(block)) {
