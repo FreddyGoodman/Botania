@@ -8,14 +8,10 @@
  */
 package org.violetmoon.botania.client.render.entity;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import org.violetmoon.botania.common.entity.CorporeaSparkEntity;
-
-import java.util.Objects;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -26,10 +22,9 @@ public class CorporeaSparkRenderer extends BaseSparkRenderer<CorporeaSparkEntity
 
 	public CorporeaSparkRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
-		var atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
-		this.corporeaWorldSprite = Objects.requireNonNull(atlas.apply(botaniaRL("item/corporea_spark")));
-		this.corporeaMasterWorldSprite = Objects.requireNonNull(atlas.apply(botaniaRL("item/master_corporea_spark")));
-		this.corporeaCreativeWorldSprite = Objects.requireNonNull(atlas.apply(botaniaRL("item/creative_corporea_spark")));
+		this.corporeaWorldSprite = getItemSprite(botaniaRL("item/corporea_spark"));
+		this.corporeaMasterWorldSprite = getItemSprite(botaniaRL("item/master_corporea_spark"));
+		this.corporeaCreativeWorldSprite = getItemSprite(botaniaRL("item/creative_corporea_spark"));
 	}
 
 	@Override

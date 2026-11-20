@@ -32,6 +32,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.LayeringTransform;
 import net.minecraft.client.renderer.rendertype.OutputTarget;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
@@ -92,12 +93,12 @@ public final class RenderHelper {
 	public static final RenderType LINE_5_NO_DEPTH = lineLayer("line_5_no_depth", OVERLAY_LINES, OutputTarget.MAIN_TARGET, 64);
 	public static final RenderType LINE_8_NO_DEPTH = lineLayer("line_8_no_depth", OVERLAY_LINES, OutputTarget.MAIN_TARGET, 64);
 	private static final RenderPipeline LIT_OVERLAY_PIPELINE = litOverlayPipeline("lit_overlay", false);
-	public static final RenderType SPARK = litOverlay("spark", LIT_OVERLAY_PIPELINE, 256, true);
-	public static final RenderType ICON_OVERLAY = litOverlay("icon_overlay", LIT_OVERLAY_PIPELINE, 128, true);
-	private static final RenderType PLAIN_OVERLAY = litOverlay("plain_overlay", LIT_OVERLAY_PIPELINE, 128, false);
-	private static final RenderType MANA_POOL_WATER = litOverlay("mana_pool_water", litOverlayPipeline("mana_pool", true), 128, false);
-	private static final RenderType TERRA_PLATE = litOverlay("terrestrial_agglomeration_plate_rune", litOverlayPipeline("terrestrial_agglomeration_plate_rune", true), 128, false);
-	private static final RenderType ENCHANTER = litOverlay("mana_enchanter_rune", litOverlayPipeline("mana_enchanter_rune", true), 128, false);
+	public static final RenderType SPARK = litOverlay("spark", LIT_OVERLAY_PIPELINE, TextureAtlas.LOCATION_ITEMS, 256, true);
+	public static final RenderType ICON_OVERLAY = litOverlay("icon_overlay", LIT_OVERLAY_PIPELINE, TextureAtlas.LOCATION_BLOCKS, 128, true);
+	private static final RenderType PLAIN_OVERLAY = litOverlay("plain_overlay", LIT_OVERLAY_PIPELINE, TextureAtlas.LOCATION_BLOCKS, 128, false);
+	private static final RenderType MANA_POOL_WATER = litOverlay("mana_pool_water", litOverlayPipeline("mana_pool", true), TextureAtlas.LOCATION_BLOCKS, 128, false);
+	private static final RenderType TERRA_PLATE = litOverlay("terrestrial_agglomeration_plate_rune", litOverlayPipeline("terrestrial_agglomeration_plate_rune", true), TextureAtlas.LOCATION_BLOCKS, 128, false);
+	private static final RenderType ENCHANTER = litOverlay("mana_enchanter_rune", litOverlayPipeline("mana_enchanter_rune", true), TextureAtlas.LOCATION_BLOCKS, 128, false);
 
 	private static final RenderPipeline HALO_PIPELINE = texturedPipeline("halo", false, true);
 	private static final RenderPipeline ATLAS_HALO_PIPELINE = texturedPipeline("atlas_halo", true, true);
@@ -213,10 +214,10 @@ public final class RenderHelper {
 		return pipeline.build();
 	}
 
-	private static RenderType litOverlay(String name, RenderPipeline pipeline, int bufferSize, boolean outline) {
+	private static RenderType litOverlay(String name, RenderPipeline pipeline, Identifier atlas, int bufferSize, boolean outline) {
 		var setup = RenderSetup.builder(pipeline)
 				.bufferSize(bufferSize)
-				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
+				.withTexture("Sampler0", atlas)
 				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
 				.useLightmap();
 		if (outline) {
@@ -342,9 +343,19 @@ public final class RenderHelper {
 	}
 
 	public static void renderStar(PoseStack ms, MultiBufferSource buffers, int color, float xScale, float yScale, float zScale, long seed, float partialTicks) {
-		VertexConsumer buffer = buffers.getBuffer(STAR);
-
 		float ticks = ClientTickHandler.getEntityTicksInGame() + partialTicks;
+		renderStar(ms, buffers.getBuffer(STAR), color, xScale, yScale, zScale, seed, ticks);
+	}
+
+	public static void submitStar(PoseStack pose, SubmitNodeCollector collector, int color, float scale, long seed, float ticks) {
+		collector.submitCustomGeometry(pose, STAR, (transform, buffer) -> {
+			PoseStack geometry = new PoseStack();
+			geometry.mulPose(transform.pose());
+			renderStar(geometry, buffer, color, scale, scale, scale, seed, ticks);
+		});
+	}
+
+	private static void renderStar(PoseStack ms, VertexConsumer buffer, int color, float xScale, float yScale, float zScale, long seed, float ticks) {
 		float semiPeriodTicks = 200;
 		float f1 = Mth.abs(Mth.sin((float) Math.PI / semiPeriodTicks * ticks)) * 0.9F + 0.1F; // shift to [0.1, 1.0]
 

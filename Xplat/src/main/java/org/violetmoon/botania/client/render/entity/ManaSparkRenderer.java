@@ -8,11 +8,9 @@
  */
 package org.violetmoon.botania.client.render.entity;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +36,7 @@ public class ManaSparkRenderer extends BaseSparkRenderer<ManaSparkEntity> {
 			return null;
 		}
 
-		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(icon);
+		return getItemSprite(icon);
 	}
 
 }

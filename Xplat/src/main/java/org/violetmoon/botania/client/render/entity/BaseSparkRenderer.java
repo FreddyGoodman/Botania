@@ -11,84 +11,90 @@ package org.violetmoon.botania.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.entity.SparkBaseEntity;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 
-import java.util.Objects;
 import java.util.Random;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends EntityRenderer<T> {
+public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends EntityRenderer<T, BaseSparkRenderer.State> {
 
+	private final SpriteGetter sprites;
 	private final TextureAtlasSprite starSprite;
 	private final TextureAtlasSprite worldSprite;
 
 	protected BaseSparkRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
-		var atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
-		this.starSprite = Objects.requireNonNull(
-				atlas.apply(botaniaRL("item/spark_star"))
-		);
-		this.worldSprite = Objects.requireNonNull(
-				atlas.apply(botaniaRL("item/mana_spark"))
-		);
+		sprites = ctx.getSprites();
+		starSprite = getItemSprite(botaniaRL("item/spark_star"));
+		worldSprite = getItemSprite(botaniaRL("item/mana_spark"));
+	}
+
+	protected TextureAtlasSprite getItemSprite(Identifier id) {
+		return sprites.get(new SpriteId(TextureAtlas.LOCATION_ITEMS, id));
 	}
 
 	@Override
-	public void render(T tEntity, float yaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
-		TextureAtlasSprite iicon = getBaseIcon(tEntity);
-		ClientXplatAbstractions.instance().markSpriteActive(iicon);
+	public State createRenderState() {
+		return new State();
+	}
 
-		ms.pushPose();
+	@Override
+	public void extractRenderState(T entity, State state, float partialTicks) {
+		super.extractRenderState(entity, state, partialTicks);
+		state.icon = getBaseIcon(entity);
+		state.augment = getSpinningIcon(entity);
+		state.time = (entity.level().getGameTime() % 24000) + partialTicks + new Random(entity.getId()).nextInt(200);
+		state.alpha = entity.isInvisible() ? 0.1F : 0.9F;
+		state.starColor = ARGB.color(ARGB.as8BitChannel(state.alpha), entity.getNetwork().getTextureDiffuseColor());
+	}
 
-		float time = (tEntity.level().getGameTime() % 24000) + partialTicks + new Random(tEntity.getId()).nextInt(200);
-		float a = 0.1F + (tEntity.isInvisible() ? 0 : 1) * 0.8F;
-
-		float iconAlpha = (0.7f + 0.6f * (Mth.sin(time / 5) + 0.5f)) * a;
+	@Override
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		float time = state.time;
+		float iconAlpha = (0.7F + 0.6F * (Mth.sin(time / 5) + 0.5F)) * state.alpha;
 		int iconColor = ARGB.color(ARGB.as8BitChannel(iconAlpha), 0xFFFFFF);
-
 		float scale = 0.75F + 0.1F * Mth.sin(time / 10);
-		ms.scale(scale, scale, scale);
 
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.SPARK);
-		ms.pushPose();
-		ms.mulPose(entityRenderDispatcher.cameraOrientation());
-		renderIcon(ms, buffer, iicon, iconColor);
+		pose.pushPose();
+		pose.scale(scale, scale, scale);
+		pose.mulPose(camera.orientation);
+		submitIcon(pose, collector, state.icon, iconColor);
 
-		ms.pushPose();
-		ms.translate(-0.02 + Math.sin(time / 20) * 0.2, 0.24 + Math.cos(time / 20) * 0.2, 0.005);
-		ms.scale(0.2F, 0.2F, 0.2F);
-		int starColor = ARGB.color(ARGB.as8BitChannel(a), tEntity.getNetwork().getTextureDiffuseColor());
-		renderIcon(ms, buffer, this.starSprite, starColor);
-		ms.popPose();
+		double x = Math.sin(time / 20) * 0.2;
+		double y = Math.cos(time / 20) * 0.2;
+		pose.pushPose();
+		pose.translate(-0.02 + x, 0.24 + y, 0.005);
+		pose.scale(0.2F, 0.2F, 0.2F);
+		submitIcon(pose, collector, starSprite, state.starColor);
+		pose.popPose();
 
-		TextureAtlasSprite spinningIcon = getSpinningIcon(tEntity);
-		if (spinningIcon != null) {
-			ms.translate(-0.02 + Math.sin(time / 20) * -0.2, 0.24 + Math.cos(time / 20) * -0.2, 0.005);
-			ms.scale(0.2F, 0.2F, 0.2F);
-			renderIcon(ms, buffer, spinningIcon, iconColor);
+		if (state.augment != null) {
+			pose.translate(-0.02 - x, 0.24 - y, 0.005);
+			pose.scale(0.2F, 0.2F, 0.2F);
+			submitIcon(pose, collector, state.augment, iconColor);
 		}
-		ms.popPose();
-
-		ms.popPose();
+		pose.popPose();
 	}
 
 	protected TextureAtlasSprite getBaseIcon(T entity) {
-		return this.worldSprite;
+		return worldSprite;
 	}
 
 	@Nullable
@@ -96,29 +102,25 @@ public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends Entit
 		return null;
 	}
 
-	@Override
-	public Identifier getTextureLocation(SparkBaseEntity entity) {
-		return InventoryMenu.BLOCK_ATLAS;
+	private static void submitIcon(PoseStack pose, SubmitNodeCollector collector, TextureAtlasSprite icon, int color) {
+		ClientXplatAbstractions.instance().markSpriteActive(icon);
+		collector.submitCustomGeometry(pose, RenderHelper.SPARK, (transform, buffer) -> renderIcon(transform, buffer, icon, color));
 	}
 
-	private void renderIcon(PoseStack ms, VertexConsumer buffer, TextureAtlasSprite icon, int color) {
-		float f = icon.getU0();
-		float f1 = icon.getU1();
-		float f2 = icon.getV0();
-		float f3 = icon.getV1();
-		float f4 = 1.0F;
-		float f5 = 0.5F;
-		float f6 = 0.25F;
+	private static void renderIcon(PoseStack.Pose pose, VertexConsumer buffer, TextureAtlasSprite icon, int color) {
 		int fullbright = 0xF000F0;
-		int a = (color >> 24) & 0xFF;
-		int r = (color >> 16) & 0xFF;
-		int g = (color >> 8) & 0xFF;
-		int b = color & 0xFF;
-		Matrix4f mat = ms.last().pose();
-		buffer.addVertex(mat, 0.0F - f5, 0.0F - f6, 0.0F).setColor(r, g, b, a).setUv(f, f3).setLight(fullbright);
-		buffer.addVertex(mat, f4 - f5, 0.0F - f6, 0.0F).setColor(r, g, b, a).setUv(f1, f3).setLight(fullbright);
-		buffer.addVertex(mat, f4 - f5, f4 - f6, 0.0F).setColor(r, g, b, a).setUv(f1, f2).setLight(fullbright);
-		buffer.addVertex(mat, 0.0F - f5, f4 - f6, 0.0F).setColor(r, g, b, a).setUv(f, f2).setLight(fullbright);
+		buffer.addVertex(pose, -0.5F, -0.25F, 0).setColor(color).setUv(icon.getU0(), icon.getV1()).setLight(fullbright);
+		buffer.addVertex(pose, 0.5F, -0.25F, 0).setColor(color).setUv(icon.getU1(), icon.getV1()).setLight(fullbright);
+		buffer.addVertex(pose, 0.5F, 0.75F, 0).setColor(color).setUv(icon.getU1(), icon.getV0()).setLight(fullbright);
+		buffer.addVertex(pose, -0.5F, 0.75F, 0).setColor(color).setUv(icon.getU0(), icon.getV0()).setLight(fullbright);
 	}
 
+	public static class State extends EntityRenderState {
+		private TextureAtlasSprite icon;
+		@Nullable
+		private TextureAtlasSprite augment;
+		private float time;
+		private float alpha;
+		private int starColor;
+	}
 }

@@ -9,60 +9,68 @@
 package org.violetmoon.botania.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.AABB;
 
-import org.joml.Matrix4f;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.entity.GaiaTrapEntity;
 
-public class GaiaTrapRenderer extends EntityRenderer<GaiaTrapEntity> {
+public class GaiaTrapRenderer extends EntityRenderer<GaiaTrapEntity, GaiaTrapRenderer.State> {
 
 	public GaiaTrapRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
 	}
 
 	@Override
-	public void render(GaiaTrapEntity e, float entityYaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
-		super.render(e, entityYaw, partialTicks, ms, buffers, light);
-
-		ms.pushPose();
-		AABB aabb = e.getBoundingBox().move(e.position().scale(-1));
-
-		float gs = (float) (Math.sin((ClientTickHandler.getEntityTicksInGame() + partialTicks) / 20) + 1) * 0.2F + 0.6F;
-		int r = (int) (105 * gs);
-		int g = (int) (25 * gs);
-		int b = (int) (145 * gs);
-
-		int alpha = 32;
-		if (e.tickCount < 8) {
-			alpha = (int) (alpha * Math.min((e.tickCount + partialTicks) / 8F, 1F));
-		} else if (e.tickCount > 47) {
-			alpha = (int) (alpha * Math.min(1F - (e.tickCount - 47 + partialTicks) / 8F, 1F));
-		}
-
-		ms.translate(aabb.minX, aabb.minY + RenderHelper.getOffY(), aabb.minZ);
-
-		float f = 1F / 16F;
-		float x = (float) (aabb.getXsize() - f);
-		float z = (float) (aabb.getZsize() - f);
-
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.RECTANGLE);
-		Matrix4f mat = ms.last().pose();
-		RenderHelper.flatRectangle(buffer, mat, f, x, 0, f, z, r, g, b, alpha);
-		RenderHelper.incrementOffY();
-		ms.popPose();
+	public State createRenderState() {
+		return new State();
 	}
 
 	@Override
-	public Identifier getTextureLocation(GaiaTrapEntity entity) {
-		return InventoryMenu.BLOCK_ATLAS;
+	public void extractRenderState(GaiaTrapEntity entity, State state, float partialTick) {
+		super.extractRenderState(entity, state, partialTick);
+		state.bounds = entity.getBoundingBox().move(entity.position().scale(-1));
+		state.brightness = (float) (Math.sin((ClientTickHandler.getEntityTicksInGame() + partialTick) / 20) + 1) * 0.2F + 0.6F;
+
+		float age = entity.tickCount + partialTick;
+		if (entity.tickCount < 8) {
+			state.alpha = (int) (32 * Math.clamp(age / 8F, 0F, 1F));
+		} else if (entity.tickCount > 47) {
+			state.alpha = (int) (32 * Math.clamp(1F - (age - 47) / 8F, 0F, 1F));
+		} else {
+			state.alpha = 32;
+		}
+	}
+
+	@Override
+	public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		super.submit(state, pose, collector, camera);
+		AABB bounds = state.bounds;
+		float edge = 1F / 16F;
+		float width = (float) bounds.getXsize() - edge;
+		float length = (float) bounds.getZsize() - edge;
+		int red = (int) (105 * state.brightness);
+		int green = (int) (25 * state.brightness);
+		int blue = (int) (145 * state.brightness);
+		int alpha = state.alpha;
+
+		pose.pushPose();
+		pose.translate(bounds.minX, bounds.minY + RenderHelper.getOffY(), bounds.minZ);
+		collector.submitCustomGeometry(pose, RenderHelper.RECTANGLE, (transform, buffer) ->
+				RenderHelper.flatRectangle(buffer, transform.pose(), edge, width, 0, edge, length, red, green, blue, alpha));
+		RenderHelper.incrementOffY();
+		pose.popPose();
+	}
+
+	public static class State extends EntityRenderState {
+		private AABB bounds;
+		private float brightness;
+		private int alpha;
 	}
 }
