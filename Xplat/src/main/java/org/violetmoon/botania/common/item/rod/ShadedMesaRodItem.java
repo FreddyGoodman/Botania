@@ -47,7 +47,7 @@ import java.util.function.Predicate;
 public class ShadedMesaRodItem extends Item implements ClientInventoryTick {
 	private static final float RANGE = 3F;
 	private static final int COST = 2;
-	private static final Predicate<Entity> CAN_TARGET = e -> !e.isSpectator() && e.isAlive() && !e.getType().is(
+	private static final Predicate<Entity> CAN_TARGET = e -> !e.isSpectator() && e.isAlive() && !e.getType().builtInRegistryHolder().is(
 			BotaniaTags.Entities.SHADED_MESA_NO_PICKUP);
 
 	public ShadedMesaRodItem(Properties props) {
@@ -160,7 +160,7 @@ public class ShadedMesaRodItem extends Item implements ClientInventoryTick {
 			}
 
 			if (target != null) {
-				if (target.getType().is(BotaniaTags.Entities.SHADED_MESA_NO_PICKUP)) {
+				if (target.getType().builtInRegistryHolder().is(BotaniaTags.Entities.SHADED_MESA_NO_PICKUP)) {
 					return InteractionResult.FAIL;
 				}
 

@@ -205,7 +205,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedEntityBlock {
 	}
 
 	@Override
-	protected void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
+	protected void onExplosionHit(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
 		if (explosion.canTriggerBlocks() && level.getBlockEntity(pos) instanceof HoveringHourglassBlockEntity hourglass) {
 			hourglass.flipEarly();
 		}

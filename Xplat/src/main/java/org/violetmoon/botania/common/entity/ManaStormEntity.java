@@ -10,6 +10,7 @@ package org.violetmoon.botania.common.entity;
 
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -136,5 +137,10 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 		output.putInt(TAG_BURST_COLOR, burstColor);
 		output.putInt(TAG_BURSTS_FIRED, burstsFired);
 		output.putInt(TAG_DEATH_TIME, deathTime);
+	}
+
+	@Override
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
 	}
 }

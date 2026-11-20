@@ -26,6 +26,7 @@
     "BushBlockMixin",
     "CollectingNeighborUpdaterMixin",
     "ConstantIntMixin",
+    "CauldronInteractionDispatcherAccessor",
     "CreeperAccessor",
     "CreeperMixin",
     "EatBlockGoalMixin",

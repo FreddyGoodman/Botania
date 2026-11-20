@@ -26,7 +26,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -56,6 +55,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class WandOfTheForestItem extends Item implements ClientInventoryTick, CustomCreativeTabContents {
 
@@ -206,8 +206,8 @@ public class WandOfTheForestItem extends Item implements ClientInventoryTick, Cu
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
-		output.accept(me);
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
+		output.accept(new ItemStack(me));
 		List<Pair<DyeColor, DyeColor>> colorPairs = Arrays.asList(
 				new Pair<>(DyeColor.WHITE, DyeColor.LIGHT_BLUE),
 				new Pair<>(DyeColor.WHITE, DyeColor.PINK),

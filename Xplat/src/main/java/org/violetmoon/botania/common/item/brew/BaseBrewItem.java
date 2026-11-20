@@ -34,6 +34,7 @@ import org.violetmoon.botania.common.item.CustomCreativeTabContents;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabContents {
@@ -100,7 +101,7 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
 		for (Brew brew : BotaniaAPI.instance().getBrewRegistry()) {
 			if (brew == BotaniaBrews.FALLBACK) {
 				continue;

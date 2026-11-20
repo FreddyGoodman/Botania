@@ -11,11 +11,13 @@ package org.violetmoon.botania.common.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,13 +25,16 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.violetmoon.botania.api.item.AncientWillContainer;
@@ -73,6 +78,7 @@ import org.violetmoon.botania.common.item.relic.*;
 import org.violetmoon.botania.common.item.rod.*;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 import org.violetmoon.botania.common.lib.LibItemNames;
+import org.violetmoon.botania.mixin.CauldronInteractionDispatcherAccessor;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.LinkedHashMap;
@@ -612,8 +618,9 @@ public final class BotaniaItems {
 					.food(new FoodProperties.Builder()
 							.nutrition(0)
 							.saturationModifier(0.1F)
-							.effect(new MobEffectInstance(MobEffects.SATURATION, 20, 0), 1)
-							.build())));
+							.build(), Consumables.defaultFood()
+									.onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SATURATION, 20, 0)))
+									.build())));
 	public static final Item MANA_IN_A_BOTTLE = make(LibItemNames.MANA_IN_A_BOTTLE,
 			props -> new BottledManaItem(props.stacksTo(1)
 					// Mark as food just to fool foxes into using it
@@ -833,14 +840,18 @@ public final class BotaniaItems {
 
 	// Banner patterns
 	public static final Item BANNER_PATTERN_BOTANIA = make("botania_banner_pattern",
-			props -> new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_BOTANIA, props.stacksTo(1)
-					.rarity(Rarity.UNCOMMON)));
+			props -> new Item(bannerPattern(props.rarity(Rarity.UNCOMMON), BotaniaTags.BannerPatterns.PATTERN_ITEM_BOTANIA)));
 	public static final Item BANNER_PATTERN_MATERIALS = make("materials_banner_pattern",
-			props -> new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_MATERIALS, props.stacksTo(1)));
+			props -> new Item(bannerPattern(props, BotaniaTags.BannerPatterns.PATTERN_ITEM_MATERIALS)));
 	public static final Item BANNER_PATTERN_SPARK_AUGMENTS = make("spark_augments_banner_pattern",
-			props -> new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_SPARK_AUGMENTS, props.stacksTo(1)));
+			props -> new Item(bannerPattern(props, BotaniaTags.BannerPatterns.PATTERN_ITEM_SPARK_AUGMENTS)));
 	public static final Item BANNER_PATTERN_TOOLS = make("tools_banner_pattern",
-			props -> new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_TOOLS, props.stacksTo(1)));
+			props -> new Item(bannerPattern(props, BotaniaTags.BannerPatterns.PATTERN_ITEM_TOOLS)));
+
+	private static Item.Properties bannerPattern(Item.Properties properties, TagKey<BannerPattern> patterns) {
+		return properties.stacksTo(1).delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+				registries -> registries.lookupOrThrow(Registries.BANNER_PATTERN).getOrThrow(patterns));
+	}
 
 	public static final MenuType<TrinketCaseMenu> TRINKET_CASE_MENU_TYPE =
 			XplatAbstractions.INSTANCE.createMenuType(TrinketCaseMenu::new, ByteBufCodecs.BOOL);
@@ -931,25 +942,22 @@ public final class BotaniaItems {
 	}
 
 	public static void registerCauldronInteractions() {
+		var water = (CauldronInteractionDispatcherAccessor) CauldronInteractions.WATER;
 		ColorHelper.supportedColors().forEach(color -> {
-			CauldronInteraction.WATER.map()
-					.put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.MANA_POOL, color).asItem(),
-							MANA_POOL_INTERACTION);
-			CauldronInteraction.WATER.map()
-					.put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.CREATIVE_MANA_POOL, color).asItem(),
-							MANA_POOL_INTERACTION);
-			CauldronInteraction.WATER.map()
-					.put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.DILUTED_MANA_POOL, color).asItem(),
-							MANA_POOL_INTERACTION);
-			CauldronInteraction.WATER.map()
-					.put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.FABULOUS_MANA_POOL, color).asItem(),
-							MANA_POOL_INTERACTION);
+			water.botania_put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.MANA_POOL, color).asItem(),
+					MANA_POOL_INTERACTION);
+			water.botania_put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.CREATIVE_MANA_POOL, color).asItem(),
+					MANA_POOL_INTERACTION);
+			water.botania_put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.DILUTED_MANA_POOL, color).asItem(),
+					MANA_POOL_INTERACTION);
+			water.botania_put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.FABULOUS_MANA_POOL, color).asItem(),
+					MANA_POOL_INTERACTION);
 		});
 
 		ALL.values().stream().filter(item -> item instanceof LensItem)
-				.forEach(item -> CauldronInteraction.WATER.map().put(item, MANA_LENS_INTERACTION));
+				.forEach(item -> water.botania_put(item, MANA_LENS_INTERACTION));
 		ALL.values().stream().filter(item -> item instanceof PhantomInkable)
-				.forEach(item -> CauldronInteraction.WATER.map().put(item, PHANTOM_INK_INTERACTION));
+				.forEach(item -> water.botania_put(item, PHANTOM_INK_INTERACTION));
 	}
 
 	public static Item getPetal(DyeColor color) {

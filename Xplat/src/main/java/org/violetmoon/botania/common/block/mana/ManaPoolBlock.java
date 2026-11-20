@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.block.mana;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -225,7 +226,7 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof ManaPoolBlockEntity pool
 				? ManaPoolBlockEntity.calculateComparatorLevel(pool.getCurrentMana(), pool.getMaxMana())
 				: 0;

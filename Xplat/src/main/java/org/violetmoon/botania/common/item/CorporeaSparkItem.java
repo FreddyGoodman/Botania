@@ -10,9 +10,11 @@ package org.violetmoon.botania.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -63,9 +65,10 @@ public class CorporeaSparkItem extends Item {
 			spark.setCreative(true);
 		}
 		spark.setPos(pos.getX() + 0.5, pos.getY() + 1.25, pos.getZ() + 0.5);
-		if (otherHandStack.getItem() instanceof DyeItem dye) {
+		DyeColor color = otherHandStack.get(DataComponents.DYE);
+		if (otherHandStack.getItem() instanceof DyeItem && color != null) {
 			otherHandStack.shrink(1);
-			spark.setNetwork(dye.getDyeColor());
+			spark.setNetwork(color);
 		}
 
 		if (canPlace(world, spark) && !CorporeaHelper.instance().doesBlockHaveSpark(world, pos)) {

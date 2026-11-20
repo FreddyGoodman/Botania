@@ -62,7 +62,7 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 			if (mob instanceof Armadillo armadillo) {
 				speedUpScuteDropping(armadillo);
 			}
-			if (mob.getType().is(BotaniaTags.Entities.DRUM_MILKABLE) && !mob.isBaby()) {
+			if (mob.getType().builtInRegistryHolder().is(BotaniaTags.Entities.DRUM_MILKABLE) && !mob.isBaby()) {
 				convertNearby(mob, Items.BUCKET, Items.MILK_BUCKET);
 			}
 			if (mob instanceof MushroomCow mooshroom && !mooshroom.isBaby()) {
@@ -71,7 +71,7 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 				}
 				convertNearby(mob, Items.BOWL, Items.MUSHROOM_STEW);
 			}
-			if (mob instanceof Shearable shearable && !mob.getType().is(BotaniaTags.Entities.DRUM_NO_SHEARING) && shearable.readyForShearing()) {
+			if (mob instanceof Shearable shearable && !mob.getType().builtInRegistryHolder().is(BotaniaTags.Entities.DRUM_NO_SHEARING) && shearable.readyForShearing()) {
 				shearables.add(shearable);
 			}
 		}

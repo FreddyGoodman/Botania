@@ -9,8 +9,10 @@
 
 package org.violetmoon.botania.common.item;
 
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Consumer;
 
 /**
  * A Botania Item or Block with this interface can customize what is added to the creative tab.
@@ -21,5 +23,5 @@ public interface CustomCreativeTabContents {
 	 * 
 	 * @param me The item itself, for convenience when implementing this on a Block
 	 */
-	void addToCreativeTab(Item me, CreativeModeTab.Output output);
+	void addToCreativeTab(Item me, Consumer<ItemStack> output);
 }

@@ -29,7 +29,7 @@ public class RedStringComparatorBlockEntity extends RedStringBlockEntity {
 		int origVal = self.comparatorValue;
 
 		if (bindState.hasAnalogOutputSignal()) {
-			self.comparatorValue = bindState.getAnalogOutputSignal(level, Objects.requireNonNull(self.getBinding()));
+			self.comparatorValue = bindState.getAnalogOutputSignal(level, Objects.requireNonNull(self.getBinding()), self.getOrientation());
 		} else {
 			self.comparatorValue = 0;
 		}

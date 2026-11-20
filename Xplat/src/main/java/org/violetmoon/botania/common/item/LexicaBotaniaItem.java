@@ -23,7 +23,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -39,6 +38,7 @@ import org.violetmoon.botania.common.helper.DataComponentHelper;
 import vazkii.patchouli.api.PatchouliAPI;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents {
 	@SuppressWarnings("unchecked")
@@ -57,8 +57,8 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
-		output.accept(me);
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
+		output.accept(new ItemStack(me));
 
 		ItemStack creative = new ItemStack(me);
 		creative.set(BotaniaDataComponents.ELVEN_UNLOCK, Unit.INSTANCE);
@@ -76,7 +76,7 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 		ItemStack stack = playerIn.getItemInHand(handIn);
 
 		if (playerIn instanceof ServerPlayer player) {
-			UseItemSuccessTrigger.INSTANCE.trigger(player, stack, player.serverLevel(), player.getX(), player.getY(), player.getZ());
+			UseItemSuccessTrigger.INSTANCE.trigger(player, stack, player.level(), player.getX(), player.getY(), player.getZ());
 			PatchouliAPI.get().openBookGUI(player, BuiltInRegistries.ITEM.getKey(this));
 			playerIn.playSound(BotaniaSounds.LEXICON_OPEN, 1F, (float) (0.7 + Math.random() * 0.4));
 		}

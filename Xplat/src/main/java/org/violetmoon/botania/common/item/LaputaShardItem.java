@@ -23,7 +23,6 @@ import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -55,6 +54,7 @@ import org.violetmoon.botania.common.lib.BotaniaTags;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetExcempt, CustomCreativeTabContents {
 
@@ -67,7 +67,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
 		ImmutableList.of(1, 5, 10, 15, 20).forEach(i -> {
 			ItemStack s = new ItemStack(me);
 			s.set(BotaniaDataComponents.SHARD_LEVEL, i);

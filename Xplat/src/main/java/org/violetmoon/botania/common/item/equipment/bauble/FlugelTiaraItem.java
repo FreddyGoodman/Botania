@@ -55,6 +55,7 @@ import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabContents {
 
@@ -77,7 +78,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
 		for (int i = 0; i < SUBTYPES + 1; i++) {
 			ItemStack stack = new ItemStack(this);
 			setVariant(stack, i);

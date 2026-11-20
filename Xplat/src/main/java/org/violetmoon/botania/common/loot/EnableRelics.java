@@ -12,7 +12,6 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import org.violetmoon.botania.xplat.BotaniaConfig;
 
@@ -28,8 +27,8 @@ public class EnableRelics implements LootItemCondition {
 	}
 
 	@Override
-	public LootItemConditionType getType() {
-		return BotaniaLootModifiers.ENABLE_RELICS;
+	public MapCodec<EnableRelics> codec() {
+		return CODEC;
 	}
 
 	public static LootItemCondition.Builder builder() {

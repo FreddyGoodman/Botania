@@ -162,7 +162,7 @@ public class LifeAggregatorItem extends Item {
 			if (player != null) {
 				player.getCooldowns().addCooldown(stack, 20);
 				if (player instanceof ServerPlayer serverPlayer) {
-					UseItemSuccessTrigger.INSTANCE.trigger(serverPlayer, stack, serverPlayer.serverLevel(),
+					UseItemSuccessTrigger.INSTANCE.trigger(serverPlayer, stack, serverPlayer.level(),
 							pos.getX(), pos.getY(), pos.getZ());
 				}
 				player.onEquippedItemBroken(this, context.getHand().asEquipmentSlot());

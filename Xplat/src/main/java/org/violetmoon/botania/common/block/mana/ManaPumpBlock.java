@@ -92,7 +92,7 @@ public class ManaPumpBlock extends BotaniaWaterloggedEntityBlock implements Reds
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof ManaPumpBlockEntity pump ? pump.comparator : 0;
 	}
 

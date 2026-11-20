@@ -54,6 +54,7 @@ import org.violetmoon.botania.common.item.relic.RingOfThorItem;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
@@ -76,8 +77,8 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements ClientIn
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
-		output.accept(me);
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
+		output.accept(new ItemStack(me));
 		for (int mana : CREATIVE_MANA) {
 			ItemStack stack = new ItemStack(me);
 			setMana(stack, mana);

@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -227,7 +228,7 @@ public class PetalApothecaryBlock extends BotaniaEntityBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return state.getValue(FLUID) == State.WATER ? 15 : 0;
 	}
 

@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -93,7 +94,7 @@ public class SparkTinkererBlock extends BotaniaWaterloggedEntityBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		if (level.getBlockEntity(pos) instanceof SparkTinkererBlockEntity changer) {
 			ItemStack stack = changer.getItemHandler().getItem(0);
 			if (!stack.isEmpty() && stack.is(BotaniaTags.Items.MANA_SPARK_AUGMENTS)) {

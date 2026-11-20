@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.item.equipment.bauble;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -25,6 +24,7 @@ import org.violetmoon.botania.common.item.CustomCreativeTabContents;
 import org.violetmoon.botania.common.item.ManaTabletItem;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class BandOfManaItem extends BaubleItem implements CustomCreativeTabContents {
 
@@ -36,8 +36,8 @@ public class BandOfManaItem extends BaubleItem implements CustomCreativeTabConte
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
-		output.accept(me);
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
+		output.accept(new ItemStack(me));
 
 		ItemStack full = new ItemStack(me);
 		setMana(full, me.components().getOrDefault(BotaniaDataComponents.MAX_MANA, DEFAULT_MAX_MANA));

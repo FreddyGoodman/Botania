@@ -20,7 +20,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,6 +60,7 @@ import org.violetmoon.botania.common.item.WandOfTheForestItem;
 import org.violetmoon.botania.common.lib.LibBlockNames;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ManaSpreaderBlock extends BotaniaWaterloggedEntityBlock
@@ -120,13 +120,13 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedEntityBlock
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
 		if (me instanceof BlockItem blockItem && blockItem.getBlock() instanceof ManaSpreaderBlock block
 				&& block.getCoverColor() != null) {
 			// don't add covered spreaders to creative inventory or recipe viewer lists
 			return;
 		}
-		output.accept(me);
+		output.accept(new ItemStack(me));
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class AlfheimPortalBreadTrigger extends SimpleCriterionTrigger<AlfheimPor
 	private AlfheimPortalBreadTrigger() {}
 
 	public void trigger(ServerPlayer player, BlockPos portal) {
-		this.trigger(player, instance -> instance.test(player.serverLevel(), portal));
+		this.trigger(player, instance -> instance.test(player.level(), portal));
 	}
 
 	@Override

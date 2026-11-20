@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.block.corporea;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -103,7 +104,7 @@ public class CorporeaCrystalCubeBlock extends BotaniaWaterloggedEntityBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof CorporeaCrystalCubeBlockEntity cube
 				? cube.getComparatorValue()
 				: 0;

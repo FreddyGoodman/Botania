@@ -545,9 +545,9 @@ public class NeoForgeCommonInitializer {
 		if (e.getTabKey() == BotaniaRegistries.BOTANIA_TAB_KEY) {
 			for (Item item : this.itemsToAddToCreativeTab) {
 				if (item instanceof CustomCreativeTabContents cc) {
-					cc.addToCreativeTab(item, e);
+					cc.addToCreativeTab(item, e::accept);
 				} else if (item instanceof BlockItem bi && bi.getBlock() instanceof CustomCreativeTabContents cc) {
-					cc.addToCreativeTab(item, e);
+					cc.addToCreativeTab(item, e::accept);
 				} else {
 					e.accept(item);
 				}

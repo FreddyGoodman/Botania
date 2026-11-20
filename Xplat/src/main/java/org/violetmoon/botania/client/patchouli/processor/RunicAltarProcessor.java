@@ -8,7 +8,9 @@
  */
 package org.violetmoon.botania.client.patchouli.processor;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
@@ -26,7 +28,7 @@ public class RunicAltarProcessor extends ReagentRecipeProcessor<RunicAltarRecipe
 		Identifier id = Identifier.parse(variables.get("recipe", level.registryAccess()).asString());
 		RunicAltarRecipe altarRecipe = PatchouliUtils.getRecipe(level, BotaniaRecipeTypes.RUNIC_ALTAR_TYPE, id);
 		if (altarRecipe != null) {
-			this.recipe = new RecipeHolder<>(id, altarRecipe);
+			this.recipe = new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), altarRecipe);
 		} else {
 			BotaniaAPI.LOGGER.warn("Missing Runic Altar recipe {}", id);
 		}

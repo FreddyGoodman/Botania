@@ -58,7 +58,7 @@ public final class SkyblockWorldEvents {
 	}
 
 	public static void onPlayerJoin(ServerPlayer player) {
-		ServerLevel world = player.serverLevel();
+		ServerLevel world = player.level();
 		if (SkyblockChunkGenerator.isWorldSkyblock(world)) {
 			SkyblockSavedData data = SkyblockSavedData.get(world);
 			if (!data.skyblocks.containsValue(Util.NIL_UUID)) {
@@ -124,7 +124,7 @@ public final class SkyblockWorldEvents {
 		BlockPos pos = islandPos.getCenter();
 
 		if (player instanceof ServerPlayer pmp) {
-			createSkyblock(pmp.serverLevel(), pos);
+			createSkyblock(pmp.level(), pos);
 			pmp.teleportTo(pos.getX() + 0.5, pos.getY() + 1.6, pos.getZ() + 0.5);
 			pmp.setRespawnPosition(pmp.level().dimension(), pos, 0, true, false);
 			if (BotaniaConfig.common().gogSpawnWithLexicon()) {

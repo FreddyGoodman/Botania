@@ -26,6 +26,7 @@ import org.violetmoon.botania.common.impl.mana.DefaultManaItemImpl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class ManaTabletItem extends Item implements CustomCreativeTabContents {
 
@@ -36,8 +37,8 @@ public class ManaTabletItem extends Item implements CustomCreativeTabContents {
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
-		output.accept(me);
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
+		output.accept(new ItemStack(me));
 
 		// TODO: maybe use DataComponentPatch
 		ItemStack fullPower = new ItemStack(me);

@@ -9,7 +9,9 @@
 package org.violetmoon.botania.common.entity;
 
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -82,4 +84,8 @@ public class GaiaTrapEntity extends Entity {
 	@Override
 	protected void addAdditionalSaveData(ValueOutput output) {}
 
+	@Override
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
+	}
 }

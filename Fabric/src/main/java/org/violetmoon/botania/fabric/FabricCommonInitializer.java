@@ -277,9 +277,9 @@ public class FabricCommonInitializer implements ModInitializer {
 				.register(entries -> {
 					for (Item item : this.itemsToAddToCreativeTab) {
 						if (item instanceof CustomCreativeTabContents cc) {
-							cc.addToCreativeTab(item, entries);
+							cc.addToCreativeTab(item, entries::accept);
 						} else if (item instanceof BlockItem bi && bi.getBlock() instanceof CustomCreativeTabContents cc) {
-							cc.addToCreativeTab(item, entries);
+							cc.addToCreativeTab(item, entries::accept);
 						} else {
 							entries.accept(item);
 						}

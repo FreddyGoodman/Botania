@@ -296,7 +296,7 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 			if (newState != AlfheimPortalState.OFF) {
 				level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(BotaniaStateProperties.ALFPORTAL_STATE, newState));
 				if (player instanceof ServerPlayer serverPlayer) {
-					AlfheimPortalTrigger.INSTANCE.trigger(serverPlayer, serverPlayer.serverLevel(), getBlockPos(), stack);
+					AlfheimPortalTrigger.INSTANCE.trigger(serverPlayer, serverPlayer.level(), getBlockPos(), stack);
 				}
 				return true;
 			}

@@ -13,6 +13,7 @@ import com.google.common.base.Suppliers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -96,13 +97,16 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 
 	public static void serverCollectingTick(Level level, BlockPos pos, BlockState state,
 			TerrestrialAgglomerationPlateBlockEntity self) {
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return;
+		}
 		if (!self.hasValidPlatform()) {
 			self.stopCollecting();
 			return;
 		}
 		List<ItemEntity> itemEntities = self.getItemEntities();
 		ProcessingRecipeInput recipeInput = RecipeUtils.getInputFromEntities(itemEntities);
-		Optional<RecipeHolder<TerrestrialAgglomerationRecipe>> recipeHolderOptional = self.cachedCheck.getRecipeFor(recipeInput, level);
+		Optional<RecipeHolder<TerrestrialAgglomerationRecipe>> recipeHolderOptional = self.cachedCheck.getRecipeFor(recipeInput, serverLevel);
 		if (recipeHolderOptional.isEmpty()) {
 			self.stopCollecting();
 			return;
@@ -256,12 +260,12 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 	}
 
 	public void tryStartProcessing() {
-		if (!hasValidPlatform()) {
+		if (!(level instanceof ServerLevel serverLevel) || !hasValidPlatform()) {
 			return;
 		}
 		List<ItemEntity> itemEntities = getItemEntities();
 		ProcessingRecipeInput recipeInput = RecipeUtils.getInputFromEntities(itemEntities);
-		Optional<RecipeHolder<TerrestrialAgglomerationRecipe>> recipe = cachedCheck.getRecipeFor(recipeInput, level);
+		Optional<RecipeHolder<TerrestrialAgglomerationRecipe>> recipe = cachedCheck.getRecipeFor(recipeInput, serverLevel);
 		if (recipe.isPresent()) {
 			manaToGet = recipe.get().value().getMana();
 			level.setBlock(getBlockPos(),

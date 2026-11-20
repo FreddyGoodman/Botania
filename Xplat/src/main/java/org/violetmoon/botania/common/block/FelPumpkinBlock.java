@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.state.pattern.BlockPattern;
 import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
 import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.common.lib.BotaniaTags;
@@ -42,7 +42,7 @@ import org.violetmoon.botania.mixin.MobAccessor;
 
 public class FelPumpkinBlock extends Block {
 	public static final MapCodec<FelPumpkinBlock> CODEC = simpleCodec(FelPumpkinBlock::new);
-	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 	@Nullable
 	private BlockPattern felBlazeFull;
 	@Nullable

@@ -27,7 +27,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -47,6 +46,7 @@ import org.violetmoon.botania.common.proxy.Proxy;
 import org.violetmoon.botania.mixin.client.MinecraftAccessor;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer, BrewItem, CustomCreativeTabContents {
 
@@ -56,8 +56,8 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
-		output.accept(this);
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
+		output.accept(new ItemStack(this));
 		for (Brew brew : BotaniaAPI.instance().getBrewRegistry()) {
 			ItemStack brewStack = getItemForBrew(brew, new ItemStack(this));
 			if (!brewStack.isEmpty()) {

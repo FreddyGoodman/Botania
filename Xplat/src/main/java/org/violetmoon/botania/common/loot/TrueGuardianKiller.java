@@ -14,7 +14,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import org.violetmoon.botania.common.entity.GaiaGuardianEntity;
 
@@ -32,8 +31,8 @@ public class TrueGuardianKiller implements LootItemCondition {
 	}
 
 	@Override
-	public LootItemConditionType getType() {
-		return BotaniaLootModifiers.TRUE_GUARDIAN_KILLER;
+	public MapCodec<TrueGuardianKiller> codec() {
+		return CODEC;
 	}
 
 	public static LootItemCondition.Builder builder() {

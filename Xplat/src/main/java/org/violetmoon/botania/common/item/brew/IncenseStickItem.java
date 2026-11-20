@@ -11,7 +11,6 @@ package org.violetmoon.botania.common.item.brew;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -27,6 +26,7 @@ import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.item.CustomCreativeTabContents;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class IncenseStickItem extends Item implements BrewItem, BrewContainer, CustomCreativeTabContents {
 
@@ -37,8 +37,8 @@ public class IncenseStickItem extends Item implements BrewItem, BrewContainer, C
 	}
 
 	@Override
-	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
-		output.accept(this);
+	public void addToCreativeTab(Item me, Consumer<ItemStack> output) {
+		output.accept(new ItemStack(this));
 		for (Brew brew : BotaniaAPI.instance().getBrewRegistry()) {
 			ItemStack brewStack = getItemForBrew(brew, new ItemStack(this));
 			if (!brewStack.isEmpty()) {

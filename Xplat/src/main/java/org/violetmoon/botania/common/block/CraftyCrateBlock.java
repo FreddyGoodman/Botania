@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -42,7 +43,7 @@ public class CraftyCrateBlock extends OpenCrateBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		BlockEntity block = world.getBlockEntity(pos);
 		if (block instanceof CraftyCrateBlockEntity crate) {
 			return crate.getSignal();

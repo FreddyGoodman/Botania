@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -75,7 +76,7 @@ public class BotanicalBreweryBlock extends BotaniaWaterloggedEntityBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof BotanicalBreweryBlockEntity brew ? brew.signal : 0;
 	}
 

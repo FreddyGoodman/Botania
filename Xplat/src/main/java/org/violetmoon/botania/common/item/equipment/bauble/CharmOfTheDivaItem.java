@@ -88,7 +88,7 @@ public class CharmOfTheDivaItem extends BaubleItem {
 	public static void onEntityDamaged(Player player, LivingEntity entity) {
 		if (entity instanceof Mob target
 				&& !target.level().isClientSide()
-				&& !target.getType().is(BotaniaTags.Entities.NOT_CHARMABLE)
+				&& !target.getType().builtInRegistryHolder().is(BotaniaTags.Entities.NOT_CHARMABLE)
 				&& Math.random() < 0.6) {
 			MinecraftServer server = player.level().getServer();
 			ItemStack amulet = EquipmentHandler.findOrEmpty(BotaniaItems.CHARM_OF_THE_DIVA, player);

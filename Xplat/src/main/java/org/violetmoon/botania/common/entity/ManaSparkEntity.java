@@ -14,10 +14,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.BotaniaAPI;
@@ -88,7 +91,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 	@Override
 	public void tick() {
-		if (level().isClientSide()) {
+		if (!(level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
 
@@ -99,7 +102,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 		ManaSparkAttachable tile = getAttachedTile();
 		if (tile == null) {
-			dropAndKill();
+			dropAndKill(serverLevel);
 			return;
 		}
 		var receiver = getAttachedManaReceiver();
@@ -312,11 +315,11 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 		return BotaniaItems.MANA_SPARK;
 	}
 
-	private void dropAndKill() {
+	private void dropAndKill(ServerLevel serverLevel) {
 		ItemStack upgrade = getUpgrade();
-		spawnAtLocation(new ItemStack(getSparkItem()), 0F);
+		spawnAtLocation(serverLevel, new ItemStack(getSparkItem()), 0F);
 		if (!upgrade.isEmpty()) {
-			spawnAtLocation(upgrade, 0F);
+			spawnAtLocation(serverLevel, upgrade, 0F);
 		}
 		discard();
 	}
@@ -328,15 +331,16 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	}
 
 	@Override
-	public InteractionResult interact(Player player, InteractionHand hand) {
+	public InteractionResult interact(Player player, InteractionHand hand, Vec3 hitPosition) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (isAlive() && !stack.isEmpty()) {
+			DyeColor color = stack.get(DataComponents.DYE);
 			ItemStack upgrade = getUpgrade();
 			if (stack.getItem() instanceof WandOfTheForestItem) {
-				if (!level().isClientSide()) {
+				if (level() instanceof ServerLevel serverLevel) {
 					if (player.isShiftKeyDown() || !PlayerHelper.isTruePlayer(player)) {
 						if (!upgrade.isEmpty()) {
-							spawnAtLocation(upgrade, 0F);
+							spawnAtLocation(serverLevel, upgrade, 0F);
 							setUpgrade(ItemStack.EMPTY);
 
 							// Recalculate transfers, recessive and dominant will register the proper transfers
@@ -344,7 +348,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 							inboundTransfers.clear();
 							notifyOthers(getNetwork());
 						} else {
-							dropAndKill();
+							dropAndKill(serverLevel);
 						}
 					} else {
 						ManaSparkHelper.getSparksAround(level(), getX(), getY() + (getBbHeight() / 2), getZ(), getNetwork())
@@ -363,8 +367,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 					setInvisible(true);
 				}
 				return InteractionResult.SUCCESS;
-			} else if (stack.getItem() instanceof DyeItem dye) {
-				DyeColor color = dye.getDyeColor();
+			} else if (stack.getItem() instanceof DyeItem && color != null) {
 				if (color != getNetwork()) {
 					if (!level().isClientSide()) {
 						setNetwork(color);

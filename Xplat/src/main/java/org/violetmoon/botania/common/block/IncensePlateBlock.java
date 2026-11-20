@@ -10,6 +10,7 @@ package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -117,7 +118,7 @@ public class IncensePlateBlock extends BotaniaWaterloggedEntityBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof IncensePlateBlockEntity plate ? plate.comparatorOutput : 0;
 	}
 
@@ -140,7 +141,7 @@ public class IncensePlateBlock extends BotaniaWaterloggedEntityBlock {
 
 	@Override
 	public void onProjectileHit(Level level, BlockState state, BlockHitResult hit, Projectile projectile) {
-		if (!level.isClientSide() && projectile.mayInteract(level, hit.getBlockPos()) && projectile.isOnFire()
+		if (level instanceof ServerLevel serverLevel && projectile.mayInteract(serverLevel, hit.getBlockPos()) && projectile.isOnFire()
 				&& level.getBlockEntity(hit.getBlockPos()) instanceof IncensePlateBlockEntity plate) {
 			plate.ignite();
 		}

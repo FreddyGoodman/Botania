@@ -25,7 +25,9 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -215,13 +217,13 @@ public class JEIBotaniaPlugin implements IModPlugin {
 		}
 
 		// TODO: we should probably not hard-code recipe IDs this way here
-		recipeManager.byKey(botaniaRL("petal_apothecary/daybloom_motif"))
+		recipeManager.byKey(ResourceKey.create(Registries.RECIPE, botaniaRL("petal_apothecary/daybloom_motif")))
 				.ifPresent(r -> {
 					if (r.value() instanceof PetalApothecaryRecipe pr) {
 						recipeRegistry.hideRecipes(PetalApothecaryRecipeCategory.TYPE, List.of(pr));
 					}
 				});
-		recipeManager.byKey(botaniaRL("petal_apothecary/nightshade_motif"))
+		recipeManager.byKey(ResourceKey.create(Registries.RECIPE, botaniaRL("petal_apothecary/nightshade_motif")))
 				.ifPresent(r -> {
 					if (r.value() instanceof PetalApothecaryRecipe pr) {
 						recipeRegistry.hideRecipes(PetalApothecaryRecipeCategory.TYPE, List.of(pr));

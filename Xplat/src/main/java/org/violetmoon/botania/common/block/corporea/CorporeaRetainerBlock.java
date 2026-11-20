@@ -71,7 +71,7 @@ public class CorporeaRetainerBlock extends BotaniaEntityBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof CorporeaRetainerBlockEntity retainer
 				? retainer.getComparatorValue()
 				: 0;
