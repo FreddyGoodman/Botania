@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.WallBlock;
 
 import org.violetmoon.botania.api.BotaniaAPI;
+import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.common.block.*;
 import org.violetmoon.botania.common.block.ShimmeringMushroomBlock;
 import org.violetmoon.botania.common.block.flower.BotaniaFlowerBlock;
@@ -55,6 +56,7 @@ import org.violetmoon.botania.common.item.BottledManaItem;
 import org.violetmoon.botania.common.item.brew.BaseBrewItem;
 import org.violetmoon.botania.common.item.lens.LensItem;
 import org.violetmoon.botania.common.item.material.MysticalPetalItem;
+import org.violetmoon.botania.data.util.ItemModelDefinition;
 import org.violetmoon.botania.data.util.ModelWithOverrides;
 import org.violetmoon.botania.data.util.OverrideHolder;
 import org.violetmoon.botania.data.util.SimpleModelSupplierWithOverrides;
@@ -118,6 +120,7 @@ public class ItemModelProvider implements DataProvider {
 		Set<Item> items = BuiltInRegistries.ITEM.stream()
 				.filter(item -> BotaniaAPI.MODID.equals(BuiltInRegistries.ITEM.getKey(item).getNamespace()))
 				.collect(Collectors.toSet());
+		Map<Identifier, Item> inputs = items.stream().collect(Collectors.toMap(ModelLocationUtils::getModelLocation, item -> item));
 		Map<Identifier, ModelInstance> map = new HashMap<>();
 		registerItemBlocks(takeAll(items, item -> item instanceof BlockItem).stream()
 				.map(item -> (BlockItem) item)
@@ -125,12 +128,22 @@ public class ItemModelProvider implements DataProvider {
 		registerItemOverrides(items, map::put);
 		registerItems(items, map::put);
 
-		PackOutput.PathProvider modelPathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
+		PackOutput.PathProvider modelPaths = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
+		PackOutput.PathProvider itemPaths = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "items");
 		List<CompletableFuture<?>> outputList = new ArrayList<>();
 
 		for (Map.Entry<Identifier, ModelInstance> e : map.entrySet()) {
 			Identifier id = e.getKey();
-			outputList.add(DataProvider.saveStable(output, e.getValue().get(), modelPathProvider.json(id)));
+			JsonObject model = e.getValue().get().getAsJsonObject();
+			var overrides = model.remove("overrides");
+			outputList.add(DataProvider.saveStable(output, model, modelPaths.json(id)));
+
+			Item item = inputs.get(id);
+			// Special item definitions are authored alongside their custom renderer type.
+			if (item != null && item != BotaniaBlocks.GAIA_HEAD.asItem() && (model.size() != 1 || !model.has("display"))) {
+				JsonObject definition = ItemModelDefinition.create(id, overrides, ColorHandler.getItemTintCount(item));
+				outputList.add(DataProvider.saveStable(output, definition, itemPaths.json(BuiltInRegistries.ITEM.getKey(item))));
+			}
 		}
 
 		return CompletableFuture.allOf(outputList.toArray(CompletableFuture[]::new));

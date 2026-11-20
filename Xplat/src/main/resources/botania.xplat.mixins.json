@@ -104,7 +104,6 @@
     "client.ItemInHandRendererMixin",
     "client.ItemRendererAccessor",
     "client.LevelRendererMixin",
-    "client.MinecraftAccessor",
     "client.MinecraftMixin",
     "client.MultiblockVisualizationHandlerMixin",
     "client.MusicManagerMixin",
@@ -115,6 +114,9 @@
     "client.RenderTypeAccessor",
     "client.SkullBlockRendererAccessor",
     "client.SpecialModelRenderersMixin",
+    "client.RangeSelectItemModelPropertiesMixin",
+    "client.ItemTintSourcesMixin",
+    "client.ItemModelsMixin",
     "client.SpecialModelWrapperMixin",
     "client.SoundEngineMixin",
     "client.SplashManagerMixin"

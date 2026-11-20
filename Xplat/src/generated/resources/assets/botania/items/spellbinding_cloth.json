@@ -1,0 +1,12 @@
+{
+  "model": {
+    "model": "botania:item/spellbinding_cloth",
+    "tints": [
+      {
+        "layer": 0,
+        "type": "botania:item_tint"
+      }
+    ],
+    "type": "minecraft:model"
+  }
+}

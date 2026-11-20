@@ -25,11 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.ServiceUtil;
 
-import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
-
 public interface ClientXplatAbstractions {
-	Identifier MANA_GUN_MODEL_LOADER_ID = botaniaRL("mana_blaster");
-
 	// Event firing
 	void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay);
 

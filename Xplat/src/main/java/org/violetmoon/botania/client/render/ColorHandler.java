@@ -10,7 +10,6 @@ package org.violetmoon.botania.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,6 +17,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.ItemLike;
@@ -43,8 +43,9 @@ import org.violetmoon.botania.common.item.equipment.bauble.TaintedBloodPendantIt
 import org.violetmoon.botania.common.item.equipment.tool.terrasteel.TerraShattererItem;
 import org.violetmoon.botania.common.item.lens.LensItem;
 import org.violetmoon.botania.common.item.material.MysticalPetalItem;
-import org.violetmoon.botania.mixin.client.MinecraftAccessor;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -57,8 +58,38 @@ public final class ColorHandler {
 		void register(BlockColor handler, Block... blocks);
 	}
 
-	public interface ItemHandlerConsumer {
-		void register(ItemColor handler, ItemLike... items);
+	private interface ItemColor {
+		int color(ItemStack stack, int layer);
+	}
+
+	private record ItemTint(ItemColor color, int layers) {}
+
+	public static int getItemTintCount(Item item) {
+		ItemTint tint = ItemTints.VALUES.get(item);
+		return tint != null ? tint.layers() : 0;
+	}
+
+	public static int getItemColor(ItemStack stack, int layer) {
+		ItemTint tint = ItemTints.VALUES.get(stack.getItem());
+		return tint != null ? tint.color().color(stack, layer) : -1;
+	}
+
+	private interface ItemHandlerConsumer {
+		void register(int layers, ItemColor handler, ItemLike... items);
+	}
+
+	private static class ItemTints {
+		private static final Map<Item, ItemTint> VALUES = create();
+
+		private static Map<Item, ItemTint> create() {
+			Map<Item, ItemTint> colors = new IdentityHashMap<>();
+			registerItems((layers, color, items) -> {
+				for (ItemLike item : items) {
+					colors.put(item.asItem(), new ItemTint(color, layers));
+				}
+			});
+			return colors;
+		}
 	}
 
 	private static Block[] getModBlocks(Predicate<Block> blockPredicate) {
@@ -120,20 +151,20 @@ public final class ColorHandler {
 		return optionalColor.orElse(-1);
 	}
 
-	public static void submitItems(ItemHandlerConsumer items) {
-		items.register((stack, tintIndex) -> tintIndex == 0
+	private static void registerItems(ItemHandlerConsumer items) {
+		items.register(1, (stack, tintIndex) -> tintIndex == 0
 				? ARGB.opaque(Mth.hsvToRgb(ClientTickHandler.getUiAnimationTicks() % 180 / 180, 0.25f, 1.0f))
 				: -1,
 				BotaniaItems.GAIA_SPIRIT, BotaniaItems.GAIA_INGOT
 		);
 
-		items.register((stack, tintIndex) -> tintIndex == 0
+		items.register(1, (stack, tintIndex) -> tintIndex == 0
 				? ARGB.opaque(Mth.hsvToRgb(ClientTickHandler.getUiAnimationTicks() % 180 / 180, 0.4f, 0.9f))
 				: -1,
 				BotaniaBlocks.GAIA_MANA_SPREADER
 		);
 
-		items.register((stack, tintIndex) -> switch (tintIndex) {
+		items.register(3, (stack, tintIndex) -> switch (tintIndex) {
 			case 1 -> ARGB.opaque(MysticalPetalItem.getPetalLikeColor(WandOfTheForestItem.getColor1(stack)));
 			case 2 -> ARGB.opaque(MysticalPetalItem.getPetalLikeColor(WandOfTheForestItem.getColor2(stack)));
 			default -> -1;
@@ -141,13 +172,12 @@ public final class ColorHandler {
 				BotaniaItems.WAND_OF_THE_FOREST, BotaniaItems.WAND_OF_THE_ELVEN_FOREST
 		);
 
-		items.register((stack, tintIndex) -> tintIndex == 0
-				? Minecraft.getInstance().getBlockColors()
-						.getColor(((BlockItem) stack.getItem()).getBlock().defaultBlockState(), null, null, tintIndex)
+		items.register(1, (stack, tintIndex) -> tintIndex == 0
+				? poolItemColor((BlockItem) stack.getItem())
 				: -1,
 				getModBlocks(block -> block instanceof ManaPoolBlock pool && (pool.color != null || pool.isFabulous())));
 
-		items.register((stack, tintIndex) -> {
+		items.register(2, (stack, tintIndex) -> {
 			if (tintIndex == 1) {
 				var manaItem = ManaItem.LOOKUP.find(stack);
 				return ARGB.opaque(Mth.hsvToRgb(
@@ -162,7 +192,7 @@ public final class ColorHandler {
 		}, BotaniaItems.MANA_MIRROR, BotaniaItems.MANA_TABLET
 		);
 
-		items.register((stack, tintIndex) -> tintIndex == 0
+		items.register(1, (stack, tintIndex) -> tintIndex == 0
 				? ARGB.opaque(Mth.hsvToRgb(
 						0.55F,
 						((float) stack.getMaxDamage() - (float) stack.getDamageValue()) / (float) stack.getMaxDamage() * 0.5F,
@@ -171,7 +201,7 @@ public final class ColorHandler {
 				BotaniaItems.SPELLBINDING_CLOTH
 		);
 
-		items.register((stack, tintIndex) -> {
+		items.register(2, (stack, tintIndex) -> {
 			if (tintIndex != 1) {
 				return -1;
 			}
@@ -188,32 +218,38 @@ public final class ColorHandler {
 		}, BotaniaItems.TAINTED_BLOOD_PENDANT, BotaniaItems.INCENSE_STICK, BotaniaItems.BREW_FLASK, BotaniaItems.BREW_VIAL
 		);
 
-		items.register((stack, tintIndex) -> {
+		items.register(3, (stack, tintIndex) -> {
 			ItemStack lens = ManaBlasterItem.getLens(stack);
 			if (!lens.isEmpty() && tintIndex == 0) {
-				return ((MinecraftAccessor) Minecraft.getInstance()).botania_getItemColors().getColor(lens, tintIndex);
+				return getItemColor(lens, tintIndex);
 			}
 
 			if (tintIndex == 2) {
-				BurstProperties props = ((ManaBlasterItem) stack.getItem())
-						.getBurstProps(Minecraft.getInstance().player, stack, false, InteractionHand.MAIN_HAND);
+				var player = Minecraft.getInstance().player;
+				int color = 0x20FF20;
+				if (player != null) {
+					BurstProperties props = ((ManaBlasterItem) stack.getItem()).getBurstProps(player, stack, false, InteractionHand.MAIN_HAND);
+					color = props.color;
+				} else if (!lens.isEmpty() && lens.getItem() instanceof LensItem item) {
+					color = item.getLensColor(lens, null);
+				}
 				int add = ARGB.as8BitChannel(Mth.sin(ClientTickHandler.getUiAnimationTicks() / 5) * 0.15f);
 
-				return addToColor(props.color, add);
+				return addToColor(color, add);
 			} else {
 				return -1;
 			}
 		}, BotaniaItems.MANA_BLASTER
 		);
 
-		items.register((stack, tintIndex) -> tintIndex == 1
+		items.register(2, (stack, tintIndex) -> tintIndex == 1
 				? ARGB.opaque(Mth.hsvToRgb(0.75f, 1,
 						1.5f - Math.min(1, Mth.sin(ClientTickHandler.getUiAnimationTicks() / 2) * 0.5f + 1.2f)))
 				: -1,
 				BotaniaItems.SOULSCRIBE
 		);
 
-		items.register((stack, tintIndex) -> tintIndex == 1 && TerraShattererItem.isEnabled(stack)
+		items.register(2, (stack, tintIndex) -> tintIndex == 1 && TerraShattererItem.isEnabled(stack)
 				? ARGB.opaque(Mth.hsvToRgb(0.375f,
 						Math.min(1, Mth.sin(ClientTickHandler.getUiAnimationTicks() / 4) * 0.5f + 1f),
 						1))
@@ -224,7 +260,7 @@ public final class ColorHandler {
 		ItemColor lensHandler = (stack, tintIndex) -> tintIndex == 0
 				? ARGB.opaque(((LensItem) stack.getItem()).getLensColor(stack, Minecraft.getInstance().level))
 				: -1;
-		items.register(lensHandler,
+		items.register(1, lensHandler,
 				BotaniaItems.MANA_LENS, BotaniaItems.VELOCITY_LENS, BotaniaItems.POTENCY_LENS,
 				BotaniaItems.RESISTANCE_LENS, BotaniaItems.EFFICIENCY_LENS, BotaniaItems.BOUNCE_LENS,
 				BotaniaItems.GRAVITY_LENS, BotaniaItems.BORE_LENS, BotaniaItems.DAMAGING_LENS,
@@ -234,6 +270,11 @@ public final class ColorHandler {
 				BotaniaItems.REDIRECTIVE_LENS, BotaniaItems.CELEBRATORY_LENS, BotaniaItems.FLARE_LENS,
 				BotaniaItems.MESSENGER_LENS, BotaniaItems.TRIPWIRE_LENS, BotaniaItems.STORM_LENS
 		);
+	}
+
+	private static int poolItemColor(BlockItem item) {
+		ManaPoolBlock pool = (ManaPoolBlock) item.getBlock();
+		return ARGB.opaque(getManaPoolColor(pool, pool.defaultBlockState(), null));
 	}
 
 	private static int addToColor(int color, int add) {

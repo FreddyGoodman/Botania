@@ -1,0 +1,20 @@
+{
+  "model": {
+    "entries": [
+      {
+        "model": {
+          "model": "botania:item/elucidator",
+          "type": "minecraft:model"
+        },
+        "threshold": 1.0
+      }
+    ],
+    "fallback": {
+      "model": "botania:item/manasteel_sword",
+      "type": "minecraft:model"
+    },
+    "predicate": "botania:elucidator",
+    "property": "botania:item_property",
+    "type": "minecraft:range_dispatch"
+  }
+}

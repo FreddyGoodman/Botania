@@ -1,0 +1,7 @@
+{
+  "model": {
+    "type": "botania:mana_blaster",
+    "base": "botania:item/mana_blaster_noclip",
+    "clip": "botania:item/mana_blaster_clip"
+  }
+}

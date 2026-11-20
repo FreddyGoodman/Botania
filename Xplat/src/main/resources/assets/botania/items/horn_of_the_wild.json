@@ -1,0 +1,48 @@
+{
+  "model": {
+    "entries": [
+      {
+        "model": {
+          "entries": [
+            {
+              "model": {
+                "model": "botania:item/vuvuzela_tooting",
+                "type": "minecraft:model"
+              },
+              "threshold": 1.0
+            }
+          ],
+          "fallback": {
+            "model": "botania:item/horn_of_the_wild_tooting",
+            "type": "minecraft:model"
+          },
+          "predicate": "botania:vuvuzela",
+          "property": "botania:item_property",
+          "type": "minecraft:range_dispatch"
+        },
+        "threshold": 1.0
+      }
+    ],
+    "fallback": {
+      "entries": [
+        {
+          "model": {
+            "model": "botania:item/vuvuzela",
+            "type": "minecraft:model"
+          },
+          "threshold": 1.0
+        }
+      ],
+      "fallback": {
+        "model": "botania:item/horn_of_the_wild",
+        "type": "minecraft:model"
+      },
+      "predicate": "botania:vuvuzela",
+      "property": "botania:item_property",
+      "type": "minecraft:range_dispatch"
+    },
+    "predicate": "minecraft:tooting",
+    "property": "botania:item_property",
+    "type": "minecraft:range_dispatch"
+  }
+}

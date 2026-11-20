@@ -1,0 +1,12 @@
+{
+  "model": {
+    "model": "botania:item/storm_lens",
+    "tints": [
+      {
+        "layer": 0,
+        "type": "botania:item_tint"
+      }
+    ],
+    "type": "minecraft:model"
+  }
+}

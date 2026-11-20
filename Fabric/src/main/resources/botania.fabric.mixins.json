@@ -29,7 +29,6 @@
   ],
   "client": [
     "client.AbstractTextureFabricMixin",
-    "client.BlockModelDeserializerFabricMixin",
     "client.ClientPacketListenerMixin",
     "client.DebugScreenOverlayFabricMixin",
     "client.KeyboardHandlerFabricMixin",

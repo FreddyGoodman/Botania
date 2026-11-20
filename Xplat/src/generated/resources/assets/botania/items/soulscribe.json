@@ -1,0 +1,16 @@
+{
+  "model": {
+    "model": "botania:item/soulscribe",
+    "tints": [
+      {
+        "layer": 0,
+        "type": "botania:item_tint"
+      },
+      {
+        "layer": 1,
+        "type": "botania:item_tint"
+      }
+    ],
+    "type": "minecraft:model"
+  }
+}

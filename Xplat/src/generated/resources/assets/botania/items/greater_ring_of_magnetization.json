@@ -1,0 +1,20 @@
+{
+  "model": {
+    "entries": [
+      {
+        "model": {
+          "model": "botania:item/greater_ring_of_magnetization_active",
+          "type": "minecraft:model"
+        },
+        "threshold": 1.0
+      }
+    ],
+    "fallback": {
+      "model": "botania:item/greater_ring_of_magnetization",
+      "type": "minecraft:model"
+    },
+    "predicate": "botania:active",
+    "property": "botania:item_property",
+    "type": "minecraft:range_dispatch"
+  }
+}

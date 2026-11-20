@@ -1,0 +1,20 @@
+{
+  "model": {
+    "entries": [
+      {
+        "model": {
+          "model": "botania:item/black_hole_talisman_active",
+          "type": "minecraft:model"
+        },
+        "threshold": 1.0
+      }
+    ],
+    "fallback": {
+      "model": "botania:item/black_hole_talisman",
+      "type": "minecraft:model"
+    },
+    "predicate": "botania:active",
+    "property": "botania:item_property",
+    "type": "minecraft:range_dispatch"
+  }
+}

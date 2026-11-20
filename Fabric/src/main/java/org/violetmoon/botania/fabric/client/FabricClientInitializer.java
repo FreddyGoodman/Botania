@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,7 +39,6 @@ import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.BotaniaAPIClient;
 import org.violetmoon.botania.api.fabric.BotaniaFabricCapabilities;
 import org.violetmoon.botania.client.BotaniaClientCapabilities;
-import org.violetmoon.botania.client.BotaniaItemProperties;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.handler.CorporeaInputHandler;
 import org.violetmoon.botania.client.core.handler.KonamiHandler;
@@ -107,7 +105,6 @@ public class FabricClientInitializer implements ClientModInitializer {
 			MiscellaneousModels.INSTANCE.onModelRegister(Minecraft.getInstance().getResourceManager(), pluginContext::addModels);
 			pluginContext.modifyModelAfterBake().register((bakedModel, context) -> MiscellaneousModels.INSTANCE.modifyModelAfterbake(bakedModel, context.resourceId()));
 		});
-		BotaniaItemProperties.init(ItemProperties::register);
 
 		// BE/Entity Renderer
 		BotaniaLayerDefinitions.init((loc, supplier) -> EntityModelLayerRegistry.registerModelLayer(loc, supplier::get));
@@ -152,7 +149,6 @@ public class FabricClientInitializer implements ClientModInitializer {
 
 	private void loadComplete(Minecraft mc) {
 		ColorHandler.submitBlocks(ColorProviderRegistry.BLOCK::register);
-		ColorHandler.submitItems(ColorProviderRegistry.ITEM::register);
 	}
 
 	private void initAuxiliaryRender(EntityType<? extends LivingEntity> type, LivingEntityRenderer<?, ?> renderer,

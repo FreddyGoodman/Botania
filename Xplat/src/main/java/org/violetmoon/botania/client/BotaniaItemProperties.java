@@ -9,13 +9,21 @@
 
 package org.violetmoon.botania.client;
 
-import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ItemOwner;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.client.core.proxy.ClientProxy;
 import org.violetmoon.botania.common.block.mana.ManaPoolBlock;
@@ -29,12 +37,48 @@ import org.violetmoon.botania.common.item.rod.SkiesRodItem;
 import org.violetmoon.botania.network.TriConsumer;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
-public final class BotaniaItemProperties {
-	public static void init(TriConsumer<Item, Identifier, ClampedItemPropertyFunction> consumer) {
+public record BotaniaItemProperties(Identifier predicate) implements RangeSelectItemModelProperty {
+	public static final MapCodec<BotaniaItemProperties> CODEC = Identifier.CODEC.fieldOf("predicate")
+			.xmap(BotaniaItemProperties::new, BotaniaItemProperties::predicate);
+
+	@Override
+	public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
+		Map<Identifier, Property> properties = PropertiesByItem.VALUES.get(stack.getItem());
+		Property property = properties != null ? properties.get(predicate) : null;
+		if (property == null) {
+			return Float.NEGATIVE_INFINITY;
+		}
+		LivingEntity living = owner != null ? owner.asLivingEntity() : null;
+		return Mth.clamp(property.get(stack, level, living, seed), 0, 1);
+	}
+
+	@Override
+	public MapCodec<BotaniaItemProperties> type() {
+		return CODEC;
+	}
+
+	private interface Property {
+		float get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed);
+	}
+
+	private static class PropertiesByItem {
+		private static final Map<Item, Map<Identifier, Property>> VALUES = create();
+
+		private static Map<Item, Map<Identifier, Property>> create() {
+			Map<Item, Map<Identifier, Property>> values = new IdentityHashMap<>();
+			register((item, id, property) -> values.computeIfAbsent(item, key -> new HashMap<>()).put(id, property));
+			return values;
+		}
+	}
+
+	private static void register(TriConsumer<Item, Identifier, Property> consumer) {
 		consumer.accept(BotaniaItems.TRINKET_CASE, botaniaRL("open"),
 				(stack, world, entity, seed) -> stack.has(BotaniaDataComponents.ACTIVE_TRANSIENT) ? 1 : 0);
 		consumer.accept(BotaniaItems.BLACK_HOLE_TALISMAN, botaniaRL("active"),
@@ -47,10 +91,10 @@ public final class BotaniaItemProperties {
 				});
 
 		Identifier vuvuzelaId = botaniaRL("vuvuzela");
-		ClampedItemPropertyFunction isVuvuzela = (stack, world, entity, seed) -> stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains("vuvuzela") ? 1 : 0;
+		Property isVuvuzela = (stack, world, entity, seed) -> stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains("vuvuzela") ? 1 : 0;
 		// same as goat horn:
 		Identifier tootingId = Identifier.withDefaultNamespace("tooting");
-		ClampedItemPropertyFunction isTooting = (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0;
+		Property isTooting = (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0;
 		for (HornItem hornItem : Arrays.asList(BotaniaItems.HORN_OF_THE_WILD, BotaniaItems.HORN_OF_THE_CANOPY, BotaniaItems.HORN_OF_THE_COVERING)) {
 			consumer.accept(hornItem, vuvuzelaId, isVuvuzela);
 			consumer.accept(hornItem, tootingId, isTooting);
@@ -65,7 +109,7 @@ public final class BotaniaItemProperties {
 				(stack, world, entity, seed) -> LifeAggregatorItem.hasData(stack) ? 1 : 0);
 		consumer.accept(BotaniaItems.STONE_OF_TEMPERANCE, botaniaRL("active"),
 				(stack, world, entity, seed) -> stack.has(BotaniaDataComponents.ACTIVE) ? 1 : 0);
-		ClampedItemPropertyFunction wandBindModeProperty =
+		Property wandBindModeProperty =
 				(stack, world, entity, seed) -> WandOfTheForestItem.getBindMode(stack) ? 1 : 0;
 		consumer.accept(BotaniaItems.WAND_OF_THE_FOREST, botaniaRL("bindmode"), wandBindModeProperty);
 		consumer.accept(BotaniaItems.WAND_OF_THE_ELVEN_FOREST, botaniaRL("bindmode"), wandBindModeProperty);
@@ -73,14 +117,14 @@ public final class BotaniaItemProperties {
 				(stack, world, entity, seed) -> stack.has(BotaniaDataComponents.ACTIVE) ? 1 : 0);
 
 		Identifier poolFullId = botaniaRL("full");
-		ClampedItemPropertyFunction poolFull = (stack, world, entity, seed) -> stack.has(BotaniaDataComponents.RENDER_FULL)
+		Property poolFull = (stack, world, entity, seed) -> stack.has(BotaniaDataComponents.RENDER_FULL)
 				|| stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof ManaPoolBlock pool && pool.isCreative()
 						? 1 : 0;
 		BuiltInRegistries.BLOCK.stream().filter(ManaPoolBlock.class::isInstance)
 				.filter(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(BotaniaAPI.MODID))
 				.forEach(block -> consumer.accept(block.asItem(), poolFullId, poolFull));
 
-		ClampedItemPropertyFunction brewGetter = (stack, world, entity, seed) -> {
+		Property brewGetter = (stack, world, entity, seed) -> {
 			BaseBrewItem item = ((BaseBrewItem) stack.getItem());
 			int swigsLeft = item.getSwigsLeft(stack) - 1;
 			int totalSwigs = item.getSwigs(stack) - 1;
@@ -90,13 +134,13 @@ public final class BotaniaItemProperties {
 		consumer.accept(BotaniaItems.BREW_FLASK, botaniaRL("swigs_taken"), brewGetter);
 
 		Identifier holidayId = botaniaRL("holiday");
-		ClampedItemPropertyFunction holidayGetter = (stack, worldIn, entityIn, seed) -> ClientProxy.jingleTheBells ? 1 : 0;
+		Property holidayGetter = (stack, worldIn, entityIn, seed) -> ClientProxy.jingleTheBells ? 1 : 0;
 		consumer.accept(BotaniaItems.MANAWEAVE_HELMET, holidayId, holidayGetter);
 		consumer.accept(BotaniaItems.MANAWEAVE_CHESTPLATE, holidayId, holidayGetter);
 		consumer.accept(BotaniaItems.MANAWEAVE_BOOTS, holidayId, holidayGetter);
 		consumer.accept(BotaniaItems.MANAWEAVE_LEGGINGS, holidayId, holidayGetter);
 
-		ClampedItemPropertyFunction ringOnGetter = (stack, worldIn, entityIn, seed) -> {
+		Property ringOnGetter = (stack, worldIn, entityIn, seed) -> {
 			if (entityIn instanceof Player player) {
 				if (player.getCooldowns().isOnCooldown(stack)) {
 					return 0;
@@ -126,8 +170,8 @@ public final class BotaniaItemProperties {
 				(stack, world, living, seed) -> SkiesRodItem.isFlying(stack) ? 1 : 0);
 
 		// [VanillaCopy] ItemProperties.BOW's minecraft:pulling and minecraft:pull properties
-		ClampedItemPropertyFunction pulling = (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
-		ClampedItemPropertyFunction pull = (stack, level, entity, seed) -> {
+		Property pulling = (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
+		Property pull = (stack, level, entity, seed) -> {
 			if (entity == null) {
 				return 0.0F;
 			} else {
@@ -139,6 +183,4 @@ public final class BotaniaItemProperties {
 		consumer.accept(BotaniaItems.CRYSTAL_BOW, Identifier.withDefaultNamespace("pulling"), pulling);
 		consumer.accept(BotaniaItems.CRYSTAL_BOW, Identifier.withDefaultNamespace("pull"), pull);
 	}
-
-	private BotaniaItemProperties() {}
 }

@@ -124,7 +124,14 @@ public class FloatingFlowerModelProvider implements DataProvider {
 		translation.add(0F);
 		translation.add(0.2F);
 		translation.add(0F);
+		JsonArray identityRotation = new JsonArray();
+		identityRotation.add(0F);
+		identityRotation.add(0F);
+		identityRotation.add(0F);
+		identityRotation.add(1F);
 		JsonObject transform = new JsonObject();
+		transform.add("left_rotation", identityRotation);
+		transform.add("right_rotation", identityRotation.deepCopy());
 		transform.add("scale", scale);
 		transform.add("translation", translation);
 		flower.add("transformation", transform);

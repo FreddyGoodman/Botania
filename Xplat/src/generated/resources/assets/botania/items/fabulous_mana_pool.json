@@ -1,0 +1,32 @@
+{
+  "model": {
+    "entries": [
+      {
+        "model": {
+          "model": "botania:block/fabulous_mana_pool_full",
+          "tints": [
+            {
+              "layer": 0,
+              "type": "botania:item_tint"
+            }
+          ],
+          "type": "minecraft:model"
+        },
+        "threshold": 1.0
+      }
+    ],
+    "fallback": {
+      "model": "botania:item/fabulous_mana_pool",
+      "tints": [
+        {
+          "layer": 0,
+          "type": "botania:item_tint"
+        }
+      ],
+      "type": "minecraft:model"
+    },
+    "predicate": "botania:full",
+    "property": "botania:item_property",
+    "type": "minecraft:range_dispatch"
+  }
+}

@@ -1,5 +1,3 @@
 {
-  "loader": "botania:mana_blaster",
-  "mana_blaster_noclip": "botania:item/mana_blaster_noclip",
-  "mana_blaster_clip": "botania:item/mana_blaster_clip"
+  "parent": "botania:item/mana_blaster_noclip"
 }

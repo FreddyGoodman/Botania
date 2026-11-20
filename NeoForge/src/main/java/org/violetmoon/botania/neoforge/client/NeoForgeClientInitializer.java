@@ -14,7 +14,6 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -42,7 +41,6 @@ import org.violetmoon.botania.api.BotaniaAPIClient;
 import org.violetmoon.botania.api.mana.ManaBarTooltip;
 import org.violetmoon.botania.api.neoforge.BotaniaNeoForgeCapabilities;
 import org.violetmoon.botania.client.BotaniaClientCapabilities;
-import org.violetmoon.botania.client.BotaniaItemProperties;
 import org.violetmoon.botania.client.core.handler.*;
 import org.violetmoon.botania.client.core.proxy.ClientProxy;
 import org.violetmoon.botania.client.fx.BotaniaParticles;
@@ -156,12 +154,6 @@ public class NeoForgeClientInitializer {
 	}
 
 	@SubscribeEvent
-	public static void registerModelLoader(ModelEvent.RegisterGeometryLoaders evt) {
-		evt.register(ClientXplatAbstractions.MANA_GUN_MODEL_LOADER_ID,
-				NeoForgeManaBlasterModel.Loader.INSTANCE);
-	}
-
-	@SubscribeEvent
 	public static void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
 		NeoForgeFloatingFlowerModel.register(event);
 		StandaloneBlockModels.register(id -> event.register(NeoForgeClientXplatImpl.getBlockModelKey(id),
@@ -173,7 +165,6 @@ public class NeoForgeClientInitializer {
 		var resourceManager = Minecraft.getInstance().getResourceManager();
 		MiscellaneousModels.INSTANCE.onModelRegister(resourceManager,
 				id -> evt.register(ModelResourceLocation.standalone(id)));
-		BotaniaItemProperties.init(ItemProperties::register);
 	}
 
 	@SubscribeEvent
@@ -225,10 +216,6 @@ public class NeoForgeClientInitializer {
 		ColorHandler.submitBlocks(evt::register);
 	}
 
-	@SubscribeEvent
-	public static void registerItemColors(RegisterColorHandlersEvent.Item evt) {
-		ColorHandler.submitItems(evt::register);
-	}
 
 	@SubscribeEvent
 	public static void initAuxiliaryRender(EntityRenderersEvent.AddLayers evt) {
