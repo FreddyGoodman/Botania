@@ -834,7 +834,7 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 				.requires(Items.BOWL)
 				.unlockedBy("has_item", conditionsFromItem(Items.BOWL))
 				.unlockedBy("has_orig_recipe", RecipeUnlockedTrigger.unlocked(recipeKey(Identifier.withDefaultNamespace("mushroom_stew"))))
-				.save(recipeOutput, "botania:mushroom_stew");
+				.save(recipeOutput, recipeKey(Identifier.parse("botania:mushroom_stew")));
 
 		WrapperRecipeBuilder.wrap(LexiconReturningShapelessRecipe.SERIALIZER,
 				shapeless(RecipeCategory.MISC, BotaniaItems.BANNER_PATTERN_BOTANIA)
@@ -963,18 +963,18 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 					.group("botania:petal")
 					.unlockedBy("has_item", conditionsFromItem(tallMysticalFlower))
 					.unlockedBy("has_alt_item", conditionsFromItem(petal))
-					.save(recipeOutput, "botania:" + getConversionRecipeName(petal, tallMysticalFlower));
+					.save(recipeOutput, recipeKey(Identifier.parse("botania:" + getConversionRecipeName(petal, tallMysticalFlower))));
 			shapeless(RecipeCategory.MISC, petal, 2)
 					.requires(mysticalFlower)
 					.group("botania:petal")
 					.unlockedBy("has_item", conditionsFromItem(mysticalFlower))
 					.unlockedBy("has_alt_item", conditionsFromItem(petal))
-					.save(recipeOutput, "botania:" + getConversionRecipeName(petal, mysticalFlower));
+					.save(recipeOutput, recipeKey(Identifier.parse("botania:" + getConversionRecipeName(petal, mysticalFlower))));
 			shapeless(RecipeCategory.MISC, dyeItem(color))
 					.requires(tag(BotaniaTags.Items.getPetalTag(color)))
 					.group("botania:dye")
 					.unlockedBy("has_item", conditionsFromItem(petal))
-					.save(recipeOutput, "botania:dye_" + color.getName());
+					.save(recipeOutput, recipeKey(Identifier.parse("botania:dye_" + color.getName())));
 		});
 	}
 
@@ -1827,7 +1827,7 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 				.requires(Items.PUMPKIN)
 				.group("botania:red_string")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.PURE_ENDER_ESSENCE))
-				.save(recipeOutput, "botania:red_string_alt");
+				.save(recipeOutput, recipeKey(Identifier.parse("botania:red_string_alt")));
 		registerRedStringBlock(recipeOutput, BotaniaBlocks.RED_STRINGED_CONTAINER, tag(ConventionalItemTags.WOODEN_CHESTS));
 		registerRedStringBlock(recipeOutput, BotaniaBlocks.RED_STRINGED_DISPENSER, Ingredient.of(Items.DISPENSER));
 		registerRedStringBlock(recipeOutput, BotaniaBlocks.RED_STRINGED_NUTRIFIER, Ingredient.of(BotaniaItems.FLORAL_FERTILIZER));
@@ -1931,7 +1931,7 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 				.pattern("SGS")
 				.pattern(" S ")
 				.unlockedBy("has_item", conditionsFromTag(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS))
-				.save(recipeOutput, "botania:mana_lens_pane");
+				.save(recipeOutput, recipeKey(Identifier.parse("botania:mana_lens_pane")));
 		shapeless(RecipeCategory.MISC, BotaniaItems.VELOCITY_LENS)
 				.requires(BotaniaItems.MANA_LENS)
 				.requires(BotaniaItems.RUNE_OF_AIR)
@@ -2047,7 +2047,7 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 				.pattern("GLG")
 				.pattern("FGF")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.MANA_LENS))
-				.save(recipeOutput, "botania:flash_lens_alt");
+				.save(recipeOutput, recipeKey(Identifier.parse("botania:flash_lens_alt")));
 		shaped(RecipeCategory.MISC, BotaniaItems.MESSENGER_LENS)
 				.define('P', Items.PAPER)
 				.define('L', BotaniaItems.MANA_LENS)
@@ -2160,7 +2160,7 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 				.requires(BotaniaBlocks.LIVINGROCK_BRICKS)
 				.requires(Items.VINE)
 				.unlockedBy("has_item", conditionsFromItem(BotaniaBlocks.LIVINGROCK_BRICKS))
-				.save(recipeOutput, "botania:mossy_livingrock_bricks_vine");
+				.save(recipeOutput, recipeKey(Identifier.parse("botania:mossy_livingrock_bricks_vine")));
 		shapeless(RecipeCategory.BUILDING_BLOCKS, BotaniaBlocks.SHIMMERROCK)
 				.requires(BotaniaBlocks.LIVINGROCK)
 				.requires(BotaniaBlocks.BIFROST)
@@ -2240,7 +2240,7 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 				.requires(Items.BLUE_DYE)
 				.requires(BotaniaTags.Items.BLOCKS_QUARTZ)
 				.unlockedBy("has_item", conditionsFromTag(BotaniaTags.Items.BLOCKS_QUARTZ))
-				.save(recipeOutput, "botania:azulejo");
+				.save(recipeOutput, recipeKey(Identifier.parse("botania:azulejo")));
 
 		List<Item> allAzulejos = IntStream.range(0, 16).mapToObj(i -> "azulejo_" + i)
 				.map(BotaniaAPI::botaniaRL)
@@ -2446,7 +2446,7 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 				.requires(packed)
 				.group(unpackingGroup)
 				.unlockedBy(getHasName(packed), has(packed))
-				.save(recipes, unpackingId);
+				.save(recipes, recipeKey(Identifier.parse(unpackingId)));
 		shaped(packedCategory, packed)
 				.define('#', unpacked)
 				.pattern("###")
@@ -2454,7 +2454,7 @@ public class CraftingRecipeProvider extends BotaniaFabricRecipeProvider {
 				.pattern("###")
 				.group(packingGroup)
 				.unlockedBy(getHasName(unpacked), has(unpacked))
-				.save(recipes, packingId);
+				.save(recipes, recipeKey(Identifier.parse(packingId)));
 	}
 
 	private static Item dyeItem(DyeColor color) {
