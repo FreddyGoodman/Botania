@@ -8,15 +8,10 @@
  */
 package org.violetmoon.botania.neoforge.integration.curios;
 
-import com.google.common.collect.Multimap;
-
-import net.minecraft.core.Holder;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -29,6 +24,7 @@ import org.violetmoon.botania.common.item.ResoluteIvyItem;
 import org.violetmoon.botania.common.item.equipment.bauble.BaubleItem;
 import org.violetmoon.botania.common.proxy.Proxy;
 
+import top.theillusivec4.curios.api.CurioAttributeModifiers;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotContext;
@@ -138,8 +134,12 @@ public class CurioIntegration extends EquipmentHandler {
 		}
 
 		@Override
-		public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, Identifier id) {
-			return getItem().getEquippedAttributeModifiers(stack, id);
+		public CurioAttributeModifiers getDefaultCurioAttributeModifiers() {
+			var modifiers = CurioAttributeModifiers.builder();
+			// Curios appends the slot type and index to each modifier ID when equipping the stack.
+			var itemId = BuiltInRegistries.ITEM.getKey(getItem());
+			getItem().getEquippedAttributeModifiers(stack, itemId).forEach(modifiers::addModifier);
+			return modifiers.build();
 		}
 
 		@Override
