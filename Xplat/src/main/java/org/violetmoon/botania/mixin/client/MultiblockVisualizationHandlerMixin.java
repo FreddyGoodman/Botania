@@ -20,7 +20,5 @@ import vazkii.patchouli.client.handler.MultiblockVisualizationHandler;
 public interface MultiblockVisualizationHandlerMixin {
 	// There doesn't seem to be any other way to access the anchor position of the current Patchouli multiblock.
 	@Accessor("pos")
-	static BlockPos botania_getPos() {
-		throw new IllegalStateException();
-	}
+	BlockPos botania_getPos();
 }

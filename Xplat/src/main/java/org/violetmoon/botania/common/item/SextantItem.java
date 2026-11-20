@@ -8,11 +8,6 @@
  */
 package org.violetmoon.botania.common.item;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -242,8 +237,8 @@ public class SextantItem extends Item implements ClientInventoryTick {
 				if (z < x) {
 					break;
 				}
-				generateMirroredPositions(axis1.getNormal(), axis2.getNormal(), x, z, map, matcher);
-				generateMirroredPositions(axis1.getNormal(), axis2.getNormal(), z, x, map, matcher);
+				generateMirroredPositions(axis1.getUnitVec3i(), axis2.getUnitVec3i(), x, z, map, matcher);
+				generateMirroredPositions(axis1.getUnitVec3i(), axis2.getUnitVec3i(), z, x, map, matcher);
 			}
 		};
 	}
@@ -351,7 +346,6 @@ public class SextantItem extends Item implements ClientInventoryTick {
 
 	public static class Hud {
 		public static void render(GuiGraphicsExtractor gui, Player player, ItemStack stack) {
-			PoseStack ms = gui.pose();
 			ItemStack onUse = player.getUseItem();
 			int time = player.getUseItemRemainingTicks();
 
@@ -370,20 +364,26 @@ public class SextantItem extends Item implements ClientInventoryTick {
 				gui.text(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFF);
 
 				if (inRange) {
-					radius += 4;
-					RenderSystem.lineWidth(3F);
-					Tesselator.getInstance().begin(VertexFormat.Mode.LINE_STRIP, DefaultVertexFormat.POSITION);
-					RenderSystem.setShaderColor(0F, 1F, 1F, 1F);
-					for (int i = 0; i < 361; i++) {
-						float radian = (float) (i * Math.PI / 180);
-						float xp = x + net.minecraft.util.Mth.cos(radian) * (float) radius;
-						float yp = y + net.minecraft.util.Mth.sin(radian) * (float) radius;
-						Tesselator.getInstance().begin(VertexFormat.Mode.LINE_STRIP, DefaultVertexFormat.POSITION).addVertex(ms.last().pose(), xp, yp, 0);
-					}
-					//todo Tesselator.getInstance().end();
+					drawCircle(gui, x, y, radius + 4);
 				}
 			}
 		}
+		private static void drawCircle(GuiGraphicsExtractor gui, int x, int y, double radius) {
+			double outer = radius + 1.5;
+			double inner = radius - 1.5;
+			int cyan = 0xFF00FFFF;
+			for (int row = -(int) outer; row <= (int) outer; row++) {
+				int width = (int) Math.sqrt(outer * outer - row * row);
+				if (Math.abs(row) >= inner) {
+					gui.fill(x - width, y + row, x + width + 1, y + row + 1, cyan);
+				} else {
+					int gap = (int) Math.sqrt(inner * inner - row * row);
+					gui.fill(x - width, y + row, x - gap, y + row + 1, cyan);
+					gui.fill(x + gap + 1, y + row, x + width + 1, y + row + 1, cyan);
+				}
+			}
+		}
+
 	}
 
 	@FunctionalInterface

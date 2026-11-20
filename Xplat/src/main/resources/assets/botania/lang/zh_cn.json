@@ -537,7 +537,7 @@
   "structure.minecraft.village_snowy": "雪原村庄",
   "structure.minecraft.village_taiga": "针叶林村庄",
 
-  "key.categories.botania": "植物魔法",
+  "key.category.botania.general": "植物魔法",
   "key.botania_corporea_request": "多媒体请求",
 
   "botania.triggers.manaDetector": "魔力脉冲",

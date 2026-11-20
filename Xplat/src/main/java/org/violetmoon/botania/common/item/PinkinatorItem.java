@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 
 import org.violetmoon.botania.common.advancements.UseItemSuccessTrigger;
@@ -46,7 +45,7 @@ public class PinkinatorItem extends Item {
 		List<WitherBoss> withers = world.getEntitiesOfClass(WitherBoss.class, new AABB(player.getX() - range, player.getY() - range, player.getZ() - range, player.getX() + range, player.getY() + range, player.getZ() + range));
 		for (WitherBoss wither : withers) {
 			if (wither.isAlive() && !(wither instanceof PinkWitherEntity)) {
-				if (!world.isClientSide()) {
+				if (world instanceof ServerLevel level) {
 					wither.discard();
 					PinkWitherEntity pink = BotaniaEntities.PINK_WITHER.create(world, EntitySpawnReason.CONVERSION);
 					pink.snapTo(wither.getX(), wither.getY(), wither.getZ(), wither.getYRot(), wither.getXRot());
@@ -55,7 +54,7 @@ public class PinkinatorItem extends Item {
 						pink.setCustomName(wither.getCustomName());
 						pink.setCustomNameVisible(wither.isCustomNameVisible());
 					}
-					pink.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(pink.blockPosition()), EntitySpawnReason.CONVERSION, null);
+					pink.finalizeSpawn(level, level.getCurrentDifficultyAt(pink.blockPosition()), EntitySpawnReason.CONVERSION, null);
 					world.addFreshEntity(pink);
 					pink.spawnAnim();
 					pink.playSound(BotaniaSounds.THE_PINKINATOR, 1F, (1F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);

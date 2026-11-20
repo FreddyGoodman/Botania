@@ -43,7 +43,6 @@ public class TerraPlateComponent implements ICustomComponent {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
-		PoseStack ms = gui.pose();
 		context.renderItemStack(gui, x + 13, y + 1, mouseX, mouseY, cornerBlock);
 
 		context.renderItemStack(gui, x + 20, y + 4, mouseX, mouseY, middleBlock);

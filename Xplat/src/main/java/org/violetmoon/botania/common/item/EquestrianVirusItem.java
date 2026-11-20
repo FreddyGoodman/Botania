@@ -9,10 +9,12 @@
 package org.violetmoon.botania.common.item;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -26,8 +28,6 @@ import net.minecraft.world.entity.animal.equine.ZombieHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ServerLevelAccessor;
 
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
@@ -41,38 +41,33 @@ public class EquestrianVirusItem extends Item {
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity living, InteractionHand hand) {
 		if (living.isAlive() && living instanceof Horse horse) {
-			if (player.level().isClientSide()) {
+			if (!(player.level() instanceof ServerLevel level)) {
 				return InteractionResult.SUCCESS;
 			}
 			if (horse.isTamed()) {
-				SimpleContainer inv = ((AbstractHorseAccessor) horse).botania_getInventory();
-				ItemStack saddle = inv.getItem(0);
-
-				// Not all AbstractHorse's have saddles in slot 0
-				if (!saddle.isEmpty() && !saddle.is(Items.SADDLE)) {
-					horse.spawnAtLocation(saddle, 0);
-					saddle = ItemStack.EMPTY;
+				AbstractHorse newHorse = stack.is(BotaniaItems.NECRODERMAL_VIRUS)
+						? EntityType.ZOMBIE_HORSE.create(level, EntitySpawnReason.CONVERSION)
+						: EntityType.SKELETON_HORSE.create(level, EntitySpawnReason.CONVERSION);
+				if (newHorse == null) {
+					return InteractionResult.PASS;
 				}
 
-				for (int i = 1; i < inv.getContainerSize(); i++) {
-					if (!inv.getItem(i).isEmpty()) {
-						horse.spawnAtLocation(inv.getItem(i), 0);
+				SimpleContainer inventory = ((AbstractHorseAccessor) horse).botania_getInventory();
+				for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+					ItemStack stored = inventory.getItem(slot);
+					if (!stored.isEmpty()) {
+						horse.spawnAtLocation(level, stored);
 					}
 				}
-
+				ItemStack armor = horse.getItemBySlot(EquipmentSlot.BODY);
+				if (!armor.isEmpty()) {
+					horse.spawnAtLocation(level, armor);
+				}
+				newHorse.setItemSlot(EquipmentSlot.SADDLE, horse.getItemBySlot(EquipmentSlot.SADDLE));
 				horse.discard();
 
-				AbstractHorse newHorse = stack.is(BotaniaItems.NECRODERMAL_VIRUS)
-						? EntityType.ZOMBIE_HORSE.create(player.level(), EntitySpawnReason.CONVERSION)
-						: EntityType.SKELETON_HORSE.create(player.level(), EntitySpawnReason.CONVERSION);
 				newHorse.tameWithName(player);
 				newHorse.absSnapTo(horse.getX(), horse.getY(), horse.getZ(), horse.getYRot(), horse.getXRot());
-
-				// Put the saddle back
-				if (!saddle.isEmpty()) {
-					SimpleContainer newInv = ((AbstractHorseAccessor) newHorse).botania_getInventory();
-					newInv.setItem(0, saddle);
-				}
 
 				Identifier virusId = BotaniaAPI.botaniaRL("ermergerd_virus");
 
@@ -89,9 +84,9 @@ public class EquestrianVirusItem extends Item {
 				jumpHeight.addPermanentModifier(new AttributeModifier(virusId, jumpHeight.getBaseValue() * 0.5, AttributeModifier.Operation.ADD_VALUE));
 
 				newHorse.playSound(BotaniaSounds.VIRUS_INFECT, 1.0F + living.level().getRandom().nextFloat(), living.level().getRandom().nextFloat() * 0.7F + 1.3F);
-				newHorse.finalizeSpawn((ServerLevelAccessor) player.level(), player.level().getCurrentDifficultyAt(newHorse.blockPosition()), EntitySpawnReason.CONVERSION, null);
+				newHorse.finalizeSpawn(level, level.getCurrentDifficultyAt(newHorse.blockPosition()), EntitySpawnReason.CONVERSION, null);
 				newHorse.setAge(horse.getAge());
-				player.level().addFreshEntity(newHorse);
+				level.addFreshEntity(newHorse);
 				newHorse.spawnAnim();
 
 				stack.shrink(1);

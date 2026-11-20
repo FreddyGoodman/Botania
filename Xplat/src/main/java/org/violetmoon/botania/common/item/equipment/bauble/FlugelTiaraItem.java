@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.item.equipment.bauble;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -33,7 +32,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.phys.Vec3;
 
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 import org.violetmoon.botania.api.mana.ManaItemHandler;
 import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
@@ -514,27 +512,19 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			int last = left % segTime;
 
 			for (int i = 0; i < segs; i++) {
-				float trans = 1F;
-				if (i == segs - 1) {
-					trans = (float) last / (float) segTime;
-					RenderSystem.enableBlend();
-					RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				}
-
-				RenderSystem.setShaderColor(1F, 1F, 1F, trans);
-				RenderHelper.drawTexturedModalRect(gui, textureHud, xo + 8 * i, y, u, v, 9, 9);
+				float opacity = i == segs - 1 ? (float) last / segTime : 1F;
+				int color = ARGB.color(ARGB.as8BitChannel(opacity), 0xFFFFFF);
+				RenderHelper.drawTexturedModalRect(gui, textureHud, xo + 8 * i, y, u, v, 9, 9, color);
 			}
 
 			if (player.getAbilities().flying) {
 				int width = (int) (player.getCooldowns().getCooldownPercent(stack, partialTicks) * 80);
-				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 				if (width > 0) {
 					gui.fill(xo, y - 2, xo + 80, y - 1, 0x88000000);
 				}
 				gui.fill(xo, y - 2, xo + width, y - 1, 0xFFFFFFFF);
 			}
 
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 		}
 	}
 

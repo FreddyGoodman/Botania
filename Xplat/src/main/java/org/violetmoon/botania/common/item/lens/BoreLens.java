@@ -43,9 +43,8 @@ public class BoreLens extends Lens {
 	@Override
 	public boolean collideBurst(ManaBurst burst, HitResult rtr, boolean isManaBlock, boolean shouldKill, ItemStack stack) {
 		Projectile entity = burst.entity();
-		Level level = entity.level();
 
-		if (level.isClientSide() || rtr.getType() != HitResult.Type.BLOCK) {
+		if (!(entity.level() instanceof ServerLevel level) || rtr.getType() != HitResult.Type.BLOCK) {
 			return false;
 		}
 
@@ -76,7 +75,7 @@ public class BoreLens extends Lens {
 		Optional<GlobalPos> source = burst.getBurstSourcePosition();
 		if (!isManaBlock && canHarvest(harvestLevel, state) && hardness != -1 && (burst.isFake() || mana >= 24)) {
 			if (!burst.hasAlreadyCollidedAt(collidePos) && !burst.isFake()) {
-				List<ItemStack> items = Block.getDrops(state, (ServerLevel) level, collidePos, tile);
+				List<ItemStack> items = Block.getDrops(state, level, collidePos, tile);
 
 				if (!level.destroyBlock(collidePos, false, entity)) {
 					return true;
@@ -95,7 +94,7 @@ public class BoreLens extends Lens {
 					dropPosition = Vec3.atCenterOf(collidePos);
 				}
 
-				if (level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+				if (level.getGameRules().get(GameRules.BLOCK_DROPS)) {
 					for (ItemStack stack_ : items) {
 						ItemEntity itemEntity = new ItemEntity(level, dropPosition.x, dropPosition.y, dropPosition.z, stack_);
 						itemEntity.setDefaultPickUpDelay();

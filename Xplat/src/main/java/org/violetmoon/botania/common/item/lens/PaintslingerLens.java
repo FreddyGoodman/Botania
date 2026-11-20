@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.item.lens;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -41,7 +42,7 @@ public class PaintslingerLens extends Lens {
 		Entity entity = burst.entity();
 		boolean isRainbowLens = LensItem.isLensRainbow(stack);
 		DyeColor lensColor = LensItem.getLensColor(stack);
-		if (!entity.level().isClientSide() && !burst.isFake() && (isRainbowLens || lensColor != null)) {
+		if (entity.level() instanceof ServerLevel level && !burst.isFake() && (isRainbowLens || lensColor != null)) {
 			List<DyeColor> possibleColors = isRainbowLens ? ColorHelper.supportedColors().toList() : List.of(lensColor);
 			if (pos.getType() == HitResult.Type.ENTITY) {
 				Entity collidedWith = ((EntityHitResult) pos).getEntity();
@@ -65,7 +66,7 @@ public class PaintslingerLens extends Lens {
 				Identifier blockId = BuiltInRegistries.BLOCK.getKey(hitBlock);
 
 				if (BotaniaAPI.instance().getPaintableBlocks().containsKey(blockId)
-						&& entity.mayInteract(entity.level(), hitPos)) {
+						&& entity.mayInteract(level, hitPos)) {
 					List<BlockPos> coordsToPaint = new ArrayList<>();
 					Queue<BlockPos> coordsToCheck = new ArrayDeque<>();
 					Set<BlockPos> checkedCoords = new HashSet<>();
@@ -80,7 +81,7 @@ public class PaintslingerLens extends Lens {
 							BlockPos candidatePos = coords.relative(dir);
 							if (checkedCoords.add(candidatePos)
 									&& entity.level().getBlockState(candidatePos).is(hitBlock)
-									&& entity.mayInteract(entity.level(), hitPos)) {
+									&& entity.mayInteract(level, candidatePos)) {
 								coordsToCheck.add(candidatePos);
 							}
 						}

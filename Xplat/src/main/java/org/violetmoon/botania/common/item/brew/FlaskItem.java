@@ -15,6 +15,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -52,7 +53,7 @@ public class FlaskItem extends VialItem {
 				player.entityInteractionRange());
 		if (!(hitResult instanceof EntityHitResult entityHitResult)
 				|| !(entityHitResult.getEntity() instanceof EnderEssenceCloudEntity cloud)
-				|| !player.mayInteract(level, cloud.blockPosition())) {
+				|| level instanceof ServerLevel serverLevel && !player.mayInteract(serverLevel, cloud.blockPosition())) {
 			return super.use(level, player, usedHand);
 		}
 

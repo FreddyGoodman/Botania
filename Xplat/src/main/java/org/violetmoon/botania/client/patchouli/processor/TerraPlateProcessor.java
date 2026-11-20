@@ -43,7 +43,8 @@ public class TerraPlateProcessor implements IComponentProcessor {
 			int index = Integer.parseInt(key.substring(5)) - 1;
 			List<Ingredient> list = recipe.getIngredients();
 			if (index >= 0 && index < list.size()) {
-				return IVariable.from(list.get(index).getItems(), level.registryAccess());
+				var stacks = PatchouliUtils.displayStacks(list.get(index), level);
+				return IVariable.wrapList(stacks.stream().map(stack -> IVariable.from(stack, level.registryAccess())).toList(), level.registryAccess());
 			}
 		}
 		return null;

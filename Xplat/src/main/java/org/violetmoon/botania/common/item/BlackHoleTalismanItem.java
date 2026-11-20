@@ -125,7 +125,7 @@ public class BlackHoleTalismanItem extends Item {
 		}
 
 		int highestIdx = -1;
-		int[] counts = new int[player.getInventory().getContainerSize() - player.getInventory().armor.size()];
+		int[] counts = new int[player.getInventory().getNonEquipmentItems().size()];
 		ItemStack reference = new ItemStack(block.asItem());
 
 		for (int i = 0; i < counts.length; i++) {

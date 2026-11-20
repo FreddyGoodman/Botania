@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.item;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -43,14 +44,14 @@ public class ResoluteIvyItem extends Item {
 	}
 
 	public static void onPlayerRespawn(Player oldPlayer, Player newPlayer, boolean alive) {
-		if (!alive) {
+		if (!alive && newPlayer.level() instanceof ServerLevel level) {
 			List<ItemStack> keeps = KeptItems.HOLDER.getOrDefault(oldPlayer, List::of);
 
 			for (ItemStack stack : keeps) {
 				ItemStack copy = stack.copy();
 				copy.remove(BotaniaDataComponents.RESOLUTE_IVY);
 				if (!newPlayer.getInventory().add(copy)) {
-					newPlayer.spawnAtLocation(copy);
+					newPlayer.spawnAtLocation(level, copy);
 				}
 			}
 		}

@@ -51,7 +51,7 @@ public class ClientProxy implements Proxy {
 	public static KeyMapping CORPOREA_REQUEST;
 
 	public static void initKeybindings(Consumer<KeyMapping> consumer) {
-		CORPOREA_REQUEST = new KeyMapping("key.botania_corporea_request", GLFW.GLFW_KEY_C, "key.categories.botania");
+		CORPOREA_REQUEST = new KeyMapping("key.botania_corporea_request", GLFW.GLFW_KEY_C, KeyMapping.Category.register(org.violetmoon.botania.api.BotaniaAPI.botaniaRL("general")));
 		consumer.accept(CORPOREA_REQUEST);
 	}
 
@@ -104,7 +104,7 @@ public class ClientProxy implements Proxy {
 	@Override
 	public void addParticleForceNear(Level world, ParticleOptions particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 		Camera info = Minecraft.getInstance().gameRenderer.getMainCamera();
-		if (info.isInitialized() && info.getPosition().distanceToSqr(x, y, z) <= 1024.0D) {
+		if (info.isInitialized() && info.position().distanceToSqr(x, y, z) <= 1024.0D) {
 			world.addParticle(particleData, true, false, x, y, z, xSpeed, ySpeed, zSpeed);
 		}
 	}
@@ -124,12 +124,12 @@ public class ClientProxy implements Proxy {
 
 	@Override
 	public BlockPos getMultiblockAnchor() {
-		return MultiblockVisualizationHandlerMixin.botania_getPos();
+		return ((MultiblockVisualizationHandlerMixin) (Object) MultiblockVisualizationHandler.INSTANCE).botania_getPos();
 	}
 
 	@Override
 	public void setMultiblockAnchor(BlockPos anchor) {
-		MultiblockVisualizationHandler.anchorTo(anchor, Rotation.NONE);
+		MultiblockVisualizationHandler.INSTANCE.anchorTo(anchor, Rotation.NONE);
 	}
 
 	@Nullable

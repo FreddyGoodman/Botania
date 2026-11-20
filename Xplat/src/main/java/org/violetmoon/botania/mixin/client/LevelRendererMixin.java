@@ -10,6 +10,8 @@ package org.violetmoon.botania.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.renderer.SubmitNodeStorage;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -23,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.violetmoon.botania.client.render.world.WorldOverlays;
+import org.violetmoon.botania.common.item.AssemblyHaloItem;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
@@ -32,6 +35,20 @@ public class LevelRendererMixin {
 	@Shadow
 	@Nullable
 	private ClientLevel level;
+
+	@Shadow
+	@Final
+	private SubmitNodeStorage submitNodeStorage;
+
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderSolidFeatures()V"))
+	private void botania$submitHalo(CallbackInfo ci) {
+		if (level != null) {
+			Minecraft client = Minecraft.getInstance();
+			AssemblyHaloItem.Rendering.submit(client.gameRenderer.getMainCamera().position(),
+					client.getDeltaTracker().getGameTimeDeltaPartialTick(true), new PoseStack(), submitNodeStorage);
+		}
+	}
 
 	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderTranslucentParticles()V"))

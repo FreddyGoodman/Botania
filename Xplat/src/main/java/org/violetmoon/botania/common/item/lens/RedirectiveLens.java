@@ -10,6 +10,7 @@ package org.violetmoon.botania.common.item.lens;
 
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -90,7 +91,7 @@ public class RedirectiveLens extends Lens {
 
 		var entity = burst.entity();
 		var hitPos = result.getBlockPos();
-		if (!entity.mayInteract(entity.level(), hitPos)) {
+		if (!(entity.level() instanceof ServerLevel level) || !entity.mayInteract(level, hitPos)) {
 			return;
 		}
 		var receiver = ManaReceiver.LOOKUP.find(entity.level(), hitPos, result.getDirection());

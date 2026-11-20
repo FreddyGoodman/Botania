@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -25,7 +26,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.TagValueInput;
 
 import org.violetmoon.botania.api.block.LifeAggregatorCarryable;
 import org.violetmoon.botania.client.fx.SparkleParticleData;
@@ -106,10 +107,9 @@ public class LifeAggregatorItem extends Item {
 
 			if (!level.isClientSide()) {
 				BlockEntity blockEntity = level.getBlockEntity(pos);
-				if (blockEntity != null && mover.has(DataComponents.BLOCK_ENTITY_DATA)) {
-					blockEntity.loadWithComponents(
-							mover.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag(),
-							level.registryAccess());
+				var data = mover.get(DataComponents.BLOCK_ENTITY_DATA);
+				if (blockEntity != null && data != null && data.type() == blockEntity.getType()) {
+					blockEntity.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), data.copyTagWithoutId()));
 				}
 
 				LifeAggregatorCarryable carryable = LifeAggregatorCarryable.LOOKUP.find(level, pos);

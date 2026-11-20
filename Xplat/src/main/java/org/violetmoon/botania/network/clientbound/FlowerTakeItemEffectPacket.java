@@ -96,7 +96,7 @@ public record FlowerTakeItemEffectPacket(int itemId, BlockPos pos, int amount, b
 
 				Minecraft minecraft = Minecraft.getInstance();
 				minecraft.particleEngine.add(new FlowerItemPickupParticle(minecraft.getEntityRenderDispatcher(),
-						minecraft.renderBuffers(), level, entity, packet.pos(), packet.onFire()));
+						level, entity, packet.pos(), packet.onFire()));
 				if (entity instanceof ItemEntity itementity) {
 					ItemStack itemstack = itementity.getItem();
 					if (!itemstack.isEmpty()) {

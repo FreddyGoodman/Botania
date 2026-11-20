@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.item.lens;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +43,7 @@ public class ForceLens extends Lens {
 				// warp+force should not move the force relay
 				return false;
 			}
-			if (entity.mayInteract(entity.level(), blockPos)) {
+			if (entity.level() instanceof ServerLevel level && entity.mayInteract(level, blockPos)) {
 				// mana burst could have been warped here, so don't assume that any block is unmovable
 				moveBlocks(entity.level(), blockPos.relative(rtr.getDirection()), rtr.getDirection().getOpposite(),
 						Bound.UNBOUND_POS);

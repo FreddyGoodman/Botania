@@ -250,7 +250,7 @@ public class ShadedMesaRodItem extends Item implements ClientInventoryTick {
 					} else {
 						if (target instanceof LivingEntity living) {
 							living.setLastHurtByMob(player);
-							living.setLastHurtByPlayer(player);
+							living.setLastHurtByPlayer(player, LivingEntity.PLAYER_HURT_EXPERIENCE_TIME);
 						}
 						target.setDeltaMovement(moveVector.multiply(3, 1.5, 3));
 					}

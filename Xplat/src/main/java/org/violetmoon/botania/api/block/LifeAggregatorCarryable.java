@@ -11,17 +11,16 @@ package org.violetmoon.botania.api.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.component.BlockItemStateProperties;
-import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
@@ -46,13 +45,13 @@ public interface LifeAggregatorCarryable {
 	Block getBlockType();
 
 	/**
-	 * Gather all relevant data of the block entity into a {@link CustomData} instance.
+	 * Gather all relevant data of the block entity into a {@link TypedEntityData} instance.
 	 * This data will later be used to restore the block entity when placing it down.
 	 *
 	 * @implNote Return <code>null</code> if the block doesn't have a block entity to restore data to.
 	 */
 	@Nullable
-	CustomData gatherBlockEntityData(HolderLookup.Provider providers);
+	TypedEntityData<BlockEntityType<?>> gatherBlockEntityData(HolderLookup.Provider providers);
 
 	/**
 	 * Get the entity type to display.
@@ -99,10 +98,9 @@ public interface LifeAggregatorCarryable {
 		}
 
 		@Override
-		default CustomData gatherBlockEntityData(HolderLookup.Provider providers) {
-			var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, providers);
-			blockEntity().saveWithId(output);
-			return CustomData.of(output.buildResult());
+		default TypedEntityData<BlockEntityType<?>> gatherBlockEntityData(HolderLookup.Provider providers) {
+			BlockEntity entity = blockEntity();
+			return TypedEntityData.of(entity.getType(), entity.saveWithoutMetadata(providers));
 		}
 
 		@Nullable

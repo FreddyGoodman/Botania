@@ -537,7 +537,7 @@
   "structure.minecraft.village_snowy": "눈 덮인 마을",
   "structure.minecraft.village_taiga": "타이가 마을",
 
-  "key.categories.botania": "보타니아",
+  "key.category.botania.general": "보타니아",
   "key.botania_corporea_request": "코포레아 요청",
 
   "botania.triggers.manaDetector": "마나 버스트",

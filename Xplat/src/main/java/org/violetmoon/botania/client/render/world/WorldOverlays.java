@@ -17,12 +17,10 @@ import net.minecraft.world.level.Level;
 
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.client.fx.BoltRenderer;
-import org.violetmoon.botania.common.item.AssemblyHaloItem;
 
 public final class WorldOverlays {
 	public static void renderWorldLast(Camera camera, float entityPartialTick, float playerPartialTick, PoseStack matrix, RenderBuffers buffers, Level level) {
 		BoltRenderer.onWorldRenderLast(camera, entityPartialTick, matrix, buffers);
-		AssemblyHaloItem.Rendering.onRenderWorldLast(camera, playerPartialTick, matrix, buffers);
 		BoundBlockRenderer.onWorldRenderLast(camera, playerPartialTick, matrix, level);
 		AstrolabePreviewHandler.onWorldRenderLast(camera, matrix, buffers, level);
 		RenderHelper.onWorldRenderLast();

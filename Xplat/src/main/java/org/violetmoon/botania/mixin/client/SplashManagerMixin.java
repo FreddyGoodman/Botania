@@ -12,6 +12,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.resources.SplashManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
@@ -39,7 +40,7 @@ import java.util.List;
 public class SplashManagerMixin {
 	@Shadow
 	@Final
-	private List<String> splashes;
+	private List<Component> splashes;
 
 	@Unique
 	private boolean botania_alreadyAdded;
@@ -48,7 +49,7 @@ public class SplashManagerMixin {
 		method = "apply(Ljava/util/List;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
 		at = @At("HEAD")
 	)
-	private void resetSelf(List<String> object, ResourceManager resourceManager, ProfilerFiller profiler,
+	private void resetSelf(List<Component> object, ResourceManager resourceManager, ProfilerFiller profiler,
 			CallbackInfo ci) {
 		botania_alreadyAdded = false;
 	}
@@ -68,8 +69,8 @@ public class SplashManagerMixin {
 		if (calendar.get(Calendar.MONTH) + 1 == TinyPotatoBlockEntity.BIRTHDAY.getMonth().getValue()
 				&& calendar.get(Calendar.DAY_OF_MONTH) == TinyPotatoBlockEntity.BIRTHDAY.getDayOfMonth()) {
 			int age = calendar.get(Calendar.YEAR) - TinyPotatoBlockEntity.BIRTHDAY.getYear();
-			cir.setReturnValue(new SplashRenderer("Happy %s birthday, Tiny Potato!"
-					.formatted(LocaleHelper.formatAsEnglishOrdinal(age))));
+			cir.setReturnValue(new SplashRenderer(Component.literal("Happy %s birthday, Tiny Potato!"
+					.formatted(LocaleHelper.formatAsEnglishOrdinal(age)))));
 			return;
 		}
 
@@ -88,6 +89,6 @@ public class SplashManagerMixin {
 				"Drum wild!",
 				"Edible textures!",
 				"Music by Firel!"
-		));
+		).stream().map(Component::literal).toList());
 	}
 }

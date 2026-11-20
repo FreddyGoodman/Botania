@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
@@ -64,10 +65,10 @@ public class PetalPouchItem extends ColoredContentsPouchItem {
 
 	@Override
 	public IntList findCandidateSlots(Level level, ItemStack pouch, ItemStack pickupStack) {
-		if (isActive(pouch) && !super.isSupportedItem(pouch, pickupStack)) {
+		if (level instanceof ServerLevel serverLevel && isActive(pouch) && !super.isSupportedItem(pouch, pickupStack)) {
 			CraftingContainer craft = getCraftingContainer();
 			craft.setItem(0, pickupStack.copyWithCount(1));
-			return RECIPE_CACHE.get(level, craft.asCraftInput())
+			return RECIPE_CACHE.get(serverLevel, craft.asCraftInput())
 					.map(RecipeHolder::value)
 					.map(recipe -> recipe.assemble(craft.asCraftInput()))
 					.map(stack -> super.findCandidateSlots(level, pouch, stack))
@@ -96,9 +97,12 @@ public class PetalPouchItem extends ColoredContentsPouchItem {
 		if (super.isSupportedItem(pouch, pickupStack) || !isActive(pouch)) {
 			return super.tryPutItem(level, pouch, pickupStack, container, slot);
 		}
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return false;
+		}
 		CraftingContainer craft = getCraftingContainer();
 		craft.setItem(0, pickupStack.copyWithCount(1));
-		var convertedStackOptional = RECIPE_CACHE.get(level, craft.asCraftInput()).map(RecipeHolder::value)
+		var convertedStackOptional = RECIPE_CACHE.get(serverLevel, craft.asCraftInput()).map(RecipeHolder::value)
 				.map(recipe -> recipe.assemble(craft.asCraftInput()));
 		if (convertedStackOptional.map(ItemStack::isEmpty).orElse(true)) {
 			return false;

@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.item.equipment.bauble;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -90,14 +89,12 @@ public class RingOfDexterousMotionItem extends BaubleItem {
 
 			if (!player.getAbilities().flying) {
 				int width = (int) (player.getCooldowns().getCooldownPercent(stack, pticks) * 40);
-				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 				if (width > 0) {
 					gui.fill(xo, y - 2, xo + 40, y - 1, 0x88000000);
 					gui.fill(xo, y - 2, xo + width, y - 1, 0xFFFFFFFF);
 				}
 			}
 
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 		}
 	}
 
