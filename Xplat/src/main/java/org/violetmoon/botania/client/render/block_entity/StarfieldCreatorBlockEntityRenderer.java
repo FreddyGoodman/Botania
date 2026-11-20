@@ -8,33 +8,63 @@
  */
 package org.violetmoon.botania.client.render.block_entity;
 
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 
-import org.joml.Matrix4f;
-import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.common.block.block_entity.StarfieldCreatorBlockEntity;
+import org.violetmoon.botania.mixin.client.RenderTypeAccessor;
 
-public class StarfieldCreatorBlockEntityRenderer implements BlockEntityRenderer<StarfieldCreatorBlockEntity> {
+import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
+
+public class StarfieldCreatorBlockEntityRenderer implements BlockEntityRenderer<StarfieldCreatorBlockEntity, BlockEntityRenderState> {
+	private static final RenderPipeline PIPELINE = RenderPipeline.builder()
+			.withLocation(botaniaRL("pipeline/starfield_creator"))
+			.withVertexShader("core/rendertype_end_portal")
+			.withFragmentShader(botaniaRL("core/starfield_creator"))
+			.withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+			.withUniform("Projection", UniformType.UNIFORM_BUFFER)
+			.withUniform("Fog", UniformType.UNIFORM_BUFFER)
+			.withUniform("Globals", UniformType.UNIFORM_BUFFER)
+			.withSampler("Sampler0")
+			.withSampler("Sampler1")
+			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+			.withDepthStencilState(DepthStencilState.DEFAULT)
+			.withShaderDefine("PORTAL_LAYERS", 15)
+			.build();
+	private static final RenderType STARFIELD = RenderTypeAccessor.botania_create("botania:starfield_creator", RenderSetup.builder(PIPELINE)
+			.withTexture("Sampler0", AbstractEndPortalRenderer.END_SKY_LOCATION)
+			.withTexture("Sampler1", AbstractEndPortalRenderer.END_PORTAL_LOCATION)
+			.bufferSize(256)
+			.createRenderSetup());
+
 	public StarfieldCreatorBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(StarfieldCreatorBlockEntity tile, float partialTicsk, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-		// [VanillaCopy] Adapted from TheEndPortalRenderer, only renders UP face and sets the offset low in the blockspace
-		Matrix4f matrix4f = pose.last().pose();
-		float offset = 0.24F;
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.STARFIELD);
-		this.renderFace(buffer, matrix4f, 0.0F, 1.0F, offset, offset, 1.0F, 1.0F, 0.0F, 0.0F);
+	public BlockEntityRenderState createRenderState() {
+		return new BlockEntityRenderState();
 	}
 
-	private void renderFace(VertexConsumer vertexConsumer, Matrix4f matrix4f, float f, float g, float h, float i, float j, float k, float l, float m) {
-		vertexConsumer.addVertex(matrix4f, f, h, j);
-		vertexConsumer.addVertex(matrix4f, g, h, k);
-		vertexConsumer.addVertex(matrix4f, g, i, l);
-		vertexConsumer.addVertex(matrix4f, f, i, m);
+	@Override
+	public void submit(BlockEntityRenderState state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+		collector.submitCustomGeometry(pose, STARFIELD, (transform, buffer) -> {
+			float height = 0.24F;
+			buffer.addVertex(transform.pose(), 0, height, 1);
+			buffer.addVertex(transform.pose(), 1, height, 1);
+			buffer.addVertex(transform.pose(), 1, height, 0);
+			buffer.addVertex(transform.pose(), 0, height, 0);
+		});
 	}
 }

@@ -1,13 +1,11 @@
-#version 150
+#version 330
 
-#moj_import <matrix.glsl>
+#moj_import <minecraft:matrix.glsl>
+#moj_import <minecraft:globals.glsl>
 // [VanillaCopy] based on rendertype_end_portal.fsh, changes noted
 
 uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
-
-uniform float GameTime;
-uniform int EndPortalLayers;
 
 in vec4 texProj0;
 
@@ -64,7 +62,7 @@ void main() {
     vec3 kColor = hsv.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), hsv.y);
 
     vec3 color = textureProj(Sampler0, texProj0).rgb * COLORS[0] * kColor;
-    for (int i = 0; i < EndPortalLayers; i++) {
+    for (int i = 0; i < PORTAL_LAYERS; i++) {
         color += textureProj(Sampler1, texProj0 * end_portal_layer(float(i + 1))).rgb * COLORS[i] * kColor;
     }
     fragColor = vec4(color, 1.0);

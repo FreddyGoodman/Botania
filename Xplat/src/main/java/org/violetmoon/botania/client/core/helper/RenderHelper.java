@@ -26,7 +26,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -87,7 +86,6 @@ public final class RenderHelper extends RenderType {
 	public static final RenderType GAIA_PYLON_GLOW_DIRECT = getPylonGlowDirect("gaia_pylon_glow_direct", PylonBlockEntityRenderer.GAIA_TEXTURE);
 
 	public static final RenderType ASTROLABE_PREVIEW = new AstrolabeLayer();
-	public static final RenderType STARFIELD;
 	public static final RenderType LIGHTNING;
 	public static final RenderType TRANSLUCENT;
 
@@ -200,14 +198,6 @@ public final class RenderHelper extends RenderType {
 				.createCompositeState(true);
 		HALO = makeLayer(ResourcesLib.PREFIX_MOD + "halo", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, glState);
 
-		// [VanillaCopy] End portal, with own shader
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::starfield))
-				.setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-						.add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
-						.add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
-				.createCompositeState(false);
-		STARFIELD = makeLayer(ResourcesLib.PREFIX_MOD + "starfield_creator", DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, false, false, glState);
 		glState = RenderType.CompositeState.builder()
 				.setShaderState(POSITION_COLOR_SHADER)
 				.setTransparencyState(LIGHTNING_TRANSPARENCY)

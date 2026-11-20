@@ -25,8 +25,6 @@ import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public class CoreShaders {
 	@Nullable
-	private static ShaderInstance starfieldShaderInstance;
-	@Nullable
 	private static ShaderInstance gaiaNoiseDynamic;
 	@Nullable
 	private static ShaderInstance gaiaNoiseConstant;
@@ -47,11 +45,6 @@ public class CoreShaders {
 	// This is abstracted this way instead of just directly constructing the ShaderInstance
 	// Because Fabric is cute and hides the ResourceProvider from modders (why?)
 	public static void init(TriConsumer<Identifier, VertexFormat, Consumer<ShaderInstance>> registrations) {
-		registrations.accept(
-				botaniaRL("starfield_creator"),
-				DefaultVertexFormat.POSITION,
-				inst -> starfieldShaderInstance = inst
-		);
 		registrations.accept(
 				botaniaRL("gaia_noise_dynamic"),
 				DefaultVertexFormat.NEW_ENTITY,
@@ -92,13 +85,6 @@ public class CoreShaders {
 				DefaultVertexFormat.POSITION_TEX,
 				inst -> gaiaBossBar = inst
 		);
-	}
-
-	@Nullable
-	public static ShaderInstance starfield() {
-		// Intended to not respect useShaders config. The render kind of relies entirely
-		// on the shader, like the end portal.
-		return starfieldShaderInstance;
 	}
 
 	@Nullable
