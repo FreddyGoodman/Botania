@@ -189,7 +189,7 @@ public class BabylonWeaponEntity extends LegallyDistinctThrowableProjectile {
 
 	private void explodeAndDie() {
 		if (!level().isClientSide()) {
-			Holder<DamageType> type = level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(BotaniaDamageTypes.KEY_EXPLOSION);
+			Holder<DamageType> type = level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(BotaniaDamageTypes.KEY_EXPLOSION);
 			DamageSource source = new DamageSource(type, this, this.getOwner());
 			level().explode(this, source, EXPLOSION_DAMAGE_CALCULATOR, getX(), getY(), getZ(), 3F, false, Level.ExplosionInteraction.NONE);
 			discard();

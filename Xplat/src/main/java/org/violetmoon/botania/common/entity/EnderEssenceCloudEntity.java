@@ -15,7 +15,9 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -82,10 +84,22 @@ public class EnderEssenceCloudEntity extends Entity {
 	}
 
 	@Override
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
+	}
+
+	@Override
+	public void onInsideBubbleColumn(boolean dragDown) {
+		if (!level().isClientSide()) {
+			discard();
+		}
+	}
+
+	@Override
 	public void tick() {
 		super.tick();
 		if (!level().isClientSide()) {
-			if (tickCount > (isFromEnderman() ? MAX_AGE_ENDERMAN : MAX_AGE) || isInWaterRainOrBubble()) {
+			if (tickCount > (isFromEnderman() ? MAX_AGE_ENDERMAN : MAX_AGE) || isInWaterOrRain()) {
 				discard();
 			}
 		} else {

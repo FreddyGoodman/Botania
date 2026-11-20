@@ -11,6 +11,7 @@
 package org.violetmoon.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Mob;
@@ -51,6 +52,9 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 
 	@Override
 	public void activate(Level level, BlockPos pos) {
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return;
+		}
 		List<Mob> mobs = level.getEntitiesOfClass(Mob.class, new AABB(pos).inflate(GATHER_RANGE),
 				mob -> mob.isAlive() && !BergamuteBlockEntity.isBergamuteNearby(level, mob.getX(), mob.getY(), mob.getZ()));
 		List<Shearable> shearables = new ArrayList<>();
@@ -66,7 +70,7 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 				convertNearby(mob, Items.BUCKET, Items.MILK_BUCKET);
 			}
 			if (mob instanceof MushroomCow mooshroom && !mooshroom.isBaby()) {
-				if (mooshroom.getVariant() == MushroomCow.MushroomType.BROWN) {
+				if (mooshroom.getVariant() == MushroomCow.Variant.BROWN) {
 					fillBowlSuspiciously(mooshroom);
 				}
 				convertNearby(mob, Items.BOWL, Items.MUSHROOM_STEW);
@@ -84,7 +88,7 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 				break;
 			}
 
-			shearable.shear(SoundSource.BLOCKS);
+			shearable.shear(serverLevel, SoundSource.BLOCKS, ItemStack.EMPTY);
 			++sheared;
 		}
 	}
@@ -129,7 +133,7 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 
 	private static void spawnItem(Mob mob, ItemStack to) {
 		Level world = mob.level();
-		ItemEntity ent = mob.spawnAtLocation(to, 1.0F);
+		ItemEntity ent = mob.spawnAtLocation((ServerLevel) world, to, 1.0F);
 		if (ent != null) {
 			ent.setDeltaMovement(ent.getDeltaMovement().add(
 					world.getRandom().nextFloat() * 0.05F,

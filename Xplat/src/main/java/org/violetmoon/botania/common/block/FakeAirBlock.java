@@ -11,7 +11,7 @@ package org.violetmoon.botania.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -28,12 +28,7 @@ import org.violetmoon.botania.common.block.block_entity.FakeAirBlockEntity;
 public class FakeAirBlock extends AirBlock implements EntityBlock, LiquidBlockContainer {
 
 	public FakeAirBlock(Properties properties) {
-		super(properties);
-	}
-
-	@Override
-	public String getDescriptionId() {
-		return Blocks.AIR.getDescriptionId();
+		super(properties.overrideDescription(Blocks.AIR.getDescriptionId()));
 	}
 
 	@Override
@@ -60,7 +55,7 @@ public class FakeAirBlock extends AirBlock implements EntityBlock, LiquidBlockCo
 	}
 
 	@Override
-	public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+	public boolean canPlaceLiquid(@Nullable LivingEntity entity, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
 		return false;
 	}
 

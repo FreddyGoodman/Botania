@@ -21,7 +21,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.server.level.ServerLevel;
 
 import org.violetmoon.botania.common.entity.PixieEntity;
 import org.violetmoon.botania.common.helper.PlayerHelper;
@@ -58,7 +58,7 @@ public final class PixieHandler {
 	}
 
 	public static void onDamageTaken(Player player, DamageSource source) {
-		if (!player.level().isClientSide() && source.getEntity() instanceof LivingEntity livingSource) {
+		if (player.level() instanceof ServerLevel level && source.getEntity() instanceof LivingEntity livingSource) {
 			// Sometimes the player doesn't have the attribute, not sure why.
 			// Could be badly-written mixins on Fabric.
 			double chance = player.getAttributes().hasAttribute(PIXIE_SPAWN_CHANCE)
@@ -79,7 +79,7 @@ public final class PixieHandler {
 				}
 
 				pixie.setProps(livingSource, player, dmg);
-				pixie.finalizeSpawn((ServerLevelAccessor) player.level(), player.level().getCurrentDifficultyAt(pixie.blockPosition()),
+				pixie.finalizeSpawn(level, level.getCurrentDifficultyAt(pixie.blockPosition()),
 						EntitySpawnReason.EVENT, null);
 				player.level().addFreshEntity(pixie);
 			}

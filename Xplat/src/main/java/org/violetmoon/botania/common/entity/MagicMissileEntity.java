@@ -12,6 +12,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -52,7 +53,8 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	}
 
 	public MagicMissileEntity(LivingEntity owner, boolean evil) {
-		super(BotaniaEntities.MAGIC_MISSILE, owner, owner.level());
+		super(BotaniaEntities.MAGIC_MISSILE, owner.getX(), owner.getEyeY() - 0.1F, owner.getZ(), owner.level());
+		setOwner(owner);
 		setEvil(evil);
 	}
 
@@ -181,10 +183,13 @@ public class MagicMissileEntity extends ThrowableProjectile {
 			}
 		}
 
+		if (!(level() instanceof ServerLevel level)) {
+			return false;
+		}
 		double range = 12;
 		AABB bounds = new AABB(getX() - range, getY() - range, getZ() - range, getX() + range, getY() + range, getZ() + range);
 		DamageSource source = this.getDamageSource();
-		Predicate<Entity> vulnerableTo = e -> !e.isInvulnerableTo(source);
+		Predicate<Entity> vulnerableTo = e -> !(e instanceof LivingEntity living) || !living.isInvulnerableTo(level, source);
 		List<? extends LivingEntity> entities;
 		if (isEvil()) {
 			entities = level().getEntitiesOfClass(Player.class, bounds,

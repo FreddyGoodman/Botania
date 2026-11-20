@@ -243,7 +243,7 @@ public class GrassSeedsItem extends Item {
 			return state.is(BotaniaTags.Blocks.PASTURE_SEED_REPLACEABLE) && canBeGrass(pos, state);
 		}
 
-		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyDirtBlock#canBeGrass
+		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyBlock#canBeGrass
 		private boolean canBeGrass(BlockPos pos, BlockState state) {
 			BlockPos abovePos = pos.above();
 			BlockState aboveState = world.getBlockState(abovePos);
@@ -255,11 +255,11 @@ public class GrassSeedsItem extends Item {
 				// full-height liquid, don't spread
 				return false;
 			}
-			int lightLevel = LightEngine.getLightBlockInto(world, state, pos, aboveState, abovePos, Direction.UP, aboveState.getLightBlock(world, abovePos));
-			return lightLevel < world.getMaxLightLevel();
+			int lightLevel = LightEngine.getLightBlockInto(state, aboveState, Direction.UP, aboveState.getLightDampening());
+			return lightLevel < LightEngine.MAX_LEVEL;
 		}
 
-		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyDirtBlock#canPropagate
+		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyBlock#canPropagate
 		private boolean canPropagate(BlockPos pos) {
 			BlockPos abovePos = pos.above();
 			return canBeGrass(pos, stateToSet) && !world.getFluidState(abovePos).is(FluidTags.WATER);

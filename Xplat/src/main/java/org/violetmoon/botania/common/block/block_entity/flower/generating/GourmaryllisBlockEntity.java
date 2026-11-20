@@ -99,7 +99,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 	private int processFood(ItemStack food) {
 		// strip any non-standard data components from the stack, unless they seem relevant for the flower
 		DataComponentPatch patch = food.getComponentsPatch().forget(this::isIrrelevantComponent);
-		ItemStack newestFood = new ItemStack(food.getItemHolder(), 1, patch);
+		ItemStack newestFood = new ItemStack(food.typeHolder(), 1, patch);
 
 		for (ListIterator<ItemStack> it = lastFoods.listIterator(); it.hasNext();) {
 			int index = it.nextIndex();
@@ -119,9 +119,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 
 	private boolean isIrrelevantComponent(DataComponentType<?> dataComponentType) {
 		return !RELEVANT_COMPONENTS_TAG.map(
-				holders -> BuiltInRegistries.DATA_COMPONENT_TYPE.getResourceKey(dataComponentType)
-						.flatMap(BuiltInRegistries.DATA_COMPONENT_TYPE::getHolder).map(holders::contains)
-						.orElseThrow()
+				holders -> holders.contains(BuiltInRegistries.DATA_COMPONENT_TYPE.wrapAsHolder(dataComponentType))
 		).orElse(dataComponentType == DataComponents.FOOD);
 	}
 

@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -79,8 +80,9 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedEntityBlock {
 
 	private boolean removeRain(Level world) {
 		if (world.isRaining()) {
-			world.getLevelData().setRaining(false);
-			TeruTeruBozuBlockEntity.resetRainTime(world);
+			if (world instanceof ServerLevel serverLevel) {
+				TeruTeruBozuBlockEntity.setRain(serverLevel, false);
+			}
 			return true;
 		}
 		return false;
@@ -88,9 +90,8 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedEntityBlock {
 
 	private boolean startRain(Level world) {
 		if (!world.isRaining()) {
-			if (world.getRandom().nextInt(10) == 0) {
-				world.getLevelData().setRaining(true);
-				TeruTeruBozuBlockEntity.resetRainTime(world);
+			if (world instanceof ServerLevel serverLevel && world.getRandom().nextInt(10) == 0) {
+				TeruTeruBozuBlockEntity.setRain(serverLevel, true);
 			}
 			return true;
 		}

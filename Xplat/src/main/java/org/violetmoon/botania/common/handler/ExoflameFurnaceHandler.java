@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.handler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -29,12 +30,12 @@ public class ExoflameFurnaceHandler {
 
 	public static boolean canSmelt(AbstractFurnaceBlockEntity furnace) {
 		ItemStack furnaceItem = furnace.getItem(0);
-		if (furnaceItem.isEmpty()) {
+		if (furnaceItem.isEmpty() || !(furnace.getLevel() instanceof ServerLevel level)) {
 			return false;
 		}
 		try {
 			var qc = ((AbstractFurnaceBlockEntityAccessor) furnace).botania_getQuickCheck();
-			var currentRecipe = qc.getRecipeFor(new SingleRecipeInput(furnaceItem), furnace.getLevel());
+			var currentRecipe = qc.getRecipeFor(new SingleRecipeInput(furnaceItem), level);
 			return currentRecipe.isPresent() && ExoflameFurnaceHandler.canSmeltRecipe(furnace, currentRecipe.get());
 		} catch (Throwable t) {
 			BotaniaAPI.LOGGER.error("Failed to determine if furnace TE can smelt", t);

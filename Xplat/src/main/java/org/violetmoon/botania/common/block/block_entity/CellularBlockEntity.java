@@ -101,9 +101,4 @@ public class CellularBlockEntity extends BlockEntity {
 		}
 	}
 
-	@Override
-	public boolean onlyOpCanSetNbt() {
-		// targeting Create here, sorry about any instances of https://xkcd.com/1172/
-		return true;
-	}
 }

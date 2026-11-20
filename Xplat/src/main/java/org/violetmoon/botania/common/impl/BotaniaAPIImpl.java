@@ -17,6 +17,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -74,22 +75,22 @@ public class BotaniaAPIImpl implements BotaniaAPI {
 
 	@Override
 	public Holder<ArmorMaterial> getManasteelArmorMaterial() {
-		return BotaniaArmorMaterials.MANASTEEL;
+		return Holder.direct(BotaniaArmorMaterials.MANASTEEL);
 	}
 
 	@Override
 	public Holder<ArmorMaterial> getElementiumArmorMaterial() {
-		return BotaniaArmorMaterials.ELEMENTIUM;
+		return Holder.direct(BotaniaArmorMaterials.ELEMENTIUM);
 	}
 
 	@Override
 	public Holder<ArmorMaterial> getManaweaveArmorMaterial() {
-		return BotaniaArmorMaterials.MANAWEAVE;
+		return Holder.direct(BotaniaArmorMaterials.MANAWEAVE);
 	}
 
 	@Override
 	public Holder<ArmorMaterial> getTerrasteelArmorMaterial() {
-		return BotaniaArmorMaterials.TERRASTEEL;
+		return Holder.direct(BotaniaArmorMaterials.TERRASTEEL);
 	}
 
 	@Override

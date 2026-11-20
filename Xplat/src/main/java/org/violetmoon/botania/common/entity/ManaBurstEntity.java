@@ -17,7 +17,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEvent;
@@ -31,7 +30,6 @@ import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
@@ -133,13 +131,14 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 
 		setBurstSourcePosition(GlobalPos.of(level.dimension(), pos));
 		// spawn slightly lower than the exact center to ensure hitting pools at default horizontal spreader alignment
-		moveTo(pos.getX() + 0.5, pos.getY() + (0.5 - 1.0 / 1024), pos.getZ() + 0.5, 0, 0);
+		snapTo(pos.getX() + 0.5, pos.getY() + (0.5 - 1.0 / 1024), pos.getZ() + 0.5, 0, 0);
 		setRot(yRot, xRot);
 		setDeltaMovement(calculateBurstVelocity(getYRot(), getXRot(), DEFAULT_SPEED));
 	}
 
 	public ManaBurstEntity(Player player) {
-		super(BotaniaEntities.MANA_BURST, player, player.level());
+		super(BotaniaEntities.MANA_BURST, player.getX(), player.getEyeY() - 0.1F, player.getZ(), player.level());
+		setOwner(player);
 
 		setBurstSourcePosition(null);
 		setRot(player.getYRot(), player.getXRot());
@@ -199,7 +198,7 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 	}
 
 	@Override
-	public boolean updateFluidHeightAndDoFluidPushing(TagKey<Fluid> fluid, double mag) {
+	protected boolean updateFluidInteraction() {
 		return false;
 	}
 
@@ -230,8 +229,8 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 	}
 
 	@Override
-	public boolean canChangeDimensions(Level oldLevel, Level newLevel) {
-		return !fake;
+	public boolean canTeleport(Level oldLevel, Level newLevel) {
+		return !fake && super.canTeleport(oldLevel, newLevel);
 	}
 
 	@Override

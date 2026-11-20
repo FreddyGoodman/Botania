@@ -20,12 +20,7 @@ import org.violetmoon.botania.mixin.BlockPropertiesAccessor;
 public class SolidVineBlock extends VineBlock {
 
 	public SolidVineBlock(Properties builder) {
-		super(unsetVanillaProps(builder));
-	}
-
-	@Override
-	public String getDescriptionId() {
-		return Blocks.VINE.getDescriptionId();
+		super(unsetVanillaProps(builder).overrideDescription(Blocks.VINE.getDescriptionId()));
 	}
 
 	private static Properties unsetVanillaProps(Properties props) {
@@ -37,7 +32,7 @@ public class SolidVineBlock extends VineBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return new ItemStack(Blocks.VINE);
 	}
 }

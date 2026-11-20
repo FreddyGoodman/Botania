@@ -201,7 +201,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedEntityBlock
 	}
 
 	@Override
-	public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+	public VoxelShape getOcclusionShape(BlockState state) {
 		return SHAPE;
 	}
 

@@ -54,7 +54,8 @@ public class EnderEssenceFlaskEntity extends ThrowableProjectile implements Item
 	}
 
 	public EnderEssenceFlaskEntity(LivingEntity entity, Level world) {
-		super(BotaniaEntities.ENDER_ESSENCE_FLASK, entity, world);
+		super(BotaniaEntities.ENDER_ESSENCE_FLASK, entity.getX(), entity.getEyeY() - 0.1F, entity.getZ(), world);
+		setOwner(entity);
 	}
 
 	public EnderEssenceFlaskEntity(double x, double y, double z, Level world) {
@@ -114,8 +115,10 @@ public class EnderEssenceFlaskEntity extends ThrowableProjectile implements Item
 
 			LootParams context = builder.create(LootContextParamSets.ENTITY);
 			for (ItemStack stack : table.getRandomItems(context)) {
-				ItemEntity item = entity.spawnAtLocation(stack, 2);
-				item.setDeltaMovement(item.getDeltaMovement().add(vec.scale(0.4)));
+				ItemEntity item = entity.spawnAtLocation((ServerLevel) level(), stack, 2);
+				if (item != null) {
+					item.setDeltaMovement(item.getDeltaMovement().add(vec.scale(0.4)));
+				}
 			}
 		} else {
 			convertBlock(BlockPos.containing(result.getLocation()));

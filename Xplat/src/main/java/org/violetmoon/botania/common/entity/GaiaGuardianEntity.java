@@ -58,7 +58,6 @@ import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
@@ -186,7 +185,7 @@ public class GaiaGuardianEntity extends Mob {
 	private static final EntityDataAccessor<Integer> DATA_INVUL_TIME = SynchedEntityData.defineId(GaiaGuardianEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<BlockPos> DATA_SOURCE_POS = SynchedEntityData.defineId(GaiaGuardianEntity.class, EntityDataSerializers.BLOCK_POS);
 	private static final EntityDataAccessor<Integer> DATA_INITIAL_PLAYER_COUNT = SynchedEntityData.defineId(GaiaGuardianEntity.class, EntityDataSerializers.INT);
-	private static final EntityDataAccessor<Optional<UUID>> DATA_BOSS_INFO_UUID = SynchedEntityData.defineId(GaiaGuardianEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+	private static final EntityDataAccessor<String> DATA_BOSS_INFO_UUID = SynchedEntityData.defineId(GaiaGuardianEntity.class, EntityDataSerializers.STRING);
 
 	private static final int PYLON_OFFSET = 4;
 	private static final List<BlockPos> PYLON_OFFSETS = ImmutableList.of(
@@ -225,7 +224,7 @@ public class GaiaGuardianEntity extends Mob {
 	private boolean hardMode = false;
 	private BlockPos source = Bound.UNBOUND_POS;
 	private final List<UUID> playersWhoAttacked = new ArrayList<>();
-	private final ServerBossEvent bossInfo = (ServerBossEvent) new ServerBossEvent(BotaniaEntities.GAIA_GUARDIAN.getDescription(), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.PROGRESS).setCreateWorldFog(true);
+	private final ServerBossEvent bossInfo = (ServerBossEvent) new ServerBossEvent(UUID.randomUUID(), BotaniaEntities.GAIA_GUARDIAN.getDescription(), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.PROGRESS).setCreateWorldFog(true);
 	private UUID bossInfoUUID = bossInfo.getId();
 	@Nullable
 	public Player trueKiller = null;
@@ -235,7 +234,7 @@ public class GaiaGuardianEntity extends Mob {
 	public GaiaGuardianEntity(EntityType<GaiaGuardianEntity> type, Level world) {
 		super(type, world);
 		xpReward = 825;
-		entityData.set(DATA_BOSS_INFO_UUID, Optional.of(bossInfoUUID));
+		entityData.set(DATA_BOSS_INFO_UUID, bossInfoUUID.toString());
 		if (world.isClientSide()) {
 			Proxy.INSTANCE.addBoss(this);
 		}
@@ -302,7 +301,7 @@ public class GaiaGuardianEntity extends Mob {
 		}
 
 		//all checks ok, spawn the boss
-		if (world.isClientSide()) {
+		if (!(world instanceof ServerLevel serverLevel)) {
 			return true;
 		}
 		GaiaGuardianEntity e = BotaniaEntities.GAIA_GUARDIAN.create(world, EntitySpawnReason.EVENT);
@@ -334,7 +333,7 @@ public class GaiaGuardianEntity extends Mob {
 		}
 
 		e.playSound(BotaniaSounds.GAIA_SUMMON, 1F, 1F);
-		e.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(e.blockPosition()), EntitySpawnReason.EVENT, null);
+		e.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(e.blockPosition()), EntitySpawnReason.EVENT, null);
 		world.addFreshEntity(e);
 
 		e.updateGaiaFight();
@@ -354,7 +353,7 @@ public class GaiaGuardianEntity extends Mob {
 			if (!level().isClientSide()) {
 				level().getEntities(this, MathHelper.inflateBoxAround(source, ARENA_MOB_RANGE),
 						this::isGaiaFightParticipant)
-						.forEach(mob -> ((Mob) mob).restrictTo(source, ARENA_RANGE));
+						.forEach(mob -> ((Mob) mob).setHomeTo(source, ARENA_RANGE));
 			}
 		} else {
 			getGaiaFightMap(level()).remove(this);
@@ -363,7 +362,7 @@ public class GaiaGuardianEntity extends Mob {
 						this::isGaiaFightParticipant)
 						.forEach(mob -> {
 							GaiaFightParticipant.HOLDER.removeFrom(mob);
-							((Mob) mob).clearRestriction();
+							((Mob) mob).clearHome();
 						});
 			}
 		}
@@ -472,7 +471,7 @@ public class GaiaGuardianEntity extends Mob {
 		builder.define(DATA_INVUL_TIME, 0);
 		builder.define(DATA_SOURCE_POS, Bound.UNBOUND_POS);
 		builder.define(DATA_INITIAL_PLAYER_COUNT, 0);
-		builder.define(DATA_BOSS_INFO_UUID, Optional.empty());
+		builder.define(DATA_BOSS_INFO_UUID, "");
 	}
 
 	public int getInvulTime() {
@@ -914,7 +913,7 @@ public class GaiaGuardianEntity extends Mob {
 						// in case the mob spawned with a vehicle or passenger(s), ensure those don't drop unexpected loot
 						mob.getRootVehicle().getPassengersAndSelf().forEach(e -> {
 							if (e instanceof Mob otherMob) {
-								mob.restrictTo(source, ARENA_RANGE);
+								mob.setHomeTo(source, ARENA_RANGE);
 								GaiaFightParticipant.HOLDER.setFor(mob,
 										new GaiaFightParticipant(getUUID(), getSource()));
 								Optional<MobSpawnData> spawnData = spawnedMobs.unwrap().stream().map(Weighted::value)
@@ -970,7 +969,7 @@ public class GaiaGuardianEntity extends Mob {
 
 		int invul = getInvulTime();
 
-		if (level().isClientSide()) {
+		if (!(level() instanceof ServerLevel serverLevel)) {
 			particles();
 			Player player = Proxy.INSTANCE.getClientPlayer();
 			if (!player.isCreative() && getPlayersAround().contains(player)) {
@@ -1112,8 +1111,8 @@ public class GaiaGuardianEntity extends Mob {
 								PixieEntity pixie = new PixieEntity(level(), true);
 								pixie.setProps(players.get(random.nextInt(players.size())), this, 8);
 								pixie.setPos(getRandomX(1), getY() + 2, getRandomZ(1));
-								pixie.finalizeSpawn((ServerLevelAccessor) level(),
-										level().getCurrentDifficultyAt(pixie.blockPosition()),
+								pixie.finalizeSpawn(serverLevel,
+										serverLevel.getCurrentDifficultyAt(pixie.blockPosition()),
 										EntitySpawnReason.MOB_SUMMONED, null);
 								level().addFreshEntity(pixie);
 							}
@@ -1141,7 +1140,7 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	@Override
-	public boolean canChangeDimensions(Level oldLevel, Level newLevel) {
+	public boolean canTeleport(Level oldLevel, Level newLevel) {
 		return false;
 	}
 
@@ -1283,7 +1282,10 @@ public class GaiaGuardianEntity extends Mob {
 		}
 		if (dataValues.stream().map(SynchedEntityData.DataValue::id)
 				.anyMatch(id -> id == DATA_BOSS_INFO_UUID.id())) {
-			entityData.get(DATA_BOSS_INFO_UUID).ifPresent(uuid -> this.bossInfoUUID = uuid);
+			String value = entityData.get(DATA_BOSS_INFO_UUID);
+			if (!value.isEmpty()) {
+				this.bossInfoUUID = UUID.fromString(value);
+			}
 		}
 	}
 

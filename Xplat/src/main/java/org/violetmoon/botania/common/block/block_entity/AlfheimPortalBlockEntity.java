@@ -242,8 +242,8 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 				level.setBlockAndUpdate(worldPosition, blockState.setValue(BotaniaStateProperties.ALFPORTAL_STATE, newState));
 			}
 		} else if (self.explode) {
-			Holder<DamageType> type = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
-					.getHolderOrThrow(BotaniaDamageTypes.PORTAL_BREAD_EXPLOSION);
+			Holder<DamageType> type = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE)
+					.getOrThrow(BotaniaDamageTypes.PORTAL_BREAD_EXPLOSION);
 			Vec3 sourcePosition = worldPosition.getCenter().add(0, 2, 0);
 			level.explode(null, new DamageSource(type, sourcePosition), EXPLOSION_DAMAGE_CALCULATOR,
 					sourcePosition, EXPLOSION_RADIUS, false, Level.ExplosionInteraction.TNT);

@@ -19,6 +19,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +37,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
@@ -328,7 +328,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 							: mob.getEquipmentSlotForItem(equipmentStack);
 					if (equippedSlots.contains(slot)) {
 						slot = equippedSlots.contains(EquipmentSlot.MAINHAND)
-								&& !(equipmentStack.getItem() instanceof TieredItem)
+								&& !equipmentStack.has(DataComponents.TOOL) && !equipmentStack.has(DataComponents.WEAPON)
 										? EquipmentSlot.OFFHAND
 										: EquipmentSlot.MAINHAND;
 					}
@@ -479,7 +479,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			StructureStart start = structureManager.getStructureAt(pos, structure);
 			if (start.isValid()) {
 				Identifier structureId =
-						world.registryAccess().registryOrThrow(Registries.STRUCTURE).getKey(structure);
+						world.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(structure);
 				boolean insidePiece = structureManager.structureHasPieceAt(pos, start);
 				if (insidePiece || !structureMap.getBoolean(structureId)) {
 					structureMap.put(structureId, insidePiece);

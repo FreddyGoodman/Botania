@@ -21,6 +21,7 @@
     "BeeMixin",
     "BiomeAccessor",
     "BlockBehaviorMixin",
+    "BlockEntityTypeMixin",
     "BlockModelGeneratorsAccessor",
     "BlockPropertiesAccessor",
     "BushBlockMixin",

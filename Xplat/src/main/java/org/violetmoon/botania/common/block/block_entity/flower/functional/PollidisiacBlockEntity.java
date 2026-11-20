@@ -148,7 +148,7 @@ public class PollidisiacBlockEntity extends FunctionalFlowerBlockEntity implemen
 	}
 
 	private static boolean isBrownMooshroomWithoutEffect(Animal animal) {
-		if (animal instanceof MushroomCow mushroomCow && mushroomCow.getVariant() == MushroomCow.MushroomType.BROWN) {
+		if (animal instanceof MushroomCow mushroomCow && mushroomCow.getVariant() == MushroomCow.Variant.BROWN) {
 			MushroomCowAccessor cowAccessor = (MushroomCowAccessor) animal;
 			return cowAccessor.botania_getStewEffects() == null;
 		}

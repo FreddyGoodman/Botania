@@ -48,7 +48,8 @@ public class VineBallEntity extends ThrowableProjectile implements ItemSupplier 
 	}
 
 	public VineBallEntity(LivingEntity thrower, boolean gravity) {
-		super(BotaniaEntities.VINE_BALL, thrower, thrower.level());
+		super(BotaniaEntities.VINE_BALL, thrower.getX(), thrower.getEyeY() - 0.1F, thrower.getZ(), thrower.level());
+		setOwner(thrower);
 		entityData.set(GRAVITY, gravity ? 0.03F : 0F);
 	}
 

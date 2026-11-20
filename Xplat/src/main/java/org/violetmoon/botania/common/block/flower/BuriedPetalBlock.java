@@ -40,14 +40,16 @@ public class BuriedPetalBlock extends BushBlock implements TallFlowerGrower, Col
 			propertiesCodec()
 	).apply(instance, (dyeColor, block, props) -> new BuriedPetalBlock(dyeColor, b -> block, props)));
 
+	private static final MapCodec<BushBlock> BUSH_CODEC = CODEC.xmap(block -> block, BuriedPetalBlock.class::cast);
+
 	private static final VoxelShape SHAPE = box(0, 0, 0, 16, 1.6, 16);
 
 	public final DyeColor color;
 	private final Function<TallFlowerGrower, @Nullable Block> tallFlowerFunction;
 
 	@Override
-	protected MapCodec<BuriedPetalBlock> codec() {
-		return CODEC;
+	public MapCodec<BushBlock> codec() {
+		return BUSH_CODEC;
 	}
 
 	public BuriedPetalBlock(DyeColor color, Function<TallFlowerGrower, @Nullable Block> tallFlowerFunction, Properties builder) {

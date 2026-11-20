@@ -52,7 +52,8 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 	}
 
 	public ThornChakramEntity(LivingEntity e, Level world, ItemStack stack) {
-		super(BotaniaEntities.THORN_CHAKRAM, e, world);
+		super(BotaniaEntities.THORN_CHAKRAM, e.getX(), e.getEyeY() - 0.1F, e.getZ(), world);
+		setOwner(e);
 		this.stack = stack.copy();
 	}
 

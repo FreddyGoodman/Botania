@@ -28,6 +28,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -168,16 +169,14 @@ public final class PlayerHelper {
 	 * @param cause  The entity responsible for the upwards impulse this should protect from. (for advancement triggers)
 	 */
 	public static void setCurrentImpulseImpactPos(Player player, double graceY, Entity cause) {
-		if (player.isIgnoringFallDamageFromCurrentImpulse() && player.currentImpulseImpactPos != null) {
-			if (player.currentImpulseImpactPos.y > player.position().y - graceY) {
-				player.currentImpulseImpactPos = player.position().subtract(0, graceY, 0);
-			}
-		} else {
-			player.currentImpulseImpactPos = player.position().subtract(0, graceY, 0);
+		Vec3 impactPosition = player.position().subtract(0, graceY, 0);
+		if (player.isIgnoringFallDamageFromCurrentImpulse() && player.currentImpulseImpactPos != null
+				&& player.currentImpulseImpactPos.y <= impactPosition.y) {
+			impactPosition = player.currentImpulseImpactPos;
 		}
 
 		player.currentExplosionCause = cause;
-		player.setIgnoreFallDamageFromCurrentImpulse(true);
+		player.setIgnoreFallDamageFromCurrentImpulse(true, impactPosition);
 	}
 
 	public static InteractionResult substituteUse(UseOnContext ctx, ItemStack toUse) {
