@@ -261,7 +261,7 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 						level.removeBlock(facingPos, false);
 						level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, facingPos, Block.getId(facingState));
 						// Usage of vanilla sound event: Subtitle is "Eating", generic sounds are meant to be reused.
-						level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EAT, SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
+						level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EAT.value(), SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
 
 						for (var player : players) {
 							PlayerHelper.grantCriterion((ServerPlayer) player, BIRTHDAY_ADVANCEMENT, "code_triggered");

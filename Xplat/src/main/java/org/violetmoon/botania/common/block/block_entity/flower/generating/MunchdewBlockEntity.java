@@ -16,7 +16,6 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.LevelEvent;
@@ -148,7 +147,7 @@ public class MunchdewBlockEntity extends GeneratingFlowerBlockEntity {
 		if (BotaniaConfig.common().blockBreakParticles()) {
 			level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, breakCoords, Block.getId(state));
 			Vec3 offset = level.getBlockState(effectivePos).getOffset(effectivePos).add(0.5, 0.75, 0.5);
-			((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(state.getBlock())),
+			((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, state.getBlock().asItem()),
 					effectivePos.getX() + offset.x, effectivePos.getY() + offset.y, effectivePos.getZ() + offset.z,
 					5, 0.1, 0.1, 0.1, 0.03);
 		}

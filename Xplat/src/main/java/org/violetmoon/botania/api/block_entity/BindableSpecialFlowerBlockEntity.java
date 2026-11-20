@@ -111,12 +111,12 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 
 		// POIs might be an even more efficient option for this, but there can only be one POI type per block state
 		List<ChunkPos> chunkPosList = ChunkPos.rangeClosed(
-				new ChunkPos(center.offset(-rangeLimit, 0, -rangeLimit)),
-				new ChunkPos(center.offset(rangeLimit, 0, rangeLimit))
+				ChunkPos.containing(center.offset(-rangeLimit, 0, -rangeLimit)),
+				ChunkPos.containing(center.offset(rangeLimit, 0, rangeLimit))
 		).toList();
 
 		for (ChunkPos chunkPos : chunkPosList) {
-			LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+			LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x(), chunkPos.z());
 			if (chunk != null) {
 				for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
 					BlockPos pos = entry.getKey();

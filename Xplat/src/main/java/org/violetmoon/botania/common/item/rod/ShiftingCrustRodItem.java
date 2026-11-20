@@ -168,7 +168,7 @@ public class ShiftingCrustRodItem extends Item implements ClientInventoryTick, W
 				return;
 			}
 
-			BlockPos coords = swap.get(world.random.nextInt(swap.size()));
+			BlockPos coords = swap.get(world.getRandom().nextInt(swap.size()));
 			int exchange = exchange(world, player, coords, stack, replacement);
 			if (exchange > 0) {
 				ManaItemHandler.instance().requestManaForTool(stack, player, exchange, true);

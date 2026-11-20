@@ -26,6 +26,7 @@ import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -90,15 +91,15 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 						: (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F + 1.0F;
 				//Usage of vanilla sound event: this sheep do be dying though. And generic sounds are meant to be reused.
 				sheep.playSound(SoundEvents.SHEEP_DEATH, 0.9F, pitch);
-				sheep.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+				sheep.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
 
 				ItemStack morbid = new ItemStack(sheep.isOnFire() ? Items.COOKED_MUTTON : Items.MUTTON);
-				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, morbid),
+				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(morbid)),
 						sheep.getX(), sheep.getY() + sheep.getEyeHeight(), sheep.getZ(),
 						20, 0.1, 0.1, 0.1, 0.05);
 
 				ItemStack wool = new ItemStack(ColorHelper.WOOL_MAP.apply(sheep.getColor()));
-				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, wool),
+				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(wool)),
 						sheep.getX(), sheep.getY() + sheep.getEyeHeight(), sheep.getZ(),
 						20, 0.1, 0.1, 0.1, 0.05);
 			}
@@ -117,7 +118,7 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 
 				Vec3 offset = getLevel().getBlockState(getEffectivePos()).getOffset(getEffectivePos()).add(0.5, 0.6, 0.5);
 
-				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack),
+				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(stack)),
 						getEffectivePos().getX() + offset.x,
 						getEffectivePos().getY() + offset.y,
 						getEffectivePos().getZ() + offset.z,

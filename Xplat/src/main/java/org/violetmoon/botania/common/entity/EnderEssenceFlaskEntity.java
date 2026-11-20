@@ -101,7 +101,7 @@ public class EnderEssenceFlaskEntity extends ThrowableProjectile implements Item
 			Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
 
 			// Position chosen to appear roughly in the ghast's face
-			((ServerLevel) this.level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GHAST_TEAR)),
+			((ServerLevel) this.level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Items.GHAST_TEAR),
 					entity.getX() + (2.3 * vec.x), entity.getY() + vec.y + 2.6, entity.getZ() + (2.3 * vec.z),
 					40,
 					Math.abs(vec.z) + 0.15, 0.2, Math.abs(vec.x) + 0.15, 0.2);

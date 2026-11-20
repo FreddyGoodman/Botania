@@ -74,7 +74,7 @@ public class KeyOfTheKingsLawItem extends RelicItem {
 
 			Vec3 pl = look.add(VecHelper.fromEntityCenter(living)).add(0, 1.6, div * 0.1);
 
-			var rand = world.random;
+			var rand = world.getRandom();
 			Vec3 axis = look.normalize().cross(new Vec3(-1, 0, -1)).normalize();
 
 			double rot = mod * Math.PI / 4 - Math.PI / 2;
@@ -94,7 +94,7 @@ public class KeyOfTheKingsLawItem extends RelicItem {
 			weapon.setRotation(Mth.wrapDegrees(-living.getYRot() + 180));
 
 			world.addFreshEntity(weapon);
-			weapon.playSound(BotaniaSounds.TREASURE_WEAPON_SPAWN, 1F, 1F + world.random.nextFloat() * 3F);
+			weapon.playSound(BotaniaSounds.TREASURE_WEAPON_SPAWN, 1F, 1F + world.getRandom().nextFloat() * 3F);
 			setWeaponsSpawned(stack, spawned + 1);
 		}
 	}

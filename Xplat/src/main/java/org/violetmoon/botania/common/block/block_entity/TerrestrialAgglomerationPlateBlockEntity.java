@@ -240,7 +240,7 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 				this.currentProgress = -1;
 				if (level.isClientSide()) {
 					for (int i = 0; i < 10; i++) {
-						getBlockState().getBlock().animateTick(getBlockState(), level, getBlockPos(), level.random);
+						getBlockState().getBlock().animateTick(getBlockState(), level, getBlockPos(), level.getRandom());
 					}
 				}
 				return true;

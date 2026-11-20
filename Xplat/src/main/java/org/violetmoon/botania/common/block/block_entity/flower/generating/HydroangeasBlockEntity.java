@@ -59,7 +59,7 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	@Override
 	public void playSound() {
 		//Usage of vanilla sound event: Subtitle is "Sipping", generic sounds are meant to be reused.
-		getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_DRINK, SoundSource.BLOCKS, 0.01F, 0.5F + (float) Math.random() * 0.5F);
+		getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_DRINK.value(), SoundSource.BLOCKS, 0.01F, 0.5F + (float) Math.random() * 0.5F);
 	}
 
 	@Override

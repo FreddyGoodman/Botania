@@ -24,6 +24,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -117,8 +118,10 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 			ItemStack input = new ItemStack(getSparkItem());
 			for (Player player : players) {
 				List<ItemStack> stacks = new ArrayList<>();
-				stacks.addAll(player.getInventory().items);
-				stacks.addAll(player.getInventory().armor);
+				stacks.addAll(player.getInventory().getNonEquipmentItems());
+				for (EquipmentSlot slot : List.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD)) {
+					stacks.add(player.getItemBySlot(slot));
+				}
 
 				Container inv = BotaniaAPI.instance().getAccessoriesInventory(player);
 				for (int i = 0; i < inv.getContainerSize(); i++) {

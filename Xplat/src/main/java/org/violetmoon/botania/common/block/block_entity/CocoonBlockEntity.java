@@ -15,11 +15,11 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,7 +64,7 @@ public class CocoonBlockEntity extends BlockEntity {
 	}
 
 	private void hatch(BlockPos pos) {
-		if (!level.isClientSide()) {
+		if (this.level instanceof ServerLevel level) {
 			timePassed = 0;
 			level.destroyBlock(pos, false);
 
@@ -89,8 +89,8 @@ public class CocoonBlockEntity extends BlockEntity {
 			} else if (Math.random() < villagerChance) {
 				Villager villager = EntityType.VILLAGER.create(level, EntitySpawnReason.EVENT);
 				if (villager != null) {
-					VillagerType type = VillagerType.byBiome(level.getBiome(pos));
-					villager.setVillagerData(villager.getVillagerData().setType(type));
+					var type = VillagerType.byBiome(level.getBiome(pos));
+					villager.setVillagerData(villager.getVillagerData().withType(level.registryAccess(), type));
 				}
 				entity = villager;
 			} else if (!validWater.isEmpty()) {
@@ -124,7 +124,7 @@ public class CocoonBlockEntity extends BlockEntity {
 				if (entity instanceof AgeableMob ageable) {
 					ageable.setBaby(true);
 				}
-				entity.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(getBlockPos()), EntitySpawnReason.EVENT, null);
+				entity.finalizeSpawn(level, level.getCurrentDifficultyAt(getBlockPos()), EntitySpawnReason.EVENT, null);
 				entity.setPersistenceRequired();
 				level.addFreshEntity(entity);
 				entity.spawnAnim();

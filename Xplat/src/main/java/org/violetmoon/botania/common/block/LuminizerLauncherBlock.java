@@ -111,7 +111,7 @@ public class LuminizerLauncherBlock extends Block implements SimpleWaterloggedBl
 			var items = world.getEntitiesOfClass(ItemEntity.class, aabb);
 
 			for (Entity entity : Iterables.concat(living, items)) {
-				LuminizerBlockEntity relay = relays.get(world.random.nextInt(relays.size()));
+				LuminizerBlockEntity relay = relays.get(world.getRandom().nextInt(relays.size()));
 				relay.mountEntity(entity);
 			}
 		}

@@ -24,6 +24,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -149,11 +150,11 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 				level.gameEvent(null, GameEvent.BLOCK_DEACTIVATE, getEffectivePos());
 			} else if (cooldown % munchInterval == 0) {
 				//Usage of vanilla sound event: Subtitle is "Eating", generic sounds are meant to be reused.
-				level.playSound(null, getEffectivePos(), SoundEvents.GENERIC_EAT, SoundSource.BLOCKS, 0.5f, 1);
+				level.playSound(null, getEffectivePos(), SoundEvents.GENERIC_EAT.value(), SoundSource.BLOCKS, 0.5f, 1);
 
 				Vec3 offset = level.getBlockState(getEffectivePos()).getOffset(getEffectivePos()).add(0.5, 0.6, 0.5);
 
-				((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, lastFoods.getFirst()),
+				((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(lastFoods.getFirst())),
 						getEffectivePos().getX() + offset.x,
 						getEffectivePos().getY() + offset.y,
 						getEffectivePos().getZ() + offset.z,
@@ -176,7 +177,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 				digestingMana = getDigestingMana(val, getMultiplierForStreak(streakLength));
 				cooldown = getCooldown(val);
 				//Usage of vanilla sound event: Subtitle is "Eating", generic sounds are meant to be reused.
-				item.playSound(SoundEvents.GENERIC_EAT, 0.2f, 0.6f);
+				item.playSound(SoundEvents.GENERIC_EAT.value(), 0.2f, 0.6f);
 				level.gameEvent(null, GameEvent.BLOCK_ACTIVATE, getEffectivePos());
 				setChanged();
 			}

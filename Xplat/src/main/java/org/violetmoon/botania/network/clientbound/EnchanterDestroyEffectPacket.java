@@ -37,7 +37,7 @@ public record EnchanterDestroyEffectPacket(BlockPos pos) implements CustomPacket
 	public static class Handler {
 		public static void handle(EnchanterDestroyEffectPacket packet, Player localPlayer) {
 			Level world = localPlayer.level();
-			RandomSource rng = world.random;
+			RandomSource rng = world.getRandom();
 			Vec3 pos = packet.pos().getCenter();
 			for (int i = 0; i < 50; i++) {
 				float red = rng.nextFloat();

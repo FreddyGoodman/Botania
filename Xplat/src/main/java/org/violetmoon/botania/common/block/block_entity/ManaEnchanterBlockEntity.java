@@ -236,12 +236,12 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 		if (manaRequired == -1) {
 			manaRequired = 0;
 			for (EnchantmentInstance data : enchants) {
-				manaRequired += (int) (5000F * ((15 - Math.min(15, data.enchantment.value().getWeight()))
+				manaRequired += (int) (5000F * ((15 - Math.min(15, data.enchantment().value().getWeight()))
 						* 1.05F)
-						* ((3F + data.level * data.level)
+						* ((3F + data.level() * data.level())
 								* 0.25F)
 						* (0.9F + enchants.size() * 0.05F)
-						* (data.enchantment.is(EnchantmentTags.DOUBLE_TRADE_PRICE) ? 1.25F : 1F));
+						* (data.enchantment().is(EnchantmentTags.DOUBLE_TRADE_PRICE) ? 1.25F : 1F));
 			}
 		} else if (mana >= manaRequired) {
 			manaRequired = 0;
@@ -299,8 +299,8 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 			case DO_ENCHANT -> { // Enchant
 				if (self.stageTicks >= 100) {
 					for (EnchantmentInstance data : self.enchants) {
-						if (EnchantmentHelper.getItemEnchantmentLevel(data.enchantment, self.itemToEnchant) == 0) {
-							self.itemToEnchant.enchant(data.enchantment, data.level);
+						if (EnchantmentHelper.getItemEnchantmentLevel(data.enchantment(), self.itemToEnchant) == 0) {
+							self.itemToEnchant.enchant(data.enchantment(), data.level());
 						}
 					}
 
@@ -412,7 +412,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 
 		if (!enchants.isEmpty()) {
 			String enchStr = enchants.stream()
-					.map(e -> e.enchantment.unwrapKey().map(ResourceKey::identifier).orElseThrow() + "=" + e.level)
+					.map(e -> e.enchantment().unwrapKey().map(ResourceKey::identifier).orElseThrow() + "=" + e.level())
 					.collect(Collectors.joining(","));
 
 			output.putString(TAG_ENCHANTS, enchStr);
@@ -457,7 +457,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 
 	private boolean hasEnchantAlready(Holder<Enchantment> enchant) {
 		for (EnchantmentInstance data : enchants) {
-			if (data.enchantment == enchant) {
+			if (data.enchantment() == enchant) {
 				return true;
 			}
 		}
@@ -471,7 +471,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 		}
 
 		for (EnchantmentInstance data : enchants) {
-			Holder<Enchantment> otherEnch = data.enchantment;
+			Holder<Enchantment> otherEnch = data.enchantment();
 			if (!Enchantment.areCompatible(ench, otherEnch)) {
 				return false;
 			}

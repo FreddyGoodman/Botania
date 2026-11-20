@@ -22,14 +22,14 @@ public class StarfieldCreatorBlockEntity extends BlockEntity {
 	}
 
 	public static void clientTick(Level level, BlockPos pos, BlockState state, StarfieldCreatorBlockEntity self) {
-		level.updateSkyBrightness(); // this isn't called often on clients, but we need so that isDay is accurate.
-		if (level.isDay()) {
+		level.updateSkyBrightness();
+		if (level.isBrightOutside()) {
 			return;
 		}
 
 		double radius = 512;
 		int renderDistance = Proxy.INSTANCE.getClientRenderDistance() * 16;
-		int worldHeight = level.getMaxBuildHeight();
+		int worldHeight = level.getMaxY() + 1;
 		var random = level.getRandom();
 		int iter = 2;
 		for (int i = 0; i < iter; i++) {

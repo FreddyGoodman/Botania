@@ -154,7 +154,7 @@ public class BottledManaItem extends Item {
 	private static void effectHighestPossible(Level level, LivingEntity living) {
 		int x = Mth.floor(living.getX());
 		int z = Mth.floor(living.getZ());
-		for (int i = level.getMaxBuildHeight(); i > level.getMinBuildHeight(); i--) {
+		for (int i = level.getMaxY() + 1; i > level.getMinY(); i--) {
 			BlockState state = level.getBlockState(new BlockPos(x, i, z));
 			if (!state.isAir()) {
 				living.teleportTo(living.getX(), i, living.getZ());
