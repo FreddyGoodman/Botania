@@ -185,7 +185,7 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 
 	protected void stonecutting(RecipeOutput recipeOutput, Identifier id, Ingredient input, ItemLike output, int count) {
 		ItemStackTemplate outputStack = new ItemStackTemplate(output.asItem(), count);
-		recipeOutput.accept(recipeKey(id), new StonecutterRecipe(new Recipe.CommonInfo(false), input, outputStack), null);
+		recipeOutput.accept(recipeKey(id), new StonecutterRecipe(new Recipe.CommonInfo(true), input, outputStack), null);
 	}
 
 	protected void stonecutting(RecipeOutput recipeOutput, ItemLike input, ItemLike output) {
@@ -193,8 +193,7 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 	}
 
 	protected void stonecutting(RecipeOutput recipeOutput, ItemLike input, ItemLike output, int count) {
-		ItemStackTemplate outputStack = new ItemStackTemplate(output.asItem(), count);
-		recipeOutput.accept(recipeKey(idFor(input, output)), new StonecutterRecipe(new Recipe.CommonInfo(false), Ingredient.of(input), outputStack), null);
+		stonecutting(recipeOutput, idFor(input, output), Ingredient.of(input), output, count);
 	}
 
 	protected void anyToAnyStonecutting(RecipeOutput recipeOutput, List<? extends ItemLike> inputs) {
