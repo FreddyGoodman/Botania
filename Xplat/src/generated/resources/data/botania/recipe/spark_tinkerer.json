@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "E": {
-      "tag": "c:ingots/elementium"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "S": {
-      "item": "botania:livingrock"
-    }
+    "E": "#c:ingots/elementium",
+    "R": "#c:dusts/redstone",
+    "S": "botania:livingrock"
   },
   "pattern": [
     "ESE",

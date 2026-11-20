@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "botania:manaweave_cloth"
-    },
-    "S": {
-      "item": "minecraft:sunflower"
-    }
+    "C": "botania:manaweave_cloth",
+    "S": "minecraft:sunflower"
   },
   "pattern": [
     "C",

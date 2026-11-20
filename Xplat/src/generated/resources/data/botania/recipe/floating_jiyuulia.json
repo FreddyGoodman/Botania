@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:jiyuulia"
-    }
+    "#botania:floating_flowers",
+    "botania:jiyuulia"
   ],
   "result": {
     "count": 1,

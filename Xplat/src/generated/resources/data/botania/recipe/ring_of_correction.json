@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "item": "minecraft:clay"
-    },
-    "M": {
-      "tag": "c:ingots/manasteel"
-    }
+    "C": "minecraft:clay",
+    "M": "#c:ingots/manasteel"
   },
   "pattern": [
     "CM ",

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:rail"
-    },
-    {
-      "item": "botania:spectral_platform"
-    }
+    "minecraft:rail",
+    "botania:spectral_platform"
   ],
   "result": {
     "count": 1,

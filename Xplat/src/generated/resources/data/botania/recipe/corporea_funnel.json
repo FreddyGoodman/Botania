@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "C": {
-      "item": "botania:corporea_block"
-    },
-    "E": {
-      "tag": "botania:ender_essences"
-    },
-    "R": {
-      "item": "minecraft:redstone"
-    }
+    "C": "botania:corporea_block",
+    "E": "#botania:ender_essences",
+    "R": "minecraft:redstone"
   },
   "pattern": [
     "CCC",

@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:dragonstone",
   "ingredients": [
-    {
-      "item": "botania:dragonstone_block"
-    }
+    "botania:dragonstone_block"
   ],
   "result": {
     "count": 9,

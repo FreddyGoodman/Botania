@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:jaded_amaranthus"
-    }
+    "#botania:floating_flowers",
+    "botania:jaded_amaranthus"
   ],
   "result": {
     "count": 1,

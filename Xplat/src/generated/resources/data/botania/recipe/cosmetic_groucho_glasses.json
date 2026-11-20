@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:cosmetic_bauble",
   "key": {
-    "P": {
-      "item": "minecraft:blue_dye"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "P": "minecraft:blue_dye",
+    "S": "botania:mana_string"
   },
   "pattern": [
     "PPP",

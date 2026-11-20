@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "E": {
-      "tag": "c:gems/emerald"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "Y": {
-      "item": "minecraft:ender_eye"
-    }
+    "E": "#c:gems/emerald",
+    "I": "#c:ingots/iron",
+    "Y": "minecraft:ender_eye"
   },
   "pattern": [
     " I ",

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:blaze_mesh"
-    }
+    "botania:blaze_mesh"
   ],
   "result": {
     "count": 9,

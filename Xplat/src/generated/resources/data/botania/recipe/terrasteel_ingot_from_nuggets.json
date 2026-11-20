@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:terrasteel_ingot",
   "key": {
-    "#": {
-      "item": "botania:terrasteel_nugget"
-    }
+    "#": "botania:terrasteel_nugget"
   },
   "pattern": [
     "###",

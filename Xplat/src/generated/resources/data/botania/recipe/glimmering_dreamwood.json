@@ -3,12 +3,8 @@
   "category": "building",
   "group": "botania:glimmering_dreamwood",
   "ingredients": [
-    {
-      "item": "botania:dreamwood"
-    },
-    {
-      "tag": "c:dusts/glowstone"
-    }
+    "botania:dreamwood",
+    "#c:dusts/glowstone"
   ],
   "result": {
     "count": 1,

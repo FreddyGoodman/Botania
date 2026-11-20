@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "S": {
-      "item": "botania:gaia_spirit"
-    },
-    "W": {
-      "item": "minecraft:black_wool"
-    }
+    "R": "#c:dusts/redstone",
+    "S": "botania:gaia_spirit",
+    "W": "minecraft:black_wool"
   },
   "pattern": [
     "WWW",

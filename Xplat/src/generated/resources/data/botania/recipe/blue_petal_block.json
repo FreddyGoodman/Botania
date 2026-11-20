@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:petal_block",
   "key": {
-    "#": {
-      "item": "botania:blue_mystical_petal"
-    }
+    "#": "botania:blue_mystical_petal"
   },
   "pattern": [
     "###",

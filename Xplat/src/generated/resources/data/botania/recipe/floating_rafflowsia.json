@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:rafflowsia"
-    }
+    "#botania:floating_flowers",
+    "botania:rafflowsia"
   ],
   "result": {
     "count": 1,

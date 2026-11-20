@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:minecart"
-    },
-    {
-      "item": "botania:mana_pool"
-    }
+    "minecraft:minecart",
+    "botania:mana_pool"
   ],
   "result": {
     "count": 1,

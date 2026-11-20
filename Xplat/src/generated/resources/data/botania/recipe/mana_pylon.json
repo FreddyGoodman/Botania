@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": {
-      "tag": "c:gems/mana_diamond"
-    },
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "M": {
-      "tag": "c:ingots/manasteel"
-    }
+    "D": "#c:gems/mana_diamond",
+    "G": "#c:ingots/gold",
+    "M": "#c:ingots/manasteel"
   },
   "pattern": [
     " G ",

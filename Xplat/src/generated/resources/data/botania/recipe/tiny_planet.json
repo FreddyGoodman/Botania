@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "L": {
-      "item": "botania:livingrock"
-    },
-    "P": {
-      "tag": "c:gems/mana_pearl"
-    },
-    "S": {
-      "item": "minecraft:stone"
-    }
+    "L": "botania:livingrock",
+    "P": "#c:gems/mana_pearl",
+    "S": "minecraft:stone"
   },
   "pattern": [
     "LSL",

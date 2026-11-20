@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "W": {
-      "tag": "botania:dreamwood_logs"
-    }
+    "W": "#botania:dreamwood_logs"
   },
   "pattern": [
     " W",

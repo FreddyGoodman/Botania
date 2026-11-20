@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:shulk_me_not"
-    }
+    "#botania:floating_flowers",
+    "botania:shulk_me_not"
   ],
   "result": {
     "count": 1,

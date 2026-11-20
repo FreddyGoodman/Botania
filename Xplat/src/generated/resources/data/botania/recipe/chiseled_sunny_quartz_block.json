@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:quartz_chiseled",
   "key": {
-    "Q": {
-      "item": "botania:sunny_quartz_slab"
-    }
+    "Q": "botania:sunny_quartz_slab"
   },
   "pattern": [
     "Q",

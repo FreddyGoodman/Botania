@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "E": {
-      "tag": "c:ingots/elementium"
-    },
-    "L": {
-      "item": "minecraft:leather"
-    },
-    "W": {
-      "tag": "botania:dreamwood_logs"
-    }
+    "E": "#c:ingots/elementium",
+    "L": "minecraft:leather",
+    "W": "#botania:dreamwood_logs"
   },
   "pattern": [
     "WLW",

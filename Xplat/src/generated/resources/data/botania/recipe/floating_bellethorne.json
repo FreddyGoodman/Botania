@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:bellethorne"
-    }
+    "#botania:floating_flowers",
+    "botania:bellethorne"
   ],
   "result": {
     "count": 1,

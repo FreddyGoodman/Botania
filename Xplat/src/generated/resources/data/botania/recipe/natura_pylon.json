@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "E": {
-      "item": "minecraft:ender_eye"
-    },
-    "P": {
-      "item": "botania:mana_pylon"
-    },
-    "T": {
-      "tag": "c:nuggets/terrasteel"
-    }
+    "E": "minecraft:ender_eye",
+    "P": "botania:mana_pylon",
+    "T": "#c:nuggets/terrasteel"
   },
   "pattern": [
     " T ",

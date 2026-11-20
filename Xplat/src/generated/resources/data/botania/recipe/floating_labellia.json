@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:labellia"
-    }
+    "#botania:floating_flowers",
+    "botania:labellia"
   ],
   "result": {
     "count": 1,

@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "sign",
   "key": {
-    "#": {
-      "item": "botania:livingwood_planks"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "botania:livingwood_planks",
+    "X": "minecraft:stick"
   },
   "pattern": [
     "###",

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "S": "botania:mana_string"
   },
   "pattern": [
     "SS",

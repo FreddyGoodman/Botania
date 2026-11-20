@@ -1,9 +1,7 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "item": "minecraft:quartz"
-    }
+    "minecraft:quartz"
   ],
   "output": [
     {

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "botania:corporea_block"
-    }
+    "botania:corporea_block"
   ],
   "result": {
     "count": 1,

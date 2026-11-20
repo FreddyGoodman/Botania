@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "botania:rod_of_the_bifrost"
-    },
-    {
-      "item": "botania:alfglass"
-    }
+    "botania:rod_of_the_bifrost",
+    "botania:alfglass"
   ],
   "result": {
     "count": 1,

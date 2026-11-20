@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:floral_fertilizer",
   "ingredients": [
-    {
-      "item": "botania:living_root"
-    }
+    "botania:living_root"
   ],
   "result": {
     "count": 1,

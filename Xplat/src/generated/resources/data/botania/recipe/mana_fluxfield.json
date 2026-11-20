@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "tag": "c:ingots/manasteel"
-    },
-    "R": {
-      "tag": "c:storage_blocks/redstone"
-    },
-    "S": {
-      "item": "botania:livingrock"
-    }
+    "M": "#c:ingots/manasteel",
+    "R": "#c:storage_blocks/redstone",
+    "S": "botania:livingrock"
   },
   "pattern": [
     "SRS",

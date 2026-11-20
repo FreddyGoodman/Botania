@@ -22,9 +22,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "minecraft:blaze_rod"
-    }
+    "#": "minecraft:blaze_rod"
   },
   "pattern": [
     "###",

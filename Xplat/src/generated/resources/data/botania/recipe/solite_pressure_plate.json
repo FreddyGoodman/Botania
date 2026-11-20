@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "botania:metamorphic_stone_pressure_plate",
   "key": {
-    "#": {
-      "item": "botania:solite"
-    }
+    "#": "botania:solite"
   },
   "pattern": [
     "##"

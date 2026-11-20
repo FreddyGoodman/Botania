@@ -3,15 +3,9 @@
   "category": "redstone",
   "group": "botania:spreader",
   "ingredients": [
-    {
-      "item": "botania:elven_mana_spreader"
-    },
-    {
-      "tag": "c:gems/dragonstone"
-    },
-    {
-      "item": "botania:gaia_spirit"
-    }
+    "botania:elven_mana_spreader",
+    "#c:gems/dragonstone",
+    "botania:gaia_spirit"
   ],
   "result": {
     "count": 1,

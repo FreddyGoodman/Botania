@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:metamorphic_cobble_wall",
   "key": {
-    "B": {
-      "item": "botania:cobbled_lunite"
-    }
+    "B": "botania:cobbled_lunite"
   },
   "pattern": [
     "BBB",

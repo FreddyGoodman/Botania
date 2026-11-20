@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:terrasteel_ingot",
   "ingredients": [
-    {
-      "item": "botania:terrasteel_block"
-    }
+    "botania:terrasteel_block"
   ],
   "result": {
     "count": 9,

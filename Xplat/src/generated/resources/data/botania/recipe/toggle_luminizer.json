@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:luminizer"
-    },
-    {
-      "item": "minecraft:lever"
-    }
+    "botania:luminizer",
+    "minecraft:lever"
   ],
   "result": {
     "count": 1,

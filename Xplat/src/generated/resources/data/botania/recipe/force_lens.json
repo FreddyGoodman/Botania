@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "item": "botania:force_relay"
-    }
+    "botania:mana_lens",
+    "botania:force_relay"
   ],
   "result": {
     "count": 1,

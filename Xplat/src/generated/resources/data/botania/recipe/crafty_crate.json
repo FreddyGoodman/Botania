@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "C": {
-      "tag": "c:player_workstations/crafting_tables"
-    },
-    "W": {
-      "item": "botania:dreamwood_planks"
-    }
+    "C": "#c:player_workstations/crafting_tables",
+    "W": "botania:dreamwood_planks"
   },
   "pattern": [
     "WCW",

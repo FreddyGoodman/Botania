@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "botania:metamorphic_stone_button",
   "ingredients": [
-    {
-      "item": "botania:talc"
-    }
+    "botania:talc"
   ],
   "result": {
     "count": 1,

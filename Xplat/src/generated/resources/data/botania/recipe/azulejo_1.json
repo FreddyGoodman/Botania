@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:azulejo_cycling",
   "ingredients": [
-    {
-      "item": "botania:azulejo_0"
-    }
+    "botania:azulejo_0"
   ],
   "result": {
     "count": 1,

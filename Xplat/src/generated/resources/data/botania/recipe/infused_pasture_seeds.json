@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:seeds",
   "ingredients": [
-    {
-      "item": "botania:pasture_seeds"
-    },
-    {
-      "item": "minecraft:prismarine_shard"
-    }
+    "botania:pasture_seeds",
+    "minecraft:prismarine_shard"
   ],
   "result": {
     "count": 1,

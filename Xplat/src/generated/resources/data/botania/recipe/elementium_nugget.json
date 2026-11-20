@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:elementium_ingot"
-    }
+    "botania:elementium_ingot"
   ],
   "result": {
     "count": 9,

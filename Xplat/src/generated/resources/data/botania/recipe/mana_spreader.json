@@ -23,15 +23,9 @@
   "category": "redstone",
   "group": "botania:spreader",
   "key": {
-    "C": {
-      "tag": "c:ingots/copper"
-    },
-    "P": {
-      "tag": "botania:petals"
-    },
-    "W": {
-      "tag": "botania:livingwood_logs"
-    }
+    "C": "#c:ingots/copper",
+    "P": "#botania:petals",
+    "W": "#botania:livingwood_logs"
   },
   "pattern": [
     "WWW",

@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:vinculotus"
-    }
+    "#botania:floating_flowers",
+    "botania:vinculotus"
   ],
   "result": {
     "count": 1,

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "item": "botania:gaia_spirit"
-    },
-    "O": {
-      "item": "minecraft:obsidian"
-    }
+    "G": "botania:gaia_spirit",
+    "O": "minecraft:obsidian"
   },
   "pattern": [
     "OGO"

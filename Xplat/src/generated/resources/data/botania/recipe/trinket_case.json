@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "tag": "c:chests/wooden"
-    },
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "M": {
-      "tag": "c:ingots/manasteel"
-    }
+    "C": "#c:chests/wooden",
+    "G": "#c:ingots/gold",
+    "M": "#c:ingots/manasteel"
   },
   "pattern": [
     " M ",

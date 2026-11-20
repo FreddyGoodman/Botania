@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:bergamute"
-    }
+    "#botania:floating_flowers",
+    "botania:bergamute"
   ],
   "result": {
     "count": 1,

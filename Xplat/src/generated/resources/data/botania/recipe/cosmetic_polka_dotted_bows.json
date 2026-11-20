@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:cosmetic_bauble",
   "key": {
-    "P": {
-      "item": "botania:cyan_mystical_petal"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "P": "botania:cyan_mystical_petal",
+    "S": "botania:mana_string"
   },
   "pattern": [
     "PPP",

@@ -3,15 +3,9 @@
   "category": "redstone",
   "group": "botania:spreader",
   "key": {
-    "E": {
-      "tag": "c:ingots/elementium"
-    },
-    "P": {
-      "tag": "botania:petals"
-    },
-    "W": {
-      "tag": "botania:dreamwood_logs"
-    }
+    "E": "#c:ingots/elementium",
+    "P": "#botania:petals",
+    "W": "#botania:dreamwood_logs"
   },
   "pattern": [
     "WWW",

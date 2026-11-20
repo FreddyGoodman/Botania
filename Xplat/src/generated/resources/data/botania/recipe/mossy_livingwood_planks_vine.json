@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "botania:livingwood_planks"
-    },
-    {
-      "item": "minecraft:vine"
-    }
+    "botania:livingwood_planks",
+    "minecraft:vine"
   ],
   "result": {
     "count": 1,

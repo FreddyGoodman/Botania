@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:seeds",
   "ingredients": [
-    {
-      "item": "botania:pasture_seeds"
-    },
-    {
-      "item": "minecraft:green_dye"
-    }
+    "botania:pasture_seeds",
+    "minecraft:green_dye"
   ],
   "result": {
     "count": 1,

@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:metamorphic_stone_wall",
   "key": {
-    "B": {
-      "item": "botania:rosy_talc"
-    }
+    "B": "botania:rosy_talc"
   },
   "pattern": [
     "BBB",

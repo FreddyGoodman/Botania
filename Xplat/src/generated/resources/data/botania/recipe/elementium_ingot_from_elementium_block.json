@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:elementium_ingot",
   "ingredients": [
-    {
-      "item": "botania:elementium_block"
-    }
+    "botania:elementium_block"
   ],
   "result": {
     "count": 9,

@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:daffomill"
-    }
+    "#botania:floating_flowers",
+    "botania:daffomill"
   ],
   "result": {
     "count": 1,

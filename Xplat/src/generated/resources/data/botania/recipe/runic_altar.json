@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:runic_altar",
   "key": {
-    "P": {
-      "tag": "botania:mana_gems"
-    },
-    "S": {
-      "item": "botania:livingrock"
-    }
+    "P": "#botania:mana_gems",
+    "S": "botania:livingrock"
   },
   "pattern": [
     "SSS",

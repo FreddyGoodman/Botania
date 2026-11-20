@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "botania:dreamwood_planks"
-    },
-    {
-      "item": "botania:bifrost"
-    }
+    "botania:dreamwood_planks",
+    "botania:bifrost"
   ],
   "result": {
     "count": 1,

@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:metamorphic_apothecary",
   "key": {
-    "C": {
-      "item": "botania:cobbled_fuchsite"
-    },
-    "P": {
-      "tag": "botania:petals"
-    }
+    "C": "botania:cobbled_fuchsite",
+    "P": "#botania:petals"
   },
   "pattern": [
     "CPC",

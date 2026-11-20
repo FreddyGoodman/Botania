@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "botania:horn_of_the_wild"
-    },
-    {
-      "tag": "minecraft:leaves"
-    }
+    "botania:horn_of_the_wild",
+    "#minecraft:leaves"
   ],
   "result": {
     "count": 1,

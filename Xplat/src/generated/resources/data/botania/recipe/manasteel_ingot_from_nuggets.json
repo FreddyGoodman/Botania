@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:manasteel_ingot",
   "key": {
-    "#": {
-      "item": "botania:manasteel_nugget"
-    }
+    "#": "botania:manasteel_nugget"
   },
   "pattern": [
     "###",

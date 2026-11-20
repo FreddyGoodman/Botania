@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "S": {
-      "item": "botania:pasture_seeds"
-    },
-    "W": {
-      "tag": "botania:livingwood_logs"
-    }
+    "S": "botania:pasture_seeds",
+    "W": "#botania:livingwood_logs"
   },
   "pattern": [
     " W ",

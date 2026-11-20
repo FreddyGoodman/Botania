@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:thermalily"
-    }
+    "#botania:floating_flowers",
+    "botania:thermalily"
   ],
   "result": {
     "count": 1,

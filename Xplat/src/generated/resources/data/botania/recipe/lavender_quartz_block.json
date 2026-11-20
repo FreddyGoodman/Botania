@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:quartz_block",
   "key": {
-    "Q": {
-      "item": "botania:lavender_quartz"
-    }
+    "Q": "botania:lavender_quartz"
   },
   "pattern": [
     "QQ",

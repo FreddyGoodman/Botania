@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "c:ingots/manasteel"
-    },
-    "P": {
-      "item": "botania:fel_pumpkin"
-    },
-    "S": {
-      "item": "minecraft:string"
-    }
+    "I": "#c:ingots/manasteel",
+    "P": "botania:fel_pumpkin",
+    "S": "minecraft:string"
   },
   "pattern": [
     "SSS",

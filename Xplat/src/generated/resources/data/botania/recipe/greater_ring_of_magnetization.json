@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "tag": "c:ingots/terrasteel"
-    },
-    {
-      "item": "botania:ring_of_magnetization"
-    }
+    "#c:ingots/terrasteel",
+    "botania:ring_of_magnetization"
   ],
   "result": {
     "count": 1,

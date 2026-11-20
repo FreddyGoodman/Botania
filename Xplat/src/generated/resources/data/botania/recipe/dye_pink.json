@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:dye",
   "ingredients": [
-    {
-      "tag": "botania:petals/pink"
-    }
+    "#botania:petals/pink"
   ],
   "result": {
     "count": 1,

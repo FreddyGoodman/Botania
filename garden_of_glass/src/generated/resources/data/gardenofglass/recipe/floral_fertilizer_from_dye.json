@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "botania:floral_fertilizer",
   "ingredients": [
-    {
-      "item": "minecraft:bone_meal"
-    },
-    {
-      "tag": "c:dyes"
-    },
-    {
-      "tag": "c:dyes"
-    },
-    {
-      "tag": "c:dyes"
-    },
-    {
-      "tag": "c:dyes"
-    }
+    "minecraft:bone_meal",
+    "#c:dyes",
+    "#c:dyes",
+    "#c:dyes",
+    "#c:dyes"
   ],
   "result": {
     "count": 3,

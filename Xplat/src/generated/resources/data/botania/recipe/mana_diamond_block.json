@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "botania:mana_diamond"
-    }
+    "#": "botania:mana_diamond"
   },
   "pattern": [
     "###",

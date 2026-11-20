@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "item": "minecraft:fire_charge"
-    }
+    "botania:mana_lens",
+    "minecraft:fire_charge"
   ],
   "result": {
     "count": 1,

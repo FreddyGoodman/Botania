@@ -1,9 +1,7 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/mana_diamond"
-    }
+    "#c:storage_blocks/mana_diamond"
   ],
   "output": [
     {

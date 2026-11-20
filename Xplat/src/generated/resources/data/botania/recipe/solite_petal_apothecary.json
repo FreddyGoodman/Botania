@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:metamorphic_apothecary",
   "key": {
-    "C": {
-      "item": "botania:cobbled_solite"
-    },
-    "P": {
-      "tag": "botania:petals"
-    }
+    "C": "botania:cobbled_solite",
+    "P": "#botania:petals"
   },
   "pattern": [
     "CPC",

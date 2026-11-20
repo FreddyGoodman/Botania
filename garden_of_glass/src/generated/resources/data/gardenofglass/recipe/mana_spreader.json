@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "botania:spreader",
   "key": {
-    "P": {
-      "tag": "botania:petals"
-    },
-    "W": {
-      "tag": "botania:livingwood_logs"
-    }
+    "P": "#botania:petals",
+    "W": "#botania:livingwood_logs"
   },
   "pattern": [
     "WWW",

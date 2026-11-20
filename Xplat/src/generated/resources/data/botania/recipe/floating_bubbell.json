@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:bubbell"
-    }
+    "#botania:floating_flowers",
+    "botania:bubbell"
   ],
   "result": {
     "count": 1,

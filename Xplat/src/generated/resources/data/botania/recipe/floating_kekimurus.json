@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:kekimurus"
-    }
+    "#botania:floating_flowers",
+    "botania:kekimurus"
   ],
   "result": {
     "count": 1,
