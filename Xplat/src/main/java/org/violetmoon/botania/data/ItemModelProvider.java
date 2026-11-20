@@ -131,6 +131,11 @@ public class ItemModelProvider implements DataProvider {
 		PackOutput.PathProvider modelPaths = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
 		PackOutput.PathProvider itemPaths = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "items");
 		List<CompletableFuture<?>> outputList = new ArrayList<>();
+		Set<Item> manualDefinitions = Set.of(
+				BotaniaBlocks.GAIA_HEAD.asItem(), BotaniaBlocks.TINY_POTATO.asItem(), BotaniaBlocks.LIVINGWOOD_AVATAR.asItem(),
+				BotaniaBlocks.MANATIDE_BELLOWS.asItem(), BotaniaBlocks.BOTANICAL_BREWERY.asItem(), BotaniaBlocks.CORPOREA_INDEX.asItem(),
+				BotaniaBlocks.GAIA_PYLON.asItem(), BotaniaBlocks.MANA_PYLON.asItem(), BotaniaBlocks.NATURA_PYLON.asItem(),
+				BotaniaBlocks.HOVERING_HOURGLASS.asItem(), BotaniaBlocks.TERU_TERU_BOZU.asItem());
 
 		for (Map.Entry<Identifier, ModelInstance> e : map.entrySet()) {
 			Identifier id = e.getKey();
@@ -140,8 +145,7 @@ public class ItemModelProvider implements DataProvider {
 
 			Item item = inputs.get(id);
 			// Special item definitions are authored alongside their custom renderer type.
-			if (item != null && item != BotaniaBlocks.GAIA_HEAD.asItem() && item != BotaniaBlocks.TINY_POTATO.asItem()
-					&& (model.size() != 1 || !model.has("display"))) {
+			if (item != null && !manualDefinitions.contains(item)) {
 				JsonObject definition = ItemModelDefinition.create(id, overrides, ColorHandler.getItemTintCount(item));
 				outputList.add(DataProvider.saveStable(output, definition, itemPaths.json(BuiltInRegistries.ITEM.getKey(item))));
 			}
