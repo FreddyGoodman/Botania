@@ -44,6 +44,7 @@ import org.violetmoon.botania.client.core.handler.CorporeaInputHandler;
 import org.violetmoon.botania.client.core.handler.KonamiHandler;
 import org.violetmoon.botania.client.core.handler.MiscellaneousModels;
 import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
+import org.violetmoon.botania.common.block.PlatformBlock;
 import org.violetmoon.botania.common.block.flower.FloatingFlowerBaseBlock;
 import org.violetmoon.botania.client.core.proxy.ClientProxy;
 import org.violetmoon.botania.client.fx.BotaniaParticles;
@@ -90,6 +91,8 @@ public class FabricClientInitializer implements ClientModInitializer {
 
 		// Blocks and Items
 		ModelLoadingPlugin.register(pluginContext -> {
+			pluginContext.modifyBlockModelAfterBake().register((model, context) ->
+					context.state().getBlock() instanceof PlatformBlock ? new FabricPlatformModel(model) : model);
 			pluginContext.modifyBlockModelOnLoad().register((model, context) -> {
 				var block = context.state().getBlock();
 				if (block instanceof FloatingFlowerBaseBlock) {
@@ -97,7 +100,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 				}
 				return model;
 			});
-			StandaloneBlockModels.register(id -> {
+			StandaloneBlockModels.register(Minecraft.getInstance().getResourceManager(), id -> {
 				var variant = new Variant(id);
 				pluginContext.addModel(FabricClientXplatImpl.getBlockModelKey(id),
 						new SimpleUnbakedExtraModel<>(id, (model, baker) -> variant.bake(baker)));
@@ -148,7 +151,8 @@ public class FabricClientInitializer implements ClientModInitializer {
 	}
 
 	private void loadComplete(Minecraft mc) {
-		ColorHandler.submitBlocks(ColorProviderRegistry.BLOCK::register);
+		ColorHandler.submitBlocks(BlockColorRegistry::register);
+		FabricPlatformModel.registerTints();
 	}
 
 	private void initAuxiliaryRender(EntityType<? extends LivingEntity> type, LivingEntityRenderer<?, ?> renderer,

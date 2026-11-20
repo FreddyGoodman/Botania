@@ -54,6 +54,7 @@ import org.violetmoon.botania.client.integration.ears.EarsIntegration;
 import org.violetmoon.botania.client.model.BotaniaLayerDefinitions;
 import org.violetmoon.botania.client.model.armor.ArmorModels;
 import org.violetmoon.botania.client.render.ColorHandler;
+import org.violetmoon.botania.common.block.PlatformBlock;
 import org.violetmoon.botania.client.render.entity.EntityRenderers;
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
 import org.violetmoon.botania.client.ClientRecipeSync;
@@ -156,7 +157,7 @@ public class NeoForgeClientInitializer {
 	@SubscribeEvent
 	public static void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
 		NeoForgeFloatingFlowerModel.register(event);
-		StandaloneBlockModels.register(id -> event.register(NeoForgeClientXplatImpl.getBlockModelKey(id),
+		StandaloneBlockModels.register(Minecraft.getInstance().getResourceManager(), id -> event.register(NeoForgeClientXplatImpl.getBlockModelKey(id),
 				SimpleUnbakedStandaloneModel.simpleModelWrapper(id)));
 	}
 
@@ -212,7 +213,7 @@ public class NeoForgeClientInitializer {
 	}
 
 	@SubscribeEvent
-	public static void registerBlockColors(RegisterColorHandlersEvent.Block evt) {
+	public static void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources evt) {
 		ColorHandler.submitBlocks(evt::register);
 	}
 
@@ -229,6 +230,8 @@ public class NeoForgeClientInitializer {
 	@SubscribeEvent
 	public static void onModelBake(ModelEvent.ModifyBakingResult evt) {
 		NeoForgeFloatingFlowerModel.apply(evt);
+		evt.getBakingResult().blockStateModels().replaceAll((state, model) ->
+				state.getBlock() instanceof PlatformBlock ? new NeoForgePlatformModel(model) : model);
 		MiscellaneousModels.INSTANCE.onModelBake(evt.getModelBakery(), evt.getModels());
 	}
 }

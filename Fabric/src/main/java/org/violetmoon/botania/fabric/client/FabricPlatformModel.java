@@ -8,54 +8,85 @@
  */
 package org.violetmoon.botania.fabric.client;
 
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.blockgetter.v2.FabricBlockGetter;
+import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModel;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
-import org.violetmoon.botania.common.block.PlatformBlock;
+import org.jetbrains.annotations.Nullable;
+import org.violetmoon.botania.client.model.PlatformModels;
+import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.block.block_entity.PlatformBlockEntity;
-import org.violetmoon.botania.common.lib.BotaniaTags;
 
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 
-public class FabricPlatformModel extends ForwardingBakedModel {
-	public FabricPlatformModel(BakedModel original) {
-		this.wrapped = original;
+public class FabricPlatformModel extends WrapperBlockStateModel {
+	public FabricPlatformModel(BlockStateModel original) {
+		super(original);
 	}
 
 	@Override
-	public boolean isVanillaAdapter() {
-		return false;
-	}
-
-	@Override
-	public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-		if (!(state.getBlock() instanceof PlatformBlock)) {
-			Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getModelManager().getMissingModel()
-					.emitBlockQuads(blockView, state, pos, randomSupplier, context);
-			return;
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter view, BlockPos pos, BlockState state, RandomSource random,
+			Predicate<Direction> cullTest) {
+		BlockState camouflage = camouflage(view, pos);
+		if (camouflage == null) {
+			super.emitQuads(emitter, view, pos, state, random, cullTest);
+		} else {
+			((FabricBlockStateModel) PlatformModels.model(camouflage)).emitQuads(emitter, view, pos, camouflage, random, cullTest);
 		}
+	}
 
-		Object data = blockView.getBlockEntityRenderData(pos);
-		if (data instanceof PlatformBlockEntity.PlatformData) {
-			BlockPos heldPos = ((PlatformBlockEntity.PlatformData) data).pos();
-			BlockState heldState = ((PlatformBlockEntity.PlatformData) data).state();
+	@Override
+	public Object createGeometryKey(BlockAndTintGetter view, BlockPos pos, BlockState state, RandomSource random) {
+		BlockState camouflage = camouflage(view, pos);
+		return camouflage != null
+				? ((FabricBlockStateModel) PlatformModels.model(camouflage)).createGeometryKey(view, pos, camouflage, random)
+				: super.createGeometryKey(view, pos, state, random);
+	}
 
-			if (heldState == null || heldState.is(BotaniaTags.Blocks.UNSUPPORTED_PLATFORM_DISGUISE)) {
-				// No camo
-				super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
-			} else {
-				BakedModel model = Minecraft.getInstance().getBlockRenderer()
-						.getBlockModelShaper().getBlockModel(heldState);
-				// Steal camo's model
-				model.emitBlockQuads(blockView, heldState, heldPos, randomSupplier, context);
+	@Override
+	public Material.Baked particleMaterial(BlockAndTintGetter view, BlockPos pos, BlockState state) {
+		BlockState camouflage = camouflage(view, pos);
+		return camouflage != null
+				? ((FabricBlockStateModel) PlatformModels.model(camouflage)).particleMaterial(view, pos, camouflage)
+				: super.particleMaterial(view, pos, state);
+	}
+
+	@Override
+	public int materialFlags(BlockAndTintGetter view, BlockPos pos, BlockState state, RandomSource random) {
+		BlockState camouflage = camouflage(view, pos);
+		return camouflage != null
+				? ((FabricBlockStateModel) PlatformModels.model(camouflage)).materialFlags(view, pos, camouflage, random)
+				: super.materialFlags(view, pos, state, random);
+	}
+
+	private static @Nullable BlockState camouflage(BlockAndTintGetter view, BlockPos pos) {
+		return ((FabricBlockGetter) view).getBlockEntityRenderData(pos) instanceof PlatformBlockEntity.PlatformData data
+				? PlatformModels.camouflage(data.state()) : null;
+	}
+
+	public static void registerTints() {
+		BlockColorRegistry.register((state, view, pos, tints) -> {
+			BlockState camouflage = camouflage(view, pos);
+			if (camouflage != null) {
+				var factory = BlockColorRegistry.getFactory(camouflage);
+				if (factory != null) {
+					factory.collect(camouflage, view, pos, tints);
+				} else {
+					for (var tint : Minecraft.getInstance().getBlockColors().getTintSources(camouflage)) {
+						tints.add(tint.colorInWorld(camouflage, view, pos));
+					}
+				}
 			}
-		}
+		}, BotaniaBlocks.ABSTRUSE_PLATFORM, BotaniaBlocks.SPECTRAL_PLATFORM, BotaniaBlocks.INFRANGIBLE_PLATFORM);
 	}
-
 }

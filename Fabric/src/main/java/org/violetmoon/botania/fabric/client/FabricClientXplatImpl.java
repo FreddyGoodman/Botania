@@ -17,11 +17,10 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.FabricModelManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -31,29 +30,24 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.fabric.item.TinyPotatoRenderCallback;
 import org.violetmoon.botania.fabric.integration.sodium.SodiumFabricHelper;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FabricClientXplatImpl implements ClientXplatAbstractions {
 	@Override
-	public void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		TinyPotatoRenderCallback.EVENT.invoker().onRender(potato, name, tickDelta, ms, buffers, light, overlay);
+	public void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
+		TinyPotatoRenderCallback.EVENT.invoker().onRender(potato, name, tickDelta, ms, collector, light, overlay);
 	}
 
 	@Override
 	public void sendToServer(CustomPacketPayload packet) {
 		ClientPlayNetworking.send(packet);
-	}
-
-	@Override
-	public BakedModel getResourceModel(Identifier id) {
-		return Minecraft.getInstance().getModelManager().getModel(id);
 	}
 
 	private static final Map<Identifier, ExtraModelKey<BlockStateModelPart>> BLOCK_MODEL_KEYS = new ConcurrentHashMap<>();
@@ -63,14 +57,10 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 	}
 
 	@Override
-	public BlockStateModelPart getBlockModelPart(Identifier id) {
+	public @Nullable BlockStateModelPart findBlockModelPart(Identifier id) {
 		var models = (FabricModelManager) Minecraft.getInstance().getModelManager();
-		return Objects.requireNonNull(models.getModel(getBlockModelKey(id)), id::toString);
-	}
-
-	@Override
-	public BakedModel wrapPlatformModel(BakedModel original) {
-		return new FabricPlatformModel(original);
+		var key = BLOCK_MODEL_KEYS.get(id);
+		return key != null ? models.getModel(key) : null;
 	}
 
 	@Override

@@ -140,7 +140,8 @@ public class ItemModelProvider implements DataProvider {
 
 			Item item = inputs.get(id);
 			// Special item definitions are authored alongside their custom renderer type.
-			if (item != null && item != BotaniaBlocks.GAIA_HEAD.asItem() && (model.size() != 1 || !model.has("display"))) {
+			if (item != null && item != BotaniaBlocks.GAIA_HEAD.asItem() && item != BotaniaBlocks.TINY_POTATO.asItem()
+					&& (model.size() != 1 || !model.has("display"))) {
 				JsonObject definition = ItemModelDefinition.create(id, overrides, ColorHandler.getItemTintCount(item));
 				outputList.add(DataProvider.saveStable(output, definition, itemPaths.json(BuiltInRegistries.ITEM.getKey(item))));
 			}

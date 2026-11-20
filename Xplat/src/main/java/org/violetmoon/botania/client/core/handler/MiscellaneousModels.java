@@ -17,13 +17,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.violetmoon.botania.api.BotaniaAPI;
-import org.violetmoon.botania.client.lib.ResourcesLib;
-import org.violetmoon.botania.client.model.TinyPotatoModel;
 import org.violetmoon.botania.common.item.equipment.bauble.FlugelTiaraItem;
 import org.violetmoon.botania.common.item.equipment.bauble.ThirdEyeItem;
 import org.violetmoon.botania.common.item.relic.KeyOfTheKingsLawItem;
-import org.violetmoon.botania.common.lib.LibBlockNames;
-import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -81,20 +77,9 @@ public class MiscellaneousModels {
 	public void onModelRegister(ResourceManager rm, Consumer<Identifier> consumer) {
 		modelConsumers.keySet().forEach(consumer);
 
-		registerTaters(rm, consumer);
 
 		if (!registeredModels) {
 			registeredModels = true;
-		}
-	}
-
-	private static void registerTaters(ResourceManager rm, Consumer<Identifier> consumer) {
-		for (Identifier model : rm.listResources(ResourcesLib.PREFIX_MODELS + ResourcesLib.PREFIX_TINY_POTATO, s -> s.getPath().endsWith(ResourcesLib.ENDING_JSON)).keySet()) {
-			if (BotaniaAPI.MODID.equals(model.getNamespace())) {
-				String path = model.getPath();
-				path = path.substring(ResourcesLib.PREFIX_MODELS.length(), path.length() - ResourcesLib.ENDING_JSON.length());
-				consumer.accept(botaniaRL(path));
-			}
 		}
 	}
 
@@ -127,10 +112,6 @@ public class MiscellaneousModels {
 
 	private MiscellaneousModels() {
 		afterBakeModifiers = new HashMap<>();
-		afterBakeModifiers.put(botaniaRL(LibBlockNames.PLATFORM_ABSTRUSE), ClientXplatAbstractions.INSTANCE::wrapPlatformModel);
-		afterBakeModifiers.put(botaniaRL(LibBlockNames.PLATFORM_SPECTRAL), ClientXplatAbstractions.INSTANCE::wrapPlatformModel);
-		afterBakeModifiers.put(botaniaRL(LibBlockNames.PLATFORM_INFRANGIBLE), ClientXplatAbstractions.INSTANCE::wrapPlatformModel);
-		afterBakeModifiers.put(botaniaRL(LibBlockNames.TINY_POTATO), TinyPotatoModel::new);
 
 		modelConsumers = new HashMap<>();
 

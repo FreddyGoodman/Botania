@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.violetmoon.botania.client.model.ManaBlasterItemModel;
+import org.violetmoon.botania.client.model.TinyPotatoModel;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -34,5 +35,6 @@ public abstract class ItemModelsMixin {
 	@Inject(method = "bootstrap", at = @At("TAIL"))
 	private static void botania_registerItemModels(CallbackInfo ci) {
 		ID_MAPPER.put(botaniaRL("mana_blaster"), ManaBlasterItemModel.Unbaked.CODEC);
+		ID_MAPPER.put(botaniaRL("tiny_potato"), TinyPotatoModel.Unbaked.CODEC);
 	}
 }

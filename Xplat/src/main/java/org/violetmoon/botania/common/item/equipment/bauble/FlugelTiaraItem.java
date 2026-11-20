@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.component.DataComponents;
@@ -462,17 +463,29 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 				model.body.translateAndRotate(ms);
 			}
 
-			ms.translate(0.2, -0.65, 0);
-			ms.mulPose(VecHelper.rotateZ(30));
-			ms.mulPose(VecHelper.rotateY(tickTime));
+			poseHalo(ms, tickTime);
+			drawHalo(ms.last().pose(), buffers.getBuffer(RenderHelper.getTiaraHaloLayer()));
+		}
 
-			ms.scale(0.75F, -0.75F, -0.75F);
-			VertexConsumer buffer = buffers.getBuffer(RenderHelper.getTiaraHaloLayer());
-			Matrix4f mat = ms.last().pose();
-			buffer.addVertex(mat, -1F, 0, -1F).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0, 0);
-			buffer.addVertex(mat, 1F, 0, -1F).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(1, 0);
-			buffer.addVertex(mat, 1F, 0, 1F).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(1, 1);
-			buffer.addVertex(mat, -1F, 0, 1F).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0, 1);
+		public static void submitHalo(PoseStack pose, SubmitNodeCollector collector, float tickTime) {
+			pose.pushPose();
+			poseHalo(pose, tickTime);
+			collector.submitCustomGeometry(pose, RenderHelper.getTiaraHaloLayer(), (transform, buffer) -> drawHalo(transform.pose(), buffer));
+			pose.popPose();
+		}
+
+		private static void poseHalo(PoseStack pose, float tickTime) {
+			pose.translate(0.2, -0.65, 0);
+			pose.mulPose(VecHelper.rotateZ(30));
+			pose.mulPose(VecHelper.rotateY(tickTime));
+			pose.scale(0.75F, -0.75F, -0.75F);
+		}
+
+		private static void drawHalo(Matrix4f mat, VertexConsumer buffer) {
+			buffer.addVertex(mat, -1F, 0, -1F).setColor(-1).setUv(0, 0);
+			buffer.addVertex(mat, 1F, 0, -1F).setColor(-1).setUv(1, 0);
+			buffer.addVertex(mat, 1F, 0, 1F).setColor(-1).setUv(1, 1);
+			buffer.addVertex(mat, -1F, 0, 1F).setColor(-1).setUv(0, 1);
 		}
 
 		private static int estimateAdditionalNumRowsRendered(Player player) {

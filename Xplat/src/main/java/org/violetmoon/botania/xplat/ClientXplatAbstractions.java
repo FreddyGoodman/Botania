@@ -11,11 +11,10 @@ package org.violetmoon.botania.xplat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -27,21 +26,20 @@ import org.violetmoon.botania.api.ServiceUtil;
 
 public interface ClientXplatAbstractions {
 	// Event firing
-	void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay);
+	void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, SubmitNodeCollector collector, int light, int overlay);
 
 	// Networking
 	void sendToServer(CustomPacketPayload packet);
 
 	// Rendering stuff
 
-	/**
-	 * Try to load the resource/standalone model with the specified resource location.
-	 * Returns null if no model was found.
-	 */
 	@Nullable
-	BakedModel getResourceModel(Identifier id);
-	BlockStateModelPart getBlockModelPart(Identifier id);
-	BakedModel wrapPlatformModel(BakedModel original);
+	BlockStateModelPart findBlockModelPart(Identifier id);
+
+	default BlockStateModelPart getBlockModelPart(Identifier id) {
+		return java.util.Objects.requireNonNull(findBlockModelPart(id), id::toString);
+	}
+
 	int getGuiRightHeight(Player player);
 	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);
 	void restoreLastFilter(AbstractTexture texture);

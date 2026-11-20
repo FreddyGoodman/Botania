@@ -9,8 +9,9 @@
 package org.violetmoon.botania.client.render;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.color.block.BlockTintSources;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ARGB;
@@ -19,10 +20,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -33,8 +32,6 @@ import org.violetmoon.botania.api.mana.BurstProperties;
 import org.violetmoon.botania.api.mana.ManaItem;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.common.block.BotaniaBlocks;
-import org.violetmoon.botania.common.block.PlatformBlock;
-import org.violetmoon.botania.common.block.block_entity.PlatformBlockEntity;
 import org.violetmoon.botania.common.block.mana.ManaPoolBlock;
 import org.violetmoon.botania.common.brew.BotaniaBrews;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
@@ -45,6 +42,7 @@ import org.violetmoon.botania.common.item.lens.LensItem;
 import org.violetmoon.botania.common.item.material.MysticalPetalItem;
 
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -55,7 +53,7 @@ public final class ColorHandler {
 	public static final float MANA_HUE = 0.528F;
 
 	public interface BlockHandlerConsumer {
-		void register(BlockColor handler, Block... blocks);
+		void register(List<BlockTintSource> sources, Block... blocks);
 	}
 
 	private interface ItemColor {
@@ -100,43 +98,20 @@ public final class ColorHandler {
 	}
 
 	public static void submitBlocks(BlockHandlerConsumer blocks) {
-		// [VanillaCopy] BlockColors for vine
-		blocks.register((state, world, pos, tintIndex) -> world != null && pos != null
-				? BiomeColors.getAverageFoliageColor(world, pos)
-				: FoliageColor.getDefaultColor(),
-				BotaniaBlocks.SOLID_VINE
-		);
+		blocks.register(List.of(BlockTintSources.foliage()), BotaniaBlocks.SOLID_VINE);
 
-		// Pool
-		blocks.register(
-				(state, world, pos, tintIndex) -> {
-					if (tintIndex != 0 || !(state.getBlock() instanceof ManaPoolBlock poolBlock)) {
-						return -1;
-					}
+		BlockTintSource poolColor = new BlockTintSource() {
+			@Override
+			public int color(BlockState state) {
+				return ARGB.opaque(getManaPoolColor((ManaPoolBlock) state.getBlock(), state, null));
+			}
 
-					return getManaPoolColor(poolBlock, state, pos);
-				},
-				getModBlocks(block -> block instanceof ManaPoolBlock pool && (pool.color != null || pool.isFabulous()))
-		);
-
-		// Platforms
-		blocks.register(
-				(state, world, pos, tintIndex) -> {
-					if (world != null && pos != null) {
-						BlockEntity tile = world.getBlockEntity(pos);
-						if (tile instanceof PlatformBlockEntity camo) {
-							BlockState camoState = camo.getCamoState();
-							if (camoState != null) {
-								return camoState.getBlock() instanceof PlatformBlock
-										? 0xFFFFFF
-										: Minecraft.getInstance().getBlockColors().getColor(camoState, world, pos, tintIndex);
-							}
-						}
-					}
-					return 0xFFFFFF;
-				},
-				BotaniaBlocks.ABSTRUSE_PLATFORM, BotaniaBlocks.SPECTRAL_PLATFORM, BotaniaBlocks.INFRANGIBLE_PLATFORM
-		);
+			@Override
+			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+				return ARGB.opaque(getManaPoolColor((ManaPoolBlock) state.getBlock(), state, pos));
+			}
+		};
+		blocks.register(List.of(poolColor), getModBlocks(block -> block instanceof ManaPoolBlock pool && (pool.color != null || pool.isFabulous())));
 	}
 
 	public static int getManaPoolColor(ManaPoolBlock block, BlockState state, @Nullable BlockPos pos) {

@@ -14,12 +14,10 @@ import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -37,25 +35,17 @@ import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 	@Override
-	public void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		NeoForge.EVENT_BUS.post(new TinyPotatoRenderEvent(potato, name, tickDelta, ms, buffers, light, overlay));
+	public void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
+		NeoForge.EVENT_BUS.post(new TinyPotatoRenderEvent(potato, name, tickDelta, ms, collector, light, overlay));
 	}
 
 	@Override
 	public void sendToServer(CustomPacketPayload packet) {
 		PacketDistributor.sendToServer(packet);
-	}
-
-	@Nullable
-	@Override
-	public BakedModel getResourceModel(Identifier id) {
-		BakedModel model = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(id));
-		return model != Minecraft.getInstance().getModelManager().getMissingModel() ? model : null;
 	}
 
 	private static final Map<Identifier, StandaloneModelKey<BlockStateModelPart>> BLOCK_MODEL_KEYS = new ConcurrentHashMap<>();
@@ -65,14 +55,10 @@ public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 	}
 
 	@Override
-	public BlockStateModelPart getBlockModelPart(Identifier id) {
+	public @Nullable BlockStateModelPart findBlockModelPart(Identifier id) {
 		var models = Minecraft.getInstance().getModelManager();
-		return Objects.requireNonNull(models.getStandaloneModel(getBlockModelKey(id)), id::toString);
-	}
-
-	@Override
-	public BakedModel wrapPlatformModel(BakedModel original) {
-		return new NeoForgePlatformModel(original);
+		var key = BLOCK_MODEL_KEYS.get(id);
+		return key != null ? models.getStandaloneModel(key) : null;
 	}
 
 	@Override

@@ -8,8 +8,12 @@
  */
 package org.violetmoon.botania.client.core.handler;
 
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
 
+import org.violetmoon.botania.api.BotaniaAPI;
+import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.client.render.block_entity.CorporeaCrystalCubeBlockEntityRenderer;
 import org.violetmoon.botania.client.render.block_entity.ManaPumpBlockEntityRenderer;
 import org.violetmoon.botania.client.render.block_entity.ManaSpreaderBlockEntityRenderer;
@@ -18,11 +22,21 @@ import org.violetmoon.botania.common.block.BotaniaBlocks;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
+
 public final class StandaloneBlockModels {
-	public static void register(Consumer<Identifier> consumer) {
+	public static final Identifier PHI_FLOWER = botaniaRL("icon/phiflower");
+	public static final Identifier NERF_BAT = botaniaRL("icon/nerfbat");
+	public static final Identifier GOLDFISH = botaniaRL("icon/goldfish");
+
+	public static void register(ResourceManager resources, Consumer<Identifier> consumer) {
 		consumer.accept(CorporeaCrystalCubeBlockEntityRenderer.CUBE_MODEL_ID);
+		consumer.accept(PHI_FLOWER);
+		consumer.accept(NERF_BAT);
+		consumer.accept(GOLDFISH);
 		consumer.accept(ManaPumpBlockEntityRenderer.PUMP_HEAD_ID);
 		registerSpreaderComponents(consumer);
+		registerTinyPotatoModels(resources, consumer);
 	}
 
 	private static void registerSpreaderComponents(Consumer<Identifier> consumer) {
@@ -34,6 +48,15 @@ public final class StandaloneBlockModels {
 				.distinct()
 				.forEach(consumer);
 		ManaSpreaderBlockEntityRenderer.WOOL_PADDING_IDS.values().forEach(consumer);
+	}
+
+	private static void registerTinyPotatoModels(ResourceManager resources, Consumer<Identifier> consumer) {
+		var files = FileToIdConverter.json(ResourcesLib.PREFIX_MODELS + ResourcesLib.PREFIX_TINY_POTATO);
+		files.listMatchingResources(resources).keySet().stream()
+				.filter(file -> BotaniaAPI.MODID.equals(file.getNamespace()))
+				.map(files::fileToId)
+				.map(id -> id.withPrefix(ResourcesLib.PREFIX_TINY_POTATO + "/"))
+				.forEach(consumer);
 	}
 
 	private StandaloneBlockModels() {}
