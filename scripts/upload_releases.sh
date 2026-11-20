@@ -25,9 +25,11 @@ function release_github() {
 	echo >&2 'Uploading NeoForge Jar and Signature to GitHub'
 	gh release upload "${TAGNAME}" "${NEOFORGE_JAR}#NeoForge Jar"
 	gh release upload "${TAGNAME}" "${NEOFORGE_JAR}.asc#NeoForge Signature"
-	echo >&2 'Uploading GoG Jar and Signature to GitHub'
-	gh release upload "${TAGNAME}" "${GOG_JAR}#GoG Jar"
-	gh release upload "${TAGNAME}" "${GOG_JAR}.asc#GoG Signature"
+	if [[ -n "${GOG_JAR:-}" ]]; then
+		echo >&2 'Uploading GoG Jar and Signature to GitHub'
+		gh release upload "${TAGNAME}" "${GOG_JAR}#GoG Jar"
+		gh release upload "${TAGNAME}" "${GOG_JAR}.asc#GoG Signature"
+	fi
 }
 
 function release_modrinth() {
