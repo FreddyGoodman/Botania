@@ -26,6 +26,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlockContainer;
@@ -35,9 +36,9 @@ import net.minecraft.world.level.material.Fluids;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.entity.PixieEntity;
 
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 
 public class BottledManaItem extends Item {
 	public static final int SWIGS = 6;
@@ -220,8 +221,8 @@ public class BottledManaItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> stacks, TooltipFlag flags) {
-		stacks.add(Component.translatable("botaniamisc.bottleTooltip"));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> stacks, TooltipFlag flags) {
+		stacks.accept(Component.translatable("botaniamisc.bottleTooltip"));
 	}
 
 	@Override

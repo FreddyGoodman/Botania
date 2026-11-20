@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
@@ -30,6 +31,7 @@ import org.violetmoon.botania.common.entity.PinkWitherEntity;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PinkinatorItem extends Item {
 
@@ -68,8 +70,8 @@ public class PinkinatorItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		tooltip.add(Component.translatable("botaniamisc.pinkinatorDesc").withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
+		tooltip.accept(Component.translatable("botaniamisc.pinkinatorDesc").withStyle(ChatFormatting.GRAY));
 	}
 
 }

@@ -20,6 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import org.violetmoon.botania.api.item.CosmeticBauble;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
@@ -28,7 +29,7 @@ import org.violetmoon.botania.client.render.AccessoryRenderer;
 import org.violetmoon.botania.common.helper.VecHelper;
 import org.violetmoon.botania.common.proxy.Proxy;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 
@@ -63,13 +64,13 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
 		if (variant == Variant.THINKING_HAND) {
-			tooltip.add(Component.translatable("botaniamisc.cosmeticThinking").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.cosmeticThinking").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
 		} else {
-			tooltip.add(Component.translatable("botaniamisc.cosmeticBauble").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.cosmeticBauble").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
 		}
-		super.appendHoverText(stack, context, tooltip, flags);
+		super.appendHoverText(stack, context, display, tooltip, flags);
 	}
 
 	public static class Renderer implements AccessoryRenderer {

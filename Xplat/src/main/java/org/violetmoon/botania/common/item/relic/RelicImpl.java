@@ -24,8 +24,8 @@ import org.violetmoon.botania.common.BotaniaDamageTypes;
 import org.violetmoon.botania.common.advancements.RelicBindTrigger;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 
-import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class RelicImpl implements Relic {
 
@@ -80,19 +80,19 @@ public class RelicImpl implements Relic {
 		return BotaniaDamageTypes.Sources.relicDamage(registryAccess);
 	}
 
-	public static void addDefaultTooltip(ItemStack stack, List<Component> tooltip) {
+	public static void addDefaultTooltip(ItemStack stack, Consumer<Component> tooltip) {
 		var relic = Relic.LOOKUP.find(stack);
 		if (relic == null) {
 			return;
 		}
 		if (relic.getSoulbindUUID() == null) {
-			tooltip.add(Component.translatable("botaniamisc.relicUnbound"));
+			tooltip.accept(Component.translatable("botaniamisc.relicUnbound"));
 		} else {
 			var player = ClientProxy.INSTANCE.getClientPlayer();
 			if (player == null || !relic.isRightPlayer(player)) {
-				tooltip.add(Component.translatable("botaniamisc.notYourSagittarius"));
+				tooltip.accept(Component.translatable("botaniamisc.notYourSagittarius"));
 			} else {
-				tooltip.add(Component.translatable("botaniamisc.relicSoulbound", player.getName()));
+				tooltip.accept(Component.translatable("botaniamisc.relicSoulbound", player.getName()));
 			}
 		}
 	}

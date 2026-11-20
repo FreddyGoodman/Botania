@@ -51,7 +51,7 @@ public class CorporeaInputHandler {
 			int count = 1;
 			int max = stack.getMaxStackSize();
 
-			if (Screen.hasShiftDown()) {
+			if (Minecraft.getInstance().hasShiftDown()) {
 				count = max;
 				if (Screen.hasControlDown()) {
 					count /= 4;

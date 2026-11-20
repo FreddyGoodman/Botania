@@ -10,9 +10,7 @@ package org.violetmoon.botania.common.block.mana;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
@@ -47,12 +45,13 @@ import org.violetmoon.botania.common.block.BotaniaWaterloggedEntityBlock;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 import org.violetmoon.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import org.violetmoon.botania.common.entity.ManaBurstEntity;
+import org.violetmoon.botania.common.item.block.BlockItemTooltip;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
-public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements OptionallyColored {
+public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements OptionallyColored, BlockItemTooltip {
 	public static final int MAX_MANA = 1000000;
 	public static final int MAX_MANA_DILUTED = 10000;
 
@@ -80,7 +79,7 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 	public final ShapeVariant shapeVariant;
 
 	public ManaPoolBlock(int capacity, boolean fabulous, boolean creative, ShapeVariant shapeVariant, @Nullable DyeColor color, Properties properties) {
-		super(properties);
+		super(creative ? properties.overrideDescription("block.botania.creative_mana_pool") : properties);
 		registerDefaultState(defaultBlockState().setValue(BotaniaStateProperties.OUTPUTTING, false));
 
 		this.fabulous = fabulous;
@@ -113,15 +112,6 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 	}
 
 	@Override
-	public String getDescriptionId() {
-		if (creative) {
-			return Util.makeDescriptionId("block",
-					BuiltInRegistries.BLOCK.getKey(getUndyedBlock(this)));
-		}
-		return super.getDescriptionId();
-	}
-
-	@Override
 	public MutableComponent getName() {
 		if (creative && color != null) {
 			return Component.translatable("botaniamisc.template.parenthesis_suffix",
@@ -131,11 +121,10 @@ public class ManaPoolBlock extends BotaniaWaterloggedEntityBlock implements Opti
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+	public void appendItemTooltip(Consumer<Component> tooltipComponents) {
 		if (creative) {
 			for (int i = 0; i < 2; i++) {
-				tooltipComponents.add(Component.translatable("botaniamisc.creativePool" + i).withStyle(ChatFormatting.GRAY));
+				tooltipComponents.accept(Component.translatable("botaniamisc.creativePool" + i).withStyle(ChatFormatting.GRAY));
 			}
 		}
 	}

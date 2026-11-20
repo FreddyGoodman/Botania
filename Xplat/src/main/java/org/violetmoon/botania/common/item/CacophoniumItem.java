@@ -27,6 +27,7 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -40,7 +41,7 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.mixin.MobAccessor;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class CacophoniumItem extends Item {
 
@@ -99,14 +100,14 @@ public class CacophoniumItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> infoList, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> infoList, TooltipFlag flags) {
 		if (isDOIT(stack)) {
-			infoList.add(Component.translatable("botaniamisc.justDoIt").withStyle(ChatFormatting.GRAY));
+			infoList.accept(Component.translatable("botaniamisc.justDoIt").withStyle(ChatFormatting.GRAY));
 		} else if (getSound(stack) != null) {
 			Identifier id = stack.get(BotaniaDataComponents.MOB_TYPE);
 			if (id != null) {
 				BuiltInRegistries.ENTITY_TYPE.getOptional(id).ifPresent(
-						type -> infoList.add(type.getDescription().copy().withStyle(ChatFormatting.GRAY)));
+						type -> infoList.accept(type.getDescription().copy().withStyle(ChatFormatting.GRAY)));
 			}
 		}
 	}

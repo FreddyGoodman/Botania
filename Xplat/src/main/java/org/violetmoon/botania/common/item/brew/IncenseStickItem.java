@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.brew.Brew;
@@ -25,7 +26,6 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.item.CustomCreativeTabContents;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class IncenseStickItem extends Item implements BrewItem, BrewContainer, CustomCreativeTabContents {
@@ -48,16 +48,16 @@ public class IncenseStickItem extends Item implements BrewItem, BrewContainer, C
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flags) {
 		Brew brew = getBrew(stack);
 		if (brew == BotaniaBrews.FALLBACK) {
-			list.add(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
+			list.accept(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
 			return;
 		}
 
-		list.add(Component.translatable("botaniamisc.brewOf",
+		list.accept(Component.translatable("botaniamisc.brewOf",
 				Component.translatable(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
-		PotionContents.addPotionTooltip(brew.getPotionEffects(stack), list::add, TIME_MULTIPLIER, context.tickRate());
+		PotionContents.addPotionTooltip(brew.getPotionEffects(stack), list, TIME_MULTIPLIER, context.tickRate());
 	}
 
 	@Override

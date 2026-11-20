@@ -14,9 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -30,14 +28,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import org.jetbrains.annotations.Nullable;
+import org.violetmoon.botania.common.item.block.BlockItemTooltip;
 import org.violetmoon.botania.api.mana.ManaCollisionGhost;
 import org.violetmoon.botania.common.block.block_entity.PlatformBlockEntity;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public abstract class PlatformBlock extends BotaniaEntityBlock implements ManaCollisionGhost {
+public abstract class PlatformBlock extends BotaniaEntityBlock implements ManaCollisionGhost, BlockItemTooltip {
 
 	protected PlatformBlock(Properties properties) {
 		super(properties);
@@ -91,9 +89,9 @@ public abstract class PlatformBlock extends BotaniaEntityBlock implements ManaCo
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+	public void appendItemTooltip(Consumer<Component> tooltipComponents) {
 		if (requireCreativeInteractions()) {
-			tooltipComponents.add(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
+			tooltipComponents.accept(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
 		}
 	}
 

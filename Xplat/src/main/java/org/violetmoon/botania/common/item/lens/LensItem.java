@@ -17,6 +17,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
@@ -28,7 +29,7 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.item.BotaniaItems;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class LensItem extends Item implements ControlLensItem, CompositableLensItem, TinyPlanetExcempt {
 	public static final int PROP_NONE = 0,
@@ -52,18 +53,18 @@ public class LensItem extends Item implements ControlLensItem, CompositableLensI
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> stacks, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> stacks, TooltipFlag flags) {
 		boolean isRainbow = isLensRainbow(stack);
 		DyeColor lensColor = getLensColor(stack);
 		if (isRainbow || lensColor != null) {
 
 			var colorName = Component.translatable(isRainbow ? "botania.color.rainbow" : "color.minecraft." + lensColor.getName());
 			TextColor realColor = TextColor.fromRgb(getLensColor(stack, null));
-			stacks.add(Component.translatable("botaniamisc.color", colorName).withStyle(s -> s.withColor(realColor)));
+			stacks.accept(Component.translatable("botaniamisc.color", colorName).withStyle(s -> s.withColor(realColor)));
 		}
 
 		if (lens instanceof StormLens) {
-			stacks.add(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
+			stacks.accept(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
 		}
 	}
 

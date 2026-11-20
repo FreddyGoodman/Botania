@@ -9,7 +9,6 @@
 package org.violetmoon.botania.common.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +46,7 @@ import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.proxy.Proxy;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ManaBlasterItem extends Item implements ClientInventoryTick {
 
@@ -131,34 +132,27 @@ public class ManaBlasterItem extends Item implements ClientInventoryTick {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
 		boolean clip = hasClip(stack);
 		if (clip) {
-			TooltipHandler.addOnShift(tooltip, flags, () -> appendHoverTextImpl(stack, tooltip));
+			TooltipHandler.addOnShift(tooltip, flags, () -> appendHoverTextImpl(stack, context, tooltip));
 		} else {
-			appendHoverTextImpl(stack, tooltip);
+			appendHoverTextImpl(stack, context, tooltip);
 		}
 	}
 
-	private void appendHoverTextImpl(ItemStack stack, List<Component> tooltip) {
+	private void appendHoverTextImpl(ItemStack stack, TooltipContext context, Consumer<Component> tooltip) {
 		boolean clip = hasClip(stack);
-		if (clip && !Screen.hasShiftDown()) {
-			tooltip.add(TooltipHandler.getShiftInfoTooltip());
-			return;
-		}
 
 		ItemStack lens = getLens(stack);
 		if (!lens.isEmpty()) {
-			//todo idk
-			List<Component> lensTip = lens.getTooltipLines(Item.TooltipContext.of(Proxy.INSTANCE.getClientPlayer().level()), Proxy.INSTANCE.getClientPlayer(), TooltipFlag.Default.NORMAL);
-			if (lensTip.size() > 1) {
-				tooltip.addAll(lensTip.subList(1, lensTip.size()));
-			}
+			List<Component> lensTip = lens.getTooltipLines(context, Proxy.INSTANCE.getClientPlayer(), TooltipFlag.NORMAL);
+			lensTip.stream().skip(1).forEach(tooltip);
 		}
 
 		if (clip) {
 			int pos = getClipPos(stack);
-			tooltip.add(Component.translatable("botaniamisc.hasClip"));
+			tooltip.accept(Component.translatable("botaniamisc.hasClip"));
 			List<ItemStack> lenses = getAllLens(stack);
 			for (int i = 0; i < CLIP_SLOTS; i++) {
 				ItemStack lensAt = lenses.get(i);
@@ -172,7 +166,7 @@ public class ManaBlasterItem extends Item implements ClientInventoryTick {
 
 				MutableComponent tip = Component.translatable("botaniamisc.template.tooltip_list", name)
 						.withStyle(i == pos ? ChatFormatting.GREEN : ChatFormatting.GRAY);
-				tooltip.add(tip);
+				tooltip.accept(tip);
 			}
 		}
 	}

@@ -30,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.brew.Brew;
@@ -45,7 +46,6 @@ import org.violetmoon.botania.common.item.CustomCreativeTabContents;
 import org.violetmoon.botania.common.proxy.Proxy;
 import org.violetmoon.botania.mixin.client.MinecraftAccessor;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer, BrewItem, CustomCreativeTabContents {
@@ -67,16 +67,16 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag adv) {
-		super.appendHoverText(stack, context, tooltip, adv);
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag adv) {
+		super.appendHoverText(stack, context, display, tooltip, adv);
 
 		Brew brew = getBrew(stack);
 		if (brew == BotaniaBrews.FALLBACK) {
-			tooltip.add(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltip.accept(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
 			return;
 		}
 
-		tooltip.add(Component.translatable("botaniamisc.brewOf", I18n.get(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltip.accept(Component.translatable("botaniamisc.brewOf", I18n.get(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		for (MobEffectInstance effect : brew.getPotionEffects(stack)) {
 			ChatFormatting format = effect.getEffect().value().getCategory().getTooltipFormatting();
 			MutableComponent cmp = Component.translatable(effect.getDescriptionId());
@@ -84,7 +84,7 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 				cmp.append(" ");
 				cmp.append(Component.translatable("botania.roman" + (effect.getAmplifier() + 1)));
 			}
-			tooltip.add(cmp.withStyle(format));
+			tooltip.accept(cmp.withStyle(format));
 		}
 	}
 

@@ -26,6 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -41,7 +42,7 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.helper.PlayerHelper;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class LifeAggregatorItem extends Item {
 
@@ -54,7 +55,7 @@ public class LifeAggregatorItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
 		if (!hasData(stack)) {
 			return;
 		}
@@ -62,13 +63,13 @@ public class LifeAggregatorItem extends Item {
 		Identifier blockId = stack.get(BotaniaDataComponents.BLOCK_TYPE);
 		if (blockId != null) {
 			BuiltInRegistries.BLOCK.getOptional(blockId).ifPresent(
-					block -> tooltipComponents.add(block.getName().withStyle(ChatFormatting.GRAY)));
+					block -> tooltipComponents.accept(block.getName().withStyle(ChatFormatting.GRAY)));
 		}
 
 		Identifier entityId = stack.get(BotaniaDataComponents.MOB_TYPE);
 		if (entityId != null) {
 			BuiltInRegistries.ENTITY_TYPE.getOptional(entityId).ifPresent(
-					type -> tooltipComponents.add(type.getDescription().copy().withStyle(ChatFormatting.GRAY)));
+					type -> tooltipComponents.accept(type.getDescription().copy().withStyle(ChatFormatting.GRAY)));
 		}
 	}
 

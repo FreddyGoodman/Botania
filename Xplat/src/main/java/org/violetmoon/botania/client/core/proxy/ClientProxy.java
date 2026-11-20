@@ -11,7 +11,6 @@ package org.violetmoon.botania.client.core.proxy;
 import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -150,6 +149,6 @@ public class ClientProxy implements Proxy {
 
 	@Override
 	public boolean hasShiftDown() {
-		return Screen.hasShiftDown();
+		return Minecraft.getInstance().hasShiftDown();
 	}
 }

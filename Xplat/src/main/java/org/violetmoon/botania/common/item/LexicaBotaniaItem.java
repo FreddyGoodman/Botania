@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -37,7 +38,6 @@ import org.violetmoon.botania.common.helper.DataComponentHelper;
 
 import vazkii.patchouli.api.PatchouliAPI;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents {
@@ -67,8 +67,8 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(getEdition().copy().withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.accept(getEdition().copy().withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override

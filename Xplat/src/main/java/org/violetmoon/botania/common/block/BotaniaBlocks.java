@@ -49,6 +49,7 @@ import org.violetmoon.botania.common.block.red_string.*;
 import org.violetmoon.botania.common.brew.BotaniaMobEffects;
 import org.violetmoon.botania.common.helper.ColorHelper;
 import org.violetmoon.botania.common.item.BotaniaItems;
+import org.violetmoon.botania.common.item.block.BlockItemTooltip;
 import org.violetmoon.botania.common.item.block.ColoredBlockItem;
 import org.violetmoon.botania.common.item.block.DecayableSpecialFlowerBlockItem;
 import org.violetmoon.botania.common.item.block.SpecialFlowerBlockItem;
@@ -2673,7 +2674,7 @@ public final class BotaniaBlocks {
 		registerBlockItem(r, EYE_OF_THE_ANCIENTS);
 		registerBlockItem(r, ABSTRUSE_PLATFORM);
 		registerBlockItem(r, SPECTRAL_PLATFORM);
-		registerBlockItem(r, INFRANGIBLE_PLATFORM, props -> new BlockItem(INFRANGIBLE_PLATFORM, props.rarity(Rarity.EPIC)));
+		registerBlockItem(r, INFRANGIBLE_PLATFORM, props -> BlockItemTooltip.createItem(INFRANGIBLE_PLATFORM, props.rarity(Rarity.EPIC)));
 		registerBlockItem(r, TINY_POTATO, props -> new TinyPotatoBlockItem(TINY_POTATO, props));
 		registerBlockItem(r, ENDER_OVERSEER);
 		registerBlockItem(r, RED_STRINGED_CONTAINER);
@@ -2984,7 +2985,7 @@ public final class BotaniaBlocks {
 	}
 
 	private static void registerBlockItem(BiConsumer<Item, Identifier> registrar, Block block) {
-		registerBlockItem(registrar, block, properties -> new BlockItem(block, properties));
+		registerBlockItem(registrar, block, properties -> BlockItemTooltip.createItem(block, properties));
 	}
 
 	private static void registerBlockItem(BiConsumer<Item, Identifier> registrar, Block block,
@@ -3003,11 +3004,11 @@ public final class BotaniaBlocks {
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(
 			BiConsumer<Item, Identifier> r, T baseBlock, Rarity rarity, String coloredBlockInfix) {
 		Identifier baseId = BuiltInRegistries.BLOCK.getKey(baseBlock);
-		registerBlockItem(r, baseBlock, props -> new BlockItem(baseBlock, props.rarity(rarity)));
+		registerBlockItem(r, baseBlock, props -> BlockItemTooltip.createItem(baseBlock, props.rarity(rarity)));
 		ColorHelper.supportedColors().forEach(color -> {
 			Identifier coloredId = baseId.withPrefix(color.getSerializedName() + coloredBlockInfix);
 			Block coloredBlock = ALL.get(coloredId.getPath());
-			registerBlockItem(r, coloredBlock, props -> new BlockItem(coloredBlock, props.rarity(rarity)));
+			registerBlockItem(r, coloredBlock, props -> BlockItemTooltip.createItem(coloredBlock, props.rarity(rarity)));
 		});
 	}
 

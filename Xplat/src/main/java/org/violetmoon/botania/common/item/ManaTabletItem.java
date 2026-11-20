@@ -16,6 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import org.violetmoon.botania.api.mana.ManaBarTooltip;
 import org.violetmoon.botania.api.mana.ManaItem;
@@ -24,7 +25,6 @@ import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.helper.DataComponentHelper;
 import org.violetmoon.botania.common.impl.mana.DefaultManaItemImpl;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -52,9 +52,9 @@ public class ManaTabletItem extends Item implements CustomCreativeTabContents {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> stacks, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> stacks, TooltipFlag flags) {
 		if (isStackCreative(stack)) {
-			stacks.add(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
+			stacks.accept(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
 		}
 	}
 

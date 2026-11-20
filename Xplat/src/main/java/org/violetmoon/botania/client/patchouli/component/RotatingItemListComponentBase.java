@@ -10,8 +10,8 @@ package org.violetmoon.botania.client.patchouli.component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import org.violetmoon.botania.xplat.BotaniaConfig;
@@ -46,7 +46,7 @@ abstract class RotatingItemListComponentBase implements ICustomComponent {
 		int ticksElapsed = context.getTicksInBook();
 
 		float currentDegree = BotaniaConfig.client().lexiconRotatingItems()
-				? Screen.hasShiftDown()
+				? Minecraft.getInstance().hasShiftDown()
 						? ticksElapsed
 						: ticksElapsed + pticks
 				: 0;

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import org.violetmoon.botania.api.item.ManaDissolvable;
 import org.violetmoon.botania.api.mana.ManaPool;
@@ -23,7 +24,7 @@ import org.violetmoon.botania.common.helper.EntityHelper;
 import org.violetmoon.botania.network.clientbound.BlackLotusDissolveEffectPacket;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class BlackLotusItem extends Item implements ManaDissolvable {
 
@@ -58,8 +59,8 @@ public class BlackLotusItem extends Item implements ManaDissolvable {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
-		list.add(Component.translatable("botaniamisc.lotusDesc").withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flags) {
+		list.accept(Component.translatable("botaniamisc.lotusDesc").withStyle(ChatFormatting.GRAY));
 	}
 
 }

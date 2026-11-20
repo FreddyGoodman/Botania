@@ -26,6 +26,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -51,7 +52,6 @@ import org.violetmoon.botania.common.item.equipment.tool.ToolCommons;
 import org.violetmoon.botania.common.item.equipment.tool.manasteel.ManasteelPickaxeItem;
 import org.violetmoon.botania.common.item.relic.RingOfThorItem;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -91,12 +91,12 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements ClientIn
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> stacks, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> stacks, TooltipFlag flags) {
 		Component rank = Component.translatable("botania.rank" + getLevel(stack));
 		Component rankFormat = Component.translatable("botaniamisc.toolRank", rank);
-		stacks.add(rankFormat);
+		stacks.accept(rankFormat);
 		if (getMana_(stack) == Integer.MAX_VALUE) {
-			stacks.add(Component.translatable("botaniamisc.getALife").withStyle(ChatFormatting.RED));
+			stacks.accept(Component.translatable("botaniamisc.getALife").withStyle(ChatFormatting.RED));
 		}
 	}
 

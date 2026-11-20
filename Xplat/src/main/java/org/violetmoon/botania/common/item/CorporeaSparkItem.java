@@ -19,6 +19,7 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -29,7 +30,7 @@ import org.violetmoon.botania.common.helper.EntityHelper;
 import org.violetmoon.botania.common.impl.corporea.DummyCorporeaNode;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class CorporeaSparkItem extends Item {
 
@@ -82,9 +83,9 @@ public class CorporeaSparkItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
 		if (stack.is(BotaniaItems.CREATIVE_CORPOREA_SPARK)) {
-			tooltip.add(Component.translatable("botaniamisc.creativeSpark").withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.creativeSpark").withStyle(ChatFormatting.GRAY));
 		}
 	}
 }

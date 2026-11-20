@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -46,6 +47,7 @@ import org.violetmoon.botania.common.item.rod.ShiftingCrustRodItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class AstrolabeItem extends Item {
 
@@ -282,7 +284,7 @@ public class AstrolabeItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, TooltipDisplay display, Consumer<Component> tip, TooltipFlag flags) {
 		if (context == null) {
 			return;
 		}
@@ -290,9 +292,9 @@ public class AstrolabeItem extends Item {
 		Block block = getBlock(stack, Objects.requireNonNull(context.registries()).lookupOrThrow(Registries.BLOCK));
 		int size = getSize(stack);
 
-		tip.add(Component.translatable("botaniamisc.astrolabe.size", size));
+		tip.accept(Component.translatable("botaniamisc.astrolabe.size", size));
 		if (block != Blocks.AIR) {
-			tip.add(block.getName().withStyle(ChatFormatting.GRAY));
+			tip.accept(block.getName().withStyle(ChatFormatting.GRAY));
 		}
 	}
 

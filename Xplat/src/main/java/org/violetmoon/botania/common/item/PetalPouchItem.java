@@ -28,6 +28,7 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.crafting.RecipeCache;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -38,6 +39,7 @@ import org.violetmoon.botania.common.helper.DataComponentHelper;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PetalPouchItem extends ColoredContentsPouchItem {
 	private static final RecipeCache RECIPE_CACHE = new RecipeCache(16);
@@ -128,9 +130,9 @@ public class PetalPouchItem extends ColoredContentsPouchItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> stacks, TooltipFlag flags) {
-		stacks.add(Component.translatable(isActive(stack) ? "botaniamisc.active" : "botaniamisc.inactive"));
-		super.appendHoverText(stack, context, stacks, flags);
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> stacks, TooltipFlag flags) {
+		stacks.accept(Component.translatable(isActive(stack) ? "botaniamisc.active" : "botaniamisc.inactive"));
+		super.appendHoverText(stack, context, display, stacks, flags);
 	}
 
 	@Override

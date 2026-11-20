@@ -14,15 +14,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.FlowerBlock;
 
+import org.violetmoon.botania.common.item.block.BlockItemTooltip;
 import org.violetmoon.botania.common.item.CustomCreativeTabContents;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-public class FlowerMotifBlock extends FlowerBlock implements CustomCreativeTabContents {
+public class FlowerMotifBlock extends FlowerBlock implements CustomCreativeTabContents, BlockItemTooltip {
 	private final boolean hidden;
 
 	public FlowerMotifBlock(Holder<MobEffect> effect, int effectDuration, Properties properties, boolean hidden) {
@@ -31,11 +30,11 @@ public class FlowerMotifBlock extends FlowerBlock implements CustomCreativeTabCo
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendItemTooltip(Consumer<Component> tooltip) {
 		if (hidden) {
-			tooltip.add(Component.translatable("block.botania.daybloom_motif.description").withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("block.botania.daybloom_motif.description").withStyle(ChatFormatting.GRAY));
 		} else {
-			tooltip.add(Component.translatable("block.botania.hydroangeas_motif.description").withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("block.botania.hydroangeas_motif.description").withStyle(ChatFormatting.GRAY));
 		}
 	}
 

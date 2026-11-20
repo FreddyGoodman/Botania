@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -43,6 +44,7 @@ import org.violetmoon.botania.network.clientbound.FlugelEyeEffectPacket;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
@@ -179,8 +181,8 @@ public class EyeOfTheFlugelItem extends RelicItem implements ClientInventoryTick
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
 
 		if (context.registries() == null) {
 			return;
@@ -194,7 +196,7 @@ public class EyeOfTheFlugelItem extends RelicItem implements ClientInventoryTick
 		Component worldText = Component.literal(dimension.toString()).withStyle(ChatFormatting.GREEN);
 
 		if (binding == null) {
-			tooltip.add(Component.translatable("botaniamisc.flugelUnbound", worldText).withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.flugelUnbound", worldText).withStyle(ChatFormatting.GRAY));
 		} else {
 			Component bindingText = Component.literal("[").withStyle(ChatFormatting.WHITE)
 					.append(Component.literal(Integer.toString(binding.getX())).withStyle(ChatFormatting.GOLD))
@@ -204,7 +206,7 @@ public class EyeOfTheFlugelItem extends RelicItem implements ClientInventoryTick
 					.append(Component.literal(Integer.toString(binding.getZ())).withStyle(ChatFormatting.GOLD))
 					.append("]");
 
-			tooltip.add(Component.translatable("botaniamisc.flugelBound", bindingText, worldText).withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.flugelBound", bindingText, worldText).withStyle(ChatFormatting.GRAY));
 		}
 	}
 

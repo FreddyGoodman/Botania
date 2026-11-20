@@ -66,7 +66,7 @@ public class ManasteelArmorItem extends Item implements PhantomInkable {
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
 			Consumer<Component> tooltip, TooltipFlag flags) {
 		List<Component> list = new ArrayList<>();
-		TooltipHandler.addOnShift(list, flags, () -> addInformationAfterShift(stack, context, list, flags));
+		TooltipHandler.addOnShift(list::add, flags, () -> addInformationAfterShift(stack, context, list, flags));
 		list.forEach(tooltip);
 	}
 
