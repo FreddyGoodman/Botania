@@ -234,6 +234,17 @@ public final class RenderHelper {
 		return RenderTypeAccessor.botania_create(ResourcesLib.PREFIX_MOD + name, setup.createRenderSetup());
 	}
 
+	public static RenderType skyLayer(Identifier texture, boolean additive) {
+		String name = additive ? "sky_additive" : "sky_textured";
+		var pipeline = geometryPipeline(name, "core/position_tex_color", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+				.withSampler("Sampler0")
+				.withCull(false)
+				.withDepthStencilState(NO_DEPTH)
+				.withColorTargetState(new ColorTargetState(additive ? BlendFunction.ADDITIVE : BlendFunction.TRANSLUCENT))
+				.build();
+		return texturedLayer(name, pipeline, texture, OutputTarget.MAIN_TARGET, false, true);
+	}
+
 	private static RenderType pylonGlow(Identifier texture, RenderPipeline pipeline, OutputTarget target) {
 		return RenderTypeAccessor.botania_create("botania:pylon_glow", RenderSetup.builder(pipeline)
 				.bufferSize(128)
