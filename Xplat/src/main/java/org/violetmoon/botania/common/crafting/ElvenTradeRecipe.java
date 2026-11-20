@@ -9,6 +9,7 @@
 package org.violetmoon.botania.common.crafting;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -128,7 +129,10 @@ public class ElvenTradeRecipe implements org.violetmoon.botania.api.recipe.Elven
 	public static final class Serializer {
 		public static final MapCodec<ElvenTradeRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				ExtraCodecs.nonEmptyList(ItemStackTemplate.CODEC.listOf()).fieldOf("output").forGetter(recipe -> recipe.outputs),
-				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).fieldOf("ingredients").forGetter(ElvenTradeRecipe::getIngredients)
+				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).validate(ingredients -> ingredients.stream().anyMatch(XplatAbstractions.instance()::requiresCustomTesting)
+						? DataResult.error(() -> "Elven trade ingredients with custom test implementations are not supported")
+						: DataResult.success(ingredients)
+				).fieldOf("ingredients").forGetter(ElvenTradeRecipe::getIngredients)
 		).apply(instance, ElvenTradeRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, ElvenTradeRecipe> STREAM_CODEC = StreamCodec.composite(
 				ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()), recipe -> recipe.outputs,

@@ -212,22 +212,27 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 	}
 
 	public static final class Serializer {
-		private static final MapCodec<RunicAltarRecipe> RAW_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(RunicAltarRecipe::getIngredients),
-				Ingredient.CODEC.listOf().fieldOf("catalysts").forGetter(RunicAltarRecipe::getCatalysts),
-				Ingredient.CODEC.fieldOf("reagent").forGetter(RunicAltarRecipe::getReagent),
-				ExtraCodecs.POSITIVE_INT.fieldOf("mana").forGetter(RunicAltarRecipe::getMana),
-				ItemStackTemplate.CODEC.fieldOf("output").forGetter(RunicAltarRecipe::outputTemplate)
-		).apply(instance, RunicAltarRecipe::of));
-		public static final MapCodec<RunicAltarRecipe> CODEC = RAW_CODEC.validate(recipe -> {
-			if (recipe.getIngredients().size() + recipe.getCatalysts().size() == 0) {
-				return DataResult.error(() -> "Must have at least one ingredient or catalyst");
+		private record RecipeData(List<Ingredient> ingredients, List<Ingredient> catalysts, Ingredient reagent, int mana, ItemStackTemplate output) {
+			private DataResult<RunicAltarRecipe> decode() {
+				try {
+					return DataResult.success(of(ingredients, catalysts, reagent, mana, output));
+				} catch (IllegalArgumentException exception) {
+					return DataResult.error(exception::getMessage);
+				}
 			}
-			if (recipe.getIngredients().size() + recipe.getCatalysts().size() > 16) {
-				return DataResult.error(() -> "Cannot have more than 16 ingredients and catalysts in total");
+
+			private static RecipeData encode(RunicAltarRecipe recipe) {
+				return new RecipeData(recipe.ingredients, recipe.catalysts, recipe.reagent, recipe.mana, recipe.output);
 			}
-			return DataResult.success(recipe);
-		});
+		}
+
+		public static final MapCodec<RunicAltarRecipe> CODEC = RecordCodecBuilder.<RecipeData>mapCodec(instance -> instance.group(
+				Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(RecipeData::ingredients),
+				Ingredient.CODEC.listOf().fieldOf("catalysts").forGetter(RecipeData::catalysts),
+				Ingredient.CODEC.fieldOf("reagent").forGetter(RecipeData::reagent),
+				ExtraCodecs.POSITIVE_INT.fieldOf("mana").forGetter(RecipeData::mana),
+				ItemStackTemplate.CODEC.fieldOf("output").forGetter(RecipeData::output)
+		).apply(instance, RecipeData::new)).flatXmap(RecipeData::decode, recipe -> DataResult.success(RecipeData.encode(recipe)));
 		public static final StreamCodec<RegistryFriendlyByteBuf, RunicAltarRecipe> STREAM_CODEC = StreamCodec.composite(
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), RunicAltarRecipe::getIngredients,
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), RunicAltarRecipe::getCatalysts,
