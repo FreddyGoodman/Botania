@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public record TinyPotatoModel(ItemModel plain, ModelRenderProperties properties, Matrix4fc transform) implements ItemModel {
+
 	private static final Pattern ESCAPED = Pattern.compile("[^a-z0-9/._-]");
 	private static final Identifier DEFAULT = variantId("default");
 	private static final Identifier HALLOWEEN = variantId("halloween");

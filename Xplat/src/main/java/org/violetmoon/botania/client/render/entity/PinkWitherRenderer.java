@@ -10,8 +10,8 @@ package org.violetmoon.botania.client.render.entity;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WitherBossRenderer;
-import net.minecraft.resources.Identifier;
 import net.minecraft.client.renderer.entity.state.WitherRenderState;
+import net.minecraft.resources.Identifier;
 
 import org.violetmoon.botania.client.lib.ResourcesLib;
 

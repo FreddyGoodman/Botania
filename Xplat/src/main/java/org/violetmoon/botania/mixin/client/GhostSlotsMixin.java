@@ -33,13 +33,17 @@ public class GhostSlotsMixin implements RecipeBookAccess {
 		return botania_hoveredGhostRecipeStack;
 	}
 
-	@Inject(method = {"extractTooltip", "clear"}, at = @At("HEAD"))
+	@Inject(method = { "extractTooltip", "clear" }, at = @At("HEAD"))
 	private void botania$clearHoveredStack(CallbackInfo ci) {
 		botania_hoveredGhostRecipeStack = null;
 	}
 
-	@ModifyExpressionValue(method = "extractTooltip", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/gui/screens/recipebook/GhostSlots$GhostSlot;getItem(I)Lnet/minecraft/world/item/ItemStack;"))
+	@ModifyExpressionValue(
+		method = "extractTooltip", at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/gui/screens/recipebook/GhostSlots$GhostSlot;getItem(I)Lnet/minecraft/world/item/ItemStack;"
+		)
+	)
 	private ItemStack botania$captureHoveredStack(ItemStack stack) {
 		botania_hoveredGhostRecipeStack = stack;
 		return stack;

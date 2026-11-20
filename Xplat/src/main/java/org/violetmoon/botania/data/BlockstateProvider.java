@@ -213,7 +213,7 @@ public class BlockstateProvider implements DataProvider {
 									this.modelOutput);
 							return plainVariant(model);
 						})
-						)));
+				)));
 		remainingBlocks.remove(BotaniaBlocks.ALFGLASS);
 
 		var pumpkinModel = ModelTemplates.CUBE_ORIENTABLE.create(

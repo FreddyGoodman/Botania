@@ -11,9 +11,9 @@ package org.violetmoon.botania.common.advancements;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

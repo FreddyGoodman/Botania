@@ -9,9 +9,8 @@
 package org.violetmoon.botania.test.item;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -21,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 
 import org.violetmoon.botania.common.block.BotaniaBlocks;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;

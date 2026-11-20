@@ -21,11 +21,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.violetmoon.botania.common.item.ClientInventoryTick;
-import org.violetmoon.botania.common.item.equipment.tool.elementium.ElementiumAxeItem;
 import org.violetmoon.botania.api.mana.ManaItemHandler;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
 import org.violetmoon.botania.common.component.ManaRepair;
+import org.violetmoon.botania.common.item.ClientInventoryTick;
+import org.violetmoon.botania.common.item.equipment.tool.elementium.ElementiumAxeItem;
 
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
@@ -57,8 +57,12 @@ public class ItemStackMixin {
 		self.setDamageValue(self.getDamageValue() - 1);
 	}
 
-	@ModifyExpressionValue(method = "postHurtEnemy", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/world/item/component/Weapon;itemDamagePerAttack()I"))
+	@ModifyExpressionValue(
+		method = "postHurtEnemy", at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/world/item/component/Weapon;itemDamagePerAttack()I"
+		)
+	)
 	private int botania_elementiumAxeDurabilityCost(int original) {
 		return ((ItemStack) (Object) this).getItem() instanceof ElementiumAxeItem ? 1 : original;
 	}

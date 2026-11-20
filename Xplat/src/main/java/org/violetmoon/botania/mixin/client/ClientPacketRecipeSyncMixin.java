@@ -18,7 +18,8 @@ import org.violetmoon.botania.common.handler.BotaniaRecipeIngredientsCache;
 
 @Mixin(ClientPacketListener.class)
 public class ClientPacketRecipeSyncMixin implements ClientRecipeSync {
-	@Unique private RecipeMap botania$recipes = RecipeMap.EMPTY;
+	@Unique
+	private RecipeMap botania$recipes = RecipeMap.EMPTY;
 
 	@Override
 	public RecipeMap botania$getRecipes() {

@@ -24,8 +24,6 @@ import org.violetmoon.botania.client.render.block_entity.*;
 import org.violetmoon.botania.common.block.block_entity.BotaniaBlockEntities;
 import org.violetmoon.botania.common.entity.BotaniaEntities;
 
-import java.util.function.Consumer;
-
 public final class EntityRenderers {
 	public interface EntityRendererConsumer {
 		<E extends Entity> void accept(EntityType<? extends E> entityType,

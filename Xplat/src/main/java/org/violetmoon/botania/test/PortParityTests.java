@@ -52,7 +52,7 @@ public final class PortParityTests {
 	}
 
 	private static final String ID = "mana.spreader.default_aim";
-	private static final String[] LANES = {"pulse", "mana", "elven", "gaia"};
+	private static final String[] LANES = { "pulse", "mana", "elven", "gaia" };
 	private static final BlockPos SPREADER = new BlockPos(2, 1, 1);
 	private static final BlockPos POOL = new BlockPos(3, 1, 1);
 	private static final BlockPos SINK = new BlockPos(4, 1, 1);

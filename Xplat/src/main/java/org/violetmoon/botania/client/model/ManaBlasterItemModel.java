@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public record ManaBlasterItemModel(Gun open, Gun clipped, Map<Item, Lens> lenses, Matrix4fc transform) implements ItemModel {
+
 	private static final ModelState LENS_TRANSFORM = new ModelState() {
 		@Override
 		public Transformation transformation() {
@@ -81,8 +82,11 @@ public record ManaBlasterItemModel(Gun open, Gun clipped, Map<Item, Lens> lenses
 		}
 	}
 
-	public record Gun(ItemModel model, ModelRenderProperties properties) {}
-	public record Lens(QuadCollection quads, Vector3fc[] extents) {}
+	public record Gun(ItemModel model, ModelRenderProperties properties) {
+	}
+
+	public record Lens(QuadCollection quads, Vector3fc[] extents) {
+	}
 
 	public record Unbaked(Identifier base, Identifier clip) implements ItemModel.Unbaked {
 		public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

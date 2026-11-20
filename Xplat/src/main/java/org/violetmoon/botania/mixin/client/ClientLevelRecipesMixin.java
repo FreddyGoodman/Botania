@@ -19,7 +19,9 @@ import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes.RecipeView;
 
 @Mixin(ClientLevel.class)
 public class ClientLevelRecipesMixin implements RecipeView {
-	@Shadow @Final private ClientPacketListener connection;
+	@Shadow
+	@Final
+	private ClientPacketListener connection;
 
 	@Override
 	public RecipeMap botania$getRecipes() {

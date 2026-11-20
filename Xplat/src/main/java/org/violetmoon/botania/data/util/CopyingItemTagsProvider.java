@@ -51,5 +51,6 @@ public abstract class CopyingItemTagsProvider extends IntrinsicHolderTagsProvide
 		});
 	}
 
-	private record TagCopy(TagKey<Block> blockTag, TagKey<Item> itemTag) {}
+	private record TagCopy(TagKey<Block> blockTag, TagKey<Item> itemTag) {
+	}
 }

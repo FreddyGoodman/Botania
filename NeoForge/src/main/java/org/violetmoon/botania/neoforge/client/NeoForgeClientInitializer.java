@@ -11,9 +11,9 @@ package org.violetmoon.botania.neoforge.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,6 +39,7 @@ import org.violetmoon.botania.api.BotaniaAPIClient;
 import org.violetmoon.botania.api.mana.ManaBarTooltip;
 import org.violetmoon.botania.api.neoforge.BotaniaNeoForgeCapabilities;
 import org.violetmoon.botania.client.BotaniaClientCapabilities;
+import org.violetmoon.botania.client.ClientRecipeSync;
 import org.violetmoon.botania.client.core.handler.*;
 import org.violetmoon.botania.client.core.proxy.ClientProxy;
 import org.violetmoon.botania.client.fx.BotaniaParticles;
@@ -52,10 +53,9 @@ import org.violetmoon.botania.client.integration.ears.EarsIntegration;
 import org.violetmoon.botania.client.model.BotaniaLayerDefinitions;
 import org.violetmoon.botania.client.model.armor.ArmorModels;
 import org.violetmoon.botania.client.render.ColorHandler;
-import org.violetmoon.botania.common.block.PlatformBlock;
 import org.violetmoon.botania.client.render.entity.EntityRenderers;
+import org.violetmoon.botania.common.block.PlatformBlock;
 import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
-import org.violetmoon.botania.client.ClientRecipeSync;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import org.violetmoon.botania.common.item.equipment.bauble.RingOfDexterousMotionItem;
@@ -84,7 +84,6 @@ public class NeoForgeClientInitializer {
 		// ensure API implementations are loaded
 		BotaniaAPI.LOGGER.debug("Client API instances: {}",
 				List.of(BotaniaAPIClient.instance(), ClientXplatAbstractions.instance()));
-
 
 		// Events
 		var bus = NeoForge.EVENT_BUS;
@@ -213,11 +212,9 @@ public class NeoForgeClientInitializer {
 		ColorHandler.submitBlocks(evt::register);
 	}
 
-
 	@SubscribeEvent
 	public static void onModelBake(ModelEvent.ModifyBakingResult evt) {
 		NeoForgeFloatingFlowerModel.apply(evt);
-		evt.getBakingResult().blockStateModels().replaceAll((state, model) ->
-				state.getBlock() instanceof PlatformBlock ? new NeoForgePlatformModel(model) : model);
+		evt.getBakingResult().blockStateModels().replaceAll((state, model) -> state.getBlock() instanceof PlatformBlock ? new NeoForgePlatformModel(model) : model);
 	}
 }

@@ -9,7 +9,6 @@
 
 package org.violetmoon.botania.common.crafting.recipe;
 
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -21,7 +20,6 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.mixin.ShapelessRecipeAccessor;
-
 
 public class LexiconReturningShapelessRecipe extends ShapelessRecipe {
 	public static final WrappingRecipeSerializer<ShapelessRecipe, LexiconReturningShapelessRecipe> SERIALIZER =

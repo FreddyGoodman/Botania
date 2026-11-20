@@ -1147,7 +1147,8 @@ public final class BotaniaBlocks {
 					.instrument(NoteBlockInstrument.BASS)
 					.mapColor(state -> state.getValue(BlockStateProperties.AXIS) == Direction.Axis.Y
 							? MapColor.TERRACOTTA_RED
-							: MapColor.TERRACOTTA_BROWN).setId(key)));
+							: MapColor.TERRACOTTA_BROWN)
+					.setId(key)));
 	public static final Block LIVINGWOOD = make(LibBlockNames.LIVINGWOOD,
 			key -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
 					.mapColor(MapColor.TERRACOTTA_BROWN).setId(key)));
@@ -1425,7 +1426,8 @@ public final class BotaniaBlocks {
 					.strength(10)
 					.sound(SoundType.WOOD)
 					.lightLevel(state -> state.getValue(
-							BotaniaStateProperties.ALFPORTAL_STATE) != AlfheimPortalState.OFF ? 15 : 0).setId(key)));
+							BotaniaStateProperties.ALFPORTAL_STATE) != AlfheimPortalState.OFF ? 15 : 0)
+					.setId(key)));
 
 	// pylons
 	public static final Block MANA_PYLON = make(LibBlockNames.MANA_PYLON,

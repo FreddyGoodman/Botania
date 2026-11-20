@@ -22,7 +22,6 @@ import org.violetmoon.botania.common.item.BotaniaItems;
 
 public class ApothecaryRecipeTest {
 
-
 	private static final BlockPos APOTHECARY = new BlockPos(1, 2, 1);
 
 	private void fillApothecary(GameTestHelper helper) {

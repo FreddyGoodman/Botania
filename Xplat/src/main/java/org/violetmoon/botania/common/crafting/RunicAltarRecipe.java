@@ -101,7 +101,6 @@ public class RunicAltarRecipe implements org.violetmoon.botania.api.recipe.Runic
 				.map(Holder::value).forEach(catalystItems::add);
 		reagent.items().map(Holder::value).forEach(reagentItems::add);
 
-
 		var ingredientsOverlap = ingredientItems.clone();
 		ingredientsOverlap.retainAll(catalystItems);
 		if (!ingredientsOverlap.isEmpty()) {

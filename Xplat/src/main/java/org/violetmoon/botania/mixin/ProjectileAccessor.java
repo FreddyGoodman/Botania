@@ -13,10 +13,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.projectile.Projectile;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-
-import org.jetbrains.annotations.Nullable;
 
 @Mixin(Projectile.class)
 public interface ProjectileAccessor {
@@ -24,7 +23,8 @@ public interface ProjectileAccessor {
 	boolean botania_getLeftOwner();
 
 	@Accessor("owner")
-	@Nullable EntityReference<Entity> botania_getOwner();
+	@Nullable
+	EntityReference<Entity> botania_getOwner();
 
 	@Accessor("owner")
 	void botania_setOwner(@Nullable EntityReference<Entity> owner);

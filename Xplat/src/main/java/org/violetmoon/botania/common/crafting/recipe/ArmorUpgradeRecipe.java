@@ -8,12 +8,11 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -21,7 +20,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import org.violetmoon.botania.mixin.ShapedRecipeAccessor;
-
 
 public class ArmorUpgradeRecipe extends ShapedRecipe {
 	public static final WrappingRecipeSerializer<ShapedRecipe, ArmorUpgradeRecipe> SERIALIZER =

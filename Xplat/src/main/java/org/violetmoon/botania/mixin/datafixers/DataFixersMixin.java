@@ -47,8 +47,10 @@ public class DataFixersMixin {
 	@ModifyExpressionValue(
 		method = "addFixers",
 		slice = @Slice(from = @At(value = "CONSTANT", args = "intValue=3945")),
-		at = @At(value = "INVOKE", ordinal = 0,
-			target = "Lcom/mojang/datafixers/DataFixerBuilder;addSchema(ILjava/util/function/BiFunction;)Lcom/mojang/datafixers/schemas/Schema;")
+		at = @At(
+			value = "INVOKE", ordinal = 0,
+			target = "Lcom/mojang/datafixers/DataFixerBuilder;addSchema(ILjava/util/function/BiFunction;)Lcom/mojang/datafixers/schemas/Schema;"
+		)
 	)
 	private static Schema injectDataFixers_3945(Schema v3945, @Local(argsOnly = true) DataFixerBuilder builder) {
 		builder.addFixer(BlockRenameFix.create(v3945, "Botania block renames", createRenamer(BotaniaDataFixers.RENAMED_BLOCKS)));

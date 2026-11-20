@@ -42,6 +42,7 @@ public class TerraShattererTippingRecipeWrapper implements ICraftingCategoryExte
 		helper.createAndSetInputs(builder, VanillaTypes.ITEM_STACK, inputs, 0, 0);
 		helper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, Collections.singletonList(output));
 	}
+
 	@Override
 	public List<SlotDisplay> getIngredients(RecipeHolder<TerraShattererTippingRecipe> recipe) {
 		return List.of(new SlotDisplay.ItemSlotDisplay(BotaniaItems.TERRA_SHATTERER),

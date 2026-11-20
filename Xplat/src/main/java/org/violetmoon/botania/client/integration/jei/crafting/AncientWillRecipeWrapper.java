@@ -53,6 +53,7 @@ public class AncientWillRecipeWrapper implements ICraftingCategoryExtension<Anci
 				List.of(Collections.singletonList(new ItemStack(BotaniaItems.TERRASTEEL_HELMET)), willStacks), 0, 0);
 		helper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, outputStacks);
 	}
+
 	@Override
 	public List<SlotDisplay> getIngredients(RecipeHolder<AncientWillRecipe> recipe) {
 		var wills = new SlotDisplay.Composite(WILLS.stream().map(item -> (SlotDisplay) new SlotDisplay.ItemSlotDisplay(item)).toList());

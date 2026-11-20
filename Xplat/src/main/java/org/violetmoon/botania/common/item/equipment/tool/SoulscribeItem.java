@@ -11,8 +11,8 @@ package org.violetmoon.botania.common.item.equipment.tool;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import org.violetmoon.botania.common.entity.EnderEssenceCloudEntity;
 import org.violetmoon.botania.common.internal_caps.EnderEssenceCaptured;

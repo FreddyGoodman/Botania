@@ -16,8 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.FlowerBlock;
 
-import org.violetmoon.botania.common.item.block.BlockItemTooltip;
 import org.violetmoon.botania.common.item.CustomCreativeTabContents;
+import org.violetmoon.botania.common.item.block.BlockItemTooltip;
 
 import java.util.function.Consumer;
 

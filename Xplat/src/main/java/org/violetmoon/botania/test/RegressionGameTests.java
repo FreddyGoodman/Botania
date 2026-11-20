@@ -134,7 +134,7 @@ public final class RegressionGameTests {
 			"vinculotus"
 	);
 
-	private RegressionGameTests() { }
+	private RegressionGameTests() {}
 
 	public static void register(BiConsumer<Consumer<GameTestHelper>, Identifier> registrar) {
 		var translationKeysTest = new TranslationKeysTest();

@@ -21,8 +21,10 @@ import org.violetmoon.botania.client.core.handler.BossBarHandler;
 
 @Mixin(BossHealthOverlay.class)
 public class BossHealthOverlayMixin {
-	@Inject(method = "extractBar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IILnet/minecraft/world/BossEvent;)V",
-		at = @At("HEAD"), cancellable = true)
+	@Inject(
+		method = "extractBar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IILnet/minecraft/world/BossEvent;)V",
+		at = @At("HEAD"), cancellable = true
+	)
 	private void botania_extractGaiaBar(GuiGraphicsExtractor gui, int x, int y, BossEvent bossEvent, CallbackInfo ci) {
 		if (BossBarHandler.renderBar(gui, x, y, bossEvent)) {
 			ci.cancel();

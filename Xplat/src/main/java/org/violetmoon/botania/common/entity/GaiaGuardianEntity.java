@@ -45,11 +45,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -75,7 +75,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Team;
 
 import org.jetbrains.annotations.Nullable;
-import org.violetmoon.botania.mixin.MobAccessor;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.block.Bound;
 import org.violetmoon.botania.api.configdata.GaiaFightConfiguration;
@@ -95,6 +94,7 @@ import org.violetmoon.botania.common.loot.BotaniaLootTables;
 import org.violetmoon.botania.common.proxy.Proxy;
 import org.violetmoon.botania.integration.speedrunigt.BotaniaSpeedrunCategories;
 import org.violetmoon.botania.mixin.BeaconBlockEntityAccessor;
+import org.violetmoon.botania.mixin.MobAccessor;
 import org.violetmoon.botania.network.clientbound.ArenaIndicatorEffectPacket;
 import org.violetmoon.botania.xplat.XplatAbstractions;
 

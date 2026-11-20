@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.rei;
 
-
 import me.shedaniel.math.FloatingPoint;
 import me.shedaniel.math.Point;
 

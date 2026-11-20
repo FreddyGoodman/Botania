@@ -107,7 +107,7 @@ public class SpectranthemumBlockEntity extends FunctionalFlowerBlockEntity {
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
 		if (bindPos != null) {
-			tag.putIntArray(TAG_BIND_POS, new int[] {bindPos.getX(), bindPos.getY(), bindPos.getZ()});
+			tag.putIntArray(TAG_BIND_POS, new int[] { bindPos.getX(), bindPos.getY(), bindPos.getZ() });
 		}
 		return tag;
 	}

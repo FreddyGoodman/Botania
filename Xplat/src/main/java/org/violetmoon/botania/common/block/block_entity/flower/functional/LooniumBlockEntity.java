@@ -19,8 +19,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -55,7 +55,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Team;
 
 import org.jetbrains.annotations.Nullable;
-import org.violetmoon.botania.mixin.MobAccessor;
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.block_entity.FunctionalFlowerBlockEntity;
 import org.violetmoon.botania.api.block_entity.RadiusDescriptor;
@@ -71,6 +70,7 @@ import org.violetmoon.botania.common.internal_caps.LooniumDrop;
 import org.violetmoon.botania.common.internal_caps.SlowDespawn;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 import org.violetmoon.botania.common.loot.BotaniaLootTables;
+import org.violetmoon.botania.mixin.MobAccessor;
 
 import java.util.*;
 import java.util.function.Consumer;

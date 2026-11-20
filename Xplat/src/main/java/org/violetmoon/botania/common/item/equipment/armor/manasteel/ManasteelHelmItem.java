@@ -9,9 +9,9 @@
 package org.violetmoon.botania.common.item.equipment.armor.manasteel;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
-import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.mana.ManaDiscountArmor;

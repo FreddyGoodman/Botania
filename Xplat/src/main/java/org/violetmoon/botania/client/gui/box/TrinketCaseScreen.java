@@ -26,7 +26,6 @@ public class TrinketCaseScreen extends AbstractContainerScreen<TrinketCaseMenu> 
 		super(container, playerInventory, title);
 	}
 
-
 	@Override
 	protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
 		// No-op, there's no space for gui titles

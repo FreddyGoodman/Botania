@@ -9,17 +9,20 @@
 package org.violetmoon.botania.neoforge.integration.curios;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.common.item.equipment.bauble.BaubleItem;
+
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 

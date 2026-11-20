@@ -16,8 +16,8 @@ import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvi
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.util.context.ContextKeySet;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;

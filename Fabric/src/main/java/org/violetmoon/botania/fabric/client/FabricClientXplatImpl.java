@@ -80,8 +80,6 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 		return rightHeight;
 	}
 
-
-
 	@Override
 	public void markSpriteActive(TextureAtlasSprite sprite) {
 		if (sodiumLoaded.get()) {

@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -23,7 +22,6 @@ import org.violetmoon.botania.common.block.ShimmeringMushroomBlock;
 import org.violetmoon.botania.common.item.WandOfTheForestItem;
 import org.violetmoon.botania.common.item.material.MysticalPetalItem;
 import org.violetmoon.botania.mixin.ShapedRecipeAccessor;
-
 
 public class WandOfTheForestRecipe extends ShapedRecipe {
 	public static final WrappingRecipeSerializer<ShapedRecipe, WandOfTheForestRecipe> SERIALIZER =

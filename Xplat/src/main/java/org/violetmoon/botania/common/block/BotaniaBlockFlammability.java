@@ -10,6 +10,7 @@
 package org.violetmoon.botania.common.block;
 
 import net.minecraft.world.level.block.Blocks;
+
 import org.violetmoon.botania.mixin.FireBlockAccessor;
 
 import static org.violetmoon.botania.common.block.BotaniaBlocks.*;

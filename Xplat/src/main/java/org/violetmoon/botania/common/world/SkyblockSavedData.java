@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.world;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 

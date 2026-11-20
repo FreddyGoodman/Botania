@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -18,7 +17,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import org.violetmoon.botania.api.mana.ManaItem;
 import org.violetmoon.botania.mixin.ShapedRecipeAccessor;
-
 
 public class ManaUpgradeRecipe extends ShapedRecipe {
 	public static final WrappingRecipeSerializer<ShapedRecipe, ManaUpgradeRecipe> SERIALIZER =

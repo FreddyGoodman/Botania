@@ -16,8 +16,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -27,8 +27,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import org.violetmoon.botania.api.mana.ManaItemHandler;
-import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
 import org.violetmoon.botania.client.fx.WispParticleData;
+import org.violetmoon.botania.common.crafting.BotaniaRecipeTypes;
 import org.violetmoon.botania.common.handler.BotaniaSounds;
 import org.violetmoon.botania.common.item.equipment.tool.ToolCommons;
 

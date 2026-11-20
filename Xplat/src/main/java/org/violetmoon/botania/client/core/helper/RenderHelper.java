@@ -94,8 +94,7 @@ public final class RenderHelper {
 	private static final RenderType BABYLON_ICON_PLAIN = texturedLayer("babylon_plain", TEXTURED_NO_CULL, BABYLON_TEXTURE, OutputTarget.ITEM_ENTITY_TARGET, true, false);
 	private static final RenderType HALO = texturedLayer("halo", HALO_PIPELINE, FlugelTiaraItem.textureHalo, OutputTarget.MAIN_TARGET, true, false);
 	private static final RenderType HALO_PLAIN = texturedLayer("halo_plain", TEXTURED_NO_CULL, FlugelTiaraItem.textureHalo, OutputTarget.MAIN_TARGET, true, false);
-	private static final Function<Identifier, RenderType> ASSEMBLY_HALO = Util.memoize(texture ->
-			texturedLayer("assembly_halo", TEXTURED_NO_CULL, texture, OutputTarget.MAIN_TARGET, false, true));
+	private static final Function<Identifier, RenderType> ASSEMBLY_HALO = Util.memoize(texture -> texturedLayer("assembly_halo", TEXTURED_NO_CULL, texture, OutputTarget.MAIN_TARGET, false, true));
 
 	private static final RenderPipeline PYLON_PIPELINE = geometryPipeline("pylon", "core/entity", DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS)
 			.withFragmentShader(botaniaRL("core/pylon"))
@@ -109,14 +108,10 @@ public final class RenderHelper {
 			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
 			.withDepthStencilState(DepthStencilState.DEFAULT)
 			.build();
-	private static final Function<Identifier, RenderType> PYLON_GLOW = Util.memoize(texture ->
-			pylonGlow(texture, PYLON_PIPELINE, OutputTarget.ITEM_ENTITY_TARGET));
-	private static final Function<Identifier, RenderType> PYLON_GLOW_DIRECT = Util.memoize(texture ->
-			pylonGlow(texture, PYLON_PIPELINE, OutputTarget.MAIN_TARGET));
-	private static final Function<Identifier, RenderType> PYLON_GLOW_PLAIN = Util.memoize(texture ->
-			pylonGlow(texture, RenderPipelines.ENTITY_TRANSLUCENT, OutputTarget.ITEM_ENTITY_TARGET));
-	private static final Function<Identifier, RenderType> PYLON_GLOW_DIRECT_PLAIN = Util.memoize(texture ->
-			pylonGlow(texture, RenderPipelines.ENTITY_TRANSLUCENT, OutputTarget.MAIN_TARGET));
+	private static final Function<Identifier, RenderType> PYLON_GLOW = Util.memoize(texture -> pylonGlow(texture, PYLON_PIPELINE, OutputTarget.ITEM_ENTITY_TARGET));
+	private static final Function<Identifier, RenderType> PYLON_GLOW_DIRECT = Util.memoize(texture -> pylonGlow(texture, PYLON_PIPELINE, OutputTarget.MAIN_TARGET));
+	private static final Function<Identifier, RenderType> PYLON_GLOW_PLAIN = Util.memoize(texture -> pylonGlow(texture, RenderPipelines.ENTITY_TRANSLUCENT, OutputTarget.ITEM_ENTITY_TARGET));
+	private static final Function<Identifier, RenderType> PYLON_GLOW_DIRECT_PLAIN = Util.memoize(texture -> pylonGlow(texture, RenderPipelines.ENTITY_TRANSLUCENT, OutputTarget.MAIN_TARGET));
 
 	public static final RenderType TRANSLUCENT = RenderTypes.entityTranslucentCullItemTarget(TextureAtlas.LOCATION_BLOCKS);
 

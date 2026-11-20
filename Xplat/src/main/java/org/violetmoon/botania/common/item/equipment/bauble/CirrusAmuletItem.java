@@ -28,7 +28,6 @@ import org.violetmoon.botania.common.proxy.Proxy;
 import org.violetmoon.botania.network.serverbound.JumpPacket;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 
-
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;

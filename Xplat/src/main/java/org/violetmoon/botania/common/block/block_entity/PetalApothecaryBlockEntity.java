@@ -372,7 +372,6 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 					gui.fakeItem(altar.getItemHandler().getItem(i), 0, 0);
 					pose.popMatrix();
 
-
 					angle += anglePer;
 				}
 			}

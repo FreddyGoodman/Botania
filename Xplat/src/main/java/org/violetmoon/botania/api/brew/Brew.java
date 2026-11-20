@@ -129,7 +129,6 @@ public class Brew {
 		return effects.get();
 	}
 
-
 	public static int getEffectColor(Iterable<MobEffectInstance> effects) {
 		return PotionContents.getColorOptional(effects).orElse(PotionContents.BASE_POTION_COLOR) & 0xFFFFFF;
 	}

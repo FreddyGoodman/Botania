@@ -76,6 +76,7 @@ public class CompositeLensRecipeWrapper implements ICraftingCategoryExtension<Co
 				List.of(firstInput, List.of(new ItemStack(Items.SLIME_BALL)), secondInput), 0, 0);
 		helper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, outputs);
 	}
+
 	@Override
 	public List<SlotDisplay> getIngredients(RecipeHolder<CompositeLensRecipe> recipe) {
 		var lenses = new SlotDisplay.Composite(allLenses.stream().map(item -> (SlotDisplay) new SlotDisplay.ItemSlotDisplay(item)).toList());

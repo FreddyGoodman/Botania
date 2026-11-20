@@ -19,9 +19,13 @@ import java.util.List;
 
 @Mixin(DebugScreenOverlay.class)
 public class DebugScreenOverlayMixin {
-	@ModifyArg(method = "extractRenderState", at = @At(value = "INVOKE", ordinal = 0,
-			target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;extractLines(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Ljava/util/List;Z)V"),
-			index = 1)
+	@ModifyArg(
+		method = "extractRenderState", at = @At(
+			value = "INVOKE", ordinal = 0,
+			target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;extractLines(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Ljava/util/List;Z)V"
+		),
+		index = 1
+	)
 	private List<String> addBotaniaDebugText(List<String> lines) {
 		DebugHandler.onDrawDebugText(lines);
 		return lines;

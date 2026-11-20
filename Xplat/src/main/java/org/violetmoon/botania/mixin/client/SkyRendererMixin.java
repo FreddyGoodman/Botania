@@ -72,8 +72,12 @@ public class SkyRendererMixin {
 		}
 	}
 
-	@WrapOperation(method = "renderSunMoonAndStars", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSun(FLcom/mojang/blaze3d/vertex/PoseStack;)V"))
+	@WrapOperation(
+		method = "renderSunMoonAndStars", at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSun(FLcom/mojang/blaze3d/vertex/PoseStack;)V"
+		)
+	)
 	private void botania$scaleSun(SkyRenderer renderer, float brightness, PoseStack pose, Operation<Void> original) {
 		pose.pushPose();
 		if (botania$sky != null) {
@@ -83,8 +87,12 @@ public class SkyRendererMixin {
 		pose.popPose();
 	}
 
-	@WrapOperation(method = "renderSunMoonAndStars", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/SkyRenderer;renderMoon(Lnet/minecraft/world/level/MoonPhase;FLcom/mojang/blaze3d/vertex/PoseStack;)V"))
+	@WrapOperation(
+		method = "renderSunMoonAndStars", at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/renderer/SkyRenderer;renderMoon(Lnet/minecraft/world/level/MoonPhase;FLcom/mojang/blaze3d/vertex/PoseStack;)V"
+		)
+	)
 	private void botania$scaleMoon(SkyRenderer renderer, MoonPhase phase, float brightness, PoseStack pose, Operation<Void> original) {
 		pose.pushPose();
 		if (botania$sky != null) {

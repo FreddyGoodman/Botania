@@ -30,8 +30,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.Clearable;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -590,7 +590,6 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 		DO_ENCHANT,
 		RESET
 	}
-
 
 	@Override
 	public void preRemoveSideEffects(BlockPos pos, BlockState state) {

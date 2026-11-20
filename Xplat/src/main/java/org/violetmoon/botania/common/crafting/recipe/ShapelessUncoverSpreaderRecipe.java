@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import org.violetmoon.botania.common.block.mana.ManaSpreaderBlock;
 import org.violetmoon.botania.common.helper.ColorHelper;
 import org.violetmoon.botania.mixin.ShapelessRecipeAccessor;
-
 
 public class ShapelessUncoverSpreaderRecipe extends ShapelessRecipe {
 	public static final WrappingRecipeSerializer<ShapelessRecipe, ShapelessUncoverSpreaderRecipe> SERIALIZER =

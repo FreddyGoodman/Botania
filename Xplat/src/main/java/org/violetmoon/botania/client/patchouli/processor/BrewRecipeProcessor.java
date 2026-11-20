@@ -23,7 +23,6 @@ import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariable;
 import vazkii.patchouli.api.IVariableProvider;
 
-
 public class BrewRecipeProcessor implements IComponentProcessor {
 	@Nullable
 	private BotanicalBreweryRecipe recipe;

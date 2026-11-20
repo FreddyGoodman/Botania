@@ -16,7 +16,6 @@ import org.violetmoon.botania.common.block.block_entity.corporea.CorporeaRetaine
 
 public class InterceptorTest {
 
-
 	private static final BlockPos APPLE_BUTTON_JEANS = new BlockPos(6, 6, 4);
 	private static final BlockPos BOOTS_WITH_THE_FUR = new BlockPos(4, 6, 4);
 	private static final BlockPos WILDCARD_RETAINER = new BlockPos(6, 5, 7);

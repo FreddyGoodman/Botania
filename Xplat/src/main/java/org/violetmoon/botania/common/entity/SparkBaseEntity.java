@@ -82,7 +82,7 @@ public abstract class SparkBaseEntity extends Entity implements SparkEntity, Man
 	protected void addAdditionalSaveData(ValueOutput output) {
 		output.putBoolean(TAG_INVIS, isInvisible());
 		output.putInt(TAG_NETWORK, getNetwork().getId());
-		}
+	}
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {

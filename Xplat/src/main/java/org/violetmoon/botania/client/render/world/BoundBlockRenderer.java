@@ -14,8 +14,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 
 import net.minecraft.client.Camera;
-
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.ShapeRenderer;
@@ -38,6 +36,7 @@ import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.xplat.BotaniaConfig;
 
+import java.util.List;
 import java.util.SequencedMap;
 
 public final class BoundBlockRenderer {

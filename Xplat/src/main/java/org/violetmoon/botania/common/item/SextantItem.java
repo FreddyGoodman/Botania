@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.item;
 
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -28,8 +27,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
@@ -219,7 +218,7 @@ public class SextantItem extends Item implements ClientInventoryTick {
 						.setSymmetrical(true);
 				Proxy.INSTANCE.showMultiblock(sparse, Component.literal("r = " + getRadiusString(radius)),
 						centerPos.pos(), Rotation.NONE);
-						return true;
+				return true;
 			}
 		}
 		return false;
@@ -368,6 +367,7 @@ public class SextantItem extends Item implements ClientInventoryTick {
 				}
 			}
 		}
+
 		private static void drawCircle(GuiGraphicsExtractor gui, int x, int y, double radius) {
 			double outer = radius + 1.5;
 			double inner = radius - 1.5;

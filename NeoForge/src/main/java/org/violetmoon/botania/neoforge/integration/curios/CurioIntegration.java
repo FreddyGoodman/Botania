@@ -9,6 +9,7 @@
 package org.violetmoon.botania.neoforge.integration.curios;
 
 import com.google.common.collect.Multimap;
+
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
@@ -32,9 +33,9 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
+import top.theillusivec4.curios.api.common.DropRule;
 import top.theillusivec4.curios.api.event.DropRulesEvent;
 import top.theillusivec4.curios.api.type.capability.ICurio;
-import top.theillusivec4.curios.api.common.DropRule;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.ArrayList;

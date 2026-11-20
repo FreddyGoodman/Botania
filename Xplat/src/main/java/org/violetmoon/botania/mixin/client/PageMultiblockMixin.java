@@ -25,8 +25,12 @@ import vazkii.patchouli.client.book.page.PageMultiblock;
 
 @Mixin(PageMultiblock.class)
 public class PageMultiblockMixin {
-	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/block/BlockModelResolver;update(Lnet/minecraft/client/renderer/block/BlockModelRenderState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/block/model/BlockDisplayContext;)V"))
+	@WrapOperation(
+		method = "extractRenderState", at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/renderer/block/BlockModelResolver;update(Lnet/minecraft/client/renderer/block/BlockModelRenderState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/block/model/BlockDisplayContext;)V"
+		)
+	)
 	private void botania$extractWithStaticFlowers(BlockModelResolver resolver, BlockModelRenderState renderState, BlockState state,
 			BlockDisplayContext context, Operation<Void> original) {
 		boolean wasInVisualizer = PatchouliUtils.isInVisualizer();

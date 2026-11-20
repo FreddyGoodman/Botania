@@ -10,7 +10,6 @@ package org.violetmoon.botania.common.item.equipment.tool.elementium;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;

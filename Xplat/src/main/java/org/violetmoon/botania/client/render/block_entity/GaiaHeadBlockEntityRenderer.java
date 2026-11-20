@@ -79,7 +79,6 @@ public class GaiaHeadBlockEntityRenderer implements BlockEntityRenderer<GaiaHead
 		return SkullBlock.Types.PLAYER;
 	}
 
-
 	public static RenderType getRenderType(SkullBlock.Type type) {
 		if (type == SkullBlock.Types.PLAYER) {
 			var player = GaiaGuardianRenderer.getViewingPlayer();

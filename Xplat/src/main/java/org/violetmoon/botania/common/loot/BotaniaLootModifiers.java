@@ -8,12 +8,11 @@
  */
 package org.violetmoon.botania.common.loot;
 
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-
-import com.mojang.serialization.MapCodec;
 
 import java.util.function.BiConsumer;
 

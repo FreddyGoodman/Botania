@@ -17,8 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-import org.violetmoon.botania.client.patchouli.PatchouliUtils;
 import org.violetmoon.botania.api.recipe.BotanicalBreweryRecipe;
+import org.violetmoon.botania.client.patchouli.PatchouliUtils;
 import org.violetmoon.botania.common.crafting.recipe.RecipeUtils;
 
 import java.util.ArrayList;

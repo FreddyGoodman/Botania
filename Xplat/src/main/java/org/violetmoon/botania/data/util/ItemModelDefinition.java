@@ -104,7 +104,8 @@ public final class ItemModelDefinition {
 		return model;
 	}
 
-	private record Override(Identifier model, Map<String, Float> predicates) {}
+	private record Override(Identifier model, Map<String, Float> predicates) {
+	}
 
 	private ItemModelDefinition() {}
 }

@@ -25,8 +25,8 @@ import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
 import org.violetmoon.botania.client.core.helper.AccessoryRenderHelper;
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.client.render.AccessoryRenderer;
-import org.violetmoon.botania.common.proxy.Proxy;
 import org.violetmoon.botania.common.entity.MagicMissileEntity;
+import org.violetmoon.botania.common.proxy.Proxy;
 
 import java.util.List;
 

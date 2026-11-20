@@ -23,8 +23,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.common.NeoForge;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.api.neoforge.item.TinyPotatoRenderEvent;
@@ -64,8 +64,6 @@ public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 	public int getGuiRightHeight(Player player) {
 		return Minecraft.getInstance().gui.rightHeight;
 	}
-
-
 
 	@Override
 	public void markSpriteActive(TextureAtlasSprite sprite) {

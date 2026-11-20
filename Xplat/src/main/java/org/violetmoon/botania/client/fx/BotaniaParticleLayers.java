@@ -29,7 +29,7 @@ public final class BotaniaParticleLayers {
 	public static final SingleQuadParticle.Layer ADDITIVE_WITHOUT_DEPTH_TEST = layer("additive_particle_no_depth", Identifier.withDefaultNamespace("core/particle"), CompareOp.ALWAYS_PASS);
 	public static final SingleQuadParticle.Layer CORRUPT = layer("corrupt_sparkle", botaniaRL("core/film_grain_particle"), CompareOp.LESS_THAN_OR_EQUAL);
 
-	private BotaniaParticleLayers() { }
+	private BotaniaParticleLayers() {}
 
 	public static boolean usesLinearFiltering(SingleQuadParticle.Layer layer) {
 		return layer == ADDITIVE || layer == ADDITIVE_WITHOUT_DEPTH_TEST || layer == CORRUPT;

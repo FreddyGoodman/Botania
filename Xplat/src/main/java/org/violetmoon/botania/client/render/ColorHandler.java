@@ -60,7 +60,8 @@ public final class ColorHandler {
 		int color(ItemStack stack, int layer);
 	}
 
-	private record ItemTint(ItemColor color, int layers) {}
+	private record ItemTint(ItemColor color, int layers) {
+	}
 
 	public static int getItemTintCount(Item item) {
 		ItemTint tint = ItemTints.VALUES.get(item);

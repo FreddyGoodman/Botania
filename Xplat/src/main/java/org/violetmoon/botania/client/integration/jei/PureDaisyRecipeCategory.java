@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.jei;
 
-
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;

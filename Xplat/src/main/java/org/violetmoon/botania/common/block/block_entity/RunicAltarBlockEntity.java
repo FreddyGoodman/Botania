@@ -422,8 +422,6 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 				float anglePer = 360F / amt;
 				if (altar.currentRecipe != null) {
 
-
-
 					float progress = (float) altar.mana / (float) altar.manaToGet;
 
 					RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, xc + radius + 9, yc - 8, progress == 1F ? 0 : 22, 8, 22, 15);

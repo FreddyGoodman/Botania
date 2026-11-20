@@ -31,10 +31,13 @@ import org.violetmoon.botania.common.item.equipment.armor.manasteel.ManasteelArm
 
 @Mixin(EquipmentLayerRenderer.class)
 public abstract class EquipmentLayerRendererMixin {
-	@Inject(method = "renderLayers(Lnet/minecraft/client/resources/model/EquipmentClientInfo$LayerType;"
-			+ "Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/model/Model;Ljava/lang/Object;"
-			+ "Lnet/minecraft/world/item/ItemStack;Lcom/mojang/blaze3d/vertex/PoseStack;"
-			+ "Lnet/minecraft/client/renderer/SubmitNodeCollector;II)V", at = @At("HEAD"), cancellable = true)
+	@Inject(
+		method = "renderLayers(Lnet/minecraft/client/resources/model/EquipmentClientInfo$LayerType;"
+				+ "Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/model/Model;Ljava/lang/Object;"
+				+ "Lnet/minecraft/world/item/ItemStack;Lcom/mojang/blaze3d/vertex/PoseStack;"
+				+ "Lnet/minecraft/client/renderer/SubmitNodeCollector;II)V",
+		at = @At("HEAD"), cancellable = true
+	)
 	private void botania_submitCustomArmor(EquipmentClientInfo.LayerType layerType, ResourceKey<EquipmentAsset> asset,
 			Model<?> originalModel, Object state, ItemStack stack, PoseStack pose, SubmitNodeCollector collector,
 			int light, int outline, CallbackInfo ci) {

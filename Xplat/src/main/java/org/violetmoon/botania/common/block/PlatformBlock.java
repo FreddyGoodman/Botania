@@ -28,9 +28,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import org.violetmoon.botania.common.item.block.BlockItemTooltip;
 import org.violetmoon.botania.api.mana.ManaCollisionGhost;
 import org.violetmoon.botania.common.block.block_entity.PlatformBlockEntity;
+import org.violetmoon.botania.common.item.block.BlockItemTooltip;
 import org.violetmoon.botania.common.lib.BotaniaTags;
 
 import java.util.function.Consumer;

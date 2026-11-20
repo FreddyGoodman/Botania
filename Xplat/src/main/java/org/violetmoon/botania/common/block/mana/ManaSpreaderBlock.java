@@ -10,9 +10,9 @@ package org.violetmoon.botania.common.block.mana;
 
 import com.google.common.base.Suppliers;
 
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;

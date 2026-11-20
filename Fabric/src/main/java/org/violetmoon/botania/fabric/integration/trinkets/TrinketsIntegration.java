@@ -8,14 +8,6 @@
  */
 package org.violetmoon.botania.fabric.integration.trinkets;
 
-import eu.pb4.trinkets.api.TrinketDropRule;
-import eu.pb4.trinkets.api.TrinketSlotAccess;
-import eu.pb4.trinkets.api.TrinketSlotUtils;
-import eu.pb4.trinkets.api.TrinketsApi;
-import eu.pb4.trinkets.api.callback.TrinketCallback;
-import eu.pb4.trinkets.api.component.TrinketDataComponents;
-import eu.pb4.trinkets.api.event.TrinketDropCallback;
-
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
@@ -43,6 +35,14 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
+
+import eu.pb4.trinkets.api.TrinketDropRule;
+import eu.pb4.trinkets.api.TrinketSlotAccess;
+import eu.pb4.trinkets.api.TrinketSlotUtils;
+import eu.pb4.trinkets.api.TrinketsApi;
+import eu.pb4.trinkets.api.callback.TrinketCallback;
+import eu.pb4.trinkets.api.component.TrinketDataComponents;
+import eu.pb4.trinkets.api.event.TrinketDropCallback;
 
 public class TrinketsIntegration extends EquipmentHandler {
 	public static void init() {

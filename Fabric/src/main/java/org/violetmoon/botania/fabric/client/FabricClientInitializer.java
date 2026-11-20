@@ -29,12 +29,10 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.block.dispatch.Variant;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeMap;
 
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.api.BotaniaAPIClient;
@@ -45,8 +43,6 @@ import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.handler.CorporeaInputHandler;
 import org.violetmoon.botania.client.core.handler.KonamiHandler;
 import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
-import org.violetmoon.botania.common.block.PlatformBlock;
-import org.violetmoon.botania.common.block.flower.FloatingFlowerBaseBlock;
 import org.violetmoon.botania.client.core.proxy.ClientProxy;
 import org.violetmoon.botania.client.fx.BotaniaParticles;
 import org.violetmoon.botania.client.gui.HUDHandler;
@@ -59,6 +55,8 @@ import org.violetmoon.botania.client.integration.ears.EarsIntegration;
 import org.violetmoon.botania.client.model.BotaniaLayerDefinitions;
 import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.client.render.entity.*;
+import org.violetmoon.botania.common.block.PlatformBlock;
+import org.violetmoon.botania.common.block.flower.FloatingFlowerBaseBlock;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.fabric.network.FabricPacketHandler;
 import org.violetmoon.botania.xplat.ClientXplatAbstractions;
@@ -94,8 +92,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 
 		// Blocks and Items
 		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.modifyBlockModelAfterBake().register((model, context) ->
-					context.state().getBlock() instanceof PlatformBlock ? new FabricPlatformModel(model) : model);
+			pluginContext.modifyBlockModelAfterBake().register((model, context) -> context.state().getBlock() instanceof PlatformBlock ? new FabricPlatformModel(model) : model);
 			pluginContext.modifyBlockModelOnLoad().register((model, context) -> {
 				var block = context.state().getBlock();
 				if (block instanceof FloatingFlowerBaseBlock) {

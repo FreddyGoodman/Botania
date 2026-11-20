@@ -9,9 +9,7 @@
 package org.violetmoon.botania.fabric.integration.trinkets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import eu.pb4.trinkets.api.TrinketSlotAccess;
-import eu.pb4.trinkets.api.client.TrinketRenderer;
-import eu.pb4.trinkets.api.client.TrinketRendererRegistry;
+
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -19,8 +17,13 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.common.item.equipment.bauble.BaubleItem;
+
+import eu.pb4.trinkets.api.TrinketSlotAccess;
+import eu.pb4.trinkets.api.client.TrinketRenderer;
+import eu.pb4.trinkets.api.client.TrinketRendererRegistry;
 
 final class TrinketsRendering implements TrinketRenderer {
 	static void register(Item item) {

@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.item.equipment.bauble;
 
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Direction;

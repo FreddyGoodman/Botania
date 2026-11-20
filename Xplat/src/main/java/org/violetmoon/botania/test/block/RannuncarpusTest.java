@@ -78,7 +78,6 @@ public class RannuncarpusTest {
 				}).thenSucceed();
 	}
 
-
 	public void testMultiplePlacements(GameTestHelper helper) {
 		final var yellowCandles = helper.spawnItem(Blocks.YELLOW_CANDLE.asItem(), FLOWER_POS.getX(), FLOWER_POS.getY() + 1, FLOWER_POS.getZ());
 		helper.startSequence().thenExecute(() -> {

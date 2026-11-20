@@ -14,8 +14,10 @@ import org.violetmoon.botania.datafix.ChunkStorageMigration;
 
 @Mixin(SimpleRegionStorage.class)
 public class SimpleRegionStorageMixin {
-	@WrapOperation(method = "upgradeChunkTag(Lnet/minecraft/nbt/CompoundTag;ILnet/minecraft/nbt/CompoundTag;I)Lnet/minecraft/nbt/CompoundTag;",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/datafix/DataFixTypes;update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;"))
+	@WrapOperation(
+		method = "upgradeChunkTag(Lnet/minecraft/nbt/CompoundTag;ILnet/minecraft/nbt/CompoundTag;I)Lnet/minecraft/nbt/CompoundTag;",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/util/datafix/DataFixTypes;update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;")
+	)
 	private CompoundTag botania_upgradeLegacyChunk(DataFixTypes type, DataFixer fixer, CompoundTag data, int oldVersion, int newVersion,
 			Operation<CompoundTag> original) {
 		CompoundTag updated = original.call(type, fixer, data, oldVersion, newVersion);

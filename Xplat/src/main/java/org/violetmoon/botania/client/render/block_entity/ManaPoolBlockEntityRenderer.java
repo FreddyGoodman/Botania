@@ -118,9 +118,8 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 		pose.pushPose();
 		pose.translate(0, y, 0);
 		pose.mulPose(VecHelper.rotateX(90));
-		collector.submitCustomGeometry(pose, layer, (transform, buffer) ->
-				RenderHelper.renderIconCropped(transform, buffer, surface.minX, surface.minZ, surface.maxX, surface.maxZ,
-						sprite, 0xFFFFFF, alpha, light));
+		collector.submitCustomGeometry(pose, layer, (transform, buffer) -> RenderHelper.renderIconCropped(transform, buffer, surface.minX, surface.minZ, surface.maxX, surface.maxZ,
+				sprite, 0xFFFFFF, alpha, light));
 		pose.popPose();
 	}
 

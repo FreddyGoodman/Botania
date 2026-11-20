@@ -110,7 +110,6 @@ import org.violetmoon.botania.neoforge.internal_caps.NeoForgeInternalEntityCapab
 import org.violetmoon.botania.xplat.XplatAbstractions;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class NeoForgeXplatImpl implements XplatAbstractions {
@@ -412,7 +411,6 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 	public <D> void openMenu(ServerPlayer player, MenuProvider menu, D initialData, StreamCodec<? super RegistryFriendlyByteBuf, D> streamCodec) {
 		player.openMenu(menu, buf -> streamCodec.encode(buf, initialData));
 	}
-
 
 	@Override
 	public Fluid getBucketFluid(BucketItem item) {

@@ -63,7 +63,8 @@ public class BotaniaBookModel extends Model<BotaniaBookModel.Animation> {
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
-	public record Animation(float time, float rightPageFlipAmount, float leftPageFlipAmount, float bookOpenAmount) {}
+	public record Animation(float time, float rightPageFlipAmount, float leftPageFlipAmount, float bookOpenAmount) {
+	}
 
 	@Override
 	public void setupAnim(Animation animation) {

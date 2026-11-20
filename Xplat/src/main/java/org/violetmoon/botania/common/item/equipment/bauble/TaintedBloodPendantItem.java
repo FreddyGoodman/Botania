@@ -36,12 +36,12 @@ import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
 import org.violetmoon.botania.client.core.helper.AccessoryRenderHelper;
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.client.render.AccessoryRenderer;
-import org.violetmoon.botania.common.proxy.Proxy;
-import org.violetmoon.botania.common.item.CustomCreativeTabContents;
-import org.violetmoon.botania.xplat.ClientXplatAbstractions;
+import org.violetmoon.botania.client.render.ColorHandler;
 import org.violetmoon.botania.common.brew.BotaniaBrews;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;
-import org.violetmoon.botania.client.render.ColorHandler;
+import org.violetmoon.botania.common.item.CustomCreativeTabContents;
+import org.violetmoon.botania.common.proxy.Proxy;
+import org.violetmoon.botania.xplat.ClientXplatAbstractions;
 
 import java.util.function.Consumer;
 

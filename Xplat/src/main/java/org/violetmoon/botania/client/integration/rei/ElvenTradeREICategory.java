@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.rei;
 
-
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;

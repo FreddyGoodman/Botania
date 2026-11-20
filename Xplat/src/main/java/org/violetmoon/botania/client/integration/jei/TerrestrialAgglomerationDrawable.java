@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.client.integration.jei;
 
-
 import mezz.jei.api.gui.drawable.IDrawable;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;

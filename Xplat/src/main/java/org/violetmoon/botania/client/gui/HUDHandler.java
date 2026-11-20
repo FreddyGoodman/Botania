@@ -308,10 +308,7 @@ public final class HUDHandler {
 			int u = tile.getCurrentMana() >= recipe.value().getManaToConsume() ? 0 : 22;
 			int v = mc.player.getName().getString().equals("haighyorkie") && mc.player.isShiftKeyDown() ? 23 : 8;
 
-
-
 			RenderHelper.drawTexturedModalRect(gui, manaBar, x, y, u, v, 22, 15);
-
 
 			gui.item(stack, x - 20, y);
 			ItemStack result = recipe.value().getResultItem(mc.level.registryAccess());
@@ -344,7 +341,6 @@ public final class HUDHandler {
 	 * Renders a mana HUD below the crosshair, containing just a mana bar and a name above
 	 */
 	public static void drawSimpleManaHUD(GuiGraphicsExtractor gui, Window window, Font font, int color, int mana, int maxMana, String name) {
-
 
 		Minecraft mc = Minecraft.getInstance();
 		int x = window.getGuiScaledWidth() / 2 - font.width(name) / 2;

@@ -8,7 +8,6 @@
  */
 package org.violetmoon.botania.common.crafting.recipe;
 
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;

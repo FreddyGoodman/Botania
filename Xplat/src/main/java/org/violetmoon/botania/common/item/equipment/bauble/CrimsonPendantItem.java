@@ -22,9 +22,9 @@ import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
 import org.violetmoon.botania.client.core.helper.AccessoryRenderHelper;
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.client.render.AccessoryRenderer;
-import org.violetmoon.botania.common.proxy.Proxy;
 import org.violetmoon.botania.common.handler.EquipmentHandler;
 import org.violetmoon.botania.common.item.BotaniaItems;
+import org.violetmoon.botania.common.proxy.Proxy;
 
 public class CrimsonPendantItem extends BaubleItem {
 

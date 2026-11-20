@@ -11,9 +11,9 @@ package org.violetmoon.botania.common.loot;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 

@@ -24,7 +24,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
- * Copy of {@link net.minecraft.client.data.models.model.ModelTemplate} with support for generating item predicate overrides.
+ * Copy of {@link net.minecraft.client.data.models.model.ModelTemplate} with support for generating item predicate
+ * overrides.
  */
 public class ModelWithOverrides {
 	private final Identifier parent;

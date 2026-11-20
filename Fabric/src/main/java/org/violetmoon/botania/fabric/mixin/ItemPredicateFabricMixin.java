@@ -19,8 +19,8 @@ import com.mojang.datafixers.util.Function3;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
-import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.DataComponentMatchers;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;

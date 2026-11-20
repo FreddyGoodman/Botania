@@ -9,9 +9,9 @@
 package org.violetmoon.botania.client.patchouli.processor;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
 import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
@@ -78,7 +78,8 @@ public class MultiCraftingProcessor implements IComponentProcessor {
 						views.add(new RecipeView(shapeless.ingredients().stream().map(slot -> slot.resolveForStacks(context)).toList(),
 								shapeless.result().resolveForFirstStack(context), 0));
 					}
-					default -> {}
+					default -> {
+					}
 				}
 			}
 		}
@@ -98,7 +99,8 @@ public class MultiCraftingProcessor implements IComponentProcessor {
 		}
 	}
 
-	private record RecipeData(List<RecipeView> recipes, boolean shapeless, int longestIngredientSize) {}
+	private record RecipeData(List<RecipeView> recipes, boolean shapeless, int longestIngredientSize) {
+	}
 
 	@SuppressWarnings("NullableProblems")
 	@Nullable

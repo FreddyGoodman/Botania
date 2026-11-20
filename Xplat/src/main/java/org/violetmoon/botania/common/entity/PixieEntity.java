@@ -128,8 +128,7 @@ public class PixieEntity extends Mob {
 	}
 
 	@Override
-	protected void checkFallDamage(double fallDistance, boolean onGround, BlockState onState, BlockPos pos) {
-	}
+	protected void checkFallDamage(double fallDistance, boolean onGround, BlockState onState, BlockPos pos) {}
 
 	@Override
 	public boolean onClimbable() {

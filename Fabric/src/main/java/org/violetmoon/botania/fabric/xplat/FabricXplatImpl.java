@@ -9,15 +9,14 @@
 
 package org.violetmoon.botania.fabric.xplat;
 
-
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeBuilder;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -465,7 +464,6 @@ public class FabricXplatImpl implements XplatAbstractions {
 		};
 		player.openMenu(menuProvider);
 	}
-
 
 	@Override
 	public Fluid getBucketFluid(BucketItem item) {

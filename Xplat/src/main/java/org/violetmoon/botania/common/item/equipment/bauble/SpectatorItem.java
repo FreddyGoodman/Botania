@@ -36,8 +36,8 @@ import net.minecraft.world.phys.AABB;
 
 import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
-import org.violetmoon.botania.client.fx.WispParticleData;
 import org.violetmoon.botania.client.core.helper.AccessoryRenderHelper;
+import org.violetmoon.botania.client.fx.WispParticleData;
 import org.violetmoon.botania.client.render.AccessoryRenderRegistry;
 import org.violetmoon.botania.client.render.AccessoryRenderer;
 import org.violetmoon.botania.common.component.BotaniaDataComponents;

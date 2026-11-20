@@ -10,12 +10,11 @@ package org.violetmoon.botania.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.SubmitNodeStorage;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeStorage;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -40,8 +39,12 @@ public class LevelRendererMixin {
 	@Final
 	private SubmitNodeStorage submitNodeStorage;
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderSolidFeatures()V"))
+	@Inject(
+		method = "lambda$addMainPass$0", at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderSolidFeatures()V"
+		)
+	)
 	private void botania$submitHalo(CallbackInfo ci) {
 		if (level != null) {
 			Minecraft client = Minecraft.getInstance();
@@ -50,8 +53,12 @@ public class LevelRendererMixin {
 		}
 	}
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderTranslucentParticles()V"))
+	@Inject(
+		method = "lambda$addMainPass$0", at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderTranslucentParticles()V"
+		)
+	)
 	private void botania$renderOverlays(CallbackInfo ci) {
 		if (level != null) {
 			Minecraft client = Minecraft.getInstance();

@@ -267,7 +267,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
 		if (bindingPos != null) {
-			tag.putIntArray(TAG_BINDING, new int[] {bindingPos.getX(), bindingPos.getY(), bindingPos.getZ()});
+			tag.putIntArray(TAG_BINDING, new int[] { bindingPos.getX(), bindingPos.getY(), bindingPos.getZ() });
 		} else if (tag.isEmpty()) {
 			// An empty update tag would not clear the client's previous binding.
 			tag.putByte("-", (byte) 0);
