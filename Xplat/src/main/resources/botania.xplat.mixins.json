@@ -81,7 +81,7 @@
     "ThrowableProjectileMixin",
     "VibrationSystemListenerMixin",
     "WitherEntityAccessor",
-    "datafixers.ChunkStorageMixin",
+    "datafixers.SimpleRegionStorageMixin",
     "datafixers.DataFixersMixin",
     "datafixers.ItemStackComponentizationFixMixin",
     "datafixers.V1460Mixin",

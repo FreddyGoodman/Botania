@@ -6,12 +6,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.IdMap;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraft.world.level.chunk.Strategy;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +34,7 @@ public class ChunkStorageMigration {
 						String color = legacyColor.map(
 								col -> col.getSerializedName().equals("white") ? "none" : col.getSerializedName()
 						).orElse(oldBlockState.properties.get("color") != null
-								? ((StringTag) oldBlockState.properties.get("color").getValue()).getAsString()
+								? ((StringTag) oldBlockState.properties.get("color").getValue()).value()
 								: "white"
 						);
 						Identifier newId = oldBlockState.block.withPath(old -> color.equals("none")
@@ -45,17 +47,17 @@ public class ChunkStorageMigration {
 				.put("botania:mana_spreader", be -> {
 					Optional<DyeColor> color = BlockEntityMigration.removeMaybeColor(be, "paddingColor");
 					// legacy uuid format
-					if (be.contains("uuidLeast", Tag.TAG_LONG)) {
-						long least = be.getLong("uuidLeast");
-						long most = be.getLong("uuidMost");
+					if (be.get("uuidLeast") instanceof LongTag) {
+						long least = be.getLongOr("uuidLeast", 0L);
+						long most = be.getLongOr("uuidMost", 0L);
 						be.remove("uuidLeast");
 						be.remove("uuidMost");
-						be.putUUID("uuid", new UUID(most, least));
+						be.store("uuid", UUIDUtil.CODEC, new UUID(most, least));
 					}
 
 					// update rotation format
-					float xRot = -be.getFloat("rotationY");
-					float yRot = 90 - be.getFloat("rotationX");
+					float xRot = -be.getFloatOr("rotationY", 0F);
+					float yRot = 90 - be.getFloatOr("rotationX", 0F);
 					be.putFloat("rotationY", yRot);
 					be.putFloat("rotationX", xRot);
 
@@ -171,7 +173,7 @@ public class ChunkStorageMigration {
 
 		BlockEntityMigration rannuncarpusMigration = be -> {
 			Dynamic<Tag> mode = new Dynamic<>(NbtOps.INSTANCE, StringTag.valueOf(
-					be.contains("stateSensitive", Tag.TAG_BYTE) && !be.getBoolean("stateSensitive")
+					be.get("stateSensitive") instanceof ByteTag && !be.getBooleanOr("stateSensitive", false)
 							? "state_insensitive"
 							: "state_sensitive"
 			));
@@ -193,10 +195,10 @@ public class ChunkStorageMigration {
 
 		BlockEntityMigration hydroAndThermMigration = be -> {
 			Dynamic<Tag> generating = new Dynamic<>(NbtOps.INSTANCE, StringTag.valueOf(
-					be.getInt("burnTime") > 0 ? "true" : "false"
+					be.getIntOr("burnTime", 0) > 0 ? "true" : "false"
 			));
 			Dynamic<Tag> onCooldown = new Dynamic<>(NbtOps.INSTANCE, StringTag.valueOf(
-					be.getInt("cooldown") > 0 ? "true" : "false"
+					be.getIntOr("cooldown", 0) > 0 ? "true" : "false"
 			));
 			return BlockStateMigration.make(builder -> builder
 					.put("generating", generating)
@@ -209,7 +211,7 @@ public class ChunkStorageMigration {
 		migrationsBuilder.put("botania:munchdew", be -> {
 			Dynamic<Tag> generating = BlockEntityMigration.removeBoolean(be, "ateOnce");
 			Dynamic<Tag> onCooldown = new Dynamic<>(NbtOps.INSTANCE, StringTag.valueOf(
-					be.getInt("cooldown") > 0 ? "true" : "false"
+					be.getIntOr("cooldown", 0) > 0 ? "true" : "false"
 			));
 			return BlockStateMigration.make(builder -> builder
 					.put("generating", generating)
@@ -219,7 +221,7 @@ public class ChunkStorageMigration {
 
 		migrationsBuilder.put("botania:endoflame", be -> {
 			Dynamic<Tag> generating = new Dynamic<>(NbtOps.INSTANCE, StringTag.valueOf(
-					be.getInt("burnTime") > 0 ? "true" : "false"
+					be.getIntOr("burnTime", 0) > 0 ? "true" : "false"
 			));
 			return BlockStateMigration.make(builder -> builder
 					.put("generating", generating)
@@ -228,7 +230,7 @@ public class ChunkStorageMigration {
 
 		migrationsBuilder.put("botania:gourmaryllis", be -> {
 			Dynamic<Tag> generating = new Dynamic<>(NbtOps.INSTANCE, StringTag.valueOf(
-					be.getInt("digestingMana") != 0 ? "true" : "false"
+					be.getIntOr("digestingMana", 0) != 0 ? "true" : "false"
 			));
 			return BlockStateMigration.make(builder -> builder
 					.put("generating", generating)
@@ -248,25 +250,25 @@ public class ChunkStorageMigration {
 
 		BlockEntityMigration bindableFlowerMigration = be -> {
 			BlockPos pos = null;
-			if (be.contains("collectorX", Tag.TAG_INT)) {
+			if (be.get("collectorX") instanceof IntTag) {
 				int x = BlockEntityMigration.removeIntAsInt(be, "collectorX");
 				int y = BlockEntityMigration.removeIntAsInt(be, "collectorY");
 				int z = BlockEntityMigration.removeIntAsInt(be, "collectorZ");
-				be.put("binding", NbtUtils.writeBlockPos(new BlockPos(x, y, z)));
-			} else if (be.contains("poolX", Tag.TAG_INT)) {
+				be.store("binding", BlockPos.CODEC, new BlockPos(x, y, z));
+			} else if (be.get("poolX") instanceof IntTag) {
 				int x = BlockEntityMigration.removeIntAsInt(be, "poolX");
 				int y = BlockEntityMigration.removeIntAsInt(be, "poolY");
 				int z = BlockEntityMigration.removeIntAsInt(be, "poolZ");
 				pos = new BlockPos(x, y, z);
 			} else if (be.contains("binding")) {
-				CompoundTag binding = be.getCompound("binding");
-				int x = binding.getInt("x");
-				int y = binding.getInt("y");
-				int z = binding.getInt("z");
+				CompoundTag binding = be.getCompoundOrEmpty("binding");
+				int x = binding.getIntOr("x", 0);
+				int y = binding.getIntOr("y", 0);
+				int z = binding.getIntOr("z", 0);
 				pos = new BlockPos(x, y, z);
 			}
 			if (pos != null) {
-				be.put("binding", NbtUtils.writeBlockPos(pos));
+				be.store("binding", BlockPos.CODEC, pos);
 			}
 			be.putBoolean("autoBinding", false);
 
@@ -286,8 +288,8 @@ public class ChunkStorageMigration {
 		}
 
 		BlockEntityMigration floatingFlowerMigration = be -> {
-			if (be.contains("islandType", Tag.TAG_STRING)) {
-				String type = be.getString("islandType");
+			if (be.get("islandType") instanceof StringTag) {
+				String type = be.getStringOr("islandType", "");
 				type = type.equals("MYCEL") ? "MYCELIUM" : type;
 				type = "botania:" + type.toLowerCase(Locale.ROOT);
 				be.putString("islandType", type);
@@ -308,7 +310,7 @@ public class ChunkStorageMigration {
 		}
 
 		migrationsBuilder.put("botania:hourglass", be -> {
-			boolean enabled = be.getBoolean("move");
+			boolean enabled = be.getBooleanOr("move", false);
 			boolean hasInv = be.get("Items") instanceof ListTag items && !items.isEmpty();
 			return BlockStateMigration.make(builder -> builder
 					.put("enabled", new Dynamic<>(NbtOps.INSTANCE, StringTag.valueOf(enabled ? "true" : "false")))
@@ -320,13 +322,13 @@ public class ChunkStorageMigration {
 	}
 
 	public static void rewriteChunkData(CompoundTag chunkData) {
-		if (chunkData.getList("block_entities", Tag.TAG_COMPOUND).isEmpty()) {
+		ListTag blockEntities = chunkData.getListOrEmpty("block_entities");
+		if (blockEntities.isEmpty()) {
 			return;
 		}
 		Map<Byte, Map<BlockPos, BlockStateMigration>> newStates = new HashMap<>();
-		for (Tag be_ : chunkData.getList("block_entities", Tag.TAG_COMPOUND)) {
-			CompoundTag be = (CompoundTag) be_;
-			List<BlockEntityMigration> migrations = BLOCK_ENTITY_MIGRATIONS.get(be.getString("id"));
+		for (CompoundTag be : blockEntities.compoundStream().toList()) {
+			List<BlockEntityMigration> migrations = BLOCK_ENTITY_MIGRATIONS.get(be.getStringOr("id", ""));
 			if (migrations.isEmpty()) {
 				continue;
 			}
@@ -337,30 +339,33 @@ public class ChunkStorageMigration {
 						migration.blockStateMigration(be)
 				);
 			}
-			newStates.computeIfAbsent((byte) Math.floorDiv(be.getInt("y"), 16), y -> new HashMap<>()).put(
+			newStates.computeIfAbsent((byte) Math.floorDiv(be.getIntOr("y", 0), 16), y -> new HashMap<>()).put(
 					new BlockPos(
-							Mth.positiveModulo(be.getInt("x"), 16),
-							Mth.positiveModulo(be.getInt("y"), 16),
-							Mth.positiveModulo(be.getInt("z"), 16)
+							Mth.positiveModulo(be.getIntOr("x", 0), 16),
+							Mth.positiveModulo(be.getIntOr("y", 0), 16),
+							Mth.positiveModulo(be.getIntOr("z", 0), 16)
 					),
 					stateMigration
 			);
 		}
 
-		ListTag sections = chunkData.getList("sections", Tag.TAG_COMPOUND);
-		for (Tag section_ : sections) {
-			CompoundTag section = (CompoundTag) section_;
-			Map<BlockPos, BlockStateMigration> migrations = newStates.get(section.getByte("Y"));
+		ListTag sections = chunkData.getListOrEmpty("sections");
+		for (CompoundTag section : sections.compoundStream().toList()) {
+			Map<BlockPos, BlockStateMigration> migrations = newStates.get(section.getByteOr("Y", (byte) 0));
 			if (migrations == null) {
 				continue;
 			}
 			Tag blockStates = section.get("block_states");
-			PalettedContainer<FakeBlockstate> blocks = PALETTED_STATES_CODEC.decode(NbtOps.INSTANCE, blockStates).getOrThrow().getFirst();
+			if (blockStates == null) {
+				continue;
+			}
+			var codec = createBlockStateCodec();
+			PalettedContainer<FakeBlockstate> blocks = codec.parse(NbtOps.INSTANCE, blockStates).getOrThrow();
 			for (Map.Entry<BlockPos, BlockStateMigration> migration : migrations.entrySet()) {
 				int x = migration.getKey().getX(), y = migration.getKey().getY(), z = migration.getKey().getZ();
 				blocks.set(x, y, z, migration.getValue().migrateBlockState(blocks.get(x, y, z)));
 			}
-			Tag tag = PALETTED_STATES_CODEC.encodeStart(NbtOps.INSTANCE, blocks).getOrThrow();
+			Tag tag = codec.encodeStart(NbtOps.INSTANCE, blocks).getOrThrow();
 			section.put("block_states", tag);
 		}
 	}
@@ -376,7 +381,7 @@ public class ChunkStorageMigration {
 		}
 
 		static Dynamic<Tag> removeBoolean(CompoundTag tag, String key) {
-			boolean value = tag.getBoolean(key);
+			boolean value = tag.getBooleanOr(key, false);
 			tag.remove(key);
 			return new Dynamic<>(NbtOps.INSTANCE, StringTag.valueOf(value ? "true" : "false"));
 		}
@@ -388,28 +393,28 @@ public class ChunkStorageMigration {
 		}
 
 		static int removeIntAsInt(CompoundTag tag, String key) {
-			int value = tag.getInt(key);
+			int value = tag.getIntOr(key, 0);
 			tag.remove(key);
 			return value;
 		}
 
 		static Dynamic<Tag> removeInt(CompoundTag tag, String key) {
-			int value = tag.getInt(key);
+			int value = tag.getIntOr(key, 0);
 			tag.remove(key);
 			return new Dynamic<>(NbtOps.INSTANCE, IntTag.valueOf(value));
 		}
 
 		static String removeStringAsString(CompoundTag tag, String key) {
-			String value = tag.getString(key);
+			String value = tag.getStringOr(key, "");
 			tag.remove(key);
 			return value;
 		}
 
 		static Optional<DyeColor> removeMaybeColor(CompoundTag tag, String key) {
-			if (!tag.contains(key, Tag.TAG_ANY_NUMERIC)) {
+			if (!(tag.get(key) instanceof NumericTag)) {
 				return Optional.empty();
 			}
-			int value = tag.getInt(key);
+			int value = tag.getIntOr(key, 0);
 			if (value == -1) {
 				return Optional.empty();
 			}
@@ -434,14 +439,12 @@ public class ChunkStorageMigration {
 		}
 	}
 
-	public static final Codec<PalettedContainer<FakeBlockstate>> PALETTED_STATES_CODEC = PalettedContainer.codecRW(
-			new OnDemandIdProvider<>(),
-			FakeBlockstate.CODEC,
-			PalettedContainer.Strategy.SECTION_STATES,
-			new FakeBlockstate(Identifier.parse("minecraft:air"), ImmutableMap.of())
-	);
+	private static Codec<PalettedContainer<FakeBlockstate>> createBlockStateCodec() {
+		return PalettedContainer.codecRW(FakeBlockstate.CODEC, Strategy.createForBlockStates(new OnDemandIdProvider<>()),
+				new FakeBlockstate(Identifier.parse("minecraft:air"), ImmutableMap.of()));
+	}
 
-	public static class OnDemandIdProvider<T> implements IdMap<T> {
+	private static class OnDemandIdProvider<T> implements IdMap<T> {
 
 		private final HashBiMap<Integer, T> map;
 		private int nextId;
@@ -471,7 +474,8 @@ public class ChunkStorageMigration {
 
 		@Override
 		public int size() {
-			return nextId;
+			// A section can contain a distinct old and replacement state at each of its 4096 positions.
+			return 8192;
 		}
 
 		@Override

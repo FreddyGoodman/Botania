@@ -16,14 +16,12 @@ import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.EntityTypePredicate;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.NbtPredicate;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -56,7 +54,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
-import org.violetmoon.botania.api.BotaniaAPI;
 import org.violetmoon.botania.common.item.BotaniaItems;
 import org.violetmoon.botania.common.loot.BotaniaLootTables;
 
@@ -77,9 +74,9 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 	private final HolderLookup.Provider registries;
 	private final HolderLookup.RegistryLookup<TrimPattern> patternRegistry;
 	private final HolderLookup.RegistryLookup<TrimMaterial> materialRegistry;
-	private final Map<Holder<ArmorMaterial>, List<Item>> armorItems = Map.of(
+	private final Map<ArmorMaterial, List<Item>> armorItems = Map.of(
 			ArmorMaterials.LEATHER, List.of(Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS),
-			ArmorMaterials.CHAIN, List.of(Items.CHAINMAIL_HELMET, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_BOOTS),
+			ArmorMaterials.CHAINMAIL, List.of(Items.CHAINMAIL_HELMET, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_BOOTS),
 			ArmorMaterials.IRON, List.of(Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS),
 			ArmorMaterials.GOLD, List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS),
 			ArmorMaterials.DIAMOND, List.of(Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS),
@@ -175,7 +172,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 		return NestedLootTable.inlineLootTable(LootTable.lootTable()
 				.withPool(LootPool.lootPool()
 						.add(NestedLootTable.inlineLootTable(
-								createArmorSet(UnaryOperator.identity(), true, armorItems.get(ArmorMaterials.CHAIN)).build()
+								createArmorSet(UnaryOperator.identity(), true, armorItems.get(ArmorMaterials.CHAINMAIL)).build()
 						).setWeight(4))
 						.add(NestedLootTable.inlineLootTable(
 								createArmorSet(UnaryOperator.identity(), true, armorItems.get(ArmorMaterials.IRON)).build()
@@ -242,10 +239,9 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 	}
 
 	// [VanillaCopy] Tag names are synchronized with ZombieVillager::addAdditionalSaveData and VillagerData::CODEC
-	private CompoundTag getProfessionNbt(VillagerProfession profession) {
+	private static CompoundTag getProfessionNbt(ResourceKey<VillagerProfession> profession) {
 		var villagerDataTag = new CompoundTag();
-		BuiltInRegistries.VILLAGER_PROFESSION.byNameCodec().encodeStart(NbtOps.INSTANCE, profession).resultOrPartial(
-				BotaniaAPI.LOGGER::error).ifPresent(data -> villagerDataTag.put("profession", data));
+		villagerDataTag.putString("profession", profession.identifier().toString());
 		var tag = new CompoundTag();
 		tag.put("VillagerData", villagerDataTag);
 		return tag;
@@ -287,7 +283,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 						// Note: Slowness from Strays stacks with tipped arrow effects, so just checking for bow here
 						.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
 								EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-										.mainhand(ItemPredicate.Builder.item().of(Items.BOW)).build())))
+										.mainhand(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, Items.BOW)).build())))
 						.when(LootItemRandomChanceCondition.randomChance(0.9f))
 						.add(LootItem.lootTableItem(Items.TIPPED_ARROW).apply(SetComponentsFunction.setComponent(
 								DataComponents.POTION_CONTENTS, PotionContents.EMPTY.withEffectAdded(
@@ -374,7 +370,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 				).withPool(LootPool.lootPool()
 						.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
 								EntityPredicate.Builder.entity()
-										.entityType(EntityTypePredicate.of(EntityType.SKELETON))))
+										.entityType(EntityTypePredicate.of(BuiltInRegistries.ENTITY_TYPE, EntityType.SKELETON))))
 						.when(LootItemRandomChanceCondition.randomChance(0.9f))
 						.add(LootItem.lootTableItem(Items.TIPPED_ARROW).apply(SetComponentsFunction.setComponent(
 								DataComponents.POTION_CONTENTS, PotionContents.EMPTY.withEffectAdded(
@@ -426,7 +422,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 		output.accept(BotaniaLootTables.LOONIUM_ARMOR_JUNGLE_TEMPLE,
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimWildEmerald,
-								armorItems.get(ArmorMaterials.CHAIN)).build()).setWeight(4))
+								armorItems.get(ArmorMaterials.CHAINMAIL)).build()).setWeight(4))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimWildEmerald,
 								armorItems.get(ArmorMaterials.GOLD)).build()).setWeight(2))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimWildEmerald,
@@ -489,7 +485,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 		output.accept(BotaniaLootTables.LOONIUM_ARMOR_OUTPOST,
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimSentryEmerald,
-								armorItems.get(ArmorMaterials.CHAIN)).build()).setWeight(5))
+								armorItems.get(ArmorMaterials.CHAINMAIL)).build()).setWeight(5))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimSentryEmerald,
 								armorItems.get(ArmorMaterials.IRON)).build()).setWeight(3))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimSentryEmerald,
@@ -555,7 +551,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 		output.accept(BotaniaLootTables.LOONIUM_ARMOR_SHIPWRECK,
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimCoastEmerald,
-								armorItems.get(ArmorMaterials.CHAIN)).build()).setWeight(4))
+								armorItems.get(ArmorMaterials.CHAINMAIL)).build()).setWeight(4))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimCoastEmerald,
 								armorItems.get(ArmorMaterials.IRON)).build()).setWeight(4))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimCoastEmerald,
@@ -633,9 +629,9 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 		output.accept(BotaniaLootTables.LOONIUM_ARMOR_TRAIL_RUINS,
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimHostEmerald,
-								armorItems.get(ArmorMaterials.CHAIN)).build()).setWeight(7))
+								armorItems.get(ArmorMaterials.CHAINMAIL)).build()).setWeight(7))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimWayfinderRedstone,
-								armorItems.get(ArmorMaterials.CHAIN)).build()).setWeight(7))
+								armorItems.get(ArmorMaterials.CHAINMAIL)).build()).setWeight(7))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimRaiserAmethyst,
 								armorItems.get(ArmorMaterials.IRON)).build()).setWeight(8))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimHostEmerald,
@@ -675,7 +671,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 		output.accept(BotaniaLootTables.LOONIUM_ARMOR_TRIAL_CHAMBER,
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimBoltCopper,
-								armorItems.get(ArmorMaterials.CHAIN)).build()).setWeight(4))
+								armorItems.get(ArmorMaterials.CHAINMAIL)).build()).setWeight(4))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimFlowDiamond,
 								armorItems.get(ArmorMaterials.IRON)).build()).setWeight(4))
 						.add(NestedLootTable.inlineLootTable(createRandomizedArmorSet(trimBoltCopper,
@@ -744,7 +740,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 								.withPool(LootPool.lootPool()
 										.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
 												EntityPredicate.Builder.entity()
-														.entityType(EntityTypePredicate.of(EntityType.SKELETON))))
+														.entityType(EntityTypePredicate.of(BuiltInRegistries.ENTITY_TYPE, EntityType.SKELETON))))
 										.when(LootItemRandomChanceCondition.randomChance(0.9f))
 										.add(LootItem.lootTableItem(Items.TIPPED_ARROW).apply(
 												SetComponentsFunction.setComponent(DataComponents.POTION_CONTENTS,
@@ -802,7 +798,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 	}
 
 	private static LootItemConditionalFunction.Builder<?> setDyedColor(int color) {
-		return SetComponentsFunction.setComponent(DataComponents.DYED_COLOR, new DyedItemColor(color, true));
+		return SetComponentsFunction.setComponent(DataComponents.DYED_COLOR, new DyedItemColor(color));
 	}
 
 	private LootTable.Builder createRandomizedArmorSet(ArmorTrim trim, List<Item> armorItems) {

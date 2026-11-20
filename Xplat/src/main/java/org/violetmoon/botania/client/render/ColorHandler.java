@@ -116,7 +116,7 @@ public final class ColorHandler {
 
 	public static int getManaPoolColor(ManaPoolBlock block, BlockState state, @Nullable BlockPos pos) {
 		Optional<Integer> optionalColor = block.getOptionalColor()
-				.map(color -> ARGB.lerp(0.8f, 0xFFFFFF, MysticalPetalItem.getPetalLikeColor(color)));
+				.map(color -> ARGB.srgbLerp(0.8f, 0xFFFFFF, MysticalPetalItem.getPetalLikeColor(color)));
 		if (block.isFabulous()) {
 			float time = (ClientTickHandler.getEntityTicksInGame() + ClientTickHandler.getEntityPartialTick()) * 0.005F;
 			float posOffset = pos != null ? new Random(state.getSeed(pos)).nextFloat() : 0;

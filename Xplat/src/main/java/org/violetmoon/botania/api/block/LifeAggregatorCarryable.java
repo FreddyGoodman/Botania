@@ -11,6 +11,8 @@ package org.violetmoon.botania.api.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -98,7 +100,9 @@ public interface LifeAggregatorCarryable {
 
 		@Override
 		default CustomData gatherBlockEntityData(HolderLookup.Provider providers) {
-			return CustomData.of(blockEntity().saveWithId(providers));
+			var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, providers);
+			blockEntity().saveWithId(output);
+			return CustomData.of(output.buildResult());
 		}
 
 		@Nullable
