@@ -1,3 +1,6 @@
+# DISCLAIMER
+This is AI slop top to bottom. I intent to playtest the 26.1.2 port extensively, but I have very little experience with Java and not a single line of code is reviewed. USE AT YOUR OWN RISK
+
 ![](web/assets/img/logo.png)  
 Welcome to the Botania repository.  
 
