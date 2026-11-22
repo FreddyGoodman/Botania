@@ -106,6 +106,6 @@ public class FloralFertilizerItem extends Item {
 	}
 
 	private static boolean canPlaceFlower(BlockState belowState, Level world, BlockPos pos) {
-		return belowState.is(BlockTags.DIRT) && !world.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos);
+		return belowState.is(BlockTags.SUBSTRATE_OVERWORLD) && !world.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos);
 	}
 }

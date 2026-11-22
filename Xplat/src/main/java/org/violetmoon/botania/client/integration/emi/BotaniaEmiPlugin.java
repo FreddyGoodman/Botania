@@ -394,7 +394,7 @@ public class BotaniaEmiPlugin implements EmiPlugin {
 							.build());
 					registry.addRecipe(EmiWorldInteractionRecipe.builder()
 							.leftInput(EmiStack.of(BotaniaItems.FLORAL_FERTILIZER))
-							.rightInput(EmiIngredient.of(BlockTags.DIRT), true)
+							.rightInput(EmiIngredient.of(BlockTags.SUBSTRATE_OVERWORLD), true)
 							.output(EmiStack.of(mysticalFlower))
 							.id(flowerId.withPrefix("/world/floral_fertilizer/"))
 							.build());
