@@ -76,5 +76,6 @@ final class GaiaGuardianTextures {
 		return image;
 	}
 
-	private record TextureKey(Identifier skin, int grain, int frame) {}
+	private record TextureKey(Identifier skin, int grain, int frame) {
+	}
 }
