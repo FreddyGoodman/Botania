@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,6 +26,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.violetmoon.botania.client.render.world.WorldOverlays;
 import org.violetmoon.botania.common.item.AssemblyHaloItem;
+
+import vazkii.patchouli.client.handler.MultiblockVisualizationHandler;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
@@ -50,6 +53,20 @@ public class LevelRendererMixin {
 			Minecraft client = Minecraft.getInstance();
 			AssemblyHaloItem.Rendering.submit(client.gameRenderer.getMainCamera().position(),
 					client.getDeltaTracker().getGameTimeDeltaPartialTick(true), new PoseStack(), submitNodeStorage);
+		}
+	}
+
+	@Inject(
+		method = "lambda$addMainPass$0", at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderTranslucentFeatures()V"
+		)
+	)
+	private void botania$submitPatchouliMultiblock(CallbackInfo ci) {
+		var visualization = MultiblockVisualizationHandler.INSTANCE;
+		if (level != null && visualization.hasMultiblock() && visualization.getMultiblock() != null) {
+			// The world pass already applies the view rotation. Patchouli still subtracts the camera position.
+			visualization.renderMultiblock(level, new PoseStack(), new Matrix4f());
 		}
 	}
 
