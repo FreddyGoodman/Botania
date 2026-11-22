@@ -668,13 +668,14 @@ public class GaiaGuardianEntity extends Mob {
 				continue;
 			}
 
+			// Roll each participant's rewards as if they landed the final hit.
+			DamageSource rewardSource = source.getEntity() == player ? source : player.damageSources().playerAttack(player);
 			LootParams.Builder builder = new LootParams.Builder(level)
 					.withParameter(LootContextParams.THIS_ENTITY, this)
 					.withParameter(LootContextParams.ORIGIN, position())
-					.withParameter(LootContextParams.DAMAGE_SOURCE, source)
-					.withOptionalParameter(LootContextParams.ATTACKING_ENTITY, source.getEntity())
-					.withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, source.getDirectEntity())
-					// pretend that player did the final hit
+					.withParameter(LootContextParams.DAMAGE_SOURCE, rewardSource)
+					.withParameter(LootContextParams.ATTACKING_ENTITY, player)
+					.withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, rewardSource.getDirectEntity())
 					.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, player)
 					.withLuck(player.getLuck());
 
