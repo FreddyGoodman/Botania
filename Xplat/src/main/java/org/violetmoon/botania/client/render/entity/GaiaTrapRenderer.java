@@ -19,6 +19,7 @@ import net.minecraft.world.phys.AABB;
 
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
+import org.violetmoon.botania.client.core.helper.ShaderCompatibility;
 import org.violetmoon.botania.common.entity.GaiaTrapEntity;
 
 public class GaiaTrapRenderer extends EntityRenderer<GaiaTrapEntity, GaiaTrapRenderer.State> {
@@ -39,12 +40,14 @@ public class GaiaTrapRenderer extends EntityRenderer<GaiaTrapEntity, GaiaTrapRen
 		state.brightness = (float) (Math.sin((ClientTickHandler.getEntityTicksInGame() + partialTick) / 20) + 1) * 0.2F + 0.6F;
 
 		float age = entity.tickCount + partialTick;
+		// Keep the ground warning legible after the shader pack applies lighting and fog.
+		int peakAlpha = ShaderCompatibility.useVanillaPipelines() ? 96 : 32;
 		if (entity.tickCount < 8) {
-			state.alpha = (int) (32 * Math.clamp(age / 8F, 0F, 1F));
+			state.alpha = (int) (peakAlpha * Math.clamp(age / 8F, 0F, 1F));
 		} else if (entity.tickCount > 47) {
-			state.alpha = (int) (32 * Math.clamp(1F - (age - 47) / 8F, 0F, 1F));
+			state.alpha = (int) (peakAlpha * Math.clamp(1F - (age - 47) / 8F, 0F, 1F));
 		} else {
-			state.alpha = 32;
+			state.alpha = peakAlpha;
 		}
 	}
 
@@ -62,7 +65,7 @@ public class GaiaTrapRenderer extends EntityRenderer<GaiaTrapEntity, GaiaTrapRen
 
 		pose.pushPose();
 		pose.translate(bounds.minX, bounds.minY + RenderHelper.getOffY(), bounds.minZ);
-		collector.submitCustomGeometry(pose, RenderHelper.getRectangleLayer(), (transform, buffer) -> RenderHelper.flatRectangle(buffer, transform.pose(), edge, width, 0, edge, length, red, green, blue, alpha));
+		collector.submitCustomGeometry(pose, RenderHelper.getRectangleLayer(), (transform, buffer) -> RenderHelper.flatRectangle(buffer, transform, edge, width, 0, edge, length, red, green, blue, alpha));
 		RenderHelper.incrementOffY();
 		pose.popPose();
 	}

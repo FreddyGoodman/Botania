@@ -114,9 +114,9 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 				int r = ARGB.red(color);
 				int g = ARGB.green(color);
 				int b = ARGB.blue(color);
-				RenderHelper.flatRectangle(buffer, transform.pose(), FRAME_WIDTH, x - FRAME_WIDTH, Y_OFFSET_INNER,
+				RenderHelper.flatRectangle(buffer, transform, FRAME_WIDTH, x - FRAME_WIDTH, Y_OFFSET_INNER,
 						FRAME_WIDTH, z - FRAME_WIDTH, r, g, b, INNER_ALPHA);
-				RenderHelper.flatRectangle(buffer, transform.pose(), 0, x, Y_OFFSET_OUTER, 0, z, r, g, b, OUTER_ALPHA);
+				RenderHelper.flatRectangle(buffer, transform, 0, x, Y_OFFSET_OUTER, 0, z, r, g, b, OUTER_ALPHA);
 			});
 		}
 		RenderHelper.incrementOffY();

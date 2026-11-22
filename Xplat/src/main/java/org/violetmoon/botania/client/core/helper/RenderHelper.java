@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.rendertype.OutputTarget;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteId;
@@ -71,9 +72,7 @@ public final class RenderHelper {
 			DepthStencilState.DEFAULT, false, OutputTarget.ITEM_ENTITY_TARGET, false);
 	private static final RenderType LIGHTNING = colorLayer("lightning", VertexFormat.Mode.QUADS, BlendFunction.LIGHTNING,
 			DepthStencilState.DEFAULT, true, OutputTarget.MAIN_TARGET, true);
-	private static final RenderType COMPATIBLE_RECTANGLE = RenderTypeAccessor.botania_create("botania:compatible_rectangle",
-			RenderSetup.builder(RenderPipelines.TRANSLUCENT_PARTICLE).withTexture("Sampler0", botaniaRL("textures/misc/solid_white.png"))
-					.useLightmap().setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET).bufferSize(256).sortOnUpload().createRenderSetup());
+	private static final RenderType COMPATIBLE_RECTANGLE = RenderTypes.entityTranslucent(botaniaRL("textures/misc/solid_white.png"));
 	private static final RenderType COMPATIBLE_CIRCLE = colorLayer("compatible_circle", RenderPipelines.DRAGON_RAYS, OutputTarget.ITEM_ENTITY_TARGET, false);
 	private static final RenderType COMPATIBLE_LIGHTNING = colorLayer("compatible_lightning", RenderPipelines.LIGHTNING, OutputTarget.MAIN_TARGET, true);
 	private static final RenderType RED_STRING = lineLayer("red_string", linePipeline("red_string", DepthStencilState.DEFAULT), OutputTarget.ITEM_ENTITY_TARGET, 128);
@@ -448,14 +447,20 @@ public final class RenderHelper {
 		}
 	}
 
-	public static void flatRectangle(VertexConsumer buffer, Matrix4f mat,
+	public static void flatRectangle(VertexConsumer buffer, PoseStack.Pose pose,
 			float xMin, float xMax, float y, float zMin, float zMax,
 			int r, int g, int b, int a) {
-		// The translucent particle pipeline uses a solid white texel so the vertex color controls the tint and opacity.
-		buffer.addVertex(mat, xMax, y, zMin).setColor(r, g, b, a).setUv(0.5F, 0.5F).setLight(LightCoordsUtil.FULL_BRIGHT);
-		buffer.addVertex(mat, xMin, y, zMin).setColor(r, g, b, a).setUv(0.5F, 0.5F).setLight(LightCoordsUtil.FULL_BRIGHT);
-		buffer.addVertex(mat, xMin, y, zMax).setColor(r, g, b, a).setUv(0.5F, 0.5F).setLight(LightCoordsUtil.FULL_BRIGHT);
-		buffer.addVertex(mat, xMax, y, zMax).setColor(r, g, b, a).setUv(0.5F, 0.5F).setLight(LightCoordsUtil.FULL_BRIGHT);
+		int color = ARGB.color(a, r, g, b);
+		flatRectangleVertex(buffer, pose, xMax, y, zMin, 1F, 0F, color);
+		flatRectangleVertex(buffer, pose, xMin, y, zMin, 0F, 0F, color);
+		flatRectangleVertex(buffer, pose, xMin, y, zMax, 0F, 1F, color);
+		flatRectangleVertex(buffer, pose, xMax, y, zMax, 1F, 1F, color);
+	}
+
+	private static void flatRectangleVertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float z,
+			float u, float v, int color) {
+		buffer.addVertex(pose.pose(), x, y, z).setColor(color).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY)
+				.setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(pose, 0F, 1F, 0F);
 	}
 
 	private static final RenderPipeline GUI_PROGRESS_PIE = geometryPipeline("gui_progress_pie", "core/position_tex_color",
