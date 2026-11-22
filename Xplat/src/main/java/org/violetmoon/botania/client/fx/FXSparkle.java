@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
-import org.violetmoon.botania.xplat.BotaniaConfig;
+import org.violetmoon.botania.client.core.helper.ShaderCompatibility;
 
 public class FXSparkle extends SingleQuadParticle {
 	private final boolean corrupt;
@@ -89,7 +89,10 @@ public class FXSparkle extends SingleQuadParticle {
 
 	@Override
 	protected Layer getLayer() {
-		return corrupt && BotaniaConfig.client().useShaders() ? BotaniaParticleLayers.CORRUPT : BotaniaParticleLayers.ADDITIVE;
+		if (ShaderCompatibility.useVanillaPipelines()) {
+			return Layer.TRANSLUCENT;
+		}
+		return corrupt ? BotaniaParticleLayers.CORRUPT : BotaniaParticleLayers.ADDITIVE;
 	}
 
 	public void setGravity(float value) {

@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
@@ -91,10 +92,10 @@ public class LuminizerBlockEntityRenderer implements BlockEntityRenderer<Luminiz
 		float f6 = 0.25F;
 
 		Matrix4f mat = pose.pose();
-		buffer.addVertex(mat, 0.0F - f5, 0.0F - f6, 0.0F).setColor(1F, 1F, 1F, 1F).setUv(f, f3);
-		buffer.addVertex(mat, f4 - f5, 0.0F - f6, 0.0F).setColor(1F, 1F, 1F, 1F).setUv(f1, f3);
-		buffer.addVertex(mat, f4 - f5, f4 - f6, 0.0F).setColor(1F, 1F, 1F, 1F).setUv(f1, f2);
-		buffer.addVertex(mat, 0.0F - f5, f4 - f6, 0.0F).setColor(1F, 1F, 1F, 1F).setUv(f, f2);
+		buffer.addVertex(mat, 0.0F - f5, 0.0F - f6, 0.0F).setColor(1F, 1F, 1F, 1F).setUv(f, f3).setLight(LightCoordsUtil.FULL_BRIGHT);
+		buffer.addVertex(mat, f4 - f5, 0.0F - f6, 0.0F).setColor(1F, 1F, 1F, 1F).setUv(f1, f3).setLight(LightCoordsUtil.FULL_BRIGHT);
+		buffer.addVertex(mat, f4 - f5, f4 - f6, 0.0F).setColor(1F, 1F, 1F, 1F).setUv(f1, f2).setLight(LightCoordsUtil.FULL_BRIGHT);
+		buffer.addVertex(mat, 0.0F - f5, f4 - f6, 0.0F).setColor(1F, 1F, 1F, 1F).setUv(f, f2).setLight(LightCoordsUtil.FULL_BRIGHT);
 
 	}
 

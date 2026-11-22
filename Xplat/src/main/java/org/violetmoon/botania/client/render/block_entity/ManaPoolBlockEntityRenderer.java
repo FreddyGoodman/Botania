@@ -100,7 +100,7 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 		}
 		if (state.overlaySprite != null) {
 			submitSurface(pose, collector, state.surface, state.surface.bottom, state.overlaySprite,
-					RenderHelper.ICON_OVERLAY, state.alpha, state.lightCoords);
+					RenderHelper.getIconOverlayLayer(), state.alpha, state.lightCoords);
 		}
 		submitMana(pose, collector, state.surface, waterSprite, state.manaLevel, state.lightCoords);
 	}

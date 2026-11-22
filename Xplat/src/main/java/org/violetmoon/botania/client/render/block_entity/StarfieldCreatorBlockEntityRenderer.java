@@ -22,8 +22,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 
+import org.violetmoon.botania.client.core.helper.ShaderCompatibility;
 import org.violetmoon.botania.common.block.block_entity.StarfieldCreatorBlockEntity;
 import org.violetmoon.botania.mixin.client.RenderTypeAccessor;
 
@@ -59,7 +61,8 @@ public class StarfieldCreatorBlockEntityRenderer implements BlockEntityRenderer<
 
 	@Override
 	public void submit(BlockEntityRenderState state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
-		collector.submitCustomGeometry(pose, STARFIELD, (transform, buffer) -> {
+		RenderType layer = ShaderCompatibility.useVanillaPipelines() ? RenderTypes.endPortal() : STARFIELD;
+		collector.submitCustomGeometry(pose, layer, (transform, buffer) -> {
 			float height = 0.24F;
 			buffer.addVertex(transform.pose(), 0, height, 1);
 			buffer.addVertex(transform.pose(), 1, height, 1);

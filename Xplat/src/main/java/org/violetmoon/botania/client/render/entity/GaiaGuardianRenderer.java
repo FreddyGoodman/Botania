@@ -30,10 +30,10 @@ import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerModelType;
 
 import org.jetbrains.annotations.Nullable;
+import org.violetmoon.botania.client.core.helper.ShaderCompatibility;
 import org.violetmoon.botania.client.model.GaiaGuardianModel;
 import org.violetmoon.botania.client.model.armor.ArmorModels;
 import org.violetmoon.botania.common.entity.GaiaGuardianEntity;
-import org.violetmoon.botania.xplat.BotaniaConfig;
 
 public class GaiaGuardianRenderer extends MobRenderer<GaiaGuardianEntity, GaiaGuardianRenderer.State, GaiaGuardianModel> {
 	private final GaiaGuardianModel normalModel;
@@ -113,7 +113,7 @@ public class GaiaGuardianRenderer extends MobRenderer<GaiaGuardianEntity, GaiaGu
 
 	@Override
 	protected int getModelTint(State state) {
-		return BotaniaConfig.client().useShaders() ? state.shaderTint : 0xFFFFFFFF;
+		return ShaderCompatibility.useVanillaPipelines() ? 0xFFFFFFFF : state.shaderTint;
 	}
 
 	public static class State extends HumanoidRenderState {

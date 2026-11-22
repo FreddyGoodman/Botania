@@ -75,7 +75,7 @@ public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> implem
 
 		pose.pushPose();
 		pose.translate(0.5, 0.5, 0.5);
-		collector.submitCustomGeometry(pose, RenderHelper.RED_STRING, (transform, buffer) -> {
+		collector.submitCustomGeometry(pose, RenderHelper.getRedStringLayer(), (transform, buffer) -> {
 			Vec3 step = state.span.normalize().scale(0.025);
 			Vec3 current = step;
 			double stride = step.length();

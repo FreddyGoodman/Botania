@@ -57,12 +57,12 @@ public class BoltRenderer {
 		ps.translate(-camVec.x, -camVec.y, -camVec.z);
 		var bufferSource = buffers.bufferSource();
 		BoltRenderer.INSTANCE.render(partialTicks, ps, bufferSource);
-		bufferSource.endBatch(RenderHelper.LIGHTNING);
+		bufferSource.endBatch(RenderHelper.getLightningLayer());
 		ps.popPose();
 	}
 
 	public void render(float partialTicks, PoseStack matrixStack, MultiBufferSource buffers) {
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.LIGHTNING);
+		VertexConsumer buffer = buffers.getBuffer(RenderHelper.getLightningLayer());
 		Matrix4f matrix = matrixStack.last().pose();
 		Timestamp timestamp = new Timestamp(Minecraft.getInstance().level.getGameTime(), partialTicks);
 		boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));

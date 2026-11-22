@@ -51,7 +51,7 @@ public final class NeoForgeBotaniaConfig {
 		public Client(ModConfigSpec.Builder builder) {
 			builder.push("rendering");
 			useShaders = builder
-					.comment("Set this to false to disable the use of shaders for some of the mod's renders. (Requires game restart)")
+					.comment("Set this to false to use standard Minecraft render pipelines for Botania world effects. (Requires game restart)")
 					.gameRestart()
 					.define("shaders", true);
 			boundBlockWireframe = builder

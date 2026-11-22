@@ -34,6 +34,7 @@ import org.violetmoon.botania.api.item.CoordBoundItem;
 import org.violetmoon.botania.api.item.WireframeCoordinateListProvider;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
 import org.violetmoon.botania.client.core.helper.RenderHelper;
+import org.violetmoon.botania.client.core.helper.ShaderCompatibility;
 import org.violetmoon.botania.xplat.BotaniaConfig;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public final class BoundBlockRenderer {
 		ret.put(RenderHelper.LINE_4_NO_DEPTH, new ByteBufferBuilder(RenderHelper.LINE_4_NO_DEPTH.bufferSize()));
 		ret.put(RenderHelper.LINE_5_NO_DEPTH, new ByteBufferBuilder(RenderHelper.LINE_5_NO_DEPTH.bufferSize()));
 		ret.put(RenderHelper.LINE_8_NO_DEPTH, new ByteBufferBuilder(RenderHelper.LINE_8_NO_DEPTH.bufferSize()));
+		ret.put(RenderHelper.COMPATIBLE_OUTLINE, new ByteBufferBuilder(RenderHelper.COMPATIBLE_OUTLINE.bufferSize()));
 		return ret;
 	}), new ByteBufferBuilder(786432)); //Todo confirm the capacity is correct. This is just taken from `RenderBuffers`
 
@@ -121,8 +123,9 @@ public final class BoundBlockRenderer {
 
 			ms.pushPose();
 			ms.translate(pos.getX() - cameraPosition.x, pos.getY() - cameraPosition.y, pos.getZ() - cameraPosition.z);
-			var outline = thick ? RenderHelper.LINE_5_NO_DEPTH : RenderHelper.LINE_1_NO_DEPTH;
-			var glow = thick ? RenderHelper.LINE_8_NO_DEPTH : RenderHelper.LINE_4_NO_DEPTH;
+			boolean useVanilla = ShaderCompatibility.useVanillaPipelines();
+			var outline = useVanilla ? RenderHelper.COMPATIBLE_OUTLINE : thick ? RenderHelper.LINE_5_NO_DEPTH : RenderHelper.LINE_1_NO_DEPTH;
+			var glow = useVanilla ? RenderHelper.COMPATIBLE_OUTLINE : thick ? RenderHelper.LINE_8_NO_DEPTH : RenderHelper.LINE_4_NO_DEPTH;
 			ShapeRenderer.renderShape(ms, buffers.getBuffer(outline), shape, 0, 0, 0, color, thick ? 5 : 1);
 			ShapeRenderer.renderShape(ms, buffers.getBuffer(glow), shape, 0, 0, 0, ARGB.color(64, color), thick ? 8 : 4);
 			ms.popPose();

@@ -101,7 +101,7 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 			var center = circle.subtileCoords();
 			pose.translate(center.getX() - pos.getX() + 0.5, center.getY() - pos.getY(), center.getZ() - pos.getZ() + 0.5);
 			double radius = circle.radius();
-			collector.submitCustomGeometry(pose, RenderHelper.CIRCLE, (transform, buffer) -> {
+			collector.submitCustomGeometry(pose, RenderHelper.getCircleLayer(), (transform, buffer) -> {
 				drawCircle(transform.pose(), buffer, radius - FRAME_WIDTH, Y_OFFSET_INNER, ARGB.color(INNER_ALPHA, color));
 				drawCircle(transform.pose(), buffer, radius, Y_OFFSET_OUTER, ARGB.color(OUTER_ALPHA, color));
 			});
@@ -110,7 +110,7 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 			pose.translate(box.minX - pos.getX(), box.minY - pos.getY(), box.minZ - pos.getZ());
 			float x = (float) box.getXsize();
 			float z = (float) box.getZsize();
-			collector.submitCustomGeometry(pose, RenderHelper.RECTANGLE, (transform, buffer) -> {
+			collector.submitCustomGeometry(pose, RenderHelper.getRectangleLayer(), (transform, buffer) -> {
 				int r = ARGB.red(color);
 				int g = ARGB.green(color);
 				int b = ARGB.blue(color);

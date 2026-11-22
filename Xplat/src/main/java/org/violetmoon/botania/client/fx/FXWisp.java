@@ -12,6 +12,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 
+import org.violetmoon.botania.client.core.helper.ShaderCompatibility;
+
 public class FXWisp extends SingleQuadParticle {
 	private final boolean depthTest;
 	private final float moteParticleScale;
@@ -62,6 +64,9 @@ public class FXWisp extends SingleQuadParticle {
 
 	@Override
 	protected Layer getLayer() {
+		if (ShaderCompatibility.useVanillaPipelines()) {
+			return Layer.TRANSLUCENT;
+		}
 		return depthTest ? BotaniaParticleLayers.ADDITIVE : BotaniaParticleLayers.ADDITIVE_WITHOUT_DEPTH_TEST;
 	}
 

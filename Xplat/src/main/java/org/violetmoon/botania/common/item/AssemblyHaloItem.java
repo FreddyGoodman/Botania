@@ -27,6 +27,7 @@ import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.*;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -440,10 +441,14 @@ public class AssemblyHaloItem extends Item implements ClientInventoryTick {
 						float nextX = Mth.cos((angle + 1) * Mth.DEG_TO_RAD) * s;
 						float nextZ = Mth.sin((angle + 1) * Mth.DEG_TO_RAD) * s;
 
-						buffer.addVertex(mat, x * m, y, z * m).setColor(shade, shade, shade, alpha).setUv(u, v);
-						buffer.addVertex(mat, x, lowerY, z).setColor(shade, shade, shade, alpha).setUv(u, 0);
-						buffer.addVertex(mat, nextX, lowerY, nextZ).setColor(shade, shade, shade, alpha).setUv(0, 0);
-						buffer.addVertex(mat, nextX * m, y, nextZ * m).setColor(shade, shade, shade, alpha).setUv(0, v);
+						buffer.addVertex(mat, x * m, y, z * m).setColor(shade, shade, shade, alpha).setUv(u, v)
+								.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(transform, 0, 1, 0);
+						buffer.addVertex(mat, x, lowerY, z).setColor(shade, shade, shade, alpha).setUv(u, 0)
+								.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(transform, 0, 1, 0);
+						buffer.addVertex(mat, nextX, lowerY, nextZ).setColor(shade, shade, shade, alpha).setUv(0, 0)
+								.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(transform, 0, 1, 0);
+						buffer.addVertex(mat, nextX * m, y, nextZ * m).setColor(shade, shade, shade, alpha).setUv(0, v)
+								.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(transform, 0, 1, 0);
 					}
 				});
 				ms.popPose();

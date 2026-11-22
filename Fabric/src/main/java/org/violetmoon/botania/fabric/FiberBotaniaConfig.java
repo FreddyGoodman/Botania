@@ -90,7 +90,7 @@ public final class FiberBotaniaConfig {
 		public ConfigTree configure(ConfigTreeBuilder builder) {
 			builder.fork("rendering")
 					.beginValue("shaders", BOOLEAN, true)
-					.withComment("Set this to false to disable the use of shaders for some of the mod's renders. (Requires game restart)")
+					.withComment("Set this to false to use standard Minecraft render pipelines for Botania world effects. (Requires game restart)")
 					.finishValue(useShaders::mirror)
 
 					.beginValue("boundBlockWireframe", BOOLEAN, true)

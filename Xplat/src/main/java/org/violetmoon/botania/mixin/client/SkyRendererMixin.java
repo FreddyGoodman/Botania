@@ -32,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.violetmoon.botania.client.core.SkyblockWorldInfo;
 import org.violetmoon.botania.client.core.handler.ClientTickHandler;
+import org.violetmoon.botania.client.core.helper.ShaderCompatibility;
 import org.violetmoon.botania.client.render.world.SkyblockSkyRenderer;
 import org.violetmoon.botania.xplat.BotaniaConfig;
 
@@ -53,7 +54,7 @@ public class SkyRendererMixin {
 	private void botania$extractSky(ClientLevel level, float partialTick, Camera camera, SkyRenderState state, CallbackInfo ci) {
 		var config = BotaniaConfig.client();
 		boolean gardenOfGlass = level.getLevelData() instanceof SkyblockWorldInfo info && info.isGardenOfGlass();
-		if (config.enableFancySkybox() && level.dimension() == Level.OVERWORLD
+		if (config.enableFancySkybox() && !ShaderCompatibility.useVanillaPipelines() && level.dimension() == Level.OVERWORLD
 				&& (config.enableFancySkyboxInNormalWorlds() || gardenOfGlass)) {
 			float celestialAngle = Mth.frac(state.sunAngle / Mth.TWO_PI);
 			botania$sky = new SkyblockSkyRenderer.State(celestialAngle, state.rainBrightness,

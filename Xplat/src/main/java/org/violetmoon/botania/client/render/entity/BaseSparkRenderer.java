@@ -104,7 +104,7 @@ public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends Entit
 
 	private static void submitIcon(PoseStack pose, SubmitNodeCollector collector, TextureAtlasSprite icon, int color) {
 		ClientXplatAbstractions.instance().markSpriteActive(icon);
-		collector.submitCustomGeometry(pose, RenderHelper.SPARK, (transform, buffer) -> renderIcon(transform, buffer, icon, color));
+		collector.submitCustomGeometry(pose, RenderHelper.getSparkLayer(), (transform, buffer) -> renderIcon(transform, buffer, icon, color));
 	}
 
 	private static void renderIcon(PoseStack.Pose pose, VertexConsumer buffer, TextureAtlasSprite icon, int color) {

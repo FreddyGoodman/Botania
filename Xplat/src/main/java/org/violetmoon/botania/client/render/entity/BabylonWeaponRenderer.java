@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
 
 import org.jetbrains.annotations.Nullable;
 import org.violetmoon.botania.client.core.handler.StandaloneBlockModels;
@@ -84,10 +85,14 @@ public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity, B
 		float alpha = state.circleAlpha;
 		collector.submitCustomGeometry(pose, RenderHelper.getBabylonIconLayer(), (transform, buffer) -> {
 			var matrix = transform.pose();
-			buffer.addVertex(matrix, -1, 0, -1).setColor(1, 1, 1, alpha).setUv(0, 0);
-			buffer.addVertex(matrix, -1, 0, 1).setColor(1, 1, 1, alpha).setUv(0, 1);
-			buffer.addVertex(matrix, 1, 0, 1).setColor(1, 1, 1, alpha).setUv(1, 1);
-			buffer.addVertex(matrix, 1, 0, -1).setColor(1, 1, 1, alpha).setUv(1, 0);
+			buffer.addVertex(matrix, -1, 0, -1).setColor(1, 1, 1, alpha).setUv(0, 0)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(transform, 0, 1, 0);
+			buffer.addVertex(matrix, -1, 0, 1).setColor(1, 1, 1, alpha).setUv(0, 1)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(transform, 0, 1, 0);
+			buffer.addVertex(matrix, 1, 0, 1).setColor(1, 1, 1, alpha).setUv(1, 1)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(transform, 0, 1, 0);
+			buffer.addVertex(matrix, 1, 0, -1).setColor(1, 1, 1, alpha).setUv(1, 0)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(transform, 0, 1, 0);
 		});
 		pose.popPose();
 	}

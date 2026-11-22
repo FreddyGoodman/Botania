@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -23,6 +24,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -463,7 +465,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 		public static void submitHalo(PoseStack pose, SubmitNodeCollector collector, float tickTime) {
 			pose.pushPose();
 			poseHalo(pose, tickTime);
-			collector.submitCustomGeometry(pose, RenderHelper.getTiaraHaloLayer(), (transform, buffer) -> drawHalo(transform.pose(), buffer));
+			collector.submitCustomGeometry(pose, RenderHelper.getTiaraHaloLayer(), (transform, buffer) -> drawHalo(transform, buffer));
 			pose.popPose();
 		}
 
@@ -474,11 +476,16 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			pose.scale(0.75F, -0.75F, -0.75F);
 		}
 
-		private static void drawHalo(Matrix4f mat, VertexConsumer buffer) {
-			buffer.addVertex(mat, -1F, 0, -1F).setColor(-1).setUv(0, 0);
-			buffer.addVertex(mat, 1F, 0, -1F).setColor(-1).setUv(1, 0);
-			buffer.addVertex(mat, 1F, 0, 1F).setColor(-1).setUv(1, 1);
-			buffer.addVertex(mat, -1F, 0, 1F).setColor(-1).setUv(0, 1);
+		private static void drawHalo(PoseStack.Pose pose, VertexConsumer buffer) {
+			Matrix4f mat = pose.pose();
+			buffer.addVertex(mat, -1F, 0, -1F).setColor(-1).setUv(0, 0)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+			buffer.addVertex(mat, 1F, 0, -1F).setColor(-1).setUv(1, 0)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+			buffer.addVertex(mat, 1F, 0, 1F).setColor(-1).setUv(1, 1)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+			buffer.addVertex(mat, -1F, 0, 1F).setColor(-1).setUv(0, 1)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
 		}
 
 		private static int estimateAdditionalNumRowsRendered(Player player) {

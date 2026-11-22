@@ -48,7 +48,6 @@ import org.violetmoon.botania.client.lib.ResourcesLib;
 import org.violetmoon.botania.common.helper.VecHelper;
 import org.violetmoon.botania.common.item.equipment.bauble.FlugelTiaraItem;
 import org.violetmoon.botania.mixin.client.RenderTypeAccessor;
-import org.violetmoon.botania.xplat.BotaniaConfig;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,23 +61,30 @@ public final class RenderHelper {
 	private static final DepthStencilState NO_DEPTH = new DepthStencilState(CompareOp.ALWAYS_PASS, false);
 
 	private static final RenderPipeline OVERLAY_LINES = linePipeline("overlay_lines", NO_DEPTH);
+	public static final RenderType COMPATIBLE_OUTLINE = lineLayer("compatible_outline", RenderPipelines.LINES_TRANSLUCENT, OutputTarget.MAIN_TARGET, 128);
 	private static final RenderType STAR = colorLayer("star", VertexFormat.Mode.TRIANGLES, BlendFunction.LIGHTNING, READ_DEPTH,
 			true, OutputTarget.MAIN_TARGET, false);
-	public static final RenderType RECTANGLE = colorLayer("rectangle_highlight", VertexFormat.Mode.QUADS, BlendFunction.TRANSLUCENT,
+	private static final RenderType RECTANGLE = colorLayer("rectangle_highlight", VertexFormat.Mode.QUADS, BlendFunction.TRANSLUCENT,
 			DepthStencilState.DEFAULT, false, OutputTarget.ITEM_ENTITY_TARGET, true);
-	public static final RenderType CIRCLE = colorLayer("circle_highlight", VertexFormat.Mode.TRIANGLES, BlendFunction.TRANSLUCENT,
+	private static final RenderType CIRCLE = colorLayer("circle_highlight", VertexFormat.Mode.TRIANGLES, BlendFunction.TRANSLUCENT,
 			DepthStencilState.DEFAULT, false, OutputTarget.ITEM_ENTITY_TARGET, false);
-	public static final RenderType LIGHTNING = colorLayer("lightning", VertexFormat.Mode.QUADS, BlendFunction.LIGHTNING,
+	private static final RenderType LIGHTNING = colorLayer("lightning", VertexFormat.Mode.QUADS, BlendFunction.LIGHTNING,
 			DepthStencilState.DEFAULT, true, OutputTarget.MAIN_TARGET, true);
-	public static final RenderType RED_STRING = lineLayer("red_string", linePipeline("red_string", DepthStencilState.DEFAULT), OutputTarget.ITEM_ENTITY_TARGET, 128);
+	private static final RenderType COMPATIBLE_RECTANGLE = colorLayer("compatible_rectangle", RenderPipelines.LIGHTNING, OutputTarget.ITEM_ENTITY_TARGET, true);
+	private static final RenderType COMPATIBLE_CIRCLE = colorLayer("compatible_circle", RenderPipelines.DRAGON_RAYS, OutputTarget.ITEM_ENTITY_TARGET, false);
+	private static final RenderType COMPATIBLE_LIGHTNING = colorLayer("compatible_lightning", RenderPipelines.LIGHTNING, OutputTarget.MAIN_TARGET, true);
+	private static final RenderType RED_STRING = lineLayer("red_string", linePipeline("red_string", DepthStencilState.DEFAULT), OutputTarget.ITEM_ENTITY_TARGET, 128);
+	private static final RenderType COMPATIBLE_RED_STRING = lineLayer("compatible_red_string", RenderPipelines.LINES_TRANSLUCENT, OutputTarget.ITEM_ENTITY_TARGET, 128);
 	public static final RenderType LINE_1_NO_DEPTH = lineLayer("line_1_no_depth", OVERLAY_LINES, OutputTarget.MAIN_TARGET, 128);
 	public static final RenderType LINE_4_NO_DEPTH = lineLayer("line_4_no_depth", OVERLAY_LINES, OutputTarget.MAIN_TARGET, 128);
 	public static final RenderType LINE_5_NO_DEPTH = lineLayer("line_5_no_depth", OVERLAY_LINES, OutputTarget.MAIN_TARGET, 64);
 	public static final RenderType LINE_8_NO_DEPTH = lineLayer("line_8_no_depth", OVERLAY_LINES, OutputTarget.MAIN_TARGET, 64);
 	private static final RenderPipeline LIT_OVERLAY_PIPELINE = litOverlayPipeline("lit_overlay", false);
-	public static final RenderType SPARK = litOverlay("spark", LIT_OVERLAY_PIPELINE, TextureAtlas.LOCATION_ITEMS, 256, true);
-	public static final RenderType ICON_OVERLAY = litOverlay("icon_overlay", LIT_OVERLAY_PIPELINE, TextureAtlas.LOCATION_BLOCKS, 128, true);
-	private static final RenderType PLAIN_OVERLAY = litOverlay("plain_overlay", LIT_OVERLAY_PIPELINE, TextureAtlas.LOCATION_BLOCKS, 128, false);
+	private static final RenderType SPARK = litOverlay("spark", LIT_OVERLAY_PIPELINE, TextureAtlas.LOCATION_ITEMS, 256, true);
+	private static final RenderType ICON_OVERLAY = litOverlay("icon_overlay", LIT_OVERLAY_PIPELINE, TextureAtlas.LOCATION_BLOCKS, 128, true);
+	private static final RenderType COMPATIBLE_SPARK = litOverlay("compatible_spark", RenderPipelines.TRANSLUCENT_PARTICLE, TextureAtlas.LOCATION_ITEMS, 256, true);
+	private static final RenderType PLAIN_OVERLAY = litOverlay("plain_overlay", RenderPipelines.TRANSLUCENT_PARTICLE, TextureAtlas.LOCATION_BLOCKS, 128, false);
+	private static final RenderType COMPATIBLE_ICON_OVERLAY = litOverlay("compatible_icon_overlay", RenderPipelines.TRANSLUCENT_PARTICLE, TextureAtlas.LOCATION_BLOCKS, 128, true);
 	private static final RenderType MANA_POOL_WATER = litOverlay("mana_pool_water", litOverlayPipeline("mana_pool", true), TextureAtlas.LOCATION_BLOCKS, 128, false);
 	private static final RenderType TERRA_PLATE = litOverlay("terrestrial_agglomeration_plate_rune", litOverlayPipeline("terrestrial_agglomeration_plate_rune", true), TextureAtlas.LOCATION_BLOCKS, 128, false);
 	private static final RenderType ENCHANTER = litOverlay("mana_enchanter_rune", litOverlayPipeline("mana_enchanter_rune", true), TextureAtlas.LOCATION_BLOCKS, 128, false);
@@ -86,15 +92,15 @@ public final class RenderHelper {
 	private static final RenderPipeline HALO_PIPELINE = texturedPipeline("halo", false, true);
 	private static final RenderPipeline ATLAS_HALO_PIPELINE = texturedPipeline("atlas_halo", true, true);
 	private static final RenderPipeline TEXTURED_NO_CULL = texturedPipeline("textured_no_cull", false, false);
-	private static final RenderPipeline TEXTURED_CULL = texturedPipeline("textured_cull", true, false);
 	private static final Identifier BABYLON_TEXTURE = Identifier.parse(ResourcesLib.MISC_BABYLON);
 	private static final RenderType LIGHT_RELAY = texturedLayer("luminizer", ATLAS_HALO_PIPELINE, TextureAtlas.LOCATION_BLOCKS, OutputTarget.ITEM_ENTITY_TARGET, true, false);
-	private static final RenderType LIGHT_RELAY_PLAIN = texturedLayer("luminizer_plain", TEXTURED_CULL, TextureAtlas.LOCATION_BLOCKS, OutputTarget.ITEM_ENTITY_TARGET, true, false);
+	private static final RenderType LIGHT_RELAY_PLAIN = litOverlay("luminizer_plain", RenderPipelines.TRANSLUCENT_PARTICLE, TextureAtlas.LOCATION_BLOCKS, 64, true);
 	private static final RenderType BABYLON_ICON = texturedLayer("babylon", HALO_PIPELINE, BABYLON_TEXTURE, OutputTarget.ITEM_ENTITY_TARGET, true, false);
-	private static final RenderType BABYLON_ICON_PLAIN = texturedLayer("babylon_plain", TEXTURED_NO_CULL, BABYLON_TEXTURE, OutputTarget.ITEM_ENTITY_TARGET, true, false);
+	private static final RenderType BABYLON_ICON_PLAIN = texturedLayer("babylon_plain", RenderPipelines.ENTITY_TRANSLUCENT, BABYLON_TEXTURE, OutputTarget.ITEM_ENTITY_TARGET, true, false);
 	private static final RenderType HALO = texturedLayer("halo", HALO_PIPELINE, FlugelTiaraItem.textureHalo, OutputTarget.MAIN_TARGET, true, false);
-	private static final RenderType HALO_PLAIN = texturedLayer("halo_plain", TEXTURED_NO_CULL, FlugelTiaraItem.textureHalo, OutputTarget.MAIN_TARGET, true, false);
+	private static final RenderType HALO_PLAIN = texturedLayer("halo_plain", RenderPipelines.ENTITY_TRANSLUCENT, FlugelTiaraItem.textureHalo, OutputTarget.MAIN_TARGET, true, false);
 	private static final Function<Identifier, RenderType> ASSEMBLY_HALO = Util.memoize(texture -> texturedLayer("assembly_halo", TEXTURED_NO_CULL, texture, OutputTarget.MAIN_TARGET, false, true));
+	private static final Function<Identifier, RenderType> COMPATIBLE_ASSEMBLY_HALO = Util.memoize(texture -> texturedLayer("compatible_assembly_halo", RenderPipelines.ENTITY_TRANSLUCENT, texture, OutputTarget.MAIN_TARGET, false, true));
 
 	private static final RenderPipeline PYLON_PIPELINE = geometryPipeline("pylon", "core/entity", DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS)
 			.withFragmentShader(botaniaRL("core/pylon"))
@@ -151,6 +157,10 @@ public final class RenderHelper {
 				.withColorTargetState(new ColorTargetState(blend))
 				.withDepthStencilState(depth)
 				.build();
+		return colorLayer(name, pipeline, target, sort);
+	}
+
+	private static RenderType colorLayer(String name, RenderPipeline pipeline, OutputTarget target, boolean sort) {
 		var setup = RenderSetup.builder(pipeline).bufferSize(256).setOutputTarget(target);
 		if (sort) {
 			setup.sortOnUpload();
@@ -220,6 +230,9 @@ public final class RenderHelper {
 	private static RenderType texturedLayer(String name, RenderPipeline pipeline, Identifier texture, OutputTarget target,
 			boolean outline, boolean linear) {
 		var setup = RenderSetup.builder(pipeline).bufferSize(64).setOutputTarget(target);
+		if (pipeline == RenderPipelines.ENTITY_TRANSLUCENT) {
+			setup.useLightmap().useOverlay();
+		}
 		if (linear) {
 			setup.withTexture("Sampler0", texture, () -> RenderSystem.getSamplerCache().getRepeat(FilterMode.LINEAR)).sortOnUpload();
 		} else {
@@ -253,38 +266,62 @@ public final class RenderHelper {
 	}
 
 	public static RenderType getPylonGlow(Identifier texture, boolean direct) {
-		if (BotaniaConfig.client().useShaders()) {
+		if (!ShaderCompatibility.useVanillaPipelines()) {
 			return (direct ? PYLON_GLOW_DIRECT : PYLON_GLOW).apply(texture);
 		}
 		return (direct ? PYLON_GLOW_DIRECT_PLAIN : PYLON_GLOW_PLAIN).apply(texture);
 	}
 
 	public static RenderType getManaPoolWaterLayer() {
-		return BotaniaConfig.client().useShaders() ? MANA_POOL_WATER : PLAIN_OVERLAY;
+		return ShaderCompatibility.useVanillaPipelines() ? PLAIN_OVERLAY : MANA_POOL_WATER;
 	}
 
 	public static RenderType getTerraPlateLayer() {
-		return BotaniaConfig.client().useShaders() ? TERRA_PLATE : PLAIN_OVERLAY;
+		return ShaderCompatibility.useVanillaPipelines() ? PLAIN_OVERLAY : TERRA_PLATE;
 	}
 
 	public static RenderType getEnchanterLayer() {
-		return BotaniaConfig.client().useShaders() ? ENCHANTER : PLAIN_OVERLAY;
+		return ShaderCompatibility.useVanillaPipelines() ? PLAIN_OVERLAY : ENCHANTER;
 	}
 
 	public static RenderType getLightRelayLayer() {
-		return BotaniaConfig.client().useShaders() ? LIGHT_RELAY : LIGHT_RELAY_PLAIN;
+		return ShaderCompatibility.useVanillaPipelines() ? LIGHT_RELAY_PLAIN : LIGHT_RELAY;
 	}
 
 	public static RenderType getBabylonIconLayer() {
-		return BotaniaConfig.client().useShaders() ? BABYLON_ICON : BABYLON_ICON_PLAIN;
+		return ShaderCompatibility.useVanillaPipelines() ? BABYLON_ICON_PLAIN : BABYLON_ICON;
 	}
 
 	public static RenderType getTiaraHaloLayer() {
-		return BotaniaConfig.client().useShaders() ? HALO : HALO_PLAIN;
+		return ShaderCompatibility.useVanillaPipelines() ? HALO_PLAIN : HALO;
 	}
 
 	public static RenderType getHaloLayer(Identifier texture) {
-		return ASSEMBLY_HALO.apply(texture);
+		return (ShaderCompatibility.useVanillaPipelines() ? COMPATIBLE_ASSEMBLY_HALO : ASSEMBLY_HALO).apply(texture);
+	}
+
+	public static RenderType getSparkLayer() {
+		return ShaderCompatibility.useVanillaPipelines() ? COMPATIBLE_SPARK : SPARK;
+	}
+
+	public static RenderType getIconOverlayLayer() {
+		return ShaderCompatibility.useVanillaPipelines() ? COMPATIBLE_ICON_OVERLAY : ICON_OVERLAY;
+	}
+
+	public static RenderType getLightningLayer() {
+		return ShaderCompatibility.useVanillaPipelines() ? COMPATIBLE_LIGHTNING : LIGHTNING;
+	}
+
+	public static RenderType getRectangleLayer() {
+		return ShaderCompatibility.useVanillaPipelines() ? COMPATIBLE_RECTANGLE : RECTANGLE;
+	}
+
+	public static RenderType getCircleLayer() {
+		return ShaderCompatibility.useVanillaPipelines() ? COMPATIBLE_CIRCLE : CIRCLE;
+	}
+
+	public static RenderType getRedStringLayer() {
+		return ShaderCompatibility.useVanillaPipelines() ? COMPATIBLE_RED_STRING : RED_STRING;
 	}
 
 	private static final Function<Identifier, RenderType> GAIA_NOISE_DYNAMIC_LAYER = gaiaNoiseLayer("gaia_noise_dynamic", true);
@@ -320,11 +357,11 @@ public final class RenderHelper {
 	}
 
 	public static RenderType getGaiaNoiseDynamicLayer(Identifier texture) {
-		return BotaniaConfig.client().useShaders() ? GAIA_NOISE_DYNAMIC_LAYER.apply(texture) : RenderTypes.entityTranslucent(texture);
+		return ShaderCompatibility.useVanillaPipelines() ? RenderTypes.entityTranslucent(texture) : GAIA_NOISE_DYNAMIC_LAYER.apply(texture);
 	}
 
 	public static RenderType getGaiaNoiseConstantLayer(Identifier texture) {
-		return BotaniaConfig.client().useShaders() ? GAIA_NOISE_CONSTANT_LAYER.apply(texture) : RenderTypes.entityTranslucent(texture);
+		return ShaderCompatibility.useVanillaPipelines() ? RenderTypes.entityTranslucent(texture) : GAIA_NOISE_CONSTANT_LAYER.apply(texture);
 	}
 
 	public static void drawAlfheimPortal(GuiGraphicsExtractor graphics, int x, int y) {
@@ -343,15 +380,19 @@ public final class RenderHelper {
 
 	public static void renderStar(PoseStack ms, MultiBufferSource buffers, int color, float xScale, float yScale, float zScale, long seed, float partialTicks) {
 		float ticks = ClientTickHandler.getEntityTicksInGame() + partialTicks;
-		renderStar(ms, buffers.getBuffer(STAR), color, xScale, yScale, zScale, seed, ticks);
+		renderStar(ms, buffers.getBuffer(getStarLayer()), color, xScale, yScale, zScale, seed, ticks);
 	}
 
 	public static void submitStar(PoseStack pose, SubmitNodeCollector collector, int color, float scale, long seed, float ticks) {
-		collector.submitCustomGeometry(pose, STAR, (transform, buffer) -> {
+		collector.submitCustomGeometry(pose, getStarLayer(), (transform, buffer) -> {
 			PoseStack geometry = new PoseStack();
 			geometry.mulPose(transform.pose());
 			renderStar(geometry, buffer, color, scale, scale, scale, seed, ticks);
 		});
+	}
+
+	private static RenderType getStarLayer() {
+		return ShaderCompatibility.useVanillaPipelines() ? RenderTypes.dragonRays() : STAR;
 	}
 
 	private static void renderStar(PoseStack ms, VertexConsumer buffer, int color, float xScale, float yScale, float zScale, long seed, float ticks) {

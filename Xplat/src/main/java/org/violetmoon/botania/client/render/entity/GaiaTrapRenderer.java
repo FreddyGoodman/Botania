@@ -62,7 +62,7 @@ public class GaiaTrapRenderer extends EntityRenderer<GaiaTrapEntity, GaiaTrapRen
 
 		pose.pushPose();
 		pose.translate(bounds.minX, bounds.minY + RenderHelper.getOffY(), bounds.minZ);
-		collector.submitCustomGeometry(pose, RenderHelper.RECTANGLE, (transform, buffer) -> RenderHelper.flatRectangle(buffer, transform.pose(), edge, width, 0, edge, length, red, green, blue, alpha));
+		collector.submitCustomGeometry(pose, RenderHelper.getRectangleLayer(), (transform, buffer) -> RenderHelper.flatRectangle(buffer, transform.pose(), edge, width, 0, edge, length, red, green, blue, alpha));
 		RenderHelper.incrementOffY();
 		pose.popPose();
 	}
