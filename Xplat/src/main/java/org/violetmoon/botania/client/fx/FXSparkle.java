@@ -89,10 +89,7 @@ public class FXSparkle extends SingleQuadParticle {
 
 	@Override
 	protected Layer getLayer() {
-		if (ShaderCompatibility.useVanillaPipelines()) {
-			return Layer.TRANSLUCENT;
-		}
-		return corrupt ? BotaniaParticleLayers.CORRUPT : BotaniaParticleLayers.ADDITIVE;
+		return corrupt && !ShaderCompatibility.useVanillaPipelines() ? BotaniaParticleLayers.CORRUPT : BotaniaParticleLayers.additive(true);
 	}
 
 	public void setGravity(float value) {

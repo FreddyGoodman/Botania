@@ -13,10 +13,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.HumanoidArm;
 
 import org.violetmoon.botania.client.core.helper.RenderHelper;
 import org.violetmoon.botania.client.render.entity.GaiaGuardianRenderer;
+
+import java.util.List;
 
 // [VanillaCopy] PlayerModel, only the parts relevant to the Gaia Guardian
 public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderer.State> {
@@ -26,6 +29,7 @@ public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderer.State>
 	public final ModelPart rightPants;
 	public final ModelPart jacket;
 	private final boolean slim;
+	private final List<ModelPart> bodyParts;
 
 	public GaiaGuardianModel(ModelPart root, boolean slim) {
 		super(root, RenderHelper::getGaiaNoiseDynamicLayer);
@@ -35,6 +39,7 @@ public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderer.State>
 		this.rightPants = rightLeg.getChild("right_pants");
 		this.jacket = body.getChild("jacket");
 		this.slim = slim;
+		this.bodyParts = List.of(head, body, leftArm, rightArm, leftLeg, rightLeg);
 	}
 
 	@Override
@@ -46,6 +51,15 @@ public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderer.State>
 		rightPants.visible = state.showRightPants;
 		leftSleeve.visible = state.showLeftSleeve;
 		rightSleeve.visible = state.showRightSleeve;
+		if (state.compatibilityDistortion > 0F) {
+			var random = RandomSource.create(state.noiseFrame);
+			float pixels = 16F * state.compatibilityDistortion;
+			for (ModelPart part : bodyParts) {
+				part.x += random.triangle(0F, pixels);
+				part.y += random.triangle(0F, pixels);
+				part.z += random.triangle(0F, pixels);
+			}
+		}
 	}
 
 	@Override

@@ -38,6 +38,7 @@ import org.violetmoon.botania.common.entity.GaiaGuardianEntity;
 public class GaiaGuardianRenderer extends MobRenderer<GaiaGuardianEntity, GaiaGuardianRenderer.State, GaiaGuardianModel> {
 	private final GaiaGuardianModel normalModel;
 	private final GaiaGuardianModel slimModel;
+	private final GaiaGuardianTextures compatibilityTextures = new GaiaGuardianTextures();
 
 	public GaiaGuardianRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx, new GaiaGuardianModel(ctx.bakeLayer(ModelLayers.PLAYER), false), 0F);
@@ -82,6 +83,12 @@ public class GaiaGuardianRenderer extends MobRenderer<GaiaGuardianEntity, GaiaGu
 			disfiguration = (0.025F + guardian.hurtTime * ((1F - 0.15F) / 20F)) / 2F;
 			grainIntensity = 0.05F + guardian.hurtTime * ((1F - 0.15F) / 10F);
 		}
+		state.compatibility = ShaderCompatibility.useVanillaPipelines();
+		state.noiseFrame = (int) state.ageInTicks / 2;
+		state.compatibilityDistortion = state.compatibility ? disfiguration : 0F;
+		if (state.compatibility) {
+			state.texture = compatibilityTextures.get(state.texture, grainIntensity, state.noiseFrame);
+		}
 
 		// The noise pipeline decodes the model tint as grain and positional distortion.
 		int grain = ARGB.as8BitChannel(Math.clamp(grainIntensity, 0F, 1F));
@@ -113,13 +120,16 @@ public class GaiaGuardianRenderer extends MobRenderer<GaiaGuardianEntity, GaiaGu
 
 	@Override
 	protected int getModelTint(State state) {
-		return ShaderCompatibility.useVanillaPipelines() ? 0xFFFFFFFF : state.shaderTint;
+		return state.compatibility ? 0xFFFFFFFF : state.shaderTint;
 	}
 
 	public static class State extends HumanoidRenderState {
 		private Identifier texture = DefaultPlayerSkin.getDefaultTexture();
 		private boolean slim;
+		private boolean compatibility;
 		private int shaderTint;
+		public int noiseFrame;
+		public float compatibilityDistortion;
 		public boolean showHat;
 		public boolean showJacket;
 		public boolean showLeftPants;

@@ -22,14 +22,25 @@ import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.Identifier;
 
+import org.violetmoon.botania.client.core.helper.ShaderCompatibility;
+import org.violetmoon.botania.xplat.BotaniaConfig;
+
 import static org.violetmoon.botania.api.BotaniaAPI.botaniaRL;
 
 public final class BotaniaParticleLayers {
 	public static final SingleQuadParticle.Layer ADDITIVE = layer("additive_particle", Identifier.withDefaultNamespace("core/particle"), CompareOp.LESS_THAN_OR_EQUAL);
 	public static final SingleQuadParticle.Layer ADDITIVE_WITHOUT_DEPTH_TEST = layer("additive_particle_no_depth", Identifier.withDefaultNamespace("core/particle"), CompareOp.ALWAYS_PASS);
 	public static final SingleQuadParticle.Layer CORRUPT = layer("corrupt_sparkle", botaniaRL("core/film_grain_particle"), CompareOp.LESS_THAN_OR_EQUAL);
+	private static final boolean IRIS_ADDITIVE = ShaderCompatibility.registerAdditiveParticles(ADDITIVE.pipeline(), ADDITIVE_WITHOUT_DEPTH_TEST.pipeline());
 
 	private BotaniaParticleLayers() {}
+
+	public static SingleQuadParticle.Layer additive(boolean depthTest) {
+		if (ShaderCompatibility.useVanillaPipelines() && !(IRIS_ADDITIVE && BotaniaConfig.client().useShaders())) {
+			return SingleQuadParticle.Layer.TRANSLUCENT;
+		}
+		return depthTest ? ADDITIVE : ADDITIVE_WITHOUT_DEPTH_TEST;
+	}
 
 	public static boolean usesLinearFiltering(SingleQuadParticle.Layer layer) {
 		return layer == ADDITIVE || layer == ADDITIVE_WITHOUT_DEPTH_TEST || layer == CORRUPT;
